@@ -79,11 +79,6 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N)
     std::vector<double> err(N);
     for (auto i = 0u; i < N; ++i) {
         auto res = e2m(m2e(mean_anomalies[i], eccenricities[i]), eccenricities[i]);
-        // We sent M in the [0, 2pi] range
-        mean_anomalies[i] = std::fmod(mean_anomalies[i], 2. * boost::math::constants::pi<double>());
-        if (mean_anomalies[i] < 0) {
-            mean_anomalies[i] += 2. * boost::math::constants::pi<double>();
-  }
         err[i] = std::abs(res - mean_anomalies[i]);
     }
     auto max_it = max_element(std::begin(err), std::end(err));
@@ -96,15 +91,12 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N)
 int main()
 {
     unsigned seed = 7898935u;
-    fmt::print("Test speed different eccentricity ranges:\n");
+    fmt::print("\nComputes speed different eccentricity ranges:\n");
     perform_test_speed(0, 0.5, 1000000);
     perform_test_speed(0.5, 0.9, 1000000);
     perform_test_speed(0.9, 0.99, 1000000);
-    fmt::print("\nTest accuracy at different eccentricity ranges:\n");
+    fmt::print("\nComputes error at different eccentricity ranges:\n");
     perform_test_accuracy(0, 0.5, 100000);
     perform_test_accuracy(0.5, 0.9, 100000);
     perform_test_accuracy(0.9, 0.99, 100000);
-
-    
-
 }

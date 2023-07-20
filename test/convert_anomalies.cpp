@@ -36,8 +36,10 @@ TEST_CASE("m2e")
         double mean_anom = M_d(rng_engine);
         double ecc = ecc_easy_d(rng_engine);
         double res = e2m(m2e(mean_anom, ecc), ecc);
-        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
-        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
+        // We require 1e-13 and not 1e-14 as the range for m is [-100,100]. For high values of M some precision loss is to be expected
+        // as to maintain digits of the higher number.
+        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-13));
+        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-13));
 
     }
     // Testing on N random calls (difficult)
@@ -45,8 +47,8 @@ TEST_CASE("m2e")
         double mean_anom = M_d(rng_engine);
         double ecc = ecc_difficult_d(rng_engine);
         double res = e2m(m2e(mean_anom, ecc), ecc);
-        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
-        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-13));
+        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-13));
     }
 }
 
