@@ -46,7 +46,8 @@ using namespace boost::posix_time;
  * \param[in] epoch_in A double indicating the non-gregorian date
  * \param[in] epoch_type One of [epoch::MJD2000, epoch::MJD, epoch::JD]
  */
-epoch::epoch(const double &epoch_in, type epoch_type) : mjd2000_m(epoch_in) {
+epoch::epoch(const double &epoch_in, julian_type epoch_type)
+    : mjd2000_m(epoch_in) {
   switch (epoch_type) {
   case MJD2000:
     break;
@@ -65,8 +66,8 @@ epoch::epoch(const double &epoch_in, type epoch_type) : mjd2000_m(epoch_in) {
  * be midnight. \param[in] year The gregorian year \param[in] month The month of
  * the year \param[in] day The day of the month
  */
-epoch::epoch(const greg_year &year, const greg_month &month,
-             const greg_day &day) {
+epoch::epoch(const greg_day &day, const greg_month &month,
+             const greg_year &year) {
   set_posix_time(ptime(date(year, month, day)));
 }
 
@@ -170,6 +171,18 @@ void epoch::set_posix_time(const boost::posix_time::ptime &posix_time) {
   mjd2000_m = epoch(posix_time).mjd2000();
 }
 
+epoch &epoch::operator+=(double rhs) {
+  /* addition of rhs to *this takes place here */
+  mjd2000_m += rhs;
+  return *this; // return the result by reference
+}
+
+epoch &epoch::operator-=(double rhs) {
+  /* addition of rhs to *this takes place here */
+  mjd2000_m -= rhs;
+  return *this; // return the result by reference
+}
+
 /// Returns an epoch constructed from a delimited string containing a date
 /**
  *  Builds an epoch from a delimited string. Excess digits in fractional seconds
@@ -201,8 +214,6 @@ epoch epoch_from_iso_string(const std::string date) {
       boost::posix_time::ptime(boost::posix_time::from_iso_string(date)));
 }
 
-} // namespace kep3
-
 /// Overload the stream operator for kep_toolbox::epoch
 /**
  * Streams out a date in the format 2000-Jan-01 00:12:30.123457
@@ -213,7 +224,35 @@ epoch epoch_from_iso_string(const std::string date) {
  * \return reference to s
  *
  */
-std::ostream &kep3::operator<<(std::ostream &s, const kep3::epoch &now) {
+std::ostream &operator<<(std::ostream &s, const epoch &now) {
   s << now.get_posix_time();
   return s;
 }
+bool operator>(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m > c2.mjd2000_m) ? true : false;
+}
+bool operator<(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m < c2.mjd2000_m) ? true : false;
+}
+bool operator>=(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m >= c2.mjd2000_m) ? true : false;
+}
+bool operator<=(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m <= c2.mjd2000_m) ? true : false;
+}
+bool operator==(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m == c2.mjd2000_m) ? true : false;
+}
+bool operator!=(const epoch &c1, const epoch &c2) {
+  return (c1.mjd2000_m != c2.mjd2000_m) ? true : false;
+}
+epoch operator+(epoch &lhs, double rhs) {
+  lhs += rhs; // reuse compound assignment
+  return lhs; // return the result by value (uses move constructor)
+}
+epoch operator-(epoch &lhs, double rhs) {
+  lhs -= rhs; // reuse compound assignment
+  return lhs; // return the result by value (uses move constructor)
+}
+
+} // namespace kep3

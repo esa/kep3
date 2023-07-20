@@ -26,4 +26,5 @@ function(ADD_kep3_TESTCASE arg1)
   add_test(${arg1} ${arg1})
 endfunction()
 
-ADD_kep3_TESTCASE(convert_anomalies)
+ADD_kep3_TESTCASE(convert_anomalies_test)
+ADD_kep3_TESTCASE(epoch_test)

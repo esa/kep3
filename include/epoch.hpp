@@ -61,13 +61,13 @@ public:
    * Julian Date 2000 (MJD2000) is the number of days passed since Juanuary 1,
    * 2000 at 00:00am.
    */
-  enum type { MJD2000, MJD, JD };
+  enum julian_type { MJD2000, MJD, JD };
 
   /** Constructors */
-  epoch(const double &epoch_in = 0, type epoch_type = MJD2000);
-  epoch(const boost::gregorian::greg_year &year,
+  epoch(const double & = 0., julian_type = MJD2000);
+  epoch(const boost::gregorian::greg_day &day,
         const boost::gregorian::greg_month &month,
-        const boost::gregorian::greg_day &day);
+        const boost::gregorian::greg_year &year);
   epoch(const boost::posix_time::ptime &posix_time);
 
   /** Computing non-gregorian dates */
@@ -79,43 +79,18 @@ public:
   boost::posix_time::ptime get_posix_time() const;
   void set_posix_time(const boost::posix_time::ptime &);
 
-  /** operators overloads for sum diff (epoch-days) and the comparison operators **/
-  epoch &operator+=(double rhs) {
-    /* addition of rhs to *this takes place here */
-    mjd2000_m += rhs;
-    return *this; // return the result by reference
-  }
-  friend epoch operator+(epoch &lhs, double rhs) {
-    lhs += rhs; // reuse compound assignment
-    return lhs; // return the result by value (uses move constructor)
-  }
-   epoch &operator-=(double rhs) {
-     /* addition of rhs to *this takes place here */
-     mjd2000_m -= rhs;
-     return *this; // return the result by reference
-   }
-   friend epoch operator-(epoch &lhs, double rhs) {
-     lhs -= rhs; // reuse compound assignment
-     return lhs; // return the result by value (uses move constructor)
-   }
-   friend bool operator>(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m > c2.mjd2000_m) ? true : false;
-   }
-   friend bool operator<(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m < c2.mjd2000_m) ? true : false;
-   }
-     friend bool operator>=(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m >= c2.mjd2000_m) ? true : false;
-   }
-   friend bool operator<=(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m <= c2.mjd2000_m) ? true : false;
-   }
-   friend bool operator==(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m == c2.mjd2000_m) ? true : false;
-   }
-   friend bool operator!=(epoch &c1, epoch &c2) {
-     return (c1.mjd2000_m != c2.mjd2000_m) ? true : false;
-   }
+  /** operators overloads for sum diff (epoch-days) and the comparison operators
+   * **/
+  epoch &operator+=(double rhs);
+  epoch &operator-=(double rhs);
+  friend epoch operator+(const epoch &lhs, double rhs);
+  friend epoch operator-(const epoch &lhs, double rhs);
+  friend bool operator>(const epoch &c1, const epoch &c2);
+  friend bool operator<(const epoch &c1, const epoch &c2);
+  friend bool operator>=(const epoch &c1, const epoch &c2);
+  friend bool operator<=(const epoch &c1, const epoch &c2);
+  friend bool operator==(const epoch &c1, const epoch &c2);
+  friend bool operator!=(const epoch &c1, const epoch &c2);
 
 private:
   // Serialization code
@@ -129,12 +104,21 @@ private:
   double mjd2000_m;
 };
 
+kep3_DLL_PUBLIC epoch epoch_from_string(const std::string date);
+kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string date);
+
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s,
                                          const epoch &epoch_in);
+kep3_DLL_PUBLIC bool operator>(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC bool operator<(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC bool operator>=(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC bool operator<=(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC bool operator==(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC bool operator!=(const epoch &c1, const epoch &c2);
+kep3_DLL_PUBLIC epoch operator+(epoch &lhs, double rhs);
+kep3_DLL_PUBLIC epoch operator-(epoch &lhs, double rhs);
 
-kep3_DLL_PUBLIC epoch epoch_from_string(const std::string date);
 
-kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string date);
 
 } // end of namespace kep3
 
