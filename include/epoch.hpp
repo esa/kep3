@@ -79,25 +79,43 @@ public:
   boost::posix_time::ptime get_posix_time() const;
   void set_posix_time(const boost::posix_time::ptime &);
 
-  /** arithmetics of sum and subtraction between epochs **/
+  /** operators overloads for sum diff (epoch-days) and the comparison operators **/
   epoch &operator+=(double rhs) {
     /* addition of rhs to *this takes place here */
     mjd2000_m += rhs;
     return *this; // return the result by reference
   }
-  friend epoch operator+(const epoch &lhs, double rhs) {
+  friend epoch operator+(epoch &lhs, double rhs) {
     lhs += rhs; // reuse compound assignment
     return lhs; // return the result by value (uses move constructor)
   }
-  epoch &operator-=(double rhs) {
-    /* addition of rhs to *this takes place here */
-    mjd2000_m -= rhs;
-    return *this; // return the result by reference
-  }
-  friend epoch operator-(const epoch &lhs, double rhs) {
-    lhs -= rhs; // reuse compound assignment
-    return lhs; // return the result by value (uses move constructor)
-  }
+   epoch &operator-=(double rhs) {
+     /* addition of rhs to *this takes place here */
+     mjd2000_m -= rhs;
+     return *this; // return the result by reference
+   }
+   friend epoch operator-(epoch &lhs, double rhs) {
+     lhs -= rhs; // reuse compound assignment
+     return lhs; // return the result by value (uses move constructor)
+   }
+   friend bool operator>(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m > c2.mjd2000_m) ? true : false;
+   }
+   friend bool operator<(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m < c2.mjd2000_m) ? true : false;
+   }
+     friend bool operator>=(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m >= c2.mjd2000_m) ? true : false;
+   }
+   friend bool operator<=(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m <= c2.mjd2000_m) ? true : false;
+   }
+   friend bool operator==(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m == c2.mjd2000_m) ? true : false;
+   }
+   friend bool operator!=(epoch &c1, epoch &c2) {
+     return (c1.mjd2000_m != c2.mjd2000_m) ? true : false;
+   }
 
 private:
   // Serialization code
