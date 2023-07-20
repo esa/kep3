@@ -7,6 +7,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include<iostream>
+#include<random>
 
 #include<core_astro/convert_anomalies.hpp>
 
@@ -15,7 +16,6 @@
 using namespace kep3;
 
 TEST_CASE("m2e")
-
 {
     using Catch::Detail::Approx;
     std::random_device rd;
@@ -26,16 +26,98 @@ TEST_CASE("m2e")
     //
     // Distribtuions
     //
-    std::uniform_real_distribution<> ecc_difficult_d(0.9, 0.99);
-    std::uniform_real_distribution<> ecc_easy_d(0., 0.9);
-    std::uniform_real_distribution<> M_d(0., 1.);
+    std::uniform_real_distribution<double> ecc_difficult_d(0.9, 0.99);
+    std::uniform_real_distribution<double> ecc_easy_d(0., 0.9);
+    std::uniform_real_distribution<double> M_d(-100, 100.);
 
-    // Testing on N random calls
+    // Testing on N random calls (easy)
     unsigned N = 10000;
-    for (auto i = 0u; i < 10000; ++i) {
-        auto mean_anom = M_d(rng_engine);
-        auto ecc = ecc_easy_d(rng_engine);
-        std::cout << e2m(m2e(mean_anom, ecc), ecc) - mean_anom << std::endl;
-        REQUIRE(e2m(m2e(mean_anom, ecc), ecc) == Approx(mean_anom).epsilon(0.).margin(1e-11));
+    for (auto i = 0u; i < N; ++i) {
+        double mean_anom = M_d(rng_engine);
+        double ecc = ecc_easy_d(rng_engine);
+        double res = e2m(m2e(mean_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
+
+    }
+    // Testing on N random calls (difficult)
+    for (auto i = 0u; i < N; ++i) {
+        double mean_anom = M_d(rng_engine);
+        double ecc = ecc_difficult_d(rng_engine);
+        double res = e2m(m2e(mean_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
+    }
+}
+
+TEST_CASE("f2e")
+{
+    using Catch::Detail::Approx;
+    std::random_device rd;
+    //
+    // Engines 
+    //
+    std::mt19937 rng_engine(rd());
+    //
+    // Distribtuions
+    //
+    std::uniform_real_distribution<double> ecc_difficult_d(0.9, 0.99);
+    std::uniform_real_distribution<double> ecc_easy_d(0., 0.9);
+    std::uniform_real_distribution<double> f_d(-100, 100.);
+
+    // Testing on N random calls (easy)
+    unsigned N = 10000;
+    for (auto i = 0u; i < N; ++i) {
+        double true_anom = f_d(rng_engine);
+        double ecc = ecc_easy_d(rng_engine);
+        double res = e2f(f2e(true_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(true_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(true_anom)).epsilon(0.).margin(1e-14));
+
+    }
+    // Testing on N random calls (difficult)
+    for (auto i = 0u; i < N; ++i) {
+        double true_anom = f_d(rng_engine);
+        double ecc = ecc_difficult_d(rng_engine);
+        double res = e2f(f2e(true_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(true_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(true_anom)).epsilon(0.).margin(1e-14));
+
+    }
+}
+
+TEST_CASE("zeta2e")
+{
+    using Catch::Detail::Approx;
+    std::random_device rd;
+    //
+    // Engines 
+    //
+    std::mt19937 rng_engine(rd());
+    //
+    // Distribtuions
+    //
+    std::uniform_real_distribution<double> ecc_difficult_d(1.01, 1.1);
+    std::uniform_real_distribution<double> ecc_easy_d(2.,100.);
+    std::uniform_real_distribution<double> f_d(-100, 100.);
+
+    // Testing on N random calls (easy)
+    unsigned N = 10000;
+    for (auto i = 0u; i < N; ++i) {
+        double true_anom = f_d(rng_engine);
+        double ecc = ecc_easy_d(rng_engine);
+        double res = zeta2f(f2zeta(true_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(true_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(true_anom)).epsilon(0.).margin(1e-14));
+
+    }
+    // Testing on N random calls (difficult)
+    for (auto i = 0u; i < N; ++i) {
+        double true_anom = f_d(rng_engine);
+        double ecc = ecc_difficult_d(rng_engine);
+        double res = zeta2f(f2zeta(true_anom, ecc), ecc);
+        REQUIRE(std::sin(res) == Approx(std::sin(true_anom)).epsilon(0.).margin(1e-14));
+        REQUIRE(std::cos(res) == Approx(std::cos(true_anom)).epsilon(0.).margin(1e-14));
+
     }
 }
