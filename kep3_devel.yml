@@ -1,4 +1,4 @@
-name: pykep3_devel
+name: kep3_devel
 channels:
   - conda-forge
 dependencies:
