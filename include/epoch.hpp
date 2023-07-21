@@ -83,15 +83,15 @@ public:
    * **/
   epoch &operator+=(double rhs);
   epoch &operator-=(double rhs);
-  friend epoch operator+(epoch lhs, double rhs);
-  friend epoch operator-(epoch lhs, double rhs);
-  friend double operator-(const epoch &lhs, const epoch &rhs);
-  friend bool operator>(const epoch &c1, const epoch &c2);
-  friend bool operator<(const epoch &c1, const epoch &c2);
-  friend bool operator>=(const epoch &c1, const epoch &c2);
-  friend bool operator<=(const epoch &c1, const epoch &c2);
-  friend bool operator==(const epoch &c1, const epoch &c2);
-  friend bool operator!=(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend epoch operator+(epoch lhs, double rhs);
+  kep3_DLL_PUBLIC friend epoch operator-(epoch lhs, double rhs);
+  kep3_DLL_PUBLIC friend double operator-(const epoch &lhs, const epoch &rhs);
+  kep3_DLL_PUBLIC friend bool operator>(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend bool operator<(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend bool operator>=(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend bool operator<=(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend bool operator==(const epoch &c1, const epoch &c2);
+  kep3_DLL_PUBLIC friend bool operator!=(const epoch &c1, const epoch &c2);
 
 private:
   // Serialization code
