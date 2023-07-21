@@ -53,4 +53,5 @@ TEST_CASE("epoch_operators") {
   REQUIRE(yesterday == epoch(-1.));
   today = yesterday + 1;
   REQUIRE(today == epoch(0.));
+  REQUIRE(today - yesterday == 1.);
 }

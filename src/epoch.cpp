@@ -47,15 +47,15 @@ using namespace boost::posix_time;
  * \param[in] epoch_type One of [epoch::MJD2000, epoch::MJD, epoch::JD]
  */
 epoch::epoch(const double &epoch_in, julian_type epoch_type)
-    : mjd2000_m(epoch_in) {
+    : m_mjd2000(epoch_in) {
   switch (epoch_type) {
   case MJD2000:
     break;
   case MJD:
-    mjd2000_m = mjd2mjd2000(epoch_in);
+    m_mjd2000 = mjd2mjd2000(epoch_in);
     break;
   case JD:
-    mjd2000_m = jd2mjd2000(epoch_in);
+    m_mjd2000 = jd2mjd2000(epoch_in);
     break;
   }
 }
@@ -85,11 +85,11 @@ epoch::epoch(const boost::posix_time::ptime &posix_time) {
   }
   double fr_secs =
       static_cast<double>(dt.fractional_seconds()) * BOOST_DATE_PRECISION;
-  mjd2000_m = static_cast<double>(dt.hours()) / 24.0 +
+  m_mjd2000 = static_cast<double>(dt.hours()) / 24.0 +
               static_cast<double>(dt.minutes()) / 1440.0 +
               (static_cast<double>(dt.seconds()) + fr_secs) / 86400.0;
   if (flag)
-    mjd2000_m = -mjd2000_m;
+    m_mjd2000 = -m_mjd2000;
 }
 
 /// jd getter.
@@ -99,7 +99,7 @@ epoch::epoch(const boost::posix_time::ptime &posix_time) {
  * @return double containing the julian date
  *
  */
-double epoch::jd() const { return mjd20002jd(mjd2000_m); }
+double epoch::jd() const { return mjd20002jd(m_mjd2000); }
 
 /// mjd getter.
 /**
@@ -108,14 +108,14 @@ double epoch::jd() const { return mjd20002jd(mjd2000_m); }
  * @return double containing the modified julian date
  *
  */
-double epoch::mjd() const { return mjd20002mjd(mjd2000_m); }
+double epoch::mjd() const { return mjd20002mjd(m_mjd2000); }
 
 /// mjd2000 getter.
 /**
  * Gets the modified julian date 2000
  * @return const reference to mjd2000
  */
-double epoch::mjd2000() const { return mjd2000_m; }
+double epoch::mjd2000() const { return m_mjd2000; }
 
 /// Extracts the posix time
 /**
@@ -130,7 +130,7 @@ double epoch::mjd2000() const { return mjd2000_m; }
 ptime epoch::get_posix_time() const {
   long hrs, min, sec, fsec;
   bool flag = false;
-  double copy = mjd2000_m;
+  double copy = m_mjd2000;
   if (copy < 0) {
     copy = -copy;
     flag = true;
@@ -168,18 +168,18 @@ ptime epoch::get_posix_time() const {
  */
 void epoch::set_posix_time(const boost::posix_time::ptime &posix_time) {
 
-  mjd2000_m = epoch(posix_time).mjd2000();
+  m_mjd2000 = epoch(posix_time).mjd2000();
 }
 
 epoch &epoch::operator+=(double rhs) {
   /* addition of rhs to *this takes place here */
-  mjd2000_m += rhs;
+  m_mjd2000 += rhs;
   return *this; // return the result by reference
 }
 
 epoch &epoch::operator-=(double rhs) {
   /* addition of rhs to *this takes place here */
-  mjd2000_m -= rhs;
+  m_mjd2000 -= rhs;
   return *this; // return the result by reference
 }
 
@@ -229,30 +229,34 @@ std::ostream &operator<<(std::ostream &s, const epoch &now) {
   return s;
 }
 bool operator>(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m > c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 > c2.m_mjd2000) ? true : false;
 }
 bool operator<(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m < c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 < c2.m_mjd2000) ? true : false;
 }
 bool operator>=(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m >= c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 >= c2.m_mjd2000) ? true : false;
 }
 bool operator<=(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m <= c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 <= c2.m_mjd2000) ? true : false;
 }
 bool operator==(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m == c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 == c2.m_mjd2000) ? true : false;
 }
 bool operator!=(const epoch &c1, const epoch &c2) {
-  return (c1.mjd2000_m != c2.mjd2000_m) ? true : false;
+  return (c1.m_mjd2000 != c2.m_mjd2000) ? true : false;
 }
-epoch operator+(epoch &lhs, double rhs) {
+epoch operator+(epoch lhs, double rhs) {
   lhs += rhs; // reuse compound assignment
   return lhs; // return the result by value (uses move constructor)
 }
-epoch operator-(epoch &lhs, double rhs) {
+epoch operator-(epoch lhs, double rhs) {
   lhs -= rhs; // reuse compound assignment
   return lhs; // return the result by value (uses move constructor)
+}
+double operator-(const epoch &lhs, const epoch &rhs) {
+  return lhs.mjd2000() -
+         rhs.mjd2000(); // return the result by value (uses move constructor)
 }
 
 } // namespace kep3

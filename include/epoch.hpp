@@ -83,8 +83,9 @@ public:
    * **/
   epoch &operator+=(double rhs);
   epoch &operator-=(double rhs);
-  friend epoch operator+(const epoch &lhs, double rhs);
-  friend epoch operator-(const epoch &lhs, double rhs);
+  friend epoch operator+(epoch lhs, double rhs);
+  friend epoch operator-(epoch lhs, double rhs);
+  friend double operator-(const epoch &lhs, const epoch &rhs);
   friend bool operator>(const epoch &c1, const epoch &c2);
   friend bool operator<(const epoch &c1, const epoch &c2);
   friend bool operator>=(const epoch &c1, const epoch &c2);
@@ -96,12 +97,12 @@ private:
   // Serialization code
   friend class boost::serialization::access;
   template <class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar &mjd2000_m;
+    ar &m_mjd2000;
   }
   // Serialization code (END)
 
   /// the modified julian date 2000 stored in a double
-  double mjd2000_m;
+  double m_mjd2000;
 };
 
 kep3_DLL_PUBLIC epoch epoch_from_string(const std::string date);
@@ -115,8 +116,9 @@ kep3_DLL_PUBLIC bool operator>=(const epoch &c1, const epoch &c2);
 kep3_DLL_PUBLIC bool operator<=(const epoch &c1, const epoch &c2);
 kep3_DLL_PUBLIC bool operator==(const epoch &c1, const epoch &c2);
 kep3_DLL_PUBLIC bool operator!=(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC epoch operator+(epoch &lhs, double rhs);
-kep3_DLL_PUBLIC epoch operator-(epoch &lhs, double rhs);
+kep3_DLL_PUBLIC epoch operator+(epoch lhs, double rhs);
+kep3_DLL_PUBLIC epoch operator-(epoch lhs, double rhs);
+kep3_DLL_PUBLIC double operator-(const epoch &lhs, const epoch &rhs);
 
 
 
