@@ -30,7 +30,7 @@ cmake --build . -- -v
 ctest -j4 -VV
 
 # Create lcov report
-#lcov --capture --directory . --output-file coverage.info
+lcov --capture --directory . --output-file coverage.info
 
 # Upload coverage data.
 #curl -Os https://uploader.codecov.io/latest/linux/codecov
