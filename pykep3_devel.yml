@@ -6,7 +6,6 @@ dependencies:
   - cxx-compiler
   - ninja
   - cmake >=3.18
-  - python =3.10
   - boost-cpp >=1.73
   - fmt
   - heyoka >=0.21.0
