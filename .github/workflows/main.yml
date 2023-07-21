@@ -51,6 +51,7 @@ jobs:
         run: bash tools/gha_linux_coverage.sh
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        files: coverage.info
+        with:
+          files: coverage.info
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
