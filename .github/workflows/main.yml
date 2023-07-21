@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build
         run: bash tools/gha_osx_debug.sh
-  windows_2019:
+  windows_2019_release:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
@@ -43,3 +43,14 @@ jobs:
           cmake ../ -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\cascade_devel\Library -Dkep3_BUILD_TESTS=yes -DBoost_NO_BOOST_CMAKE=ON
           cmake --build . -j4 --config Release --target install
           ctest -j4 -V -C Release
+  linux_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # NOTE: this is needed by codecov
+          # apparently:
+          # https://github.com/codecov/codecov-action/issues/190
+          fetch-depth: 2
+      - name: Build
+        run: bash tools/gha_linux_coverage.sh
