@@ -14,7 +14,7 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforg
 export deps_dir=$HOME/local
 export PATH="$HOME/mambaforge/bin:$PATH"
 bash mambaforge.sh -b -p $HOME/mambaforge
-mamba env create -f pykep3_devel.yml -q -p $deps_dir
+mamba env create -f kep3_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
 export CXXFLAGS="$CXXFLAGS -fsanitize=address"

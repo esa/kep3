@@ -29,8 +29,8 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: pykep3_devel
-          environment-file: pykep3_devel.yml
+          activate-environment: kep3_devel
+          environment-file: kep3_devel.yml
           auto-update-conda: true
           channels: conda-forge
           channel-priority: strict
