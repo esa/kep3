@@ -42,7 +42,7 @@ jobs:
           cd build
           cmake ../ -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\cascade_devel\Library -Dkep3_BUILD_TESTS=yes -DBoost_NO_BOOST_CMAKE=ON
           cmake --build . -j4 --config Release --target install
-          ctest -j4 -V -C Release
+          ctest -j4 -V -C Release --output-on-failure
   linux_coverage:
     runs-on: ubuntu-latest
     steps:
