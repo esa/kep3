@@ -11,7 +11,7 @@
 #include <iostream>
 #include <random>
 
-#include <epoch.hpp>
+#include <kep3/epoch.hpp>
 
 #include "catch.hpp"
 

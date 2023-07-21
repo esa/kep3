@@ -1,4 +1,4 @@
 ignore:
-  - "test/"
+  - "test"
 
 comment: off

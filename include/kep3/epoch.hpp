@@ -31,8 +31,8 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
-#include <detail/s11n.hpp>
-#include <detail/visibility.hpp>
+#include <kep3/detail/s11n.hpp>
+#include <kep3/detail/visibility.hpp>
 
 /// Keplerian Toolbox
 /**

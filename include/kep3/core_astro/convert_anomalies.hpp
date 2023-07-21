@@ -31,7 +31,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/tools/roots.hpp>
 
-#include <core_astro/kepler_equations.hpp>
+#include <kep3/core_astro/kepler_equations.hpp>
 
 namespace kep3 {
 

@@ -9,7 +9,7 @@
 #include<iostream>
 #include<random>
 
-#include<core_astro/convert_anomalies.hpp>
+#include<kep3/core_astro/convert_anomalies.hpp>
 
 #include "catch.hpp"
 

@@ -28,8 +28,8 @@
 #include <iomanip>
 #include <iostream>
 
-#include <core_astro/convert_julian_dates.hpp>
-#include <epoch.hpp>
+#include <kep3/core_astro/convert_julian_dates.hpp>
+#include <kep3/epoch.hpp>
 
 // This is set to the precision of the boost date library (microseconds is
 // default, nanoseconds can be set when compiling boosts. Note that the code has
