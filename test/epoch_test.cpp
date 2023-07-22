@@ -10,6 +10,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <iostream>
 #include <random>
+#include <string>
 
 #include <kep3/epoch.hpp>
 
@@ -39,8 +40,8 @@ TEST_CASE("construct")
 
   // test conversions
   REQUIRE(epoch(123.456).mjd2000() == epoch(123.456, epoch::MJD2000).mjd2000());
-  REQUIRE(epoch(0.).mjd2000() == epoch(51544, epoch::MJD).mjd2000());
-  REQUIRE(epoch(0.).mjd2000() == epoch(2451544.5, epoch::JD).mjd2000());
+  REQUIRE(epoch(0.).mjd() == epoch(51544, epoch::MJD).mjd());
+  REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::JD).jd());
   REQUIRE(epoch(31, 12, 2034).jd() == epoch(posix_time_test).jd());
 }
 
@@ -63,6 +64,7 @@ TEST_CASE("epoch_operators")
   today = yesterday + 1;
   REQUIRE(today == epoch(0.));
   REQUIRE(today - yesterday == 1.);
+  REQUIRE_NOTHROW((std::cout << epoch()));
 }
 
 TEST_CASE("conversions_from_string")
