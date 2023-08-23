@@ -1,16 +1,11 @@
 # Build dirs.
 build*
 
-# Docs.
-doc/_build
-doc/examples/out
-doc/generated
-
-# Notebooks bits.
-.ipynb_checkpoints
-
 # clangd bits.
 .cache
 
 # vscode bits.
 .vscode
+
+# config files
+include/kep3/config.hpp
