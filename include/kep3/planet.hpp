@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <typeindex>
 
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/type_name.hpp>
@@ -23,18 +24,20 @@
 namespace kep3::detail {
 // Type traits to detect whether user classes have certain methods implemented.
 
-// Detects void eph(const epoch& , std::array<double, 3> &, std::array<double,
-// 3> &) method
+// udpla_has_eph<T> detects whether T has the method:
+// void eph(const epoch& , std::array<double, 3> &, std::array<double, 3> &)
+// method
 template <typename T>
 using udpla_eph_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>().eph(
         std::declval<const epoch &>(), std::declval<std::array<double, 3> &>(),
         std::declval<std::array<double, 3> &>()));
-template <typename T>
-inline constexpr bool udpla_has_eph_v =
-    std::is_same_v<detected_t<udpla_eph_t, T>, void>;
 
-// Detects std::string get_name() method
+template <typename T>
+using udpla_has_eph = std::is_same<detected_t<udpla_eph_t, T>, void>;
+
+// udpla_has_get_name_v<T> is True if T has the method:
+// std::string get_name()
 template <typename T>
 using udpla_get_name_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>().get_name());
@@ -42,7 +45,8 @@ template <typename T>
 inline constexpr bool udpla_has_get_name_v =
     std::is_same_v<detected_t<udpla_get_name_t, T>, void>;
 
-// Detects std::string get_extra_info() method
+// udpla_has_get_extra_info_v<T> is True if T has the method:
+// std::string get_name()
 template <typename T>
 using udpla_get_extra_info_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>()
@@ -129,7 +133,7 @@ template <typename T>
 using is_udpla = std::conjunction<
     std::is_same<T, uncvref_t<T>>, std::is_default_constructible<T>,
     std::is_copy_constructible<T>, std::is_move_constructible<T>,
-    std::is_destructible<T>, udpla_has_eph_v<T> >;
+    std::is_destructible<T>, udpla_has_eph<T>>;
 
 // The final class
 class kep3_DLL_PUBLIC planet {
@@ -155,38 +159,65 @@ class kep3_DLL_PUBLIC planet {
       int>;
 
 public:
+  // Default constructor
   planet();
-
+  // Constructor from the UDPLA
   template <typename T, generic_ctor_enabler<T &&> = 0>
   explicit planet(T &&x)
       : m_ptr(std::make_unique<detail::planet_inner<detail::uncvref_t<T>>>(
             std::forward<T>(x))) {}
-
-  planet(const planet &);
-  planet(planet &&) noexcept;
-
-  planet &operator=(const planet &);
-  planet &operator=(planet &&) noexcept;
-
-  ~planet();
-
-  // NOTE: like in pagmo, this may fail if invoked
-  // from different DLLs in certain situations (e.g.,
-  // Python bindings on OSX). I don't
-  // think this is currently an interesting use case
-  // for heyoka (as we don't provide a way of implementing
-  // new functions in Python), but, if it becomes a problem
-  // in the future, we can solve this in the same way as
-  // in pagmo.
-  template <typename T> [[nodiscard]] const T *extract() const noexcept {
-    const auto *p = dynamic_cast<const detail::planet_inner<T> *>(ptr());
-    return p == nullptr ? nullptr : &(p->m_value);
-  }
-
-  [[nodiscard]] std::type_index get_type_index() const;
-  [[nodiscard]] const void *get_ptr() const;
-
-  [[nodiscard]] const std::string &get_name() const;
+    // Copy constructor
+    planet(const planet &);
+    // Move ctor.
+    planet(planet &&) noexcept;
+    // Move assignment.
+    planet &operator=(planet &&) noexcept;
+    // Copy assignment.
+    planet &operator=(const planet &);
+    // Default destructor
+    ~planet();
+    // Assignment from a user-defined planet of type \p T
+    template <typename T, generic_ctor_enabler<T> = 0>
+    planet &operator=(T &&x)
+    {
+        return (*this) = planet(std::forward<T>(x));
+    }
+    // Extract a const pointer to the UDPLA.
+    template <typename T>
+    const T *extract() const noexcept
+    {
+#if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
+        return detail::typeid_name_extract<T>(*this);
+#else
+        auto p = dynamic_cast<const detail::planet_inner<T> *>(ptr());
+        return p == nullptr ? nullptr : &(p->m_value);
+#endif
+    }
+    /// Extract a pointer to the UDA.
+    template <typename T>
+    T *extract() noexcept
+    {
+#if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
+        return detail::typeid_name_extract<T>(*this);
+#else
+        auto p = dynamic_cast<detail::planet_inner<T> *>(ptr());
+        return p == nullptr ? nullptr : &(p->m_value);
+#endif
+    }
+    // Checks the user-defined algorithm type at run-time.
+    template <typename T>
+    [[nodiscard]] bool is() const noexcept
+    {
+        return extract<T>() != nullptr;
+    }
+    // Check if the planet is valid.
+    [[nodiscard]] bool is_valid() const;
+    // Gets the type of the UDPLA at runtime.
+    [[nodiscard]] std::type_index get_type_index() const;
+    /// Gets a const pointer to the UDPLA.
+    [[nodiscard]] const void *get_ptr() const;
+    // Gets a mutable pointer to the UDPLA.
+    void *get_ptr();
 };
 
 } // namespace kep3::detail
