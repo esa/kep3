@@ -1,7 +1,6 @@
-// Copyright 2023 Francesco Biscani (bluescarni@gmail.com), Dario Izzo
-// (dario.izzo@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
 //
-// This file is part of the cascade library.
+// This file is part of the kep3 library.
 //
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed

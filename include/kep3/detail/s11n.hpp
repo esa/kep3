@@ -1,33 +1,13 @@
-/* Copyright 2017-2021 PaGMO development team
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+//
+// This file is part of the kep3 library.
+//
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-This file is part of the PaGMO library.
-
-The PaGMO library is free software; you can redistribute it and/or modify
-it under the terms of either:
-
-  * the GNU Lesser General Public License as published by the Free
-    Software Foundation; either version 3 of the License, or (at your
-    option) any later version.
-
-or
-
-  * the GNU General Public License as published by the Free Software
-    Foundation; either version 3 of the License, or (at your option) any
-    later version.
-
-or both in parallel, as here.
-
-The PaGMO library is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received copies of the GNU General Public License and the
-GNU Lesser General Public License along with the PaGMO library.  If not,
-see https://www.gnu.org/licenses/. */
-
-#ifndef KEP2_S11N_HPP
-#define KEP2_S11N_HPP
+#ifndef KEP3_S11N_HPP
+#define KEP3_S11N_HPP
 
 #include <cstddef>
 #include <locale>
@@ -55,7 +35,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-namespace pagmo
+namespace kep3
 {
 
 namespace detail
@@ -82,7 +62,7 @@ struct tuple_s11n<0> {
 
 } // namespace detail
 
-} // namespace pagmo
+} // namespace kep3
 
 namespace boost
 {
@@ -94,7 +74,7 @@ namespace serialization
 template <class Archive, typename... Args>
 inline void serialize(Archive &ar, std::tuple<Args...> &t, unsigned version)
 {
-    pagmo::detail::tuple_s11n<sizeof...(Args)>::serialize(ar, t, version);
+    kep3::detail::tuple_s11n<sizeof...(Args)>::serialize(ar, t, version);
 }
 
 // Implement serialization for the Mersenne twister engine.
