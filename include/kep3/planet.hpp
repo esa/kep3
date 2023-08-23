@@ -15,9 +15,10 @@
 #include <type_traits>
 
 #include <kep3/detail/s11n.hpp>
+#include <kep3/detail/type_name.hpp>
+#include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
-#include <kep3/type_traits.hpp>
 
 namespace kep3::detail {
 // Type traits to detect whether user classes have certain methods implemented.
@@ -28,7 +29,7 @@ template <typename T>
 using udpla_eph_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>().eph(
         std::declval<const epoch &>(), std::declval<std::array<double, 3> &>(),
-        std::declval<std::array<double, 3> &>(), ));
+        std::declval<std::array<double, 3> &>()));
 template <typename T>
 inline constexpr bool udpla_has_eph_v =
     std::is_same_v<detected_t<udpla_eph_t, T>, void>;
@@ -53,6 +54,11 @@ inline constexpr bool udpla_has_get_extra_info_v =
 // This defines the main interface for a class to be type erased into a kep3
 // planet
 struct kep3_DLL_PUBLIC planet_inner_base {
+  planet_inner_base(); // why do we need this to be default constructible?
+  planet_inner_base(const planet_inner_base &) = delete;
+  planet_inner_base(planet_inner_base &&) noexcept = delete;
+  planet_inner_base &operator=(const planet_inner_base &) = delete;
+  planet_inner_base &operator=(planet_inner_base &&) noexcept = delete;
   virtual ~planet_inner_base();
   [[nodiscard]] virtual std::unique_ptr<planet_inner_base> clone() const = 0;
 
@@ -89,8 +95,9 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
   }
   // Mandatory methods.
   void eph(const epoch &ep, std::array<int, 3> &pos,
-           std::array<int, 3> &vel) const final;
-  { return m_value.eph(ep, pos, vel); }
+           std::array<int, 3> &vel) const final {
+    return m_value.eph(ep, pos, vel);
+  }
   // optional methods with default implementations
   // these require added boiler plate as to detect whether they have been
   // implemented by the user class.
@@ -110,12 +117,11 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
   }
 
 private:
+  // Serialization.
   friend class boost::serialization::access;
-  // Serialization
   template <typename Archive> void serialize(Archive &ar, unsigned) {
-    detail::archive(ar,
-                    boost::serialization::base_object<planet_inner_base>(*this),
-                    m_value);
+    ar &boost::serialization::base_object<planet_inner_base>(*this);
+    ar &m_value;
   }
 };
 
@@ -123,7 +129,7 @@ template <typename T>
 using is_udpla = std::conjunction<
     std::is_same<T, uncvref_t<T>>, std::is_default_constructible<T>,
     std::is_copy_constructible<T>, std::is_move_constructible<T>,
-    std::is_destructible<T>, udpla_has_eph_v<T>>;
+    std::is_destructible<T>, udpla_has_eph_v<T> >;
 
 // The final class
 class kep3_DLL_PUBLIC planet {
