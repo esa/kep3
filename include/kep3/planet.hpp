@@ -25,16 +25,15 @@ namespace kep3::detail {
 // Type traits to detect whether user classes have certain methods implemented.
 
 // udpla_has_eph<T> detects whether T has the method:
-// void eph(const epoch& , std::array<double, 3> &, std::array<double, 3> &)
+// std::array<std::array<double, 3>, 2> eph(const epoch&)
 // method
 template <typename T>
 using udpla_eph_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>().eph(
-        std::declval<const epoch &>(), std::declval<std::array<double, 3> &>(),
-        std::declval<std::array<double, 3> &>()));
+        std::declval<const epoch &>()));
 
 template <typename T>
-using udpla_has_eph = std::is_same<detected_t<udpla_eph_t, T>, void>;
+using udpla_has_eph = std::is_same<detected_t<udpla_eph_t, T>, std::array<std::array<double, 3>, 2>>;
 
 // udpla_has_get_name_v<T> is True if T has the method:
 // std::string get_name()
@@ -64,11 +63,15 @@ struct kep3_DLL_PUBLIC planet_inner_base {
   planet_inner_base &operator=(const planet_inner_base &) = delete;
   planet_inner_base &operator=(planet_inner_base &&) noexcept = delete;
   virtual ~planet_inner_base();
+
   [[nodiscard]] virtual std::unique_ptr<planet_inner_base> clone() const = 0;
 
+  [[nodiscard]] virtual std::type_index get_type_index() const = 0;
+  [[nodiscard]] virtual const void *get_ptr() const = 0;
+  virtual void *get_ptr() = 0;
+
   // mandatory methods
-  virtual void eph(const epoch &, std::array<int, 3> &,
-                   std::array<int, 3> &) const = 0;
+  [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
   // optional methods with default implementations
   [[nodiscard]] virtual std::string get_name() const = 0;
   [[nodiscard]] virtual std::string get_extra_info() const = 0;
@@ -90,17 +93,28 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
   planet_inner &operator=(const planet_inner &) = delete;
   planet_inner &operator=(planet_inner &&) = delete;
   ~planet_inner() final = default;
+
   // Constructors from T (copy and move variants).
   explicit planet_inner(const T &x) : m_value(x) {}
   explicit planet_inner(T &&x) : m_value(std::move(x)) {}
+
   // The clone method, used in the copy constructor of algorithm.
   [[nodiscard]] std::unique_ptr<planet_inner_base> clone() const final {
     return std::make_unique<planet_inner>(m_value);
   }
+
+  // Get the type at runtime.
+  [[nodiscard]] std::type_index get_type_index() const final {
+    return typeid(T);
+  }
+
+  // Raw getters for the internal instance.
+  [[nodiscard]] const void *get_ptr() const final { return &m_value; }
+  void *get_ptr() final { return &m_value; }
+
   // Mandatory methods.
-  void eph(const epoch &ep, std::array<int, 3> &pos,
-           std::array<int, 3> &vel) const final {
-    return m_value.eph(ep, pos, vel);
+   [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const final {
+    return m_value.eph(ep);
   }
   // optional methods with default implementations
   // these require added boiler plate as to detect whether they have been
@@ -128,13 +142,19 @@ private:
     ar &m_value;
   }
 };
-
 template <typename T>
 using is_udpla = std::conjunction<
-    std::is_same<T, uncvref_t<T>>, std::is_default_constructible<T>,
+    std::is_same<T, detail::uncvref_t<T>>, std::is_default_constructible<T>,
     std::is_copy_constructible<T>, std::is_move_constructible<T>,
     std::is_destructible<T>, udpla_has_eph<T>>;
 
+struct null_udpla {
+  null_udpla();
+  static std::array<std::array<double, 3>, 2> eph(const epoch&);
+};
+} // namespace kep3::detail
+
+namespace kep3 {
 // The final class
 class kep3_DLL_PUBLIC planet {
   // Pointer to the inner base.
@@ -146,7 +166,7 @@ class kep3_DLL_PUBLIC planet {
     ar &m_ptr;
   }
 
-  // Just two small helpers to make sure that whenever we require
+  // Just two small helpers to make sure via assetions that whenever we require
   // access to the pointer it actually points to something.
   [[nodiscard]] const detail::planet_inner_base *ptr() const;
   detail::planet_inner_base *ptr();
@@ -166,60 +186,56 @@ public:
   explicit planet(T &&x)
       : m_ptr(std::make_unique<detail::planet_inner<detail::uncvref_t<T>>>(
             std::forward<T>(x))) {}
-    // Copy constructor
-    planet(const planet &);
-    // Move ctor.
-    planet(planet &&) noexcept;
-    // Move assignment.
-    planet &operator=(planet &&) noexcept;
-    // Copy assignment.
-    planet &operator=(const planet &);
-    // Default destructor
-    ~planet();
-    // Assignment from a user-defined planet of type \p T
-    template <typename T, generic_ctor_enabler<T> = 0>
-    planet &operator=(T &&x)
-    {
-        return (*this) = planet(std::forward<T>(x));
-    }
-    // Extract a const pointer to the UDPLA.
-    template <typename T>
-    const T *extract() const noexcept
-    {
+  // Copy constructor
+  planet(const planet &);
+  // Move ctor.
+  planet(planet &&) noexcept;
+  // Move assignment.
+  planet &operator=(planet &&) noexcept;
+  // Copy assignment.
+  planet &operator=(const planet &);
+  // Default destructor
+  ~planet() = default;
+  // Assignment from a user-defined planet of type \p T
+  template <typename T, generic_ctor_enabler<T> = 0> planet &operator=(T &&x) {
+    return (*this) = planet(std::forward<T>(x));
+  }
+  // Extract a const pointer to the UDPLA.
+  template <typename T> const T *extract() const noexcept {
 #if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
-        return detail::typeid_name_extract<T>(*this);
+    return detail::typeid_name_extract<T>(*this);
 #else
-        auto p = dynamic_cast<const detail::planet_inner<T> *>(ptr());
-        return p == nullptr ? nullptr : &(p->m_value);
+    auto p = dynamic_cast<const detail::planet_inner<T> *>(ptr());
+    return p == nullptr ? nullptr : &(p->m_value);
 #endif
-    }
-    /// Extract a pointer to the UDA.
-    template <typename T>
-    T *extract() noexcept
-    {
+  }
+  /// Extract a pointer to the UDA.
+  template <typename T> T *extract() noexcept {
 #if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
-        return detail::typeid_name_extract<T>(*this);
+    return detail::typeid_name_extract<T>(*this);
 #else
-        auto p = dynamic_cast<detail::planet_inner<T> *>(ptr());
-        return p == nullptr ? nullptr : &(p->m_value);
+    auto p = dynamic_cast<detail::planet_inner<T> *>(ptr());
+    return p == nullptr ? nullptr : &(p->m_value);
 #endif
-    }
-    // Checks the user-defined algorithm type at run-time.
-    template <typename T>
-    [[nodiscard]] bool is() const noexcept
-    {
-        return extract<T>() != nullptr;
-    }
-    // Check if the planet is valid.
-    [[nodiscard]] bool is_valid() const;
-    // Gets the type of the UDPLA at runtime.
-    [[nodiscard]] std::type_index get_type_index() const;
-    /// Gets a const pointer to the UDPLA.
-    [[nodiscard]] const void *get_ptr() const;
-    // Gets a mutable pointer to the UDPLA.
-    void *get_ptr();
+  }
+  // Checks the user-defined algorithm type at run-time.
+  template <typename T> [[nodiscard]] bool is() const noexcept {
+    return extract<T>() != nullptr;
+  }
+  // Check if the planet is valid (i.e. has not been moved from)
+  [[nodiscard]] bool is_valid() const;
+  // Gets the type of the UDPLA at runtime.
+  [[nodiscard]] std::type_index get_type_index() const;
+  /// Gets a const pointer to the UDPLA.
+  [[nodiscard]] const void *get_ptr() const;
+  // Gets a mutable pointer to the UDPLA.
+  void *get_ptr();
+
+  std::array<std::array<double, 3>, 2> eph(const epoch &);
+  [[nodiscard]] std::string get_name() const;
+  [[nodiscard]] std::string get_extra_info() const;
 };
 
-} // namespace kep3::detail
+} // namespace kep3
 
 #endif // kep3_PLANET_H
