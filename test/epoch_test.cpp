@@ -1,4 +1,5 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
@@ -15,12 +16,13 @@
 
 #include "catch.hpp"
 
-using namespace kep3;
-using namespace boost::gregorian;
-using namespace boost::posix_time;
+using kep3::epoch;
+using kep3::epoch_from_iso_string;
+using kep3::epoch_from_string;
+using boost::gregorian::date;
+using boost::posix_time::ptime;
 
-TEST_CASE("construct")
-{
+TEST_CASE("construct") {
   // test syntax
   REQUIRE_NOTHROW(epoch());
   REQUIRE_NOTHROW(epoch(123.456));
@@ -44,8 +46,7 @@ TEST_CASE("construct")
   REQUIRE(epoch(31, 12, 2034).jd() == epoch(posix_time_test).jd());
 }
 
-TEST_CASE("epoch_operators")
-{
+TEST_CASE("epoch_operators") {
   REQUIRE(epoch(0.) == epoch(0.));
   REQUIRE(epoch(0.) != epoch(1.));
   REQUIRE(epoch(1.) > epoch(0.));
@@ -66,8 +67,7 @@ TEST_CASE("epoch_operators")
   REQUIRE_NOTHROW((std::cout << epoch()));
 }
 
-TEST_CASE("conversions_from_string")
-{
+TEST_CASE("conversions_from_string") {
   {
     std::string ts("20020131T000000");
     epoch e(epoch_from_iso_string(ts));

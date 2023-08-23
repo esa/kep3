@@ -1,4 +1,5 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
@@ -18,7 +19,8 @@
 
 namespace kep3 {
 
-// mean to eccentric (only ellipses) e<1. Preserves the sign and integer number of revolutions.
+// mean to eccentric (only ellipses) e<1. Preserves the sign and integer number
+// of revolutions.
 inline double m2e(double M, double ecc) {
   // We use as intial guess the Mean Anomaly
   // (tests indicated that any higher order expansion does not really improve)
@@ -26,9 +28,11 @@ inline double m2e(double M, double ecc) {
   const int digits = std::numeric_limits<double>::digits;
   double sol = boost::math::tools::halley_iterate(
       [M, ecc](double E) {
-        return std::make_tuple(kepE(E, M, ecc), d_kepE(E, ecc), dd_kepE(E, ecc));
+        return std::make_tuple(kepE(E, M, ecc), d_kepE(E, ecc),
+                               dd_kepE(E, ecc));
       },
-      IG, IG - boost::math::constants::pi<double>(), IG + boost::math::constants::pi<double>(), digits);
+      IG, IG - boost::math::constants::pi<double>(),
+      IG + boost::math::constants::pi<double>(), digits);
   return sol;
 }
 // eccentric to mean (only ellipses) e<1

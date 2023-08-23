@@ -1,4 +1,5 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
@@ -35,85 +36,76 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-namespace kep3
-{
-
-namespace detail
-{
+namespace kep3::detail {
 
 // Implementation of tuple serialization.
-template <std::size_t N>
-struct tuple_s11n {
-    template <class Archive, typename... Args>
-    static void serialize(Archive &ar, std::tuple<Args...> &t, unsigned version)
-    {
-        ar &std::get<N - 1u>(t);
-        tuple_s11n<N - 1u>::serialize(ar, t, version);
-    }
+template <std::size_t N> struct tuple_s11n {
+  template <class Archive, typename... Args>
+  static void serialize(Archive &ar, std::tuple<Args...> &t, unsigned version) {
+    ar &std::get<N - 1u>(t);
+    tuple_s11n<N - 1u>::serialize(ar, t, version);
+  }
 };
 
-template <>
-struct tuple_s11n<0> {
-    template <class Archive, typename... Args>
-    static void serialize(Archive &, std::tuple<Args...> &, unsigned)
-    {
-    }
+template <> struct tuple_s11n<0> {
+  template <class Archive, typename... Args>
+  static void serialize(Archive &, std::tuple<Args...> &, unsigned) {}
 };
 
-} // namespace detail
+} // namespace kep3::detail
 
-} // namespace kep3
-
-namespace boost
-{
-
-namespace serialization
-{
+namespace boost::serialization {
 
 // Implement serialization for std::tuple.
 template <class Archive, typename... Args>
-inline void serialize(Archive &ar, std::tuple<Args...> &t, unsigned version)
-{
-    kep3::detail::tuple_s11n<sizeof...(Args)>::serialize(ar, t, version);
+inline void serialize(Archive &ar, std::tuple<Args...> &t, unsigned version) {
+  kep3::detail::tuple_s11n<sizeof...(Args)>::serialize(ar, t, version);
 }
 
 // Implement serialization for the Mersenne twister engine.
-template <class Archive, class UIntType, std::size_t w, std::size_t n, std::size_t m, std::size_t r, UIntType a,
-          std::size_t u, UIntType d, std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l, UIntType f>
-inline void save(Archive &ar, std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f> const &e,
-                 unsigned)
-{
-    std::ostringstream oss;
-    // Use the "C" locale.
-    oss.imbue(std::locale::classic());
-    oss << e;
-    ar << oss.str();
+template <class Archive, class UIntType, std::size_t w, std::size_t n,
+          std::size_t m, std::size_t r, UIntType a, std::size_t u, UIntType d,
+          std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l,
+          UIntType f>
+inline void save(Archive &ar,
+                 std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s,
+                                              b, t, c, l, f> const &e,
+                 unsigned) {
+  std::ostringstream oss;
+  // Use the "C" locale.
+  oss.imbue(std::locale::classic());
+  oss << e;
+  ar << oss.str();
 }
 
-template <class Archive, class UIntType, std::size_t w, std::size_t n, std::size_t m, std::size_t r, UIntType a,
-          std::size_t u, UIntType d, std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l, UIntType f>
-inline void load(Archive &ar, std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f> &e,
-                 unsigned)
-{
-    std::istringstream iss;
-    // Use the "C" locale.
-    iss.imbue(std::locale::classic());
-    std::string tmp;
-    ar >> tmp;
-    iss.str(tmp);
-    iss >> e;
+template <class Archive, class UIntType, std::size_t w, std::size_t n,
+          std::size_t m, std::size_t r, UIntType a, std::size_t u, UIntType d,
+          std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l,
+          UIntType f>
+inline void load(Archive &ar,
+                 std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s,
+                                              b, t, c, l, f> &e,
+                 unsigned) {
+  std::istringstream iss;
+  // Use the "C" locale.
+  iss.imbue(std::locale::classic());
+  std::string tmp;
+  ar >> tmp;
+  iss.str(tmp);
+  iss >> e;
 }
 
-template <class Archive, class UIntType, std::size_t w, std::size_t n, std::size_t m, std::size_t r, UIntType a,
-          std::size_t u, UIntType d, std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l, UIntType f>
-inline void serialize(Archive &ar, std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f> &e,
-                      unsigned version)
-{
-    split_free(ar, e, version);
+template <class Archive, class UIntType, std::size_t w, std::size_t n,
+          std::size_t m, std::size_t r, UIntType a, std::size_t u, UIntType d,
+          std::size_t s, UIntType b, std::size_t t, UIntType c, std::size_t l,
+          UIntType f>
+inline void serialize(Archive &ar,
+                      std::mersenne_twister_engine<UIntType, w, n, m, r, a, u,
+                                                   d, s, b, t, c, l, f> &e,
+                      unsigned version) {
+  split_free(ar, e, version);
 }
 
-} // namespace serialization
-
-} // namespace boost
+} // namespace boost::serialization
 
 #endif

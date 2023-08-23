@@ -1,4 +1,5 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
@@ -14,12 +15,7 @@
 #include <type_traits>
 #include <vector>
 
-
-namespace kep3
-{
-
-namespace detail
-{
+namespace kep3::detail {
 
 template <typename T>
 using uncvref_t = std::remove_cv_t<std::remove_reference_t<T>>;
@@ -59,6 +55,19 @@ using detected_t = typename detector<nonesuch, void, Op, Args...>::type;
 template <template <class...> class Op, class... Args>
 inline constexpr bool is_detected_v = is_detected<Op, Args...>::value;
 
+// Helper to detect if T is a supported floating-point type.
+template <typename>
+struct is_supported_fp : std::false_type {
+};
+
+template <>
+struct is_supported_fp<double> : std::true_type {
+};
+
+template <>
+struct is_supported_fp<long double> : std::true_type {
+};
+
 template <typename T>
 inline constexpr bool is_supported_fp_v = is_supported_fp<T>::value;
 
@@ -86,9 +95,6 @@ struct is_any_ilist<std::initializer_list<T>> : std::true_type {
 template <typename T>
 inline constexpr bool is_any_ilist_v = is_any_ilist<T>::value;
 
-
-} // namespace detail
-
-} // namespace kep3
+} // namespace kep3::detail
 
 #endif

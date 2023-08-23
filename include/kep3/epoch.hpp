@@ -1,4 +1,5 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
@@ -31,7 +32,7 @@ namespace kep3 {
  * gregorian dates (see boost documentation at
  * http://www.boost.org/doc/libs/1_42_0/doc/html/date_time.html)
  * using the posix time.
- * To achieve higher performance the date is defined in MJD2000 (double) as a
+ * The date is defined in MJD2000 (double) as a
  * private member
  *
  * @author Dario Izzo (dario.izzo _AT_ googlemail.com)
@@ -47,19 +48,19 @@ public:
   enum julian_type { MJD2000, MJD, JD };
 
   /** Constructors */
-  epoch(const double & = 0., julian_type = MJD2000);
+  explicit epoch(const double & = 0., julian_type = MJD2000);
   epoch(const boost::gregorian::greg_day &day,
         const boost::gregorian::greg_month &month,
         const boost::gregorian::greg_year &year);
-  epoch(const boost::posix_time::ptime &posix_time);
+  explicit epoch(const boost::posix_time::ptime &posix_time);
 
   /** Computing non-gregorian dates */
-  double mjd2000() const;
-  double jd() const;
-  double mjd() const;
+  [[nodiscard]] double mjd2000() const;
+  [[nodiscard]] double jd() const;
+  [[nodiscard]] double mjd() const;
 
   /** Interface to boost::posix_time::ptime */
-  boost::posix_time::ptime get_posix_time() const;
+  [[nodiscard]] boost::posix_time::ptime get_posix_time() const;
   void set_posix_time(const boost::posix_time::ptime &);
 
   /** operators overloads for sum diff (epoch-days) and the comparison operators
@@ -88,8 +89,8 @@ private:
   double m_mjd2000;
 };
 
-kep3_DLL_PUBLIC epoch epoch_from_string(const std::string date);
-kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string date);
+kep3_DLL_PUBLIC epoch epoch_from_string(const std::string &date);
+kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string &date);
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s,
                                          const epoch &epoch_in);
