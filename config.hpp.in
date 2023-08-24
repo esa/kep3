@@ -27,7 +27,7 @@
 // When using clang + libc++, prefer the name-based
 // extract() implementation for UDx classes. See
 // the explanation in typeid_name_extract.hpp.
-#define PAGMO_PREFER_TYPEID_NAME_EXTRACT
+#define kep3_PREFER_TYPEID_NAME_EXTRACT
 
 #endif
 
