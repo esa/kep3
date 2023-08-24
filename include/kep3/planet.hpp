@@ -42,7 +42,7 @@ using udpla_get_name_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>().get_name());
 template <typename T>
 inline constexpr bool udpla_has_get_name_v =
-    std::is_same_v<detected_t<udpla_get_name_t, T>, void>;
+    std::is_same_v<detected_t<udpla_get_name_t, T>, std::string>;
 
 // udpla_has_get_extra_info_v<T> is True if T has the method:
 // std::string get_name()
@@ -52,12 +52,12 @@ using udpla_get_extra_info_t =
                  .get_extra_info());
 template <typename T>
 inline constexpr bool udpla_has_get_extra_info_v =
-    std::is_same_v<detected_t<udpla_get_extra_info_t, T>, void>;
+    std::is_same_v<detected_t<udpla_get_extra_info_t, T>, std::string>;
 
 // This defines the main interface for a class to be type erased into a kep3
 // planet
 struct kep3_DLL_PUBLIC planet_inner_base {
-  planet_inner_base(); // why do we need this to be default constructible?
+  planet_inner_base();
   planet_inner_base(const planet_inner_base &) = delete;
   planet_inner_base(planet_inner_base &&) noexcept = delete;
   planet_inner_base &operator=(const planet_inner_base &) = delete;
@@ -98,7 +98,7 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
   explicit planet_inner(const T &x) : m_value(x) {}
   explicit planet_inner(T &&x) : m_value(std::move(x)) {}
 
-  // The clone method, used in the copy constructor of algorithm.
+  // The clone method, used in the copy constructor of planet.
   [[nodiscard]] std::unique_ptr<planet_inner_base> clone() const final {
     return std::make_unique<planet_inner>(m_value);
   }
@@ -158,7 +158,7 @@ namespace kep3 {
 // The final class
 class kep3_DLL_PUBLIC planet {
   // Pointer to the inner base.
-  std::shared_ptr<detail::planet_inner_base> m_ptr;
+  std::unique_ptr<detail::planet_inner_base> m_ptr;
 
   // Serialization.
   friend class boost::serialization::access;
@@ -235,6 +235,9 @@ public:
   [[nodiscard]] std::string get_name() const;
   [[nodiscard]] std::string get_extra_info() const;
 };
+
+// Streaming operator for algorithm.
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const planet &);
 
 } // namespace kep3
 

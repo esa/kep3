@@ -64,4 +64,14 @@ std::string planet::get_name() const { return ptr()->get_name(); }
 
 std::string planet::get_extra_info() const { return ptr()->get_extra_info(); }
 
+std::ostream &operator<<(std::ostream &os, const planet &p)
+{
+    os << "Planet name: " << p.get_name();
+    os << "\nC++ class name: " << detail::demangle_from_typeid(p.get_type_index().name()) << '\n';
+    const auto extra_str = p.get_extra_info();
+    if (!extra_str.empty()) {
+        os << "\nExtra info:\n" << extra_str;
+    }
+    return os;
+}
 } // namespace kep3
