@@ -130,6 +130,8 @@ endif()
 # List of source files.
 set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/detail/type_name.cpp"
 )
 
 # Setup of the kep3 shared library.
