@@ -24,6 +24,21 @@
 namespace kep3::detail {
 // Type traits to detect whether user classes have certain methods implemented.
 
+// This macro assembles the necessary boilerplate to detect the generic getter method
+// double udpla_get_NAME()
+#define UDPLA_HAS_GET(NAME) \
+template <typename T> \
+using udpla_get_##NAME##_t = \
+    decltype(std::declval<std::add_lvalue_reference_t<const T>>().get_##NAME()); \
+template <typename T> \
+inline constexpr bool udpla_has_get_##NAME##_v = \
+    std::is_same_v<detected_t<udpla_get_##NAME##_t, T>, double>
+
+UDPLA_HAS_GET(mu_central_body);
+UDPLA_HAS_GET(mu_self);
+UDPLA_HAS_GET(radius);
+UDPLA_HAS_GET(safe_radius);
+
 // udpla_has_eph<T> detects whether T has the method:
 // std::array<std::array<double, 3>, 2> eph(const epoch&)
 // method
@@ -45,7 +60,7 @@ inline constexpr bool udpla_has_get_name_v =
     std::is_same_v<detected_t<udpla_get_name_t, T>, std::string>;
 
 // udpla_has_get_extra_info_v<T> is True if T has the method:
-// std::string get_name()
+// std::string get_extra_info()
 template <typename T>
 using udpla_get_extra_info_t =
     decltype(std::declval<std::add_lvalue_reference_t<const T>>()
@@ -53,6 +68,7 @@ using udpla_get_extra_info_t =
 template <typename T>
 inline constexpr bool udpla_has_get_extra_info_v =
     std::is_same_v<detected_t<udpla_get_extra_info_t, T>, std::string>;
+
 
 // This defines the main interface for a class to be type erased into a kep3
 // planet
@@ -75,6 +91,11 @@ struct kep3_DLL_PUBLIC planet_inner_base {
   // optional methods with default implementations
   [[nodiscard]] virtual std::string get_name() const = 0;
   [[nodiscard]] virtual std::string get_extra_info() const = 0;
+  [[nodiscard]] virtual double get_mu_central_body() const = 0;
+  [[nodiscard]] virtual double get_mu_self() const = 0;
+  [[nodiscard]] virtual double get_radius() const = 0;
+  [[nodiscard]] virtual double get_safe_radius() const = 0;
+
 
 private:
   // Serialization.
@@ -131,6 +152,34 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
       return m_value.get_extra_info();
     } else {
       return "";
+    }
+  }
+  [[nodiscard]] double get_mu_central_body() const final {
+    if constexpr (udpla_has_get_mu_central_body_v<T>) {
+      return m_value.get_mu_central_body();
+    } else {
+      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+    }
+  }
+  [[nodiscard]] double get_mu_self() const final {
+    if constexpr (udpla_has_get_mu_self_v<T>) {
+      return m_value.get_mu_self();
+    } else {
+      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+    }
+  }
+  [[nodiscard]] double get_radius() const final {
+    if constexpr (udpla_has_get_radius_v<T>) {
+      return m_value.get_radius();
+    } else {
+      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+    }
+  }
+  [[nodiscard]] double get_safe_radius() const final {
+    if constexpr (udpla_has_get_safe_radius_v<T>) {
+      return m_value.get_safe_radius();
+    } else {
+      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
     }
   }
 
@@ -234,6 +283,10 @@ public:
   std::array<std::array<double, 3>, 2> eph(const epoch &);
   [[nodiscard]] std::string get_name() const;
   [[nodiscard]] std::string get_extra_info() const;
+  [[nodiscard]] double get_mu_central_body() const;
+  [[nodiscard]] double get_mu_self() const;
+  [[nodiscard]] double get_radius() const;
+  [[nodiscard]] double get_safe_radius() const;
 };
 
 // Streaming operator for algorithm.

@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_kep3LER_EQUATIONS_H
-#define kep3_kep3LER_EQUATIONS_H
+#ifndef kep3_KEPLER_EQUATIONS_H
+#define kep3_KEPLER_EQUATIONS_H
 
 #include <cmath>
 
@@ -61,4 +61,4 @@ inline double d_kepDH(double DH, double sigma0, double sqrta, double a,
   return (-1. + sigma0 / sqrta * std::sinh(DH) + (1 - R / a) * std::cosh(DH));
 }
 } // namespace kep3
-#endif // kep3_kep3LER_EQUATIONS_H
+#endif // kep3_KEPLER_EQUATIONS_H

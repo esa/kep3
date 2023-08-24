@@ -7,7 +7,9 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <kep3/detail/exceptions.hpp>
 #include <kep3/planet.hpp>
+
 
 namespace kep3::detail {
 
@@ -64,14 +66,46 @@ std::string planet::get_name() const { return ptr()->get_name(); }
 
 std::string planet::get_extra_info() const { return ptr()->get_extra_info(); }
 
-std::ostream &operator<<(std::ostream &os, const planet &p)
-{
-    os << "Planet name: " << p.get_name();
-    os << "\nC++ class name: " << detail::demangle_from_typeid(p.get_type_index().name()) << '\n';
-    const auto extra_str = p.get_extra_info();
-    if (!extra_str.empty()) {
-        os << "\nExtra info:\n" << extra_str;
-    }
-    return os;
+double planet::get_mu_central_body() const {
+  double mu = ptr()->get_mu_central_body();
+  if (mu == -1.) {
+    throw not_implemented_error("A central body mu has not been declared for '" + get_name() + "'");
+  }
+  return mu;
+}
+
+double planet::get_mu_self() const {
+  double mu = ptr()->get_mu_self();
+  if (mu == -1.) {
+    throw not_implemented_error("A body mu has not been declared for '" + get_name() + "'");
+  }
+  return mu;
+}
+
+double planet::get_radius() const {
+  double mu = ptr()->get_radius();
+  if (mu == -1.) {
+    throw not_implemented_error("A body radius has not been declared for '" + get_name() + "'");
+  }
+  return mu;
+}
+
+double planet::get_safe_radius() const {
+  double mu = ptr()->get_safe_radius();
+  if (mu == -1.) {
+    throw not_implemented_error("A body safe radius has has not been declared for '" + get_name() + "'");
+  }
+  return mu;
+}
+
+std::ostream &operator<<(std::ostream &os, const planet &p) {
+  os << "Planet name: " << p.get_name();
+  os << "\nC++ class name: "
+     << detail::demangle_from_typeid(p.get_type_index().name()) << '\n';
+  const auto extra_str = p.get_extra_info();
+  if (!extra_str.empty()) {
+    os << "\nExtra info:\n" << extra_str;
+  }
+  return os;
 }
 } // namespace kep3
