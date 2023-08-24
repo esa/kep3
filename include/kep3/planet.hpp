@@ -215,7 +215,7 @@ class kep3_DLL_PUBLIC planet {
     ar &m_ptr;
   }
 
-  // Just two small helpers to make sure via assetions that whenever we require
+  // Just two small helpers to make sure via assertions that whenever we require
   // access to the pointer it actually points to something.
   [[nodiscard]] const detail::planet_inner_base *ptr() const;
   detail::planet_inner_base *ptr();
