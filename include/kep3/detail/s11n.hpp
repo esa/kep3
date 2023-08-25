@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef KEP3_S11N_HPP
-#define KEP3_S11N_HPP
+#ifndef KEP3_DETAIL_S11N_HPP
+#define KEP3_DETAIL_S11N_HPP
 
 #include <cstddef>
 #include <locale>

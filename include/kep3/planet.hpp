@@ -141,7 +141,7 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
 
   // Get the type at runtime.
   [[nodiscard]] std::type_index get_type_index() const final {
-    return std::type_index(typeid(T));
+    return std::type_index{typeid(T)};
   }
 
   // Raw getters for the internal instance.
@@ -217,7 +217,7 @@ using is_udpla = std::conjunction<
     std::is_copy_constructible<T>, std::is_move_constructible<T>,
     std::is_destructible<T>, udpla_has_eph<T>>;
 
-struct null_udpla {
+struct kep3_DLL_PUBLIC null_udpla {
   null_udpla() = default;
   static std::array<std::array<double, 3>, 2> eph(const epoch &);
 

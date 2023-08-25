@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_EXCEPTIONS_HPP
-#define kep3_EXCEPTIONS_HPP
+#ifndef kep3_DETAIL_EXCEPTIONS_HPP
+#define kep3_DETAIL_EXCEPTIONS_HPP
 
 #include <stdexcept>
 
@@ -16,8 +16,7 @@
 #include <kep3/detail/visibility.hpp>
 
 namespace kep3 {
-struct kep3_DLL_PUBLIC not_implemented_error final
-    : std::runtime_error {
+struct kep3_DLL_PUBLIC not_implemented_error final : std::runtime_error {
   using std::runtime_error::runtime_error;
 };
 

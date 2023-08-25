@@ -93,6 +93,8 @@ kep3_S11N_PLANET_EXPORT(complete_udpla);
 
 TEST_CASE("construction") {
   {
+    kep3::detail::null_udpla udpla{};
+    udpla.eph(epoch(0.));
     // Default constructor (a null planet)
     REQUIRE_NOTHROW(planet());
     auto pla = planet();

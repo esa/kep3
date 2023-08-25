@@ -29,6 +29,7 @@ std::string demangle_from_typeid(const char *s) {
   // potential ambiguities when taking the address of std::free().
   // See:
   // https://stackoverflow.com/questions/27440953/stdunique-ptr-for-c-functions-that-need-free
+  // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, hicpp-no-malloc, cppcoreguidelines-no-malloc)
   auto deleter = [](void *ptr) { std::free(ptr); };
 
   // NOTE: abi::__cxa_demangle will return a pointer allocated by std::malloc,
