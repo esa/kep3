@@ -141,7 +141,7 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
 
   // Get the type at runtime.
   [[nodiscard]] std::type_index get_type_index() const final {
-    return typeid(T);
+    return std::type_index(typeid(T));
   }
 
   // Raw getters for the internal instance.
