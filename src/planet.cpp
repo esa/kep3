@@ -13,10 +13,6 @@
 
 namespace kep3::detail {
 
-planet_inner_base::planet_inner_base() = default;
-planet_inner_base::~planet_inner_base() = default;
-null_udpla::null_udpla() = default;
-
 std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &) {
   std::array<double, 3> pos = {1., 0., 0.};
   std::array<double, 3> vel = {0., 1., 0.};

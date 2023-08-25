@@ -88,12 +88,12 @@ inline constexpr bool udpla_has_get_extra_info_v =
 // This defines the main interface for a class to be type erased into a kep3
 // planet
 struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner_base {
-  planet_inner_base();
+  planet_inner_base() = default;
   planet_inner_base(const planet_inner_base &) = delete;
   planet_inner_base(planet_inner_base &&) noexcept = delete;
   planet_inner_base &operator=(const planet_inner_base &) = delete;
   planet_inner_base &operator=(planet_inner_base &&) noexcept = delete;
-  virtual ~planet_inner_base();
+  virtual ~planet_inner_base() = default;
 
   [[nodiscard]] virtual std::unique_ptr<planet_inner_base> clone() const = 0;
 
@@ -218,7 +218,7 @@ using is_udpla = std::conjunction<
     std::is_destructible<T>, udpla_has_eph<T>>;
 
 struct null_udpla {
-  null_udpla();
+  null_udpla() = default;
   static std::array<std::array<double, 3>, 2> eph(const epoch &);
 
 private:
