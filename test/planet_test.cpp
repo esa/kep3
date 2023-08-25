@@ -42,7 +42,7 @@ struct simple_udpla {
 
 private:
   friend class boost::serialization::access;
-  template <typename Archive> void serialize(Archive &ar, unsigned) {}
+  template <typename Archive> void serialize(Archive &, unsigned) {}
 };
 kep3_S11N_PLANET_EXPORT(simple_udpla);
 
@@ -91,7 +91,6 @@ private:
 };
 kep3_S11N_PLANET_EXPORT(complete_udpla);
 
-
 TEST_CASE("construction") {
   {
     // Default constructor (a null planet)
@@ -103,13 +102,10 @@ TEST_CASE("construction") {
     REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
     REQUIRE(pla.get_name() == kep3::detail::type_name<null_udpla>());
     REQUIRE(pla.get_extra_info() == std::string(""));
-    double dummy = 0.;
-    REQUIRE_THROWS_AS(dummy = pla.get_mu_central_body(),
-                      kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_mu_self(), kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_radius(), kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_safe_radius(),
-                      kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_mu_central_body()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_mu_self()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_safe_radius()), kep3::not_implemented_error);
     REQUIRE(pla.extract<null_udpla>() != nullptr);
   }
   {
@@ -122,13 +118,10 @@ TEST_CASE("construction") {
     REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
     REQUIRE(pla.get_name() == "A simple planet");
     REQUIRE(pla.get_extra_info() == "The simplest planet ever!");
-    double dummy = 0.;
-    REQUIRE_THROWS_AS(dummy = pla.get_mu_central_body(),
-                      kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_mu_self(), kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_radius(), kep3::not_implemented_error);
-    REQUIRE_THROWS_AS(dummy = pla.get_safe_radius(),
-                      kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_mu_central_body()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_mu_self()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_safe_radius()), kep3::not_implemented_error);
   }
   {
     // Constructor from a more complete udpla
@@ -141,8 +134,7 @@ TEST_CASE("construction") {
     REQUIRE(pla.get_name() == "A complete, albeit simple Planet");
     REQUIRE(pla.get_mu_central_body() == 1.);
     REQUIRE(pla.get_mu_self() == 2.);
-    double dummy = 0.;
-    REQUIRE_THROWS_AS(dummy = pla.get_radius(), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
     REQUIRE(pla.get_safe_radius() == 4.);
   }
   // Check copy semantics.
