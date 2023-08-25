@@ -21,18 +21,30 @@
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 
+#define kep3_S11N_PLANET_EXPORT_KEY(PLA)                                       \
+  BOOST_CLASS_EXPORT_KEY2(kep3::detail::planet_inner<PLA>, "udpla " #PLA)      \
+  BOOST_CLASS_TRACKING(kep3::detail::planet_inner<PLA>,                        \
+                       boost::serialization::track_never)
+
+#define kep3_S11N_PLANET_IMPLEMENT(PLA)                                        \
+  BOOST_CLASS_EXPORT_IMPLEMENT(kep3::detail::planet_inner<PLA>)
+
+#define kep3_S11N_PLANET_EXPORT(PLA)                                           \
+  kep3_S11N_PLANET_EXPORT_KEY(PLA) kep3_S11N_PLANET_IMPLEMENT(PLA)
+
 namespace kep3::detail {
 // Type traits to detect whether user classes have certain methods implemented.
 
-// This macro assembles the necessary boilerplate to detect the generic getter method
-// double udpla_get_NAME()
-#define UDPLA_HAS_GET(NAME) \
-template <typename T> \
-using udpla_get_##NAME##_t = \
-    decltype(std::declval<std::add_lvalue_reference_t<const T>>().get_##NAME()); \
-template <typename T> \
-inline constexpr bool udpla_has_get_##NAME##_v = \
-    std::is_same_v<detected_t<udpla_get_##NAME##_t, T>, double>
+// This macro assembles the necessary boilerplate to detect the generic getter
+// method double udpla_get_NAME()
+#define UDPLA_HAS_GET(NAME)                                                    \
+  template <typename T>                                                        \
+  using udpla_get_##NAME##_t =                                                 \
+      decltype(std::declval<std::add_lvalue_reference_t<const T>>()            \
+                   .get_##NAME());                                             \
+  template <typename T>                                                        \
+  inline constexpr bool udpla_has_get_##NAME##_v =                             \
+      std::is_same_v<detected_t<udpla_get_##NAME##_t, T>, double>
 
 UDPLA_HAS_GET(mu_central_body);
 UDPLA_HAS_GET(mu_self);
@@ -48,7 +60,8 @@ using udpla_eph_t =
         std::declval<const epoch &>()));
 
 template <typename T>
-using udpla_has_eph = std::is_same<detected_t<udpla_eph_t, T>, std::array<std::array<double, 3>, 2>>;
+using udpla_has_eph = std::is_same<detected_t<udpla_eph_t, T>,
+                                   std::array<std::array<double, 3>, 2>>;
 
 // udpla_has_get_name_v<T> is True if T has the method:
 // std::string get_name()
@@ -69,7 +82,6 @@ template <typename T>
 inline constexpr bool udpla_has_get_extra_info_v =
     std::is_same_v<detected_t<udpla_get_extra_info_t, T>, std::string>;
 
-
 // This defines the main interface for a class to be type erased into a kep3
 // planet
 struct kep3_DLL_PUBLIC planet_inner_base {
@@ -87,7 +99,8 @@ struct kep3_DLL_PUBLIC planet_inner_base {
   virtual void *get_ptr() = 0;
 
   // mandatory methods
-  [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
+  [[nodiscard]] virtual std::array<std::array<double, 3>, 2>
+  eph(const epoch &) const = 0;
   // optional methods with default implementations
   [[nodiscard]] virtual std::string get_name() const = 0;
   [[nodiscard]] virtual std::string get_extra_info() const = 0;
@@ -95,7 +108,6 @@ struct kep3_DLL_PUBLIC planet_inner_base {
   [[nodiscard]] virtual double get_mu_self() const = 0;
   [[nodiscard]] virtual double get_radius() const = 0;
   [[nodiscard]] virtual double get_safe_radius() const = 0;
-
 
 private:
   // Serialization.
@@ -134,7 +146,8 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
   void *get_ptr() final { return &m_value; }
 
   // Mandatory methods.
-   [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const final {
+  [[nodiscard]] std::array<std::array<double, 3>, 2>
+  eph(const epoch &ep) const final {
     return m_value.eph(ep);
   }
   // optional methods with default implementations
@@ -158,28 +171,32 @@ struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
     if constexpr (udpla_has_get_mu_central_body_v<T>) {
       return m_value.get_mu_central_body();
     } else {
-      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+      return -1.; // by convention, in kep3 this signals the planet does not
+                  // expose this physical value
     }
   }
   [[nodiscard]] double get_mu_self() const final {
     if constexpr (udpla_has_get_mu_self_v<T>) {
       return m_value.get_mu_self();
     } else {
-      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+      return -1.; // by convention, in kep3 this signals the planet does not
+                  // expose this physical value
     }
   }
   [[nodiscard]] double get_radius() const final {
     if constexpr (udpla_has_get_radius_v<T>) {
       return m_value.get_radius();
     } else {
-      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+      return -1.; // by convention, in kep3 this signals the planet does not
+                  // expose this physical value
     }
   }
   [[nodiscard]] double get_safe_radius() const final {
     if constexpr (udpla_has_get_safe_radius_v<T>) {
       return m_value.get_safe_radius();
     } else {
-      return -1.; // by convention, in kep3 this signals the planet does not expose this physical value
+      return -1.; // by convention, in kep3 this signals the planet does not
+                  // expose this physical value
     }
   }
 
@@ -199,9 +216,19 @@ using is_udpla = std::conjunction<
 
 struct null_udpla {
   null_udpla();
-  static std::array<std::array<double, 3>, 2> eph(const epoch&);
+  static std::array<std::array<double, 3>, 2> eph(const epoch &);
+
+private:
+  friend class boost::serialization::access;
+  template <typename Archive> void serialize(Archive &, unsigned){};
 };
 } // namespace kep3::detail
+kep3_S11N_PLANET_EXPORT_KEY(kep3::detail::null_udpla);
+
+// Disable Boost.Serialization tracking for the implementation
+// details of the planet.
+BOOST_CLASS_TRACKING(kep3::detail::planet_inner_base,
+                     boost::serialization::track_never)
 
 namespace kep3 {
 // The final class
