@@ -87,7 +87,7 @@ inline constexpr bool udpla_has_get_extra_info_v =
 
 // This defines the main interface for a class to be type erased into a kep3
 // planet
-struct kep3_DLL_PUBLIC planet_inner_base {
+struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner_base {
   planet_inner_base();
   planet_inner_base(const planet_inner_base &) = delete;
   planet_inner_base(planet_inner_base &&) noexcept = delete;
@@ -119,7 +119,7 @@ private:
 };
 
 template <typename T>
-struct kep3_DLL_PUBLIC planet_inner final : planet_inner_base {
+struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
   T m_value;
 
   // We just need the def ctor, delete everything else.
