@@ -16,6 +16,9 @@
 #include <typeindex>
 
 #include <kep3/detail/s11n.hpp>
+#if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
+#include <kep3/detail/typeid_name_extract.hpp>
+#endif
 #include <kep3/detail/type_name.hpp>
 #include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
