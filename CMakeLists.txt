@@ -130,6 +130,8 @@ endif()
 # List of source files.
 set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/detail/type_name.cpp"
 )
 
 # Setup of the kep3 shared library.
@@ -176,9 +178,12 @@ endif()
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(kep3 PRIVATE spdlog::spdlog)
 
+# Configure config.hpp.
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/kep3/config.hpp" @ONLY)
+
 # Installation of the header files.
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/kep3" DESTINATION include)
-#install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/kep3/config.hpp" DESTINATION include/kep3)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/kep3/config.hpp" DESTINATION include/kep3)
 
 # Installation of the library.
 install(TARGETS kep3

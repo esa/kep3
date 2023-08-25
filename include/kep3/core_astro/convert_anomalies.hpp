@@ -1,27 +1,11 @@
-/*****************************************************************************
- *   Copyright (C) 2023 The pykep development team,                     *
- *   Advanced Concepts Team (ACT), European Space Agency (ESA)               *
- *                                                                           *
- *   https://gitter.im/esa/pykep                                             *
- *   https://github.com/esa/pykep                                            *
- *                                                                           *
- *   act@esa.int                                                             *
- *                                                                           *
- *   This program is free software; you can redistribute it and/or modify    *
- *   it under the terms of the GNU General Public License as published by    *
- *   the Free Software Foundation; either version 2 of the License, or       *
- *   (at your option) any later version.                                     *
- *                                                                           *
- *   This program is distributed in the hope that it will be useful,         *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
- *   GNU General Public License for more details.                            *
- *                                                                           *
- *   You should have received a copy of the GNU General Public License       *
- *   along with this program; if not, write to the                           *
- *   Free Software Foundation, Inc.,                                         *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
- *****************************************************************************/
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
+//
+// This file is part of the kep3 library.
+//
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #ifndef kep3_CONVERT_ANOMALIES_H
 #define kep3_CONVERT_ANOMALIES_H
@@ -35,7 +19,8 @@
 
 namespace kep3 {
 
-// mean to eccentric (only ellipses) e<1. Preserves the sign and integer number of revolutions.
+// mean to eccentric (only ellipses) e<1. Preserves the sign and integer number
+// of revolutions.
 inline double m2e(double M, double ecc) {
   // We use as intial guess the Mean Anomaly
   // (tests indicated that any higher order expansion does not really improve)
@@ -43,9 +28,11 @@ inline double m2e(double M, double ecc) {
   const int digits = std::numeric_limits<double>::digits;
   double sol = boost::math::tools::halley_iterate(
       [M, ecc](double E) {
-        return std::make_tuple(kepE(E, M, ecc), d_kepE(E, ecc), dd_kepE(E, ecc));
+        return std::make_tuple(kepE(E, M, ecc), d_kepE(E, ecc),
+                               dd_kepE(E, ecc));
       },
-      IG, IG - boost::math::constants::pi<double>(), IG + boost::math::constants::pi<double>(), digits);
+      IG, IG - boost::math::constants::pi<double>(),
+      IG + boost::math::constants::pi<double>(), digits);
   return sol;
 }
 // eccentric to mean (only ellipses) e<1

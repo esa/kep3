@@ -1,27 +1,11 @@
-/*****************************************************************************
- *   Copyright (C) 2023 The pykep development team,                     *
- *   Advanced Concepts Team (ACT), European Space Agency (ESA)               *
- *                                                                           *
- *   https://gitter.im/esa/pykep                                             *
- *   https://github.com/esa/pykep                                            *
- *                                                                           *
- *   act@esa.int                                                             *
- *                                                                           *
- *   This program is free software; you can redistribute it and/or modify    *
- *   it under the terms of the GNU General Public License as published by    *
- *   the Free Software Foundation; either version 2 of the License, or       *
- *   (at your option) any later version.                                     *
- *                                                                           *
- *   This program is distributed in the hope that it will be useful,         *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
- *   GNU General Public License for more details.                            *
- *                                                                           *
- *   You should have received a copy of the GNU General Public License       *
- *   along with this program; if not, write to the                           *
- *   Free Software Foundation, Inc.,                                         *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
- *****************************************************************************/
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
+//
+// This file is part of the kep3 library.
+//
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <cmath>
@@ -37,8 +21,15 @@
 #define BOOST_DATE_PRECISION 1e-6
 
 namespace kep3 {
-using namespace boost::gregorian;
-using namespace boost::posix_time;
+using ::boost::gregorian::date;
+using ::boost::gregorian::greg_day;
+using ::boost::gregorian::greg_month;
+using ::boost::gregorian::greg_year;
+using ::boost::posix_time::ptime;
+using ::boost::posix_time::time_duration;
+using ::boost::posix_time::time_from_string;
+using ::boost::posix_time::from_iso_string;
+
 
 /// Constructor.
 /**
@@ -67,7 +58,9 @@ epoch::epoch(const double &epoch_in, julian_type epoch_type)
  * the year \param[in] day The day of the month
  */
 epoch::epoch(const greg_day &day, const greg_month &month,
-             const greg_year &year) {
+             const greg_year &year)
+    : m_mjd2000(0) {
+  // member m_mjd2000 will be here assigned.
   set_posix_time(ptime(date(year, month, day)));
 }
 
@@ -76,7 +69,7 @@ epoch::epoch(const greg_day &day, const greg_month &month,
  * Constructs an epoch from a boost ptime object (posix time)
  * \param[in] posix_time The posix_time
  */
-epoch::epoch(const boost::posix_time::ptime &posix_time) {
+epoch::epoch(const ptime &posix_time) {
   time_duration dt = posix_time - ptime(date(2000, 1, 1));
   bool flag = false;
   if (dt.is_negative()) {
@@ -88,8 +81,9 @@ epoch::epoch(const boost::posix_time::ptime &posix_time) {
   m_mjd2000 = static_cast<double>(dt.hours()) / 24.0 +
               static_cast<double>(dt.minutes()) / 1440.0 +
               (static_cast<double>(dt.seconds()) + fr_secs) / 86400.0;
-  if (flag)
+  if (flag) {
     m_mjd2000 = -m_mjd2000;
+  }
 }
 
 /// jd getter.
@@ -128,7 +122,7 @@ double epoch::mjd2000() const { return m_mjd2000; }
  *
  */
 ptime epoch::get_posix_time() const {
-  long hrs, min, sec, fsec;
+  long hrs = 0., min = 0., sec = 0., fsec = 0.;
   bool flag = false;
   double copy = m_mjd2000;
   if (copy < 0) {
@@ -152,10 +146,11 @@ ptime epoch::get_posix_time() const {
   fsec = boost::lexical_cast<long>(fsecstr.str().substr(
       2, static_cast<unsigned long>(-std::log10(BOOST_DATE_PRECISION) + 1)));
   ptime retval;
-  if (flag)
+  if (flag) {
     retval = ptime(date(2000, 1, 1), time_duration(-hrs, -min, -sec, -fsec));
-  else
+  } else {
     retval = ptime(date(2000, 1, 1), time_duration(hrs, min, sec, fsec));
+  }
   return retval;
 }
 
@@ -166,7 +161,7 @@ ptime epoch::get_posix_time() const {
  * \param[in] posix_time containing the posix time
  *
  */
-void epoch::set_posix_time(const boost::posix_time::ptime &posix_time) {
+void epoch::set_posix_time(const ptime &posix_time) {
 
   m_mjd2000 = epoch(posix_time).mjd2000();
 }
@@ -194,9 +189,8 @@ epoch &epoch::operator-=(double rhs) {
  * 	epoch e(epoch_from_string(ts))
  *
  */
-epoch epoch_from_string(const std::string date) {
-  return epoch(
-      boost::posix_time::ptime(boost::posix_time::time_from_string(date)));
+epoch epoch_from_string(const std::string &date) {
+  return epoch(time_from_string(date));
 }
 
 /// Returns an epoch constructed from a non delimited iso string containing a
@@ -209,9 +203,9 @@ epoch epoch_from_string(const std::string date) {
  * 	epoch e(epoch_from_iso_string(ts))
  *
  */
-epoch epoch_from_iso_string(const std::string date) {
+epoch epoch_from_iso_string(const std::string &date) {
   return epoch(
-      boost::posix_time::ptime(boost::posix_time::from_iso_string(date)));
+      from_iso_string(date));
 }
 
 /// Overload the stream operator for kep_toolbox::epoch
@@ -224,27 +218,27 @@ epoch epoch_from_iso_string(const std::string date) {
  * \return reference to s
  *
  */
-std::ostream &operator<<(std::ostream &s, const epoch &now) {
-  s << now.get_posix_time();
+std::ostream &operator<<(std::ostream &s, const epoch &epoch_in) {
+  s << epoch_in.get_posix_time();
   return s;
 }
 bool operator>(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 > c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 > c2.m_mjd2000;
 }
 bool operator<(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 < c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 < c2.m_mjd2000;
 }
 bool operator>=(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 >= c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 >= c2.m_mjd2000;
 }
 bool operator<=(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 <= c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 <= c2.m_mjd2000;
 }
 bool operator==(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 == c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 == c2.m_mjd2000;
 }
 bool operator!=(const epoch &c1, const epoch &c2) {
-  return (c1.m_mjd2000 != c2.m_mjd2000) ? true : false;
+  return c1.m_mjd2000 != c2.m_mjd2000;
 }
 epoch operator+(epoch lhs, double rhs) {
   lhs += rhs; // reuse compound assignment
