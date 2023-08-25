@@ -48,8 +48,8 @@ inline double f2e(double f, double e) {
 }
 
 // gudermannian to true (only hyperbolas) e>1 (returns in range [-pi,pi])
-inline double zeta2f(double E, double e) {
-  return 2 * std::atan(std::sqrt((1 + e) / (e - 1)) * std::tan(E / 2));
+inline double zeta2f(double f, double e) {
+  return 2 * std::atan(std::sqrt((1 + e) / (e - 1)) * std::tan(f / 2));
 }
 // true to gudermannian (only hyperbolas) e>1 (returns in range [-pi,pi])
 inline double f2zeta(double zeta, double e) {

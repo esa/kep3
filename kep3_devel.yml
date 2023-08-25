@@ -10,4 +10,5 @@ dependencies:
   - fmt
   - heyoka >=0.21.0
   - spdlog
+  - xtensor
 

@@ -131,6 +131,8 @@ endif()
 set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/par2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/detail/type_name.cpp"
 )
 
@@ -177,6 +179,14 @@ endif()
 # spdlog.
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(kep3 PRIVATE spdlog::spdlog)
+
+# xtensor.
+find_package(xtensor CONFIG REQUIRED)
+target_link_libraries(kep3 PRIVATE xtensor)
+
+# xtensor.
+find_package(xtensor-blas CONFIG REQUIRED)
+target_link_libraries(kep3 PRIVATE xtensor-blas)
 
 # Configure config.hpp.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/kep3/config.hpp" @ONLY)

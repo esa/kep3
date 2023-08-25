@@ -14,7 +14,13 @@
 
 #include "catch.hpp"
 
-using namespace kep3;
+using kep3::e2m;
+using kep3::m2e;
+using kep3::e2f;
+using kep3::f2e;
+using kep3::zeta2f;
+using kep3::f2zeta;
+
 
 TEST_CASE("m2e") {
   using Catch::Detail::Approx;
