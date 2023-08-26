@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <cmath>
+#include <exception>
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
@@ -24,9 +25,9 @@ namespace kep3 {
 
 constexpr double pi4{boost::math::constants::quarter_pi<double>()};
 
-// keplerian osculating elements [a,e,i,W,w,E] -> r,v.
-// The last osculating elements needs to be the eccentric anomaly or
-// the Gudermannian according to e. The semi-major axis a needs to be positive
+// keplerian osculating elements [a,e,i,W,w,f] -> r,v.
+// The last osculating elements is the true anomaly.
+// The semi-major axis a needs to be positive
 // for ellipses, negative for hyperbolae.
 // The anomalies W, w and E must be in [0, 2pi] and inclination in [0, pi].
 
@@ -39,45 +40,36 @@ std::array<std::array<double, 3>, 2> par2ic(const std::array<double, 6> &par,
   auto vel_xt = xt::adapt(vel, {3u, 1u});
 
   // Rename some variables for readibility
-  double acc = par[0];
+  double sma = par[0];
   double ecc = par[1];
   double inc = par[2];
   double omg = par[3];
   double omp = par[4];
-  double EA = par[5];
+  double f = par[5];
 
-  // TODO(darioizzo): Check a<0 if e>1
+  if (sma * (1 - ecc) < 0) {
+    throw std::domain_error("par2ic was called with ecc and sma not compatible "
+                            "with the convention a<0 -> e>1 [a>0 -> e<1].");
+  }
+  double cosf = std::cos(f);
+  if (ecc > 1 && cosf < -1 / ecc) {
+    throw std::domain_error("par2ic was called for an hyperbola but the true "
+                            "anomaly is beyond asymptotes (cosf<-1/e)");
+  }
 
   // 1 - We start by evaluating position and velocity in the perifocal reference
   // system
-  double xper = 0., yper = 0., xdotper = 0., ydotper = 0.;
-  if (ecc < 1.0) // EA is the eccentric anomaly
-  {
-    double b = acc * std::sqrt(1 - ecc * ecc);
-    double n = std::sqrt(mu / (acc * acc * acc));
-    xper = acc * (std::cos(EA) - ecc);
-    yper = b * std::sin(EA);
-    xdotper = -(acc * n * std::sin(EA)) / (1 - ecc * std::cos(EA));
-    ydotper = (b * n * std::cos(EA)) / (1 - ecc * std::cos(EA));
-  } else // EA is the Gudermannian
-  {
-    double b = -acc * std::sqrt(ecc * ecc - 1);
-    double n = std::sqrt(-mu / (acc * acc * acc));
-
-    double dNdZeta = ecc * (1 + std::tan(EA) * std::tan(EA)) -
-                     (0.5 + 0.5 * std::pow(std::tan(0.5 * EA + pi4), 2)) /
-                         std::tan(0.5 * EA + pi4);
-
-    xper = acc / std::cos(EA) - acc * ecc;
-    yper = b * std::tan(EA);
-
-    xdotper = acc * tan(EA) / cos(EA) * n / dNdZeta;
-    ydotper = b / pow(cos(EA), 2) * n / dNdZeta;
-  }
+  double p = sma * (1.0 - ecc * ecc);
+  double r = p / (1.0 + ecc * std::cos(f));
+  double h = std::sqrt(p * mu);
+  double sinf = std::sin(f);
+  double x_per = r * cosf;
+  double y_per = r * sinf;
+  double xdot_per = -mu / h * sinf;
+  double ydot_per = mu / h * (ecc + cosf);
 
   // 2 - We then built the rotation matrix from perifocal reference frame to
   // inertial
-
   double cosomg = std::cos(omg);
   double cosomp = std::cos(omp);
   double sinomg = std::sin(omg);
@@ -93,14 +85,14 @@ std::array<std::array<double, 3>, 2> par2ic(const std::array<double, 6> &par,
       {sinomp * sini, cosomp * sini, cosi}};
 
   // 3 - We end by transforming according to this rotation matrix
-  xt::xtensor_fixed<double, xt::xshape<3, 1>> temp1{{xper}, {yper}, {0.0}};
-  xt::xtensor_fixed<double, xt::xshape<3, 1>> temp2{
-      {xdotper}, {ydotper}, {0.0}};
+  xt::xtensor_fixed<double, xt::xshape<3, 1>> pos_per{{x_per}, {y_per}, {0.0}};
+  xt::xtensor_fixed<double, xt::xshape<3, 1>> vel_per{
+      {xdot_per}, {ydot_per}, {0.0}};
 
-  pos_xt = R * temp1;
-  vel_xt = R * temp2;
-  fmt::print("\npar2ic: {}, {}", pos_xt, vel_xt);
-  fmt::print("\npar2ic: {}, {}", pos, vel);
+  // The following lines, since use xtensors adapted to pos and vel, will change
+  // pos and vel.
+  pos_xt = xt::linalg::dot(R, pos_per);
+  vel_xt = xt::linalg::dot(R, vel_per);
 
   return {pos, vel};
 }

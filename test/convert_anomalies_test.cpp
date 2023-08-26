@@ -70,7 +70,7 @@ TEST_CASE("f2e") {
   //
   std::mt19937 rng_engine(rd());
   //
-  // Distribtuions
+  // Distributions
   //
   std::uniform_real_distribution<double> ecc_difficult_d(0.9, 0.99);
   std::uniform_real_distribution<double> ecc_easy_d(0., 0.9);

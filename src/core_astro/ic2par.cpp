@@ -23,10 +23,10 @@ using xt::linalg::dot;
 
 namespace kep3 {
 
-// r,v,mu -> keplerian osculating elements [a,e,i,W,w,E]. The last
-// is the eccentric anomaly or the Gudermannian according to e. The
-// semi-major axis a is positive for ellipses, negative for hyperbolae.
-// The anomalies W, w and E are in [0, 2pi]. Inclination is in [0, pi].
+// r,v,mu -> keplerian osculating elements [a,e,i,W,w,f]. The last
+// is the true anomaly. The semi-major axis a is positive for ellipses, negative
+// for hyperbolae. The anomalies W, w, f are in [0, 2pi]. Inclination is in [0,
+// pi].
 
 std::array<double, 6> ic2par(const std::array<double, 3> &rin,
                              const std::array<double, 3> &vin, double mu) {
@@ -34,8 +34,8 @@ std::array<double, 6> ic2par(const std::array<double, 3> &rin,
   std::array<double, 6> retval{};
   // 0 - We prepare a few xtensor constants.
   xt::xtensor_fixed<double, xt::xshape<3>> k{0.0, 0.0, 1.0};
-  xt::xtensor_fixed<double, xt::xshape<3>> r0 = xt::adapt(rin);
-  xt::xtensor_fixed<double, xt::xshape<3>> v0 = xt::adapt(vin);
+  auto r0 = xt::adapt(rin);
+  auto v0 = xt::adapt(vin);
 
   // 1 - We compute the orbital angular momentum vector
   auto h = cross(r0, v0); // h = r0 x v0
@@ -61,43 +61,32 @@ std::array<double, 6> ic2par(const std::array<double, 3> &rin,
   retval[0] = p(0) / (1 - retval[1] * retval[1]);
 
   // Inclination is calculated and stored as the third orbital element
-  // i = acos(hy/h)
+  // i = acos(hy/h) in [0, pi]
   retval[2] = std::acos(h(2) / xt::linalg::norm(h));
 
   // Argument of pericentrum is calculated and stored as the fifth orbital
-  // elemen.t w = acos(n.e)\|n||e|
+  // element. w = acos(n.e)\|n||e| in [0, 2pi]
   auto temp = dot(n, evett);
   retval[4] = std::acos(temp(0) / retval[1]);
   if (evett(2) < 0) {
     retval[4] = 2 * pi<double>() - retval[4];
   }
   // Argument of longitude is calculated and stored as the fourth orbital
-  // element
+  // element in [0, 2pi]
   retval[3] = std::acos(n(0));
   if (n(1) < 0) {
     retval[3] = 2 * boost::math::constants::pi<double>() - retval[3];
   }
 
-  // 4 - We compute ni: the true anomaly (in 0, 2*PI)
+  // 4 - We compute ni: the true anomaly in [0, 2pi]
   temp = dot(evett, r0);
-  auto ni = std::acos(temp(0) / retval[1] / R0);
+  auto f = std::acos(temp(0) / retval[1] / R0);
 
   temp = dot(r0, v0);
   if (temp(0) < 0.0) {
-    ni = 2 * boost::math::constants::pi<double>() - ni;
+    f = 2 * boost::math::constants::pi<double>() - f;
   }
-
-  // Eccentric anomaly or the gudermannian is calculated and stored as the
-  // sixth orbital element
-  if (retval[1] < 1.0) {
-    retval[5] = 2.0 * atan(sqrt((1 - retval[1]) / (1 + retval[1])) *
-                           tan(ni / 2.0)); // algebraic Kepler's equation
-  } else {
-    retval[5] =
-        2.0 * atan(sqrt((retval[1] - 1) / (retval[1] + 1)) *
-                   tan(ni / 2.0)); // algebraic equivalent of Kepler's
-                                   // equation in terms of the Gudermannian
-  }
+  retval[5] = f;
   return retval;
 }
 } // namespace kep3
