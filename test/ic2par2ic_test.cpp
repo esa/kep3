@@ -7,6 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <stdexcept>
+
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
@@ -14,7 +16,6 @@
 
 #include <kep3/core_astro/ic2par.hpp>
 #include <kep3/core_astro/par2ic.hpp>
-#include <stdexcept>
 
 #include "catch.hpp"
 
