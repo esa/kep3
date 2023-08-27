@@ -28,14 +28,14 @@ namespace kep3 {
 // for hyperbolae. The anomalies W, w, f are in [0, 2pi]. Inclination is in [0,
 // pi].
 
-std::array<double, 6> ic2par(const std::array<double, 3> &rin,
-                             const std::array<double, 3> &vin, double mu) {
+std::array<double, 6>
+ic2par(const std::array<std::array<double, 3>, 2> &pos_vel, double mu) {
   // Return value
   std::array<double, 6> retval{};
   // 0 - We prepare a few xtensor constants.
   xt::xtensor_fixed<double, xt::xshape<3>> k{0.0, 0.0, 1.0};
-  auto r0 = xt::adapt(rin);
-  auto v0 = xt::adapt(vin);
+  auto r0 = xt::adapt(pos_vel[0]);
+  auto v0 = xt::adapt(pos_vel[1]);
 
   // 1 - We compute the orbital angular momentum vector
   auto h = cross(r0, v0); // h = r0 x v0

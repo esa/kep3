@@ -29,7 +29,7 @@ constexpr double pi{boost::math::constants::pi<double>()};
 TEST_CASE("ic2par") {
   // Singular orbit zero inclination and eccentricity
   {
-    auto par = ic2par({1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, 1.0);
+    auto par = ic2par({1.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1.0);
     REQUIRE(par[0] == 1.); // sma is 1
     REQUIRE(par[1] == 0.); // ecc is zero
     REQUIRE(par[2] == 0.); // incl is zero
@@ -39,7 +39,7 @@ TEST_CASE("ic2par") {
   }
   // Orbit at 90 degrees inclination
   {
-    auto par = ic2par({1.0, 0.0, 0.0}, {0.0, 0.0, 1.1}, 1.0);
+    auto par = ic2par({1.0, 0.0, 0.0, 0.0, 0.0, 1.1}, 1.0);
     REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-14));
     REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
     REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-14)); // incl at 90 degrees
@@ -49,7 +49,7 @@ TEST_CASE("ic2par") {
   }
   // Orbit at 90 degrees inclination
   {
-    auto par = ic2par({1.0, 0.0, 0.0}, {0.0, 0.0, -1.1}, 1.0);
+    auto par = ic2par({1.0, 0.0, 0.0, 0.0, 0.0, -1.1}, 1.0);
     REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-14));
     REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
     REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-14)); // incl at 90 degrees
@@ -59,7 +59,7 @@ TEST_CASE("ic2par") {
   }
   // Retrogade orbit
   {
-    auto par = ic2par({1.0, 0.0, 0.0}, {0.0, -1.0, 0.1}, 1.0);
+    auto par = ic2par({1.0, 0.0, 0.0, 0.0, -1.0, 0.1}, 1.0);
     REQUIRE_THAT(par[0], WithinRel(1.01010101010101, 1e-14));
     REQUIRE_THAT(par[1], WithinRel(0.01, 1e-14));
     REQUIRE_THAT(par[2], WithinRel(174.289406862500 / 180.0 * pi,
@@ -70,8 +70,8 @@ TEST_CASE("ic2par") {
   }
   // A random orbit
   {
-    auto par = ic2par({-1.1823467354129, 0.0247369349235, -0.014848484784},
-                      {0.00232349642367, 1.1225625625625, -0.34678634567}, 1.0);
+    auto par = ic2par({-1.1823467354129, 0.0247369349235, -0.014848484784,
+                      0.00232349642367, 1.1225625625625, -0.34678634567}, 1.0);
     REQUIRE_THAT(par[0], WithinRel(3.21921322281178, 1e-14));
     REQUIRE_THAT(par[1], WithinAbs(0.63283595179672, 1e-14));
     REQUIRE_THAT(par[2], WithinRel(162.82902986040048 / 180.0 * pi,
@@ -161,8 +161,8 @@ TEST_CASE("ic2par2ic") {
       double Omega = Omega_d(rng_engine);
       double omega = omega_d(rng_engine);
       double f = f_d(rng_engine);
-      auto [r, v] = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
-      auto par = ic2par(r, v, 1.0);
+      auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
+      auto par = ic2par(pos_vel, 1.0);
       REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
     }
   }
@@ -180,8 +180,8 @@ TEST_CASE("ic2par2ic") {
       if (std::cos(f) < -1 / ecc) {
         continue;
       }
-      auto [r, v] = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
-      auto par = ic2par(r, v, 1.0);
+      auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
+      auto par = ic2par(pos_vel, 1.0);
       REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
     }
   }
