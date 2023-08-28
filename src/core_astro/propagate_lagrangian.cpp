@@ -38,13 +38,13 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
   double a = -mu / 2.0 / energy; // will be negative for hyperbolae
   double sqrta = 0.;
   double F = 0., G = 0., Ft = 0., Gt = 0.;
-
   double sigma0 =
       (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / std::sqrt(mu);
 
   if (a > 0) { // Solve Kepler's equation, elliptical case
     sqrta = std::sqrt(a);
     double DM = std::sqrt(mu / std::pow(a, 3)) * dt;
+    double IG = DM;
 
     // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
@@ -55,7 +55,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
                                  d_kepDE(DE, sigma0, sqrta, a, R),
                                  dd_kepDE(DE, sigma0, sqrta, a, R));
         },
-        DM, DM - pi, DM + pi, digits, max_iter);
+        IG, IG - pi, IG + pi, digits, max_iter);
     if (max_iter == 100u) {
       throw std::domain_error(
           "Maximum number of iterations exceeded when solving Kepler's "
@@ -143,8 +143,8 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0,
   // solve kepler's equation in universal variables
   double IG = 0;
   alpha > 0. ? IG = std::sqrt(mu) * dt_copy * std::abs(alpha)
-             : IG = 3.; // TODO(darioizzo): initial guess for the universal anomaly. For
-                        // hyperbolas is 3 .... can be better?
+             : IG = 3.; // TODO(darioizzo): initial guess for the universal
+                        // anomaly. For hyperbolas is 3 .... can be better?
 
   // Solve Kepler Equation in DS (univrsal anomaly difference)
   const int digits = std::numeric_limits<double>::digits;
