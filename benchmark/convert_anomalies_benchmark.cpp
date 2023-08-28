@@ -15,8 +15,11 @@
 
 #include <kep3/core_astro/convert_anomalies.hpp>
 
-using namespace kep3;
-using namespace std::chrono;
+using kep3::e2m;
+using kep3::m2e;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::microseconds;
 
 // In this benchmark we test the speed and accuracy of the Kepler's equation
 // solvers
@@ -25,9 +28,10 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N) {
   //
   // Engines
   //
+  // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
   std::mt19937 rng_engine(122012203u);
   //
-  // Distribtuions
+  // Distributions
   //
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> M_d(-100, 100.);
@@ -51,16 +55,17 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N) {
   }
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
-  fmt::print("{:.3f}s\n", duration.count() / 1e6);
+  fmt::print("{:.3f}s\n", (static_cast<double>(duration.count()) / 1e6));
 }
 
 void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N) {
   //
   // Engines
   //
+  // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
   std::mt19937 rng_engine(122012203u);
   //
-  // Distribtuions
+  // Distributions
   //
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> M_d(-100, 100.);
@@ -84,13 +89,14 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N) {
   }
   auto max_it = max_element(std::begin(err), std::end(err));
   auto min_it = min_element(std::begin(err), std::end(err));
-  auto avg = std::accumulate(err.begin(), err.end(), 0.0) / err.size();
+  auto avg = std::accumulate(err.begin(), err.end(), 0.0) /
+             static_cast<double>(err.size());
   fmt::print("{:.3e} avg, {:.3e} min, {:.3e} max\n", avg, *min_it, *max_it);
 }
 
 int main() {
   unsigned seed = 7898935u;
-  fmt::print("\nComputes speed different eccentricity ranges:\n");
+  fmt::print("\nComputes speed at different eccentricity ranges:\n");
   perform_test_speed(0, 0.5, 1000000);
   perform_test_speed(0.5, 0.9, 1000000);
   perform_test_speed(0.9, 0.99, 1000000);

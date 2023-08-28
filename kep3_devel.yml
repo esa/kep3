@@ -11,4 +11,5 @@ dependencies:
   - heyoka >=0.21.0
   - spdlog
   - xtensor
+  - xtensor-blas
 
