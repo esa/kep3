@@ -44,7 +44,7 @@ void perform_test_speed(
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-  std::uniform_real_distribution<double> omega_d(0., pi);
+  std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
   std::uniform_real_distribution<double> tof_d(0.1, 20.);
 
@@ -94,7 +94,7 @@ void perform_test_accuracy(
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-  std::uniform_real_distribution<double> omega_d(0., pi);
+  std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
   std::uniform_real_distribution<double> tof_d(0.1, 20.);
 

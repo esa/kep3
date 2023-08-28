@@ -41,7 +41,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
   double sigma0 =
       (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / std::sqrt(mu);
 
-  if (a > 0) { // Solve Kepler's equation, elliptical case
+  if (a > 0) { // Solve Kepler's equation in DE, elliptical case
     sqrta = std::sqrt(a);
     double DM = std::sqrt(mu / std::pow(a, 3)) * dt;
     double IG = DM;
@@ -69,7 +69,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
         R * std::sqrt(a / mu) * std::sin(DE);
     Ft = -std::sqrt(mu * a) / (r * R) * std::sin(DE);
     Gt = 1 - a / r * (1 - std::cos(DE));
-  } else { // Solve Kepler's equation, hyperbolic case
+  } else { // Solve Kepler's equation in DH, hyperbolic case
     sqrta = std::sqrt(-a);
     double DN = std::sqrt(-mu / a / a / a) * dt;
     double IG = 0.;
@@ -105,7 +105,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
   }
 
   double temp[3] = {r0[0], r0[1], r0[2]};
-  for (int i = 0; i < 3; i++) {
+  for (auto i = 0u; i < 3; i++) {
     r0[i] = F * r0[i] + G * v0[i];
     v0[i] = Ft * temp[i] + Gt * v0[i];
   }
@@ -140,7 +140,7 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0,
   // initial radial velocity
   double VR0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / R0;
 
-  // solve kepler's equation in universal variables
+  // solve kepler's equation in the universal anomaly DS
   double IG = 0;
   alpha > 0. ? IG = std::sqrt(mu) * dt_copy * std::abs(alpha)
              : IG = 3.; // TODO(darioizzo): initial guess for the universal

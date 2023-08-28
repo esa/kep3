@@ -23,8 +23,6 @@
 
 namespace kep3 {
 
-constexpr double pi4{boost::math::constants::quarter_pi<double>()};
-
 // keplerian osculating elements [a,e,i,W,w,f] -> r,v.
 // The last osculating elements is the true anomaly.
 // The semi-major axis a needs to be positive
