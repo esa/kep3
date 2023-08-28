@@ -152,14 +152,14 @@ int main() {
   perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian);
 
   fmt::print("\nComputes speed at different eccentricity ranges [Universal "
-             "Variable]:\n");
+             "Anomaly]:\n");
   perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
   perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
   perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
   perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
 
   fmt::print("\nComputes error at different eccentricity ranges [Universal "
-             "Variable]:\n");
+             "Anomaly]:\n");
   perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
   perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
   perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
