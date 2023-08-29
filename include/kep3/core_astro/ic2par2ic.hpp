@@ -13,15 +13,18 @@
  * Note that we use the eccentric anomaly (or Gudermannian if e > 1)
  */
 
-#ifndef kep3_PAR2IC_H
-#define kep3_PAR2IC_H
+#ifndef kep3_IC2PAR_H
+#define kep3_IC2PAR_H
 
 #include <array>
 
-#include<kep3/detail/visibility.hpp>
+#include <kep3/detail/visibility.hpp>
 
 namespace kep3 {
-kep3_DLL_PUBLIC std::array<std::array<double, 3>, 2> par2ic(const std::array<double, 6> &par,
-                                            double mu);
+kep3_DLL_PUBLIC std::array<double, 6>
+ic2par(const std::array<std::array<double, 3>, 2> &pos_vel, double mu);
+
+kep3_DLL_PUBLIC std::array<std::array<double, 3>, 2>
+par2ic(const std::array<double, 6> &par, double mu);
 } // namespace kep3
-#endif // kep3_PAR2IC_H
+#endif // kep3_IC2PAR_H

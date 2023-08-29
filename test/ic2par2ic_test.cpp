@@ -14,8 +14,7 @@
 
 #include <boost/math/constants/constants.hpp>
 
-#include <kep3/core_astro/ic2par.hpp>
-#include <kep3/core_astro/par2ic.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 
 #include "catch.hpp"
 

@@ -42,24 +42,33 @@ inline double m2e(double M, double ecc) {
   return sol;
 }
 // eccentric to mean (only ellipses) e<1
-inline double e2m(double E, double e) { return (E - e * std::sin(E)); }
+inline double e2m(double E, double ecc) { return (E - ecc * std::sin(E)); }
 
 // eccentric to true (only ellipses) e<1 (returns in range [-pi,pi])
-inline double e2f(double E, double e) {
-  return 2 * std::atan(std::sqrt((1 + e) / (1 - e)) * std::tan(E / 2));
+inline double e2f(double E, double ecc) {
+  return 2 * std::atan(std::sqrt((1 + ecc) / (1 - ecc)) * std::tan(E / 2));
 }
 // true to eccentric (only ellipses) e<1 (returns in range [-pi,pi])
-inline double f2e(double f, double e) {
-  return 2 * std::atan(std::sqrt((1 - e) / (1 + e)) * std::tan(f / 2));
+inline double f2e(double f, double ecc) {
+  return 2 * std::atan(std::sqrt((1 - ecc) / (1 + ecc)) * std::tan(f / 2));
+}
+
+// mean to true (only ellipses) e<1 (returns in range [-pi,pi])
+inline double m2f(double M, double ecc) {
+  return e2f(m2e(M, ecc), ecc);
+}
+// true to mean (only ellipses) e<1 (returns in range [-pi,pi])
+inline double f2m(double f, double ecc) {
+  return e2m(f2e(f, ecc), ecc);
 }
 
 // gudermannian to true (only hyperbolas) e>1 (returns in range [-pi,pi])
-inline double zeta2f(double f, double e) {
-  return 2 * std::atan(std::sqrt((1 + e) / (e - 1)) * std::tan(f / 2));
+inline double zeta2f(double f, double ecc) {
+  return 2 * std::atan(std::sqrt((1 + ecc) / (ecc - 1)) * std::tan(f / 2));
 }
 // true to gudermannian (only hyperbolas) e>1 (returns in range [-pi,pi])
-inline double f2zeta(double zeta, double e) {
-  return 2 * std::atan(std::sqrt((e - 1) / (1 + e)) * std::tan(zeta / 2));
+inline double f2zeta(double zeta, double ecc) {
+  return 2 * std::atan(std::sqrt((ecc - 1) / (1 + ecc)) * std::tan(zeta / 2));
 }
 } // namespace kep3
 #endif // kep3_TOOLBOX_M2E_H

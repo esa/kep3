@@ -131,8 +131,7 @@ endif()
 set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/par2ic.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/detail/type_name.cpp"
 )
