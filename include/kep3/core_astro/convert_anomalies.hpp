@@ -26,13 +26,19 @@ inline double m2e(double M, double ecc) {
   // (tests indicated that any higher order expansion does not really improve)
   double IG = M;
   const int digits = std::numeric_limits<double>::digits;
+  std::uintmax_t max_iter = 100u;
   double sol = boost::math::tools::halley_iterate(
       [M, ecc](double E) {
         return std::make_tuple(kepE(E, M, ecc), d_kepE(E, ecc),
                                dd_kepE(E, ecc));
       },
       IG, IG - boost::math::constants::pi<double>(),
-      IG + boost::math::constants::pi<double>(), digits);
+      IG + boost::math::constants::pi<double>(), digits, max_iter);
+  if (max_iter == 100u) {
+    throw std::domain_error(
+        "Maximum number of iterations exceeded when solving Kepler's "
+        "equation for the eccentric anomaly in m2e.");
+  }
   return sol;
 }
 // eccentric to mean (only ellipses) e<1
