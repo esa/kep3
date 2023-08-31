@@ -13,8 +13,8 @@
  * Note that we use the eccentric anomaly (or Gudermannian if e > 1)
  */
 
-#ifndef kep3_EQ2PAR_H
-#define kep3_EQ2PAR_H
+#ifndef kep3_EQ2PAR2EQ_H
+#define kep3_EQ2PAR2EQ_H
 
 #include <array>
 
@@ -29,4 +29,4 @@ kep3_DLL_PUBLIC std::array<double, 6> par2eq(const std::array<double, 6> &par,
                                              bool retrogade = false);
 
 } // namespace kep3
-#endif // kep3_EQ2PAR_H
+#endif // kep3_EQ2PAR2EQ_H

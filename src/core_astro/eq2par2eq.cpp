@@ -12,33 +12,44 @@
 
 #include <boost/math/constants/constants.hpp>
 
+#include <kep3/core_astro/eq2par2eq.hpp>
+
 namespace kep3 {
 
 constexpr double half_pi{boost::math::constants::half_pi<double>()};
+constexpr double pi{boost::math::constants::pi<double>()};
 
-std::array<double, 6> eq2par(const std::array<double, 6> &eq,
-                             bool retrogade = false) {
+std::array<double, 6> eq2par(const std::array<double, 6> &eq, bool retrogade) {
   std::array<double, 6> retval{};
   int I = 1;
   if (retrogade) {
     I = -1;
   }
-  auto ecc = std::sqrt(eq[1] * eq[1] + eq[2] * eq[2]);
-  auto tmp = std::sqrt(eq[3] * eq[3] + eq[4] * eq[4]);
-  auto zita = std::atan2(eq[2] / ecc, eq[1] / ecc);
+  double ecc = std::sqrt(eq[1] * eq[1] + eq[2] * eq[2]);
+  double tmp = std::sqrt(eq[3] * eq[3] + eq[4] * eq[4]);
+  double zita = std::atan2(eq[2] / ecc, eq[1] / ecc); // [-pi, pi]
+  if (zita < 0) {
+    zita += 2 * pi; // [0, 2*pi]
+  }
 
   retval[1] = ecc;
   retval[0] = eq[0] / (1. - ecc * ecc);
-  retval[2] = half_pi * (1. - I) +
-              2. * I * std::atan(tmp);
-  retval[3] = std::atan2(eq[4] / tmp, eq[3] / tmp);
-  retval[4] = zita - I * retval[3];
-  retval[5] = eq[5] - zita;
+  retval[2] = half_pi * (1. - I) + 2. * I * std::atan(tmp);
+  retval[3] = std::atan2(eq[4] / tmp, eq[3] / tmp); // [-pi, pi]
+  if (retval[3] < 0) {
+    retval[3] += 2 * pi; // [0, 2*pi]
+  }
+  retval[4] = zita - I * retval[3]; //
+  if (retval[4] < 0) {
+    retval[4] += 2 * pi;
+  } else if (retval[4] > 2 * pi) {
+    retval[4] -= 2 * pi;
+  }
+  retval[5] = eq[5] - I * retval[3] - retval[4];
   return retval;
 }
 
-std::array<double, 6> par2eq(const std::array<double, 6> &par,
-                             bool retrogade = false) {
+std::array<double, 6> par2eq(const std::array<double, 6> &par, bool retrogade) {
   std::array<double, 6> eq{};
   int I = 0;
   if (retrogade) {
@@ -56,5 +67,4 @@ std::array<double, 6> par2eq(const std::array<double, 6> &par,
   eq[5] = par[5] + par[4] + I * par[3];
   return eq;
 }
-
 } // namespace kep3

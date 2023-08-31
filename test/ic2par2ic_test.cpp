@@ -17,6 +17,7 @@
 #include <kep3/core_astro/ic2par2ic.hpp>
 
 #include "catch.hpp"
+#include "test_helpers.hpp"
 
 using Catch::Matchers::WithinAbs;
 using Catch::Matchers::WithinRel;
@@ -147,9 +148,9 @@ TEST_CASE("ic2par2ic") {
   // Distributions for the elements
   std::uniform_real_distribution<double> sma_d(1.1, 100.);
   std::uniform_real_distribution<double> ecc_d(0, 0.99);
-  std::uniform_real_distribution<double> incl_d(0., 3.); // excluding 180 degrees for consistency with equinoctial
+  std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-  std::uniform_real_distribution<double> omega_d(0., pi);
+  std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> ni_d(0, 2 * pi);
   {
     // Testing on N random calls on ellipses
@@ -181,14 +182,12 @@ TEST_CASE("ic2par2ic") {
                                pos_vel_new[1][2] * pos_vel_new[1][2]);
       // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
       // while for large (>1) we care for relative error.
-      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
-      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
-      REQUIRE(rel_err_V < 1e-13);
-      REQUIRE(rel_err_R < 1e-13);
+      REQUIRE(kep3_tests::floating_point_error(R, R_new) < 1e-13);
+      REQUIRE(kep3_tests::floating_point_error(V, V_new) < 1e-13);
     }
   }
   {
-    // Testing on N random calls on ellipses
+    // Testing on N random calls on hyperbolas
     unsigned N = 10000;
     for (auto i = 0u; i < N; ++i) {
       // We sample randomly on the Keplerian space
@@ -222,10 +221,8 @@ TEST_CASE("ic2par2ic") {
                                pos_vel_new[1][2] * pos_vel_new[1][2]);
       // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
       // while for large (>1) we care for relative error.
-      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
-      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
-      REQUIRE(rel_err_V < 1e-13);
-      REQUIRE(rel_err_R < 1e-13);
+      REQUIRE(kep3_tests::floating_point_error(R, R_new) < 1e-13);
+      REQUIRE(kep3_tests::floating_point_error(V, V_new) < 1e-13);
     }
   }
 }
