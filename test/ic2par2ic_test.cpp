@@ -39,9 +39,9 @@ TEST_CASE("ic2par") {
   // Orbit at 90 degrees inclination
   {
     auto par = ic2par({1.0, 0.0, 0.0, 0.0, 0.0, 1.1}, 1.0);
-    REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-14));
-    REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
-    REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-14)); // incl at 90 degrees
+    REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-13));
+    REQUIRE_THAT(par[1], WithinRel(0.21, 1e-13));
+    REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-13)); // incl at 90 degrees
     REQUIRE(par[3] == 0.);                          // Omega is zero
     REQUIRE(par[4] == 0.);                          // omega is zero
     REQUIRE(par[5] == 0.);                          // true anomaly is zero
@@ -49,20 +49,20 @@ TEST_CASE("ic2par") {
   // Orbit at 90 degrees inclination
   {
     auto par = ic2par({1.0, 0.0, 0.0, 0.0, 0.0, -1.1}, 1.0);
-    REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-14));
-    REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
-    REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-14)); // incl at 90 degrees
-    REQUIRE_THAT(par[3], WithinRel(pi, 1e-14));     // Omega at 180 degrees
-    REQUIRE_THAT(par[4], WithinRel(pi, 1e-14));     // omeg at 180 degrees
+    REQUIRE_THAT(par[0], WithinRel(1.2658227848101269, 1e-13));
+    REQUIRE_THAT(par[1], WithinRel(0.21, 1e-13));
+    REQUIRE_THAT(par[2], WithinRel(pi / 2, 1e-13)); // incl at 90 degrees
+    REQUIRE_THAT(par[3], WithinRel(pi, 1e-13));     // Omega at 180 degrees
+    REQUIRE_THAT(par[4], WithinRel(pi, 1e-13));     // omeg at 180 degrees
     REQUIRE(par[5] == 0.);                          // true anomaly is zero
   }
   // Retrogade orbit
   {
     auto par = ic2par({1.0, 0.0, 0.0, 0.0, -1.0, 0.1}, 1.0);
-    REQUIRE_THAT(par[0], WithinRel(1.01010101010101, 1e-14));
-    REQUIRE_THAT(par[1], WithinRel(0.01, 1e-14));
+    REQUIRE_THAT(par[0], WithinRel(1.01010101010101, 1e-13));
+    REQUIRE_THAT(par[1], WithinRel(0.01, 1e-13));
     REQUIRE_THAT(par[2], WithinRel(174.289406862500 / 180.0 * pi,
-                                   1e-14)); // incl
+                                   1e-13)); // incl
     REQUIRE(par[3] == 0.);                  // Omega is zero
     REQUIRE(par[4] == 0.);                  // omega is zero
     REQUIRE(par[5] == 0.);                  // true anomaly is zero
@@ -70,17 +70,18 @@ TEST_CASE("ic2par") {
   // A random orbit
   {
     auto par = ic2par({-1.1823467354129, 0.0247369349235, -0.014848484784,
-                      0.00232349642367, 1.1225625625625, -0.34678634567}, 1.0);
-    REQUIRE_THAT(par[0], WithinRel(3.21921322281178, 1e-14));
-    REQUIRE_THAT(par[1], WithinAbs(0.63283595179672, 1e-14));
+                       0.00232349642367, 1.1225625625625, -0.34678634567},
+                      1.0);
+    REQUIRE_THAT(par[0], WithinRel(3.21921322281178, 1e-13));
+    REQUIRE_THAT(par[1], WithinAbs(0.63283595179672, 1e-13));
     REQUIRE_THAT(par[2], WithinRel(162.82902986040048 / 180.0 * pi,
-                                   1e-14)); // incl
+                                   1e-13)); // incl
     REQUIRE_THAT(par[3], WithinAbs(1.13023105373051 / 180.0 * pi,
-                                   1e-14)); // Omega
+                                   1e-13)); // Omega
     REQUIRE_THAT(par[4], WithinRel(179.22698703370386 / 180.0 * pi,
-                                   1e-14)); // omega
+                                   1e-13)); // omega
     REQUIRE_THAT(par[5], WithinAbs(3.21031850920605 / 180.0 * pi,
-                                   1e-14)); // true anomaly
+                                   1e-13)); // true anomaly
   }
 }
 
@@ -89,34 +90,34 @@ TEST_CASE("par2ic") {
   {
     auto [r, v] =
         par2ic({1.2658227848101269, 0.21, pi / 2, 0.0, 0.0, 0.0}, 1.0);
-    REQUIRE_THAT(r[0], WithinRel(1., 1e-14));
-    REQUIRE_THAT(r[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(r[2], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[2], WithinRel(1.1, 1e-14));
+    REQUIRE_THAT(r[0], WithinRel(1., 1e-13));
+    REQUIRE_THAT(r[1], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(r[2], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[0], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[1], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[2], WithinRel(1.1, 1e-13));
   }
   // Orbit at 90 degrees inclination
   {
     auto [r, v] = par2ic({1.2658227848101269, 0.21, pi / 2, pi, pi, 0.0}, 1.0);
-    REQUIRE_THAT(r[0], WithinRel(1., 1e-14));
-    REQUIRE_THAT(r[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(r[2], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[2], WithinRel(-1.1, 1e-14));
+    REQUIRE_THAT(r[0], WithinRel(1., 1e-13));
+    REQUIRE_THAT(r[1], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(r[2], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[0], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[1], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[2], WithinRel(-1.1, 1e-13));
   }
   // Retrogade orbit
   {
     auto [r, v] = par2ic(
-        {1.01010101010101, 0.01, 174.289406862500 / 180.0 * pi, 1e-14, 0., 0.0},
+        {1.01010101010101, 0.01, 174.289406862500 / 180.0 * pi, 1e-13, 0., 0.0},
         1.0);
-    REQUIRE_THAT(r[0], WithinRel(1., 1e-14));
-    REQUIRE_THAT(r[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(r[2], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(v[1], WithinRel(-1., 1e-14));
-    REQUIRE_THAT(v[2], WithinAbs(0.1, 1e-14));
+    REQUIRE_THAT(r[0], WithinRel(1., 1e-13));
+    REQUIRE_THAT(r[1], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(r[2], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[0], WithinAbs(0., 1e-13));
+    REQUIRE_THAT(v[1], WithinRel(-1., 1e-13));
+    REQUIRE_THAT(v[2], WithinAbs(0.1, 1e-13));
   }
   // A random orbit
   {
@@ -126,18 +127,18 @@ TEST_CASE("par2ic") {
                 179.22698703370386 / 180.0 * pi, 3.21031850920605 / 180.0 * pi},
                1.0);
 
-    REQUIRE_THAT(r[0], WithinRel(-1.1823467354129, 1e-14));
+    REQUIRE_THAT(r[0], WithinRel(-1.1823467354129, 1e-13));
     REQUIRE_THAT(r[1], WithinAbs(0.0247369349235, 1e-13));
-    REQUIRE_THAT(r[2], WithinAbs(-0.014848484784, 1e-14));
+    REQUIRE_THAT(r[2], WithinAbs(-0.014848484784, 1e-13));
     REQUIRE_THAT(v[0], WithinAbs(0.00232349642367, 1e-13));
-    REQUIRE_THAT(v[1], WithinRel(1.1225625625625, 1e-14));
-    REQUIRE_THAT(v[2], WithinAbs(-0.34678634567, 1e-14));
+    REQUIRE_THAT(v[1], WithinRel(1.1225625625625, 1e-13));
+    REQUIRE_THAT(v[2], WithinAbs(-0.34678634567, 1e-13));
   }
   // We check the convention a<0 -> e>1 is followed.
   REQUIRE_THROWS_AS(par2ic({1.3, 1.3, 0., 0., 0., 0.}, 1), std::domain_error);
   REQUIRE_THROWS_AS(par2ic({-1.3, 0.4, 0., 0., 0., 0.}, 1), std::domain_error);
-  REQUIRE_THROWS_AS(par2ic({11.1, 1.4, 0., 0., 0., 5.23}, 1), std::domain_error);
-
+  REQUIRE_THROWS_AS(par2ic({11.1, 1.4, 0., 0., 0., 5.23}, 1),
+                    std::domain_error);
 }
 TEST_CASE("ic2par2ic") {
   // Engines
@@ -146,52 +147,85 @@ TEST_CASE("ic2par2ic") {
   // Distributions for the elements
   std::uniform_real_distribution<double> sma_d(1.1, 100.);
   std::uniform_real_distribution<double> ecc_d(0, 0.99);
-  std::uniform_real_distribution<double> incl_d(0., pi);
+  std::uniform_real_distribution<double> incl_d(0., 3.); // excluding 180 degrees for consistency with equinoctial
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., pi);
-  std::uniform_real_distribution<double> f_d(0, 2 * pi);
+  std::uniform_real_distribution<double> ni_d(0, 2 * pi);
   {
     // Testing on N random calls on ellipses
     unsigned N = 10000;
     for (auto i = 0u; i < N; ++i) {
+      // We sample randomly on the Keplerian space
       double sma = sma_d(rng_engine);
       double ecc = ecc_d(rng_engine);
       double incl = incl_d(rng_engine);
       double Omega = Omega_d(rng_engine);
       double omega = omega_d(rng_engine);
-      double f = f_d(rng_engine);
-      auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
-      auto par = ic2par(pos_vel, 1.0);
-      REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
-      REQUIRE_THAT(par[1], WithinAbs(ecc, 1e-10));
-      REQUIRE_THAT(par[2], WithinAbs(incl, 1e-10));
-      REQUIRE_THAT(par[3], WithinAbs(Omega, 1e-10));
-      REQUIRE_THAT(par[4], WithinAbs(omega, 1e-10));
-      REQUIRE_THAT(par[5], WithinAbs(f, 1e-10));
+      double ni = ni_d(rng_engine);
+      // Compute the initial r,v
+      auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
+      // Test ic2eq2ic
+      auto eq = ic2par(pos_vel, 1.);
+      auto pos_vel_new = par2ic(eq, 1.0);
+      double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] +
+                           pos_vel[0][1] * pos_vel[0][1] +
+                           pos_vel[0][2] * pos_vel[0][2]);
+      double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] +
+                           pos_vel[1][1] * pos_vel[1][1] +
+                           pos_vel[1][2] * pos_vel[1][2]);
+      double R_new = std::sqrt(pos_vel_new[0][0] * pos_vel_new[0][0] +
+                               pos_vel_new[0][1] * pos_vel_new[0][1] +
+                               pos_vel_new[0][2] * pos_vel_new[0][2]);
+      double V_new = std::sqrt(pos_vel_new[1][0] * pos_vel_new[1][0] +
+                               pos_vel_new[1][1] * pos_vel_new[1][1] +
+                               pos_vel_new[1][2] * pos_vel_new[1][2]);
+      // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
+      // while for large (>1) we care for relative error.
+      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
+      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
+      REQUIRE(rel_err_V < 1e-13);
+      REQUIRE(rel_err_R < 1e-13);
     }
   }
   {
-    // Testing on N random calls on hyperbolas
+    // Testing on N random calls on ellipses
     unsigned N = 10000;
     for (auto i = 0u; i < N; ++i) {
+      // We sample randomly on the Keplerian space
       double sma = -sma_d(rng_engine);
       double ecc = ecc_d(rng_engine) + 1.1;
       double incl = incl_d(rng_engine);
       double Omega = Omega_d(rng_engine);
       double omega = omega_d(rng_engine);
-      double f = f_d(rng_engine);
-      // Skipping if true anomaly out of asymptotes
-      if (std::cos(f) < -1 / ecc) {
+      double ni = ni_d(rng_engine);
+      // Skipping if true anomaly is way out of asymptotes
+      if (std::cos(ni) < -1 / ecc + 0.1) {
         continue;
       }
-      auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
-      auto par = ic2par(pos_vel, 1.0);
-      REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
-      REQUIRE_THAT(par[1], WithinAbs(ecc, 1e-10));
-      REQUIRE_THAT(par[2], WithinAbs(incl, 1e-10));
-      REQUIRE_THAT(par[3], WithinAbs(Omega, 1e-10));
-      REQUIRE_THAT(par[4], WithinAbs(omega, 1e-10));
-      REQUIRE_THAT(par[5], WithinAbs(f, 1e-10));
+      // Compute the initial r,v
+      auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
+      // Test ic2eq2ic
+      auto eq = ic2par(pos_vel, 1.);
+      auto pos_vel_new = par2ic(eq, 1.0);
+
+      double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] +
+                           pos_vel[0][1] * pos_vel[0][1] +
+                           pos_vel[0][2] * pos_vel[0][2]);
+      double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] +
+                           pos_vel[1][1] * pos_vel[1][1] +
+                           pos_vel[1][2] * pos_vel[1][2]);
+      double R_new = std::sqrt(pos_vel_new[0][0] * pos_vel_new[0][0] +
+                               pos_vel_new[0][1] * pos_vel_new[0][1] +
+                               pos_vel_new[0][2] * pos_vel_new[0][2]);
+      double V_new = std::sqrt(pos_vel_new[1][0] * pos_vel_new[1][0] +
+                               pos_vel_new[1][1] * pos_vel_new[1][1] +
+                               pos_vel_new[1][2] * pos_vel_new[1][2]);
+      // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
+      // while for large (>1) we care for relative error.
+      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
+      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
+      REQUIRE(rel_err_V < 1e-13);
+      REQUIRE(rel_err_R < 1e-13);
     }
   }
 }

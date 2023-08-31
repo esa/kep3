@@ -7,6 +7,7 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <cmath>
 #include <stdexcept>
 
 #include <fmt/core.h>
@@ -15,10 +16,10 @@
 #include <boost/math/constants/constants.hpp>
 
 #include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 
 #include "catch.hpp"
 
-using Catch::Matchers::WithinAbs;
 using Catch::Matchers::WithinRel;
 using kep3::eq2ic;
 using kep3::ic2eq;
@@ -67,38 +68,86 @@ TEST_CASE("ic2eq2ic") {
   // Distributions for the elements
   std::uniform_real_distribution<double> sma_d(1.1, 100.);
   std::uniform_real_distribution<double> ecc_d(0, 0.99);
-  std::uniform_real_distribution<double> incl_d(0., 3.);
+  std::uniform_real_distribution<double> incl_d(0., 3.); // excluding 180 degrees
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., pi);
   std::uniform_real_distribution<double> ni_d(0, 2 * pi);
+
   {
-    {
-      // Testing on N random calls on ellipses
-      unsigned N = 10000;
-      for (auto i = 0u; i < N; ++i) {
-        // We sample randomly on the Keplerian space
-        double sma = sma_d(rng_engine);
-        double ecc = ecc_d(rng_engine);
-        double incl = incl_d(rng_engine);
-        double Omega = Omega_d(rng_engine);
-        double omega = omega_d(rng_engine);
-        double ni = ni_d(rng_engine);
-        // Compute the modified equinoctial
-        double p = sma * (1. - ecc * ecc);
-        double h = ecc * std::cos(Omega + omega);
-        double k = ecc * std::sin(Omega + omega);
-        double f = std::tan(incl / 2.) * std::cos(omega);
-        double g = std::tan(incl / 2.) * std::sin(omega);
-        double L = Omega + omega + f;
-        auto pos_vel = eq2ic({p, h, k, f, g, L}, 1.);
-        auto par = ic2eq(pos_vel, 1.0);
-        REQUIRE_THAT(par[0], WithinAbs(p, 1e-10));
-        REQUIRE_THAT(par[1], WithinAbs(h, 1e-10));
-        REQUIRE_THAT(par[2], WithinAbs(k, 1e-10));
-        REQUIRE_THAT(par[3], WithinRel(f, 1e-10));
-        //REQUIRE_THAT(par[4], WithinAbs(g, 1e-10));
-        //REQUIRE_THAT(par[5], WithinAbs(L, 1e-10));
+    // Testing on N random calls on ellipses
+    unsigned N = 10000;
+    for (auto i = 0u; i < N; ++i) {
+      // We sample randomly on the Keplerian space
+      double sma = sma_d(rng_engine);
+      double ecc = ecc_d(rng_engine);
+      double incl = incl_d(rng_engine);
+      double Omega = Omega_d(rng_engine);
+      double omega = omega_d(rng_engine);
+      double ni = ni_d(rng_engine);
+      // Compute the initial r,v
+      auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
+      // Test ic2eq2ic
+      auto eq = ic2eq(pos_vel, 1.);
+      auto pos_vel_new = eq2ic(eq, 1.0);
+      double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] +
+                           pos_vel[0][1] * pos_vel[0][1] +
+                           pos_vel[0][2] * pos_vel[0][2]);
+      double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] +
+                           pos_vel[1][1] * pos_vel[1][1] +
+                           pos_vel[1][2] * pos_vel[1][2]);
+      double R_new = std::sqrt(pos_vel_new[0][0] * pos_vel_new[0][0] +
+                               pos_vel_new[0][1] * pos_vel_new[0][1] +
+                               pos_vel_new[0][2] * pos_vel_new[0][2]);
+      double V_new = std::sqrt(pos_vel_new[1][0] * pos_vel_new[1][0] +
+                               pos_vel_new[1][1] * pos_vel_new[1][1] +
+                               pos_vel_new[1][2] * pos_vel_new[1][2]);
+      // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
+      // while for large (>1) we care for relative error.
+      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
+      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
+      REQUIRE(rel_err_V < 1e-13);
+      REQUIRE(rel_err_R < 1e-13);
+    }
+  }
+  {
+    // Testing on N random calls on ellipses
+    unsigned N = 10000;
+    for (auto i = 0u; i < N; ++i) {
+      // We sample randomly on the Keplerian space
+      double sma = -sma_d(rng_engine);
+      double ecc = ecc_d(rng_engine) + 1.1;
+      double incl = incl_d(rng_engine);
+      double Omega = Omega_d(rng_engine);
+      double omega = omega_d(rng_engine);
+      double ni = ni_d(rng_engine);
+      // Skipping if true anomaly is way out of asymptotes
+      if (std::cos(ni) < -1 / ecc + 0.1) {
+        continue;
       }
+      // Compute the initial r,v
+      auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
+      // Test ic2eq2ic
+      auto eq = ic2eq(pos_vel, 1.);
+      auto pos_vel_new = eq2ic(eq, 1.0);
+
+      double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] +
+                           pos_vel[0][1] * pos_vel[0][1] +
+                           pos_vel[0][2] * pos_vel[0][2]);
+      double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] +
+                           pos_vel[1][1] * pos_vel[1][1] +
+                           pos_vel[1][2] * pos_vel[1][2]);
+      double R_new = std::sqrt(pos_vel_new[0][0] * pos_vel_new[0][0] +
+                               pos_vel_new[0][1] * pos_vel_new[0][1] +
+                               pos_vel_new[0][2] * pos_vel_new[0][2]);
+      double V_new = std::sqrt(pos_vel_new[1][0] * pos_vel_new[1][0] +
+                               pos_vel_new[1][1] * pos_vel_new[1][1] +
+                               pos_vel_new[1][2] * pos_vel_new[1][2]);
+      // Here we do not use catch matchers to test floating point as for small numbers (<1) we care about absolute
+      // while for large (>1) we care for relative error.
+      double rel_err_V = std::abs(V_new - V) / std::max(1., std::max(V_new, V));
+      double rel_err_R = std::abs(R_new - R) / std::max(1., std::max(R_new, R));
+      REQUIRE(rel_err_V < 1e-13);
+      REQUIRE(rel_err_R < 1e-13);
     }
   }
 }
