@@ -13,8 +13,8 @@
  * Note that we use the eccentric anomaly (or Gudermannian if e > 1)
  */
 
-#ifndef kep3_IC2EQ_H
-#define kep3_IC2EQ_H
+#ifndef kep3_IC2EQ2IC_H
+#define kep3_IC2EQ2IC_H
 
 #include <array>
 
@@ -30,4 +30,4 @@ kep3_DLL_PUBLIC std::array<std::array<double, 3>, 2>
 eq2ic(const std::array<double, 6> &eq, double mu, bool retrogade = false);
 
 } // namespace kep3
-#endif // kep3_IC2EQ_H
+#endif // kep3_IC2EQ2IC_H

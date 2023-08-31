@@ -163,6 +163,11 @@ TEST_CASE("ic2par2ic") {
       auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
       auto par = ic2par(pos_vel, 1.0);
       REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
+      REQUIRE_THAT(par[1], WithinAbs(ecc, 1e-10));
+      REQUIRE_THAT(par[2], WithinAbs(incl, 1e-10));
+      REQUIRE_THAT(par[3], WithinAbs(Omega, 1e-10));
+      REQUIRE_THAT(par[4], WithinAbs(omega, 1e-10));
+      REQUIRE_THAT(par[5], WithinAbs(f, 1e-10));
     }
   }
   {
@@ -182,6 +187,11 @@ TEST_CASE("ic2par2ic") {
       auto pos_vel = par2ic({sma, ecc, incl, Omega, omega, f}, 1.);
       auto par = ic2par(pos_vel, 1.0);
       REQUIRE_THAT(par[0], WithinAbs(sma, 1e-10));
+      REQUIRE_THAT(par[1], WithinAbs(ecc, 1e-10));
+      REQUIRE_THAT(par[2], WithinAbs(incl, 1e-10));
+      REQUIRE_THAT(par[3], WithinAbs(Omega, 1e-10));
+      REQUIRE_THAT(par[4], WithinAbs(omega, 1e-10));
+      REQUIRE_THAT(par[5], WithinAbs(f, 1e-10));
     }
   }
 }
