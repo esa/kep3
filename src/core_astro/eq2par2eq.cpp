@@ -10,14 +10,10 @@
 #include <array>
 #include <cmath>
 
-#include <boost/math/constants/constants.hpp>
-
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
 
 namespace kep3 {
-
-constexpr double half_pi{boost::math::constants::half_pi<double>()};
-constexpr double pi{boost::math::constants::pi<double>()};
 
 std::array<double, 6> eq2par(const std::array<double, 6> &eq, bool retrogade) {
   std::array<double, 6> retval{};

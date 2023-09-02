@@ -28,6 +28,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/array.hpp>
 #include <boost/serialization/version.hpp>
 
 // Include the archives.

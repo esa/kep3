@@ -9,18 +9,16 @@
 
 #include <array>
 #include <cmath>
+#include <stdexcept>
 
-#include <boost/math/constants/constants.hpp>
 #include <boost/math/tools/roots.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/kepler_equations.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/core_astro/special_functions.hpp>
-#include <stdexcept>
 
 namespace kep3 {
-
-constexpr double pi{boost::math::constants::pi<double>()};
 
 /// Lagrangian propagation
 /**

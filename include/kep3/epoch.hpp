@@ -10,10 +10,13 @@
 #ifndef kep3_EPOCH_H
 #define kep3_EPOCH_H
 
+#include <iostream>
+
+#include <fmt/ostream.h>
+
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/lexical_cast.hpp>
-#include <iostream>
 
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
@@ -105,5 +108,7 @@ kep3_DLL_PUBLIC epoch operator-(epoch lhs, double rhs);
 kep3_DLL_PUBLIC double operator-(const epoch &lhs, const epoch &rhs);
 
 } // end of namespace kep3
+
+template <> struct fmt::formatter<kep3::epoch> : ostream_formatter {};
 
 #endif // kep3_EPOCH_H

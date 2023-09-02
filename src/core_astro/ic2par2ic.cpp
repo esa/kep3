@@ -10,19 +10,16 @@
 #include <array>
 #include <cmath>
 
-#include <boost/math/constants/constants.hpp>
-
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 
 using xt::linalg::cross;
 using xt::linalg::dot;
 
 namespace kep3 {
-
-constexpr double pi{boost::math::constants::pi<double>()};
 
 // r,v,mu -> keplerian osculating elements [a,e,i,W,w,f]. The last
 // is the true anomaly. The semi-major axis a is positive for ellipses, negative

@@ -10,23 +10,19 @@
 #include <array>
 #include <cmath>
 
-#include <boost/math/constants/constants.hpp>
-
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 
 using xt::linalg::cross;
 using xt::linalg::dot;
 
 namespace kep3 {
-
-constexpr double half_pi{boost::math::constants::half_pi<double>()};
 
 // Implementation following:
 // Cefola: Equinoctial orbit elements - Application to artificial satellite
@@ -108,54 +104,52 @@ std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel,
   }
 }
 
-std::array<std::array<double, 3>, 2>
-eq2ic(const std::array<double, 6> &eq, double mu, bool retrogade)
-{
-    std::array<std::array<double, 3>, 2> retval{};
-    int I = 0;
-    if (retrogade) {
-        I = -1;
-    } else {
-        I = 1;
-    }
+std::array<std::array<double, 3>, 2> eq2ic(const std::array<double, 6> &eq,
+                                           double mu, bool retrogade) {
+  std::array<std::array<double, 3>, 2> retval{};
+  int I = 0;
+  if (retrogade) {
+    I = -1;
+  } else {
+    I = 1;
+  }
 
-    // p = a (1-e^2) will be negative for eccentricities > 1, we here need a positive number for the following
-    // computations
-    // to make sense
-    double par = std::abs(eq[0]);
-    double f = eq[1];
-    double g = eq[2];
-    double h = eq[3];
-    double k = eq[4];
-    double L = eq[5];
+  // p = a (1-e^2) will be negative for eccentricities > 1, we here need a
+  // positive number for the following computations to make sense
+  double par = std::abs(eq[0]);
+  double f = eq[1];
+  double g = eq[2];
+  double h = eq[3];
+  double k = eq[4];
+  double L = eq[5];
 
-    // We compute the equinoctial reference frame
-    double den = k * k + h * h + 1;
-    double fx = (1 - k * k + h * h) / den;
-    double fy = (2 * k * h) / den;
-    double fz = (-2 * I * k) / den;
+  // We compute the equinoctial reference frame
+  double den = k * k + h * h + 1;
+  double fx = (1 - k * k + h * h) / den;
+  double fy = (2 * k * h) / den;
+  double fz = (-2 * I * k) / den;
 
-    double gx = (2 * I * k * h) / den;
-    double gy = (1 + k * k - h * h) * I / den;
-    double gz = (2 * h) / den;
+  double gx = (2 * I * k * h) / den;
+  double gy = (1 + k * k - h * h) * I / den;
+  double gz = (2 * h) / den;
 
-    // Auxiliary
-    double radius = par / (1 + g * std::sin(L) + f * std::cos(L));
-    // In the equinoctial reference frame
-    double X = radius * std::cos(L);
-    double Y = radius * std::sin(L);
-    double VX = -std::sqrt(mu / par) * (g + std::sin(L));
-    double VY = std::sqrt(mu / par) * (f + std::cos(L));
+  // Auxiliary
+  double radius = par / (1 + g * std::sin(L) + f * std::cos(L));
+  // In the equinoctial reference frame
+  double X = radius * std::cos(L);
+  double Y = radius * std::sin(L);
+  double VX = -std::sqrt(mu / par) * (g + std::sin(L));
+  double VY = std::sqrt(mu / par) * (f + std::cos(L));
 
-    // Results
-    retval[0][0] = X * fx + Y * gx;
-    retval[0][1] = X * fy + Y * gy;
-    retval[0][2] = X * fz + Y * gz;
+  // Results
+  retval[0][0] = X * fx + Y * gx;
+  retval[0][1] = X * fy + Y * gy;
+  retval[0][2] = X * fz + Y * gz;
 
-    retval[1][0] = VX * fx + VY * gx;
-    retval[1][1] = VX * fy + VY * gy;
-    retval[1][2] = VX * fz + VY * gz;
+  retval[1][0] = VX * fx + VY * gx;
+  retval[1][1] = VX * fy + VY * gy;
+  retval[1][2] = VX * fz + VY * gz;
 
-    return retval;
+  return retval;
 }
 } // namespace kep3

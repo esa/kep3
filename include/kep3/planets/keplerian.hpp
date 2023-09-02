@@ -14,6 +14,9 @@
 #include <array>
 #include <utility>
 
+#include <fmt/ostream.h>
+
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
@@ -21,8 +24,6 @@
 namespace kep3::udpla {
 
 class kep3_DLL_PUBLIC keplerian {
-
-  static const std::array<double, 6> default_elements;
 
   kep3::epoch m_ref_epoch;
   std::array<std::array<double, 3>, 2> m_pos_vel_0;
@@ -48,8 +49,7 @@ class kep3_DLL_PUBLIC keplerian {
 public:
   // NOTE: in here elem is a,e,i,W,w,M (Mean anomaly, not true anomaly)
   // NOTE: added_param contains mu_self, radius and safe_radius
-  explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
-                     const std::array<double, 6> &elem = default_elements,
+  explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
                      double mu_central_body = 1., std::string name = "Unknown",
                      std::array<double, 3> added_params = {-1., -1., -1.});
   explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
@@ -69,10 +69,16 @@ public:
   [[nodiscard]] std::string get_extra_info() const;
 
   // Other methods
-  [[nodiscard]] std::string get_ref_epoch() const;
-  [[nodiscard]] std::string get_elem() const;
+  [[nodiscard]] kep3::epoch get_ref_epoch() const;
+  [[nodiscard]] std::array<double, 6>
+      elements(kep3::elements_type = kep3::elements_type::KEP_F) const;
 };
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
+                                         const kep3::udpla::keplerian &);
 } // namespace kep3::udpla
+
+template <>
+struct fmt::formatter<kep3::udpla::keplerian> : ostream_formatter {};
 kep3_S11N_PLANET_EXPORT_KEY(kep3::udpla::keplerian);
 
 #endif // kep3_EPOCH_H
