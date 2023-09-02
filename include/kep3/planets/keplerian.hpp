@@ -18,7 +18,6 @@
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 
-
 namespace kep3::udpla {
 
 class kep3_DLL_PUBLIC keplerian {
@@ -26,22 +25,24 @@ class kep3_DLL_PUBLIC keplerian {
   static const std::array<double, 6> default_elements;
 
   kep3::epoch m_ref_epoch;
-  std::array<double, 6> m_elem;
+  std::array<std::array<double, 3>, 2> m_pos_vel_0;
   std::string m_name;
   double m_mu_central_body;
   double m_mu_self;
   double m_radius;
   double m_safe_radius;
+  bool m_ellipse;
 
   friend class boost::serialization::access;
   template <typename Archive> void serialize(Archive &ar, unsigned) {
     ar &m_ref_epoch;
-    ar &m_elem;
+    ar &m_pos_vel_0;
     ar &m_name;
     ar &m_mu_central_body;
     ar &m_mu_self;
     ar &m_radius;
     ar &m_safe_radius;
+    ar &m_ellipse;
   }
 
 public:
@@ -51,9 +52,13 @@ public:
                      const std::array<double, 6> &elem = default_elements,
                      double mu_central_body = 1., std::string name = "Unknown",
                      std::array<double, 3> added_params = {-1., -1., -1.});
-
+  explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
+                     const std::array<std::array<double, 3>, 2> &pos_vel =
+                         {{{1.0, 0.0, 0.0}, {0., 1.0, 0.0}}},
+                     double mu_central_body = 1., std::string name = "Unknown",
+                     std::array<double, 3> added_params = {-1., -1., -1.});
   // Mandatory UDPLA methods
-  static std::array<std::array<double, 3>, 2> eph(const epoch &);
+  [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
 
   // Optional UDPLA methods
   [[nodiscard]] std::string get_name() const;
