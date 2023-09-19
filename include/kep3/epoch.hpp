@@ -79,7 +79,7 @@ namespace kep3
 
         static time_point from_time_t(std::time_t t) noexcept
         {
-            return time_point(chr::seconds(t) - unix_diff);
+            return chr::time_point_cast<duration>(time_point(chr::seconds(t) - unix_diff));
         }
     };
 

@@ -57,7 +57,7 @@ TEST_CASE("construct")
   REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::julian_type::JD).jd());
   std::cout << "Chrono3: " << kep3::epoch::as_utc_string(epoch(posix_time_test).jd()) << "\n";
   std::cout << "Chrono3-1: " << kep3::epoch::as_utc_string(epoch(2034, 12, 31).jd()) << "\n";
-  REQUIRE(epoch(2034, 12, 31).jd() == epoch(posix_time_test).jd());
+  REQUIRE(epoch(2034, 12, 31).jd().time_since_epoch().count() == epoch(posix_time_test).jd().time_since_epoch().count());
 
 }
 

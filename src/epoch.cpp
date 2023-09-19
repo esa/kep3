@@ -96,6 +96,9 @@ namespace kep3
         m_mjd2000 = static_cast<double>(dt.hours()) / 24.0 +
             static_cast<double>(dt.minutes()) / 1440.0 +
             (static_cast<double>(dt.seconds()) + fr_secs) / 86400.0;
+
+        // NOTE: Why not this?
+        // m_mjd2000 = dt.total_seconds() / 86400.0;
         if (flag)
         {
             m_mjd2000 = -m_mjd2000;
