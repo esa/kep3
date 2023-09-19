@@ -26,24 +26,24 @@ namespace kep3::udpla {
 class kep3_DLL_PUBLIC keplerian {
 
   kep3::epoch m_ref_epoch;
-  std::array<std::array<double, 3>, 2> m_pos_vel_0;
   std::string m_name;
   double m_mu_central_body;
   double m_mu_self;
   double m_radius;
-  double m_safe_radius;
   bool m_ellipse;
+  double m_safe_radius;
+  std::array<std::array<double, 3>, 2> m_pos_vel_0;
 
   friend class boost::serialization::access;
   template <typename Archive> void serialize(Archive &ar, unsigned) {
     ar &m_ref_epoch;
-    ar &m_pos_vel_0;
     ar &m_name;
     ar &m_mu_central_body;
     ar &m_mu_self;
     ar &m_radius;
-    ar &m_safe_radius;
     ar &m_ellipse;
+    ar &m_safe_radius;
+    ar &m_pos_vel_0;
   }
 
 public:

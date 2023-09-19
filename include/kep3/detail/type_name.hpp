@@ -46,6 +46,7 @@ template <typename T> inline std::string type_name() {
     break;
   case 3u:
     ret += " const volatile";
+    break;
   default:
     // you should never go here
     throw;
