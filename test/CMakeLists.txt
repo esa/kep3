@@ -20,6 +20,7 @@ function(ADD_kep3_TESTCASE arg1)
     "$<$<CONFIG:RelWithDebInfo>:${kep3_CXX_FLAGS_RELEASE}>"
     "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
   )
+
   # Setup the C++ standard.
   target_compile_features(${arg1} PRIVATE cxx_std_20)
   set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
@@ -27,7 +28,9 @@ function(ADD_kep3_TESTCASE arg1)
 endfunction()
 
 ADD_kep3_TESTCASE(convert_anomalies_test)
-ADD_kep3_TESTCASE(epoch_test)
+
+# ADD_kep3_TESTCASE(epoch_test)
+ADD_kep3_TESTCASE(epoch_test_chrono)
 ADD_kep3_TESTCASE(planet_test)
 ADD_kep3_TESTCASE(planet_keplerian_test)
 ADD_kep3_TESTCASE(ic2par2ic_test)
