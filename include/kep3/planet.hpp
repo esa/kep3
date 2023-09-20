@@ -11,6 +11,7 @@
 #define kep3_PLANET_H
 
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <typeindex>
@@ -19,6 +20,9 @@
 #if defined(kep3_PREFER_TYPEID_NAME_EXTRACT)
 #include <kep3/detail/typeid_name_extract.hpp>
 #endif
+#include <kep3/core_astro/constants.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/detail/exceptions.hpp>
 #include <kep3/detail/type_name.hpp>
 #include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
@@ -85,6 +89,16 @@ template <typename T>
 inline constexpr bool udpla_has_get_extra_info_v =
     std::is_same_v<detected_t<udpla_get_extra_info_t, T>, std::string>;
 
+// udpla_has_period_v<T> is True if T has the method:
+// double period(const epoch&)
+template <typename T>
+using udpla_period_t =
+    decltype(std::declval<std::add_lvalue_reference_t<const T>>().period(
+        std::declval<const epoch &>()));
+template <typename T>
+inline constexpr bool udpla_has_period_v =
+    std::is_same_v<detected_t<udpla_period_t, T>, double>;
+
 // This defines the main interface for a class to be type erased into a kep3
 // planet
 struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner_base {
@@ -111,6 +125,7 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner_base {
   [[nodiscard]] virtual double get_mu_self() const = 0;
   [[nodiscard]] virtual double get_radius() const = 0;
   [[nodiscard]] virtual double get_safe_radius() const = 0;
+  [[nodiscard]] virtual double period(const kep3::epoch &) const = 0;
 
 private:
   // Serialization.
@@ -200,6 +215,35 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
     } else {
       return -1.; // by convention, in kep3 this signals the planet does not
                   // expose this physical value
+    }
+  }
+
+  [[nodiscard]] double period(const kep3::epoch &ep) const final {
+    // If the user provides an efficient way to compute the period, then use it
+    if constexpr (udpla_has_period_v<T>) {
+      return m_value.period(ep);
+    } else if constexpr (udpla_has_get_mu_central_body_v<T>) {
+      // If the user provides the central body parameter, then compute the
+      // period from the energy at epoch
+      auto [r, v] = eph(ep);
+      double mu = get_mu_central_body();
+      double R = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+      double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+      double en = v2 / 2. - mu / R;
+      if (en > 0) {
+        // If the energy is positive we have an hyperbolae
+        throw std::logic_error(
+            "Hyperbolic conditions detected no period available for '" +
+            get_name() + "'");
+      } else {
+        double a = -mu / 2. / en;
+        return kep3::pi * 2. * std::sqrt(a * a * a / mu);
+      }
+    } else {
+      // There is no way to compute a period for this planet
+      throw not_implemented_error(
+          "A period nor a central body mu has been declared for '" +
+          get_name() + "', impossible to provide a default implementation");
     }
   }
 
@@ -317,6 +361,7 @@ public:
   [[nodiscard]] double get_mu_self() const;
   [[nodiscard]] double get_radius() const;
   [[nodiscard]] double get_safe_radius() const;
+  [[nodiscard]] double period(const kep3::epoch &) const;
 };
 
 // Streaming operator for algorithm.
