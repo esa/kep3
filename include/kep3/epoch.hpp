@@ -97,15 +97,7 @@ kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string &date);
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s,
                                          const epoch &epoch_in);
-kep3_DLL_PUBLIC bool operator>(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC bool operator<(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC bool operator>=(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC bool operator<=(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC bool operator==(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC bool operator!=(const epoch &c1, const epoch &c2);
-kep3_DLL_PUBLIC epoch operator+(epoch lhs, double rhs);
-kep3_DLL_PUBLIC epoch operator-(epoch lhs, double rhs);
-kep3_DLL_PUBLIC double operator-(const epoch &lhs, const epoch &rhs);
+
 
 } // end of namespace kep3
 
