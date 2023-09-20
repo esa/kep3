@@ -27,7 +27,7 @@ TEST_CASE("constructor") {
                                          1.,
                                          "unknown",
                                          {-1, -1, -1}});
-  // From parameters
+  // From parameters kep3::elements_type::KEP_F
   std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
   REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par, 1., "unknown"});
   REQUIRE_NOTHROW(
@@ -40,6 +40,28 @@ TEST_CASE("constructor") {
   REQUIRE(udpla.get_mu_self() == 1.2);
   REQUIRE(udpla.get_radius() == 2.2);
   REQUIRE(udpla.get_safe_radius() == 1.9);
+  REQUIRE(udpla.period() == 2 * kep3::pi * std::sqrt(1. / 1.1));
+  // Calling constructor with different elements type
+  {
+    std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
+                           "unknown", {-1, -1, -1}, kep3::elements_type::KEP_F});
+  }
+  {
+    std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
+                           "unknown", {-1, -1, -1}, kep3::elements_type::KEP_M});
+  }
+  {
+    std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
+                           "unknown", {-1, -1, -1}, kep3::elements_type::MEQ});
+  }
+  {
+    std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
+                           "unknown", {-1, -1, -1}, kep3::elements_type::MEQ_R});
+  }
 }
 
 TEST_CASE("eph") {
