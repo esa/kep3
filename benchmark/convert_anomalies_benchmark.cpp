@@ -34,7 +34,7 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N) {
   // Distributions
   //
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
-  std::uniform_real_distribution<double> M_d(-100, 100.);
+  std::uniform_real_distribution<double> M_d(-1e8, 1e8);
 
   // We generate the random dataset
   std::vector<double> eccenricities(N);
@@ -68,7 +68,7 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N) {
   // Distributions
   //
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
-  std::uniform_real_distribution<double> M_d(-100, 100.);
+  std::uniform_real_distribution<double> M_d(-1e8, 1e8);
 
   // We generate the random dataset
   std::vector<double> eccenricities(N);
@@ -85,7 +85,10 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N) {
   std::vector<double> err(N);
   for (auto i = 0u; i < N; ++i) {
     auto res = e2m(m2e(mean_anomalies[i], eccenricities[i]), eccenricities[i]);
-    err[i] = std::abs(res - mean_anomalies[i]);
+    // error is arbitrarily: (|sinM-sinMtrue| +|cosM-cosMtrue|)/2
+    err[i] = (std::abs(std::sin(res) - std::sin(mean_anomalies[i])) +
+              std::abs(std::cos(res) - std::cos(mean_anomalies[i]))) /
+             2.;
   }
   auto max_it = max_element(std::begin(err), std::end(err));
   auto min_it = min_element(std::begin(err), std::end(err));
