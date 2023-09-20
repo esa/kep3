@@ -33,7 +33,7 @@ constexpr double MU_SUN =
     1.32712440018e20; // Sun's gravitational parameter (m^3/s^2 kg)
 constexpr double MU_EARTH =
     398600441800000.0; // Earth's gravitational parameter (m^3/s^2 kg)
-constexpr double EARTH_VELOCITY = 2.97846918317e4; // Earth's velocity. (m/s)
+constexpr double EARTH_VELOCITY = 29784.691831696804; // Earth's velocity. (m/s)
 constexpr double EARTH_J2 = 1.08262668E-03;
 constexpr double EARTH_RADIUS = 6378137; // Earth's radius (m)
 constexpr double DEG2RAD = (pi / 180.0);

@@ -23,9 +23,9 @@ inline double floating_point_error(double a, double b) {
 
 // This tests how close two vectors are in the euclidean metric. err = r2-r1
 inline double floating_point_error_vector(const std::array<double, 3> &r1, const std::array<double, 3> &r2) {
-  double R1 = std::sqrt(r1[0] * r1[0] + r1[1] * r1[1] * r1[2] * r1[2]);
+  double R1 = std::sqrt(r1[0] * r1[0] + r1[1] * r1[1] + r1[2] * r1[2]);
   std::array<double, 3> r12 = {{r2[0]-r1[0], r2[1]-r1[1], r2[2]-r1[2]}};
-  double R12 = std::sqrt(r12[0] * r12[0] + r12[1] * r12[1] * r12[2] * r12[2]);
+  double R12 = std::sqrt(r12[0] * r12[0] + r12[1] * r12[1] + r12[2] * r12[2]);
   return R12 / std::max(1., R1);
 }
 } // namespace kep3_tests

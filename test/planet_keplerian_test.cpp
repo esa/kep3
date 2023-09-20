@@ -14,6 +14,7 @@
 #include <kep3/planets/keplerian.hpp>
 
 #include "catch.hpp"
+#include "test_helpers.hpp"
 
 TEST_CASE("constructor") {
   REQUIRE_NOTHROW(kep3::udpla::keplerian{});
@@ -42,23 +43,16 @@ TEST_CASE("constructor") {
 }
 
 TEST_CASE("eph") {
+  // We use 2000-01-01 as a reference epoch for all these tests
   kep3::epoch ref_epoch{0., kep3::epoch::MJD2000};
-  kep3::udpla::keplerian udpla1{
-      ref_epoch,
-      {{{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}},
-      kep3::MU_SUN};
-  kep3::udpla::keplerian udpla2{
-      ref_epoch,
-      {{{kep3::AU, 0., 0.}, {0., -kep3::EARTH_VELOCITY, 0.}}},
-      kep3::MU_SUN};
-  std::array<double, 6> par3{{kep3::AU, 0., 0., 0., 0., 0.}};
-  kep3::udpla::keplerian udpla3{ref_epoch, par3};
-  std::array<double, 6> par4{{kep3::AU, 0., 0., 0., 0., 0.}};
-  kep3::udpla::keplerian udpla4{ref_epoch, par4};
+  // This is a circular orbit at 1 AU.
+  std::array<std::array<double, 3>, 2> pos_vel_0{
+      {{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}};
+  // A keplerian planet orbiting the Sun on such a perfectly circular orbit.
+  kep3::udpla::keplerian udpla1{ref_epoch, pos_vel_0, kep3::MU_SUN};
   double period_in_days =
       (2 * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
-  auto [r, v] = udpla1.eph(ref_epoch + 200* period_in_days);
-  fmt::print("r: {},{},{}", r[0] / kep3::AU, r[1] / kep3::AU, r[2] / kep3::AU);
-  fmt::print("r: {},{},{}", v[0] / kep3::EARTH_VELOCITY,
-             v[1] / kep3::EARTH_VELOCITY, v[2] / kep3::EARTH_VELOCITY);
+  auto [r, v] = udpla1.eph(ref_epoch + period_in_days);
+  REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
+  REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
 }
