@@ -171,10 +171,3 @@ TEST_CASE("extreme_orbit") {
   double tof = 4.454030166101634;
   propagate_lagrangian_u(pos_vel, tof, 1.);
 }
-
-TEST_CASE("propagate_lagrangian_high_tofs") {
-  // This is not a test just a placeholder to reproduce the problem with long propagation times
-  std::array<std::array<double, 3>, 2> pos_vel = {{{1., 0, 0.}, {0., 1., 0.}}};
-  propagate_lagrangian(pos_vel, 1e8 * 2 * kep3::pi, 1.);
-  fmt::print("\n In propagate_lagrangian_high_tofs\nAfter One Revolution: {}\n", pos_vel);
-}
