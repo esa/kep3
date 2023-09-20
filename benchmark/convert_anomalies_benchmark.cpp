@@ -98,7 +98,6 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N) {
 }
 
 int main() {
-  unsigned seed = 7898935u;
   fmt::print("\nComputes speed at different eccentricity ranges:\n");
   perform_test_speed(0, 0.5, 1000000);
   perform_test_speed(0.5, 0.9, 1000000);

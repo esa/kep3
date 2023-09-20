@@ -32,7 +32,8 @@ void test_propagate_lagrangian(
                              double)> &propagate,
     unsigned int N = 10000) {
   { // Elliptical circular motion xy
-    std::array<std::array<double, 3>, 2> pos_vel = {1., 0, 0., 0., 1., 0.};
+    std::array<std::array<double, 3>, 2> pos_vel = {
+        {{1., 0, 0.}, {0., 1., 0.}}};
     propagate(pos_vel, pi / 2., 1.);
     auto &[pos, vel] = pos_vel;
 
@@ -44,7 +45,8 @@ void test_propagate_lagrangian(
     REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
   }
   { // Elliptical circular motion xy
-    std::array<std::array<double, 3>, 2> pos_vel = {1., 0, 0., 0., 1., 0.};
+    std::array<std::array<double, 3>, 2> pos_vel = {
+        {{1., 0, 0.}, {0., 1., 0.}}};
     propagate(pos_vel, -pi / 2., 1.);
     auto &[pos, vel] = pos_vel;
 
@@ -56,7 +58,8 @@ void test_propagate_lagrangian(
     REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
   }
   { // Elliptical circular motion xz
-    std::array<std::array<double, 3>, 2> pos_vel = {1., 0, 0., 0., 0., 1.};
+    std::array<std::array<double, 3>, 2> pos_vel = {
+        {{1., 0, 0.}, {0., 0., 1.}}};
     propagate(pos_vel, pi / 2., 1.);
     auto &[pos, vel] = pos_vel;
 
@@ -68,7 +71,8 @@ void test_propagate_lagrangian(
     REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
   }
   { // Elliptical circular motion yz
-    std::array<std::array<double, 3>, 2> pos_vel = {0., 1, 0., 0., 0., 1.};
+    std::array<std::array<double, 3>, 2> pos_vel = {
+        {{0., 1, 0.}, {0., 0., 1.}}};
     propagate(pos_vel, pi / 2., 1.);
     auto &[pos, vel] = pos_vel;
 
@@ -182,16 +186,16 @@ TEST_CASE("propagate_lagrangian") {
 
 TEST_CASE("infinite loop") {
   std::array<std::array<double, 3>, 2> pos_vel = {
-      3.2479950146598147, 4.866100102242875,  0.8564969484971678,
-      0.3140399734911721, 0.5042257639093218, 0.09475180867356801};
+      {{3.2479950146598147, 4.866100102242875, 0.8564969484971678},
+       {0.3140399734911721, 0.5042257639093218, 0.09475180867356801}}};
   double tof = 6.023574175415248;
   kep3::propagate_lagrangian(pos_vel, -tof, 1.);
 }
 
 TEST_CASE("extreme_orbit") {
   std::array<std::array<double, 3>, 2> pos_vel = {
-      0.8086322075411211,   -1.3297145067523164, -2.4969299661382585,
-      -0.02869546877795607, 0.05765808202641542, -0.03999826575867087};
+      {{0.8086322075411211, -1.3297145067523164, -2.4969299661382585},
+       {-0.02869546877795607, 0.05765808202641542, -0.03999826575867087}}};
   double tof = 4.454030166101634;
   kep3::propagate_lagrangian_u(pos_vel, tof, 1.);
 }

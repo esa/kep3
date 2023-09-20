@@ -54,7 +54,7 @@ void perform_test_speed(
   for (auto i = 0u; i < N; ++i) {
     auto ecc = ecc_d(rng_engine);
     auto sma = sma_d(rng_engine);
-    ecc > 1. ? sma = -sma : sma = sma;
+    ecc > 1. ? sma = -sma : sma;
     double f = pi;
     while (std::cos(f) < -1. / ecc && sma < 0.) {
       f = f_d(rng_engine);
@@ -108,13 +108,12 @@ void perform_test_accuracy(
     while (std::cos(f) < -1. / ecc && sma < 0.) {
       ecc = ecc_d(rng_engine);
       sma = sma_d(rng_engine);
-      ecc > 1. ? sma = -sma : sma = sma;
+      ecc > 1. ? sma = -sma : sma;
       f = f_d(rng_engine);
     }
 
-    pos_vels[i] = {
-        sma, ecc, incl_d(rng_engine), Omega_d(rng_engine), omega_d(rng_engine),
-        f};
+    pos_vels[i] = kep3::par2ic({sma, ecc, incl_d(rng_engine),
+                                Omega_d(rng_engine), omega_d(rng_engine), f}, 1.);
     tofs[i] = tof_d(rng_engine);
   }
   // We log progress
