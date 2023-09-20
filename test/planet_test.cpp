@@ -189,7 +189,7 @@ TEST_CASE("construction") {
     simple_udpla_mu_h udpla{};
     REQUIRE_NOTHROW(planet(udpla));
     planet pla(udpla);
-    REQUIRE_THROWS_AS((pla.period()), std::logic_error);
+    REQUIRE(!std::isfinite(pla.period()));
   }
   {
     // Constructor from a simple udpla with mu and elliptical orbit

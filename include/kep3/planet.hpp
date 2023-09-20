@@ -231,10 +231,8 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
       double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
       double en = v2 / 2. - mu / R;
       if (en > 0) {
-        // If the energy is positive we have an hyperbolae
-        throw std::logic_error(
-            "Hyperbolic conditions detected no period available for '" +
-            get_name() + "'");
+        // If the energy is positive we have an hyperbolae and we return nan
+        return std::numeric_limits<double>::quiet_NaN();
       } else {
         double a = -mu / 2. / en;
         return kep3::pi * 2. * std::sqrt(a * a * a / mu);
