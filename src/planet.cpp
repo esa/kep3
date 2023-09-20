@@ -59,6 +59,10 @@ std::array<std::array<double, 3>, 2> planet::eph(const epoch &ep) {
   return ptr()->eph(ep);
 }
 
+double planet::period(const epoch &ep) const {
+  return ptr()->period(ep);
+}
+
 std::string planet::get_name() const { return ptr()->get_name(); }
 
 std::string planet::get_extra_info() const { return ptr()->get_extra_info(); }

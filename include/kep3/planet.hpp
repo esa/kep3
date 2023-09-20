@@ -361,7 +361,7 @@ public:
   [[nodiscard]] double get_mu_self() const;
   [[nodiscard]] double get_radius() const;
   [[nodiscard]] double get_safe_radius() const;
-  [[nodiscard]] double period(const kep3::epoch &) const;
+  [[nodiscard]] double period(const kep3::epoch & = kep3::epoch()) const;
 };
 
 // Streaming operator for algorithm.
