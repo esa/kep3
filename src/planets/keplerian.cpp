@@ -30,7 +30,8 @@ keplerian::keplerian(const epoch &ref_epoch,
                      std::array<double, 3> added_params)
     : m_ref_epoch(ref_epoch), m_pos_vel_0(pos_vel), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_ellipse() {
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
+      m_ellipse() {
   double R =
       std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] +
                 pos_vel[0][2] * pos_vel[0][2]);
@@ -39,6 +40,8 @@ keplerian::keplerian(const epoch &ref_epoch,
                   2. -
               mu_central_body / R;
   (en > 0) ? m_ellipse = false : m_ellipse = true;
+  double a = -m_mu_central_body / 2. / en;
+  m_period = kep3::pi * 2. * std::sqrt(a * a * a / m_mu_central_body);
 }
 
 keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
@@ -46,7 +49,8 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
                      std::array<double, 3> added_params)
     : m_ref_epoch(ref_epoch), m_pos_vel_0(), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_ellipse() {
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
+      m_ellipse() {
 
   if (par[0] * (1 - par[1]) <= 0) {
     throw std::domain_error(
@@ -56,6 +60,8 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
   }
   m_pos_vel_0 = kep3::par2ic(par, mu_central_body);
   (par[0] < 0) ? m_ellipse = false : m_ellipse = true;
+  m_period =
+      kep3::pi * 2. * std::sqrt(par[0] * par[0] * par[0] / m_mu_central_body);
 }
 
 std::array<std::array<double, 3>, 2>
@@ -77,6 +83,8 @@ double keplerian::get_mu_self() const { return m_mu_self; }
 double keplerian::get_radius() const { return m_radius; }
 
 double keplerian::get_safe_radius() const { return m_safe_radius; }
+
+double keplerian::period(const kep3::epoch &) const { return m_period; }
 
 kep3::epoch keplerian::get_ref_epoch() const { return m_ref_epoch; }
 

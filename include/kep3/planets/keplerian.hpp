@@ -32,6 +32,7 @@ class kep3_DLL_PUBLIC keplerian {
   double m_mu_self;
   double m_radius;
   double m_safe_radius;
+  double m_period;
   bool m_ellipse;
 
   friend class boost::serialization::access;
@@ -43,6 +44,7 @@ class kep3_DLL_PUBLIC keplerian {
     ar &m_mu_self;
     ar &m_radius;
     ar &m_safe_radius;
+    ar &m_period;
     ar &m_ellipse;
   }
 
@@ -68,6 +70,7 @@ public:
   [[nodiscard]] double get_radius() const;
   [[nodiscard]] double get_safe_radius() const;
   [[nodiscard]] std::string get_extra_info() const;
+  [[nodiscard]] double period(const kep3::epoch & = kep3::epoch()) const;
 
   // Other methods
   [[nodiscard]] kep3::epoch get_ref_epoch() const;
