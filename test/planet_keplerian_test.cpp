@@ -30,12 +30,12 @@ TEST_CASE("constructor") {
                                          "unknown",
                                          {-1, -1, -1}});
   // From parameters kep3::elements_type::KEP_F
-  std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
-  REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par, 1., "unknown"});
+  std::array<double, 6> par0{{1., 0., 0., 0., 0., 0.}};
+  REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par0, 1., "unknown"});
   REQUIRE_NOTHROW(
-      kep3::udpla::keplerian{ref_epoch, par, 1., "unknown", {-1, -1, -1}});
+      kep3::udpla::keplerian{ref_epoch, par0, 1., "unknown", {-1, -1, -1}});
   // Checking the data members initializations:
-  kep3::udpla::keplerian udpla{ref_epoch, par, 1.1, "unknown", {1.2, 2.2, 1.9}};
+  kep3::udpla::keplerian udpla{ref_epoch, par0, 1.1, "unknown", {1.2, 2.2, 1.9}};
   REQUIRE(udpla.get_ref_epoch() == ref_epoch);
   REQUIRE(udpla.get_name() == "unknown");
   REQUIRE(udpla.get_mu_central_body() == 1.1);
