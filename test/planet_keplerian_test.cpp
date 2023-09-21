@@ -16,26 +16,30 @@
 #include <stdexcept>
 
 #include "catch.hpp"
+#include "kep3/core_astro/convert_anomalies.hpp"
+#include "kep3/core_astro/ic2eq2ic.hpp"
 #include "test_helpers.hpp"
 
+using kep3::udpla::keplerian;
+
 TEST_CASE("constructor") {
-  REQUIRE_NOTHROW(kep3::udpla::keplerian{});
+  REQUIRE_NOTHROW(keplerian{});
   kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
   // From posvel
-  REQUIRE_NOTHROW(kep3::udpla::keplerian{
+  REQUIRE_NOTHROW(keplerian{
       ref_epoch, {{{0.3, 1., 0.2}, {0.0, 1.12, 0.}}}, 1., "unknown"});
-  REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+  REQUIRE_NOTHROW(keplerian{ref_epoch,
                                          {{{0.3, 1., 0.2}, {0.0, 1.12, 0.}}},
                                          1.,
                                          "unknown",
                                          {-1, -1, -1}});
   // From parameters kep3::elements_type::KEP_F
   std::array<double, 6> par0{{1., 0., 0., 0., 0., 0.}};
-  REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par0, 1., "unknown"});
+  REQUIRE_NOTHROW(keplerian{ref_epoch, par0, 1., "unknown"});
   REQUIRE_NOTHROW(
-      kep3::udpla::keplerian{ref_epoch, par0, 1., "unknown", {-1, -1, -1}});
+      keplerian{ref_epoch, par0, 1., "unknown", {-1, -1, -1}});
   // Checking the data members initializations:
-  kep3::udpla::keplerian udpla{
+  keplerian udpla{
       ref_epoch, par0, 1.1, "unknown", {1.2, 2.2, 1.9}};
   REQUIRE(udpla.get_ref_epoch() == ref_epoch);
   REQUIRE(udpla.get_name() == "unknown");
@@ -47,7 +51,7 @@ TEST_CASE("constructor") {
   // Calling constructor with different elements type
   {
     std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_NOTHROW(keplerian{ref_epoch,
                                            par,
                                            1.,
                                            "unknown",
@@ -56,7 +60,7 @@ TEST_CASE("constructor") {
   }
   {
     std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_NOTHROW(keplerian{ref_epoch,
                                            par,
                                            1.,
                                            "unknown",
@@ -65,12 +69,12 @@ TEST_CASE("constructor") {
   }
   {
     std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{
+    REQUIRE_NOTHROW(keplerian{
         ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEQ});
   }
   {
     std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_NOTHROW(keplerian{ref_epoch,
                                            par,
                                            1.,
                                            "unknown",
@@ -79,7 +83,7 @@ TEST_CASE("constructor") {
   }
   { // hyperbola and mean anomaly????
     std::array<double, 6> par{{-10., 10., 0., 1., 0., 0.}};
-    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_THROWS_AS((keplerian{ref_epoch,
                                               par,
                                               1.,
                                               "unknown",
@@ -89,7 +93,7 @@ TEST_CASE("constructor") {
   }
   { // posvel as 1x6 orbital parameters????
     std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_THROWS_AS((keplerian{ref_epoch,
                                               par,
                                               1.,
                                               "unknown",
@@ -99,7 +103,7 @@ TEST_CASE("constructor") {
   }
   { // negative a but ecc < 1????
     std::array<double, 6> par{{-10., 0., 0., 1., 0., 0.}};
-    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+    REQUIRE_THROWS_AS((keplerian{ref_epoch,
                                               par,
                                               1.,
                                               "unknown",
@@ -109,16 +113,15 @@ TEST_CASE("constructor") {
   }
   { // We construct an hyperbolic planet
     std::array<double, 6> par{{-10., 10., 0., 0., 0., 0.}};
-    kep3::udpla::keplerian udpla2{ref_epoch,    par,
-                                 1.,           "unknown",
-                                 {-1, -1, -1}, kep3::elements_type::KEP_F};
+    keplerian udpla2{ref_epoch,    par,
+                                  1.,           "unknown",
+                                  {-1, -1, -1}, kep3::elements_type::KEP_F};
     REQUIRE(!std::isfinite(udpla2.period()));
   }
   { // We construct an hyperbolic planet
-    std::array<std::array<double, 3>, 2> posvel{{{1,0,0},{0,10,0}}};
-    kep3::udpla::keplerian udpla2{ref_epoch,    posvel,
-                                 1.,           "unknown",
-                                 {-1, -1, -1}};
+    std::array<std::array<double, 3>, 2> posvel{{{1, 0, 0}, {0, 10, 0}}};
+    keplerian udpla2{
+        ref_epoch, posvel, 1., "unknown", {-1, -1, -1}};
     REQUIRE(!std::isfinite(udpla2.period()));
   }
 }
@@ -130,10 +133,50 @@ TEST_CASE("eph") {
   std::array<std::array<double, 3>, 2> pos_vel_0{
       {{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}};
   // A keplerian planet orbiting the Sun on such a perfectly circular orbit.
-  kep3::udpla::keplerian udpla1{ref_epoch, pos_vel_0, kep3::MU_SUN};
+  keplerian udpla1{ref_epoch, pos_vel_0, kep3::MU_SUN};
   double period_in_days =
       (2 * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
   auto [r, v] = udpla1.eph(ref_epoch + period_in_days);
   REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
   REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
+}
+
+TEST_CASE("elements") {
+  kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
+  // Non singular elements
+  std::array<std::array<double, 3>, 2> pos_vel{{{1., 0.1, 0.1}, {0.1, 1., 0.1}}};
+  keplerian udpla{ref_epoch, pos_vel};
+  // Test on various element types
+  {
+    auto par = udpla.elements(kep3::elements_type::KEP_F);
+    auto [r, v] = kep3::par2ic(par, 1.);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
+  }
+  {
+    auto par = udpla.elements(kep3::elements_type::KEP_M);
+    par[5] = kep3::m2f(par[5], par[1]);
+    auto [r, v] = kep3::par2ic(par, 1.);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
+  }
+  {
+    auto par = udpla.elements(kep3::elements_type::MEQ);
+    auto [r, v] = kep3::eq2ic(par, 1.);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
+  }
+  {
+    auto par = udpla.elements(kep3::elements_type::MEQ_R);
+    auto [r, v] = kep3::eq2ic(par, 1., true);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
+  }
+  {
+    REQUIRE_THROWS_AS(udpla.elements(kep3::elements_type::POSVEL), std::logic_error);
+  }
+}
+
+TEST_CASE("stream_operator") {
+  REQUIRE_NOTHROW((std::cout << keplerian{} << '\n'));
 }
