@@ -28,11 +28,11 @@ const std::array<double, 3> lambert_problem::default_r2 = {{0.0, 1.0, 0.0}};
 /// Constructor
 /** Constructs and solves a Lambert problem.
  *
- * \param[in] R1 first cartesian position
- * \param[in] R2 second cartesian position
+ * \param[in] r1_a first cartesian position
+ * \param[in] r2_a second cartesian position
  * \param[in] tof time of flight
  * \param[in] mu gravity parameter
- * \param[in] cw when 1 a retrograde orbit is assumed
+ * \param[in] cw when true a retrograde orbit is assumed
  * \param[in] multi_revs maximum number of multirevolutions to compute
  */
 lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
@@ -75,22 +75,18 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   double lambda2 = 1.0 - m_c / m_s;
   m_lambda = std::sqrt(lambda2);
 
-  xt::xtensor_fixed<double, xt::xshape<3>> it1{0.0, 0.0, 0.0};
-  xt::xtensor_fixed<double, xt::xshape<3>> it2{0.0, 0.0, 0.0};
+  auto it1 = cross(ih, ir1);
+  auto it2 = cross(ih, ir2);
+  it1 = it1 / xt::linalg::norm(it1);
+  it2 = it2 / xt::linalg::norm(it2);
 
   if (ih(2) < 0.0) // Transfer angle is larger than 180 degrees as seen from
                    // above the z axis
   {
     m_lambda = -m_lambda;
-    it1 = cross(ir1, ih);
-    it2 = cross(ir2, ih);
-  } else {
-    it1 = cross(ih, ir1);
-    it2 = cross(ih, ir2);
+    it1 = -it1;
+    it2 = -it2;
   }
-  it1 = it1 / xt::linalg::norm(it1);
-  it2 = it2 / xt::linalg::norm(it2);
-
   if (cw) { // Retrograde motion
     m_lambda = -m_lambda;
     it1 = -it1;
@@ -117,7 +113,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
         if (DT != 0.0) {
           x_new = x_old - DT * DDT / (DDT * DDT - DT * DDDT / 2.0);
         }
-        err = fabs(x_old - x_new);
+        err = std::abs(x_old - x_new);
         if ((err < 1e-13) || (it > 12)) {
           break;
         }
@@ -160,11 +156,13 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
     tmp = std::pow((static_cast<double>(i) * kep3::pi + kep3::pi) / (8.0 * T),
                    2.0 / 3.0);
     m_x[2 * i - 1] = (tmp - 1) / (tmp + 1);
-    m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], static_cast<unsigned>(i), 1e-8, 15);
+    m_iters[2 * i - 1] =
+        householder(T, m_x[2 * i - 1], static_cast<unsigned>(i), 1e-8, 15);
     // 3.2.1 right Householder iterations
     tmp = std::pow((8.0 * T) / (static_cast<double>(i) * kep3::pi), 2.0 / 3.0);
     m_x[2 * i] = (tmp - 1) / (tmp + 1);
-    m_iters[2ul * i] = householder(T, m_x[2 * i], static_cast<unsigned>(i), 1e-8, 15);
+    m_iters[2ul * i] =
+        householder(T, m_x[2 * i], static_cast<unsigned>(i), 1e-8, 15);
   }
 
   // 4 - For each found x value we reconstruct the terminal velocities

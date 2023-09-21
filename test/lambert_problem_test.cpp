@@ -15,7 +15,7 @@
 
 
 TEST_CASE("construct") {
-  kep3::lambert_problem lp{{1.,0.,0.}, {0.,1.,0.}, kep3::pi/2,1.};
+  kep3::lambert_problem lp{{1.,0.,0.}, {0.,1.,0.}, kep3::pi/2 + 2*kep3::pi,1.,false,100};
   std::cout << lp << std::endl;
 
 }
