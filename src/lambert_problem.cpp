@@ -56,8 +56,6 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
 
   // 1 - Getting lambda and T
   m_c = xt::linalg::norm(r2 - r1);
-  fmt::print("\nxt::norm {}:", xt::norm(r2 - r1));
-  fmt::print("\nxt::linalg::norm {}:", xt::linalg::norm(r2 - r1));
 
   double R1 = xt::linalg::norm(r1);
   double R2 = xt::linalg::norm(r2);
@@ -162,7 +160,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
     tmp = std::pow((static_cast<double>(i) * kep3::pi + kep3::pi) / (8.0 * T),
                    2.0 / 3.0);
     m_x[2 * i - 1] = (tmp - 1) / (tmp + 1);
-    m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], i, 1e-8, 15);
+    m_iters[2  * i - 1] = householder(T, m_x[2 * i - 1], i, 1e-8, 15);
     // 3.2.1 right Householder iterations
     tmp = std::pow((8.0 * T) / (static_cast<double>(i) * kep3::pi), 2.0 / 3.0);
     m_x[2 * i] = (tmp - 1) / (tmp + 1);
