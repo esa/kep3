@@ -88,13 +88,13 @@ void test_propagate_lagrangian(
   // We test orbital parameters are unchanged for random propagations
   // Engines
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-  std::mt19937 rng_engine(12201203u);
+  std::mt19937 rng_engine(1220202343u);
 
   { // Targeting Ellipses
     std::uniform_real_distribution<double> sma_d(1.1, 10.);
     std::uniform_real_distribution<double> ecc_d(0, 0.9);
-    std::uniform_real_distribution<double> incl_d(0., pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
+    std::uniform_real_distribution<double> incl_d(0., kep3::pi);
+    std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
     std::uniform_real_distribution<double> omega_d(0., pi);
     std::uniform_real_distribution<double> f_d(0, 2 * pi);
     std::uniform_real_distribution<double> time_d(-2. * kep3::pi,

@@ -162,11 +162,11 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
     tmp = std::pow((static_cast<double>(i) * kep3::pi + kep3::pi) / (8.0 * T),
                    2.0 / 3.0);
     m_x[2 * i - 1] = (tmp - 1) / (tmp + 1);
-    m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], i, 1e-8, 15);
+    m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], static_cast<unsigned>(i), 1e-8, 15);
     // 3.2.1 right Householder iterations
     tmp = std::pow((8.0 * T) / (static_cast<double>(i) * kep3::pi), 2.0 / 3.0);
     m_x[2 * i] = (tmp - 1) / (tmp + 1);
-    m_iters[2ul * i] = householder(T, m_x[2 * i], i, 1e-8, 15);
+    m_iters[2ul * i] = householder(T, m_x[2 * i], static_cast<unsigned>(i), 1e-8, 15);
   }
 
   // 4 - For each found x value we reconstruct the terminal velocities
@@ -195,7 +195,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
 unsigned lambert_problem::householder(double T, double &x0,
                                       unsigned N, // NOLINT
                                       double eps, unsigned iter_max) const {
-  int it = 0;
+  unsigned it = 0;
   double err = 1.0;
   double xnew = 0.0;
   double tof = 0.0, delta = 0.0, DT = 0.0, DDT = 0.0, DDDT = 0.0;
@@ -407,7 +407,7 @@ std::ostream &operator<<(std::ostream &s, const lambert_problem &lp) {
   s << " v2 = "
     << "[" << lp.m_v2[0][0] << ", " << lp.m_v2[0][1] << ", " << lp.m_v2[0][2]
     << "]" << std::endl;
-  for (int i = 0; i < lp.m_Nmax; ++i) {
+  for (std::vector<double>::size_type i = 0lu; i < lp.m_Nmax; ++i) {
     s << i + 1 << " revs,  left. Iters: " << lp.m_iters[1 + 2 * i]
       << ", x: " << lp.m_x[1 + 2 * i]
       << ", a: " << lp.m_s / 2.0 / (1 - lp.m_x[1 + 2 * i] * lp.m_x[1 + 2 * i])
