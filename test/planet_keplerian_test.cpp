@@ -11,7 +11,9 @@
 #include <fmt/ranges.h>
 
 #include <kep3/core_astro/constants.hpp>
+#include <kep3/detail/exceptions.hpp>
 #include <kep3/planets/keplerian.hpp>
+#include <stdexcept>
 
 #include "catch.hpp"
 #include "test_helpers.hpp"
@@ -44,23 +46,74 @@ TEST_CASE("constructor") {
   // Calling constructor with different elements type
   {
     std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
-                           "unknown", {-1, -1, -1}, kep3::elements_type::KEP_F});
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+                                           par,
+                                           1.,
+                                           "unknown",
+                                           {-1, -1, -1},
+                                           kep3::elements_type::KEP_F});
   }
   {
     std::array<double, 6> par{{1., 0., 0., 0., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
-                           "unknown", {-1, -1, -1}, kep3::elements_type::KEP_M});
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+                                           par,
+                                           1.,
+                                           "unknown",
+                                           {-1, -1, -1},
+                                           kep3::elements_type::KEP_M});
   }
   {
     std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
-                           "unknown", {-1, -1, -1}, kep3::elements_type::MEQ});
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{
+        ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEQ});
   }
   {
     std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch, par,          1.,
-                           "unknown", {-1, -1, -1}, kep3::elements_type::MEQ_R});
+    REQUIRE_NOTHROW(kep3::udpla::keplerian{ref_epoch,
+                                           par,
+                                           1.,
+                                           "unknown",
+                                           {-1, -1, -1},
+                                           kep3::elements_type::MEQ_R});
+  }
+  { // hyperbola and mean anomaly????
+    std::array<double, 6> par{{-10., 10., 0., 1., 0., 0.}};
+    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+                                              par,
+                                              1.,
+                                              "unknown",
+                                              {-1, -1, -1},
+                                              kep3::elements_type::KEP_M}),
+                      std::logic_error);
+  }
+  { // posvel as 1x6 orbital parameters????
+    std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
+    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+                                              par,
+                                              1.,
+                                              "unknown",
+                                              {-1, -1, -1},
+                                              kep3::elements_type::POSVEL}),
+                      std::logic_error);
+  }
+  { // negative a but ecc < 1????
+    std::array<double, 6> par{{-10., 0., 0., 1., 0., 0.}};
+    REQUIRE_THROWS_AS((kep3::udpla::keplerian{ref_epoch,
+                                              par,
+                                              1.,
+                                              "unknown",
+                                              {-1, -1, -1},
+                                              kep3::elements_type::KEP_F}),
+                      std::domain_error);
+  }
+  { // We construct an hyperbolic planet
+    std::array<double, 6> par{{-10., 10., 0., 0., 0., 0.}};
+    REQUIRE_NOTHROW((kep3::udpla::keplerian{ref_epoch,
+                                            par,
+                                            1.,
+                                            "unknown",
+                                            {-1, -1, -1},
+                                            kep3::elements_type::KEP_F}));
   }
 }
 
