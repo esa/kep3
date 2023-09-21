@@ -12,8 +12,8 @@
 
 #include <fmt/core.h>
 
-#include <kep3/detail/exceptions.hpp>
 #include <kep3/epoch.hpp>
+#include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
 #include "catch.hpp"

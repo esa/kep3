@@ -23,11 +23,11 @@
 #endif
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
-#include <kep3/detail/exceptions.hpp>
 #include <kep3/detail/type_name.hpp>
 #include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
+#include <kep3/exceptions.hpp>
 
 #define kep3_S11N_PLANET_EXPORT_KEY(PLA)                                       \
   BOOST_CLASS_EXPORT_KEY2(kep3::detail::planet_inner<PLA>, "udpla " #PLA)      \

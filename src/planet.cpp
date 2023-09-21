@@ -7,10 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
-#include <kep3/detail/exceptions.hpp>
+#include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
-
 
 namespace kep3::detail {
 
@@ -59,9 +57,7 @@ std::array<std::array<double, 3>, 2> planet::eph(const epoch &ep) {
   return ptr()->eph(ep);
 }
 
-double planet::period(const epoch &ep) const {
-  return ptr()->period(ep);
-}
+double planet::period(const epoch &ep) const { return ptr()->period(ep); }
 
 std::string planet::get_name() const { return ptr()->get_name(); }
 
@@ -70,7 +66,8 @@ std::string planet::get_extra_info() const { return ptr()->get_extra_info(); }
 double planet::get_mu_central_body() const {
   double mu = ptr()->get_mu_central_body();
   if (mu == -1.) {
-    throw not_implemented_error("A central body mu has not been declared for '" + get_name() + "'");
+    throw not_implemented_error(
+        "A central body mu has not been declared for '" + get_name() + "'");
   }
   return mu;
 }
@@ -78,7 +75,8 @@ double planet::get_mu_central_body() const {
 double planet::get_mu_self() const {
   double mu = ptr()->get_mu_self();
   if (mu == -1.) {
-    throw not_implemented_error("A body mu has not been declared for '" + get_name() + "'");
+    throw not_implemented_error("A body mu has not been declared for '" +
+                                get_name() + "'");
   }
   return mu;
 }
@@ -86,7 +84,8 @@ double planet::get_mu_self() const {
 double planet::get_radius() const {
   double mu = ptr()->get_radius();
   if (mu == -1.) {
-    throw not_implemented_error("A body radius has not been declared for '" + get_name() + "'");
+    throw not_implemented_error("A body radius has not been declared for '" +
+                                get_name() + "'");
   }
   return mu;
 }
@@ -94,7 +93,9 @@ double planet::get_radius() const {
 double planet::get_safe_radius() const {
   double mu = ptr()->get_safe_radius();
   if (mu == -1.) {
-    throw not_implemented_error("A body safe radius has has not been declared for '" + get_name() + "'");
+    throw not_implemented_error(
+        "A body safe radius has has not been declared for '" + get_name() +
+        "'");
   }
   return mu;
 }
