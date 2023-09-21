@@ -21,7 +21,6 @@
 namespace kep3 {
 
 using xt::linalg::cross;
-using xt::linalg::dot;
 
 const std::array<double, 3> lambert_problem::default_r1 = {{1.0, 0.0, 0.0}};
 const std::array<double, 3> lambert_problem::default_r2 = {{0.0, 1.0, 0.0}};
@@ -57,7 +56,9 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
 
   // 1 - Getting lambda and T
   m_c = xt::linalg::norm(r2 - r1);
-  fmt::print("DEBUG {}, {}:", m_c, r2-r1);
+  fmt::print("\nxt::norm {}:", xt::norm(r2 - r1));
+  fmt::print("\nxt::linalg::norm {}:", xt::linalg::norm(r2 - r1));
+
   double R1 = xt::linalg::norm(r1);
   double R2 = xt::linalg::norm(r2);
   m_s = (m_c + R1 + R2) / 2.0;
@@ -103,7 +104,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   // 2 - We now have lambda, T and we will find all x
   // 2.1 - Let us first detect the maximum number of revolutions for which there
   // exists a solution
-  m_Nmax = std::floor(T / kep3::pi);
+  m_Nmax = static_cast<unsigned>(T / kep3::pi);
   double T00 = std::acos(m_lambda) + m_lambda * std::sqrt(1.0 - lambda2);
   double T0 = (T00 + m_Nmax * kep3::pi);
   double T1 = 2.0 / 3.0 * (1.0 - lambda3), DT = 0.0, DDT = 0.0, DDDT = 0.0;
@@ -156,15 +157,16 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   m_iters[0] = householder(T, m_x[0], 0, 1e-5, 15);
   // 3.2 multi rev solutions
   double tmp = 0.;
-  for (decltype(m_Nmax) i = 1; i < m_Nmax + 1; ++i) {
+  for (std::vector<double>::size_type i = 1u; i < m_Nmax + 1; ++i) {
     // 3.2.1 left Householder iterations
-    tmp = std::pow((i * M_PI + M_PI) / (8.0 * T), 2.0 / 3.0);
+    tmp = std::pow((static_cast<double>(i) * kep3::pi + kep3::pi) / (8.0 * T),
+                   2.0 / 3.0);
     m_x[2 * i - 1] = (tmp - 1) / (tmp + 1);
     m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], i, 1e-8, 15);
     // 3.2.1 right Householder iterations
-    tmp = std::pow((8.0 * T) / (i * M_PI), 2.0 / 3.0);
+    tmp = std::pow((8.0 * T) / (static_cast<double>(i) * kep3::pi), 2.0 / 3.0);
     m_x[2 * i] = (tmp - 1) / (tmp + 1);
-    m_iters[2 * i] = householder(T, m_x[2 * i], i, 1e-8, 15);
+    m_iters[2ul * i] = householder(T, m_x[2 * i], i, 1e-8, 15);
   }
 
   // 4 - For each found x value we reconstruct the terminal velocities
@@ -181,10 +183,10 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
     double vt = gamma * sigma * (y + m_lambda * m_x[i]);
     vt1 = vt / R1;
     vt2 = vt / R2;
-    for (int j = 0; j < 3; ++j) {
+    for (auto j = 0lu; j < 3lu; ++j) {
       m_v1[i][j] = vr1 * ir1[j] + vt1 * it1[j];
     }
-    for (int j = 0; j < 3; ++j) {
+    for (auto j = 0lu; j < 3lu; ++j) {
       m_v2[i][j] = vr2 * ir2[j] + vt2 * it2[j];
     }
   }
@@ -237,7 +239,7 @@ void lambert_problem::x2tof2(double &tof, double x, // NOLINT
     }
     tof = ((a * std::sqrt(a) *
             ((alfa - std::sin(alfa)) - (beta - std::sin(beta)) +
-             2.0 * M_PI * N)) /
+             2.0 * kep3::pi * N)) /
            2.0);
   } else {
     double alfa = 2.0 * std::acosh(x);
@@ -276,7 +278,7 @@ void lambert_problem::x2tof(double &tof, double x, unsigned N) const {
     double d = 0.0;
     if (E < 0) {
       double l = std::acos(g);
-      d = N * M_PI + l;
+      d = N * kep3::pi + l;
     } else {
       double f = y * (z - m_lambda * x);
       d = std::log(f + g);
