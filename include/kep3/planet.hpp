@@ -10,6 +10,7 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
+#include "kep3/detail/typeid_name_extract.hpp"
 #include <memory>
 #include <stdexcept>
 #include <string>
