@@ -22,7 +22,6 @@ namespace kep3 {
 
 using xt::linalg::cross;
 using xt::linalg::dot;
-using xt::linalg::norm;
 
 const std::array<double, 3> lambert_problem::default_r1 = {{1.0, 0.0, 0.0}};
 const std::array<double, 3> lambert_problem::default_r2 = {{0.0, 1.0, 0.0}};
@@ -57,15 +56,16 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   const auto r2 = xt::adapt(r2_a);
 
   // 1 - Getting lambda and T
-  m_c = norm(r2 - r1)(0);
-  double R1 = norm(r1)(0);
-  double R2 = norm(r2)(0);
+  m_c = xt::linalg::norm(r2 - r1);
+  fmt::print("DEBUG {}, {}:", m_c, r2-r1);
+  double R1 = xt::linalg::norm(r1);
+  double R2 = xt::linalg::norm(r2);
   m_s = (m_c + R1 + R2) / 2.0;
 
   auto ir1 = r1 / R1;
   auto ir2 = r2 / R2;
   auto ih = cross(ir1, ir2);
-  ih = ih / norm(ih);
+  ih = ih / xt::linalg::norm(ih);
 
   if (ih(2) == 0) {
     throw std::domain_error(
@@ -89,8 +89,8 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
     it1 = cross(ih, ir1);
     it2 = cross(ih, ir2);
   }
-  it1 = it1 / norm(it1);
-  it2 = it2 / norm(it2);
+  it1 = it1 / xt::linalg::norm(it1);
+  it2 = it2 / xt::linalg::norm(it2);
 
   if (cw) { // Retrograde motion
     m_lambda = -m_lambda;
@@ -168,12 +168,12 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   }
 
   // 4 - For each found x value we reconstruct the terminal velocities
-  double gamma = sqrt(m_mu * m_s / 2.0);
+  double gamma = std::sqrt(m_mu * m_s / 2.0);
   double rho = (R1 - R2) / m_c;
-  double sigma = sqrt(1 - rho * rho);
+  double sigma = std::sqrt(1 - rho * rho);
   double vr1 = 0., vt1 = 0., vr2 = 0., vt2 = 0., y = 0.;
   for (size_t i = 0; i < m_x.size(); ++i) {
-    y = sqrt(1.0 - lambda2 + lambda2 * m_x[i] * m_x[i]);
+    y = std::sqrt(1.0 - lambda2 + lambda2 * m_x[i] * m_x[i]);
     vr1 =
         gamma * ((m_lambda * y - m_x[i]) - rho * (m_lambda * y + m_x[i])) / R1;
     vr2 =
@@ -204,7 +204,7 @@ unsigned lambert_problem::householder(double T, double &x0,
     double DT2 = DT * DT;
     xnew = x0 - delta * (DT2 - delta * DDT / 2.0) /
                     (DT * (DT2 - delta * DDT) + DDDT * delta * delta / 6.0);
-    err = fabs(x0 - xnew);
+    err = std::abs(x0 - xnew);
     x0 = xnew;
     it++;
   }
@@ -216,7 +216,7 @@ void lambert_problem::dTdx(double &DT, double &DDT, double &DDDT, double x,
   double l2 = m_lambda * m_lambda;
   double l3 = l2 * m_lambda;
   double umx2 = 1.0 - x * x;
-  double y = sqrt(1.0 - l2 * umx2);
+  double y = std::sqrt(1.0 - l2 * umx2);
   double y2 = y * y;
   double y3 = y2 * y;
   DT = 1.0 / umx2 * (3.0 * T * x - 2.0 + 2.0 * l3 * x / y);
@@ -253,33 +253,33 @@ void lambert_problem::x2tof2(double &tof, double x, // NOLINT
 void lambert_problem::x2tof(double &tof, double x, unsigned N) const {
   double battin = 0.01;
   double lagrange = 0.2;
-  double dist = fabs(x - 1);
+  double dist = std::abs(x - 1);
   if (dist < lagrange && dist > battin) { // We use Lagrange tof expression
     x2tof2(tof, x, N);
     return;
   }
   double K = m_lambda * m_lambda;
   double E = x * x - 1.0;
-  double rho = fabs(E);
-  double z = sqrt(1 + K * E);
+  double rho = std::abs(E);
+  double z = std::sqrt(1 + K * E);
   if (dist < battin) { // We use Battin series tof expression
     double eta = z - m_lambda * x;
     double S1 = 0.5 * (1.0 - m_lambda - x * eta);
     double Q = hypergeometricF(S1, 1e-11);
     Q = 4.0 / 3.0 * Q;
     tof = (eta * eta * eta * Q + 4.0 * m_lambda * eta) / 2.0 +
-          N * M_PI / pow(rho, 1.5);
+          N * kep3::pi / std::pow(rho, 1.5);
     return;
   } else { // We use Lancaster tof expresion
-    double y = sqrt(rho);
+    double y = std::sqrt(rho);
     double g = x * z - m_lambda * E;
     double d = 0.0;
     if (E < 0) {
-      double l = acos(g);
+      double l = std::acos(g);
       d = N * M_PI + l;
     } else {
       double f = y * (z - m_lambda * x);
-      d = log(f + g);
+      d = std::log(f + g);
     }
     tof = (x - m_lambda * z - d / y) / E;
     return;
@@ -296,7 +296,7 @@ double lambert_problem::hypergeometricF(double z, double tol) const { // NOLINT
   while (err > tol) {
     Cj1 = Cj * (3.0 + j) * (1.0 + j) / (2.5 + j) * z / (j + 1);
     Sj1 = Sj + Cj1;
-    err = fabs(Cj1);
+    err = std::abs(Cj1);
     Sj = Sj1;
     Cj = Cj1;
     j = j + 1;
@@ -420,7 +420,7 @@ std::ostream &operator<<(std::ostream &s, const lambert_problem &lp) {
       << ", a: " << lp.m_x[2 + 2 * i]
       << ", a: " << lp.m_s / 2.0 / (1 - lp.m_x[2 + 2 * i] * lp.m_x[2 + 2 * i])
       << std::endl;
- s << "\tv1 = "
+    s << "\tv1 = "
       << "[" << lp.m_v1[2 + 2 * i][0] << ", " << lp.m_v1[2 + 2 * i][1] << ", "
       << lp.m_v1[2 + 2 * i][2] << "]";
     s << " v2 = "
