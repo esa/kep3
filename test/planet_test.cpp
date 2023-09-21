@@ -471,7 +471,7 @@ TEST_CASE("serialization_test") {
     boost::archive::binary_oarchive oarchive(ss);
     oarchive << pla;
   }
-  // Create a new algorithm object
+  // Create a new planet object
   auto pla2 = planet{simple_udpla{}};
   boost::lexical_cast<std::string>(pla2); // triggers the streaming operator
   {
