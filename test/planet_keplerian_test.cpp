@@ -35,7 +35,8 @@ TEST_CASE("constructor") {
   REQUIRE_NOTHROW(
       kep3::udpla::keplerian{ref_epoch, par0, 1., "unknown", {-1, -1, -1}});
   // Checking the data members initializations:
-  kep3::udpla::keplerian udpla{ref_epoch, par0, 1.1, "unknown", {1.2, 2.2, 1.9}};
+  kep3::udpla::keplerian udpla{
+      ref_epoch, par0, 1.1, "unknown", {1.2, 2.2, 1.9}};
   REQUIRE(udpla.get_ref_epoch() == ref_epoch);
   REQUIRE(udpla.get_name() == "unknown");
   REQUIRE(udpla.get_mu_central_body() == 1.1);
@@ -108,12 +109,17 @@ TEST_CASE("constructor") {
   }
   { // We construct an hyperbolic planet
     std::array<double, 6> par{{-10., 10., 0., 0., 0., 0.}};
-    REQUIRE_NOTHROW((kep3::udpla::keplerian{ref_epoch,
-                                            par,
-                                            1.,
-                                            "unknown",
-                                            {-1, -1, -1},
-                                            kep3::elements_type::KEP_F}));
+    kep3::udpla::keplerian udpla2{ref_epoch,    par,
+                                 1.,           "unknown",
+                                 {-1, -1, -1}, kep3::elements_type::KEP_F};
+    REQUIRE(!std::isfinite(udpla2.period()));
+  }
+  { // We construct an hyperbolic planet
+    std::array<std::array<double, 3>, 2> posvel{{{1,0,0},{0,10,0}}};
+    kep3::udpla::keplerian udpla2{ref_epoch,    posvel,
+                                 1.,           "unknown",
+                                 {-1, -1, -1}};
+    REQUIRE(!std::isfinite(udpla2.period()));
   }
 }
 
