@@ -383,7 +383,7 @@ std::ostream &operator<<(std::ostream &s, const lambert_problem &lp) {
   s << "r1 = "
     << "[" << lp.m_r1[0] << ", " << lp.m_r1[1] << ", " << lp.m_r1[2] << "]"
     << std::endl;
-  s << "r1 = "
+  s << "r2 = "
     << "[" << lp.m_r2[0] << ", " << lp.m_r2[1] << ", " << lp.m_r2[2] << "]"
     << std::endl;
   s << "Time of flight: " << lp.m_tof << std::endl << std::endl;

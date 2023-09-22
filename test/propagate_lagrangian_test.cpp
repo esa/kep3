@@ -156,18 +156,14 @@ TEST_CASE("propagate_lagrangian") {
   test_propagate_lagrangian(&propagate_lagrangian_u, 10000u);
 }
 
-TEST_CASE("infinite loop") {
+TEST_CASE("extreme_orbit_H") {
   std::array<std::array<double, 3>, 2> pos_vel = {
-      {{3.2479950146598147, 4.866100102242875, 0.8564969484971678},
-       {0.3140399734911721, 0.5042257639093218, 0.09475180867356801}}};
-  double tof = 6.023574175415248;
-  kep3::propagate_lagrangian(pos_vel, -tof, 1.);
-}
-
-TEST_CASE("extreme_orbit") {
-  std::array<std::array<double, 3>, 2> pos_vel = {
-      {{0.8086322075411211, -1.3297145067523164, -2.4969299661382585},
-       {-0.02869546877795607, 0.05765808202641542, -0.03999826575867087}}};
-  double tof = 4.454030166101634;
-  propagate_lagrangian_u(pos_vel, tof, 1.);
+      {{-0.3167755980094844, -1.916113450769878, 0.899028670370861},
+       {1.2231112281789407, 7.472926753229921, -3.5814204332202086}}};
+  double tof = 0.5150723675394596;
+  double mu = 1.;
+  kep3::propagate_lagrangian(pos_vel, tof, mu);
+  REQUIRE(kep3_tests::floating_point_error_vector(
+              pos_vel[0], {0.6049892513157507, 1.314038087851452,
+                           1.747826097602214}) < 1e-11);
 }

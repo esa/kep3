@@ -33,6 +33,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/lambert_problem.hpp>
+#include <stdexcept>
 
 int main() {
   // Preamble
@@ -61,42 +62,24 @@ int main() {
     tof = (dist1(rng_engine) + 2) / 4 * 100 + 0.1;
 
     // 2 - Solve the lambert problem
-    try {
-      double mu = 1.0;
-      int revs_max = 20;
-      bool cw = static_cast<bool>(dist(rng_engine));
-      kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
+    double mu = 1.0;
+    unsigned revs_max = 20;
+    bool cw = static_cast<bool>(dist(rng_engine));
+    kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
 
-      // 3 - Check its precision using propagate_lagrangian
-      for (const auto & v1 : lp.get_v1()) {
-        std::array<std::array<double, 3>, 2> pos_vel{{r1, v1}};
-        kep3::propagate_lagrangian(pos_vel, tof, mu);
-        double err =
-            std::sqrt((pos_vel[0][0] - r2[0]) * (pos_vel[0][0] - r2[0]) +
-                      (pos_vel[0][1] - r2[1]) * (pos_vel[0][1] - r2[1]) +
-                      (pos_vel[0][2] - r2[2]) * (pos_vel[0][2] - r2[2]));
-        if (err > 1e-2) {
-          fmt::print("r1: {}\n r2: {}\n, tof: {}", r1, r2, tof);
-        }
-        err_max = std::max(err_max, err);
-        acc += err;
-      }
-      count += (lp.get_Nmax() * 2 + 1);
-    } catch (...) {
-      std::cout << "failed: " << std::endl;
-      std::cout << "r1[0]=" << r1[0] << "; r1[1]=" << r1[1]
-                << "; r1[2]=" << r1[2] << std::endl;
-      std::cout << "r2[0]=" << r2[0] << "; r2[1]=" << r2[1]
-                << "; r2[2]=" << r1[2] << std::endl;
-      std::cout << "tof=" << tof << std::endl;
+    // 3 - Check its precision using propagate_lagrangian
+    for (const auto &v1 : lp.get_v1()) {
+      std::array<std::array<double, 3>, 2> pos_vel{{r1, v1}};
+      kep3::propagate_lagrangian(pos_vel, tof, mu);
+      double err = std::sqrt((pos_vel[0][0] - r2[0]) * (pos_vel[0][0] - r2[0]) +
+                             (pos_vel[0][1] - r2[1]) * (pos_vel[0][1] - r2[1]) +
+                             (pos_vel[0][2] - r2[2]) * (pos_vel[0][2] - r2[2]));
+      err_max = std::max(err_max, err);
+      acc += err;
     }
+    count += (lp.get_Nmax() * 2 + 1);
   }
   std::cout << "Max error: " << err_max << std::endl;
   std::cout << "Average Error: " << acc / count << std::endl;
   std::cout << "Number of Problems Solved: " << count << std::endl;
-  if (err_max < 1e-6) {
-    return 0;
-  } else {
-    return 1;
-  }
 }

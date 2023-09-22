@@ -11,6 +11,8 @@
 #include <cmath>
 #include <stdexcept>
 
+#include <fmt/core.h>
+
 #include <boost/math/tools/roots.hpp>
 
 #include <kep3/core_astro/constants.hpp>
@@ -46,7 +48,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
 
     // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
-    std::uintmax_t max_iter = 100u;
+    std::uintmax_t max_iter = 50u;
     double DE = boost::math::tools::halley_iterate(
         [DM, sigma0, sqrta, a, R](double DE) {
           return std::make_tuple(kepDE(DE, DM, sigma0, sqrta, a, R),
@@ -54,7 +56,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
                                  dd_kepDE(DE, sigma0, sqrta, a, R));
         },
         IG, IG - pi, IG + pi, digits, max_iter);
-    if (max_iter == 100u) {
+    if (max_iter == 50u) {
       throw std::domain_error(
           "Maximum number of iterations exceeded when solving Kepler's "
           "equation for the eccentric anomaly in propagate_lagrangian.");
@@ -78,15 +80,18 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
 
     // Solve Kepler Equation for ellipses in DH (hyperbolic anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
-    std::uintmax_t max_iter = 100u;
+    std::uintmax_t max_iter = 50u;
     double DH = boost::math::tools::halley_iterate(
         [DN, sigma0, sqrta, a, R](double DH) {
           return std::make_tuple(kepDH(DH, DN, sigma0, sqrta, a, R),
                                  d_kepDH(DH, sigma0, sqrta, a, R),
                                  dd_kepDH(DH, sigma0, sqrta, a, R));
         },
-        IG, IG - pi, IG + pi, digits, max_iter);
-    if (max_iter == 100u) {
+        IG, IG - 20, IG + 20, digits,
+        max_iter); // TODO (dario): study this hyperbolic equation in more details as
+                   // to provide decent and well proved bounds
+    //fmt::print("Solution DH: {}\nIters: {}\n", DH, max_iter);
+    if (max_iter == 50u) {
       throw std::domain_error(
           "Maximum number of iterations exceeded when solving Kepler's "
           "equation for the hyperbolic anomaly in propagate_lagrangian.");
@@ -95,11 +100,11 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
     double r = a + (R - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
 
     // Lagrange coefficients
-    F = 1 - a / R * (1 - std::cosh(DH));
-    G = a * sigma0 / std::sqrt(mu) * (1 - std::cosh(DH)) +
+    F = 1. - a / R * (1. - std::cosh(DH));
+    G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) +
         R * std::sqrt(-a / mu) * std::sinh(DH);
     Ft = -std::sqrt(-mu * a) / (r * R) * std::sinh(DH);
-    Gt = 1 - a / r * (1 - std::cosh(DH));
+    Gt = 1. - a / r * (1. - std::cosh(DH));
   }
 
   double temp[3] = {r0[0], r0[1], r0[2]};

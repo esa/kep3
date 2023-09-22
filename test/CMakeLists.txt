@@ -13,7 +13,7 @@ set_property(TARGET kep3_test PROPERTY CXX_EXTENSIONS NO)
 
 function(ADD_kep3_TESTCASE arg1)
   add_executable(${arg1} ${arg1}.cpp)
-  target_link_libraries(${arg1} PRIVATE kep3_test kep3 Boost::boost)
+  target_link_libraries(${arg1} PRIVATE kep3_test kep3 xtensor xtensor-blas Boost::boost)
   target_compile_options(${arg1} PRIVATE
     "$<$<CONFIG:Debug>:${kep3_CXX_FLAGS_DEBUG}>"
     "$<$<CONFIG:Release>:${kep3_CXX_FLAGS_RELEASE}>"
