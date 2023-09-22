@@ -23,6 +23,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <array>
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -35,51 +37,49 @@
 #include <kep3/lambert_problem.hpp>
 #include <stdexcept>
 
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::microseconds;
+
 int main() {
   // Preamble
-  std::array<double, 3> r1{{0, 0, 0}}, r2{{0, 0, 0}};
-  double tof = 0.;
+  const unsigned trials = 10000u;
+
+  std::array<std::array<double, 3>, trials> r1s{}, r2s{};
+  std::array<double, trials> tof{};
+  std::array<bool, trials> cw{};
+  std::array<double, trials> mu{};
+
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
   std::mt19937 rng_engine(122012203u);
-  std::uniform_int_distribution<unsigned> dist(0, 1);
-  std::uniform_real_distribution<double> dist1(-2, 2);
+  std::uniform_int_distribution<unsigned> cw_d(0, 1);
+  std::uniform_real_distribution<double> r_d(-2, 2);
+  std::uniform_real_distribution<double> tof_d(2., 40.);
+  std::uniform_real_distribution<double> mu_d(0.9, 1.1);
+  unsigned revs_max = 20u;
 
-  double acc = 0, err_max = 0;
   unsigned count = 0u;
 
-  // Experiment Settings
-  unsigned int Ntrials = 120000;
-
-  // Start Experiment
-  for (unsigned int i = 0; i < Ntrials; ++i) {
+  for (auto i = 0u; i < trials; ++i) {
     // 1 - generate a random problem geometry
-    r1[0] = dist1(rng_engine);
-    r1[1] = dist1(rng_engine);
-    r1[2] = dist1(rng_engine);
-    r2[0] = dist1(rng_engine);
-    r2[1] = dist1(rng_engine);
-    r2[2] = dist1(rng_engine);
-    tof = (dist1(rng_engine) + 2) / 4 * 100 + 0.1;
-
-    // 2 - Solve the lambert problem
-    double mu = 1.0;
-    unsigned revs_max = 20;
-    bool cw = static_cast<bool>(dist(rng_engine));
-    kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
-
-    // 3 - Check its precision using propagate_lagrangian
-    for (const auto &v1 : lp.get_v1()) {
-      std::array<std::array<double, 3>, 2> pos_vel{{r1, v1}};
-      kep3::propagate_lagrangian(pos_vel, tof, mu);
-      double err = std::sqrt((pos_vel[0][0] - r2[0]) * (pos_vel[0][0] - r2[0]) +
-                             (pos_vel[0][1] - r2[1]) * (pos_vel[0][1] - r2[1]) +
-                             (pos_vel[0][2] - r2[2]) * (pos_vel[0][2] - r2[2]));
-      err_max = std::max(err_max, err);
-      acc += err;
-    }
-    count += (lp.get_Nmax() * 2 + 1);
+    r1s[i][0] = r_d(rng_engine);
+    r1s[i][1] = r_d(rng_engine);
+    r1s[i][2] = r_d(rng_engine);
+    r2s[i][0] = r_d(rng_engine);
+    r2s[i][1] = r_d(rng_engine);
+    r2s[i][2] = r_d(rng_engine);
+    tof[i] = tof_d(rng_engine);
+    cw[i] = static_cast<bool>(cw_d(rng_engine));
+    mu[i] = mu_d(rng_engine);
   }
-  std::cout << "Max error: " << err_max << std::endl;
-  std::cout << "Average Error: " << acc / count << std::endl;
-  std::cout << "Number of Problems Solved: " << count << std::endl;
+
+  auto start = high_resolution_clock::now();
+  for (auto i = 0u; i < trials; ++i) {
+    // 2 - Solve the lambert problem
+    kep3::lambert_problem lp(r1s[i], r2s[i], tof[i], mu[i], cw[i], revs_max);
+    count++;
+  }
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<microseconds>(stop - start);
+  fmt::print("{:.3f}s\n", (static_cast<double>(duration.count()) / 1e6));
 }

@@ -28,16 +28,11 @@ TEST_CASE("construct") {
 TEST_CASE("delta_guidance") {
   // Here we test that in a number of randomly generated Lambert Problems
   // The boundary data must satisfy the Delta Guidance law
-  // see Battin: "An Introduction to the Mathematics and Methods of
-  // Astrodynamics, Revised Edition", Introduction.
-  //
-  // (v1 x r1).(v1 x (r2 - r1)) + mu r2 . (r2/|r2| - r1/{|r1|})
+
 
   // Preamble
   std::array<double, 3> r1{{0, 0, 0}}, r2{{0, 0, 0}};
   double tof = 0.;
-  using xt::linalg::cross;
-  using xt::linalg::dot;
 
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
   std::mt19937 rng_engine(122012203u);

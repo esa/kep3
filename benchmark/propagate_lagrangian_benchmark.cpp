@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/ic2par2ic.hpp"
-#include "kep3/core_astro/propagate_lagrangian.hpp"
 #include <chrono>
 #include <iostream>
+#include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <random>
 
 #include <fmt/core.h>
@@ -113,7 +113,8 @@ void perform_test_accuracy(
     }
 
     pos_vels[i] = kep3::par2ic({sma, ecc, incl_d(rng_engine),
-                                Omega_d(rng_engine), omega_d(rng_engine), f}, 1.);
+                                Omega_d(rng_engine), omega_d(rng_engine), f},
+                               1.);
     tofs[i] = tof_d(rng_engine);
   }
   // We log progress
