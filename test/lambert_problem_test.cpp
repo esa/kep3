@@ -99,12 +99,14 @@ TEST_CASE("methods") {
   REQUIRE(lp.get_mu() == 1.);
   REQUIRE(kep3_tests::floating_point_error(lp.get_x()[0], -0.3826834323650896) < 1e-13);
   REQUIRE(lp.get_iters()[0] == 3u);
+  REQUIRE(lp.get_Nmax() == 0u);
+
 }
 
 TEST_CASE("serialization_test") {
   // Instantiate a generic lambert problem
-  kep3::lambert_problem lp{{1.23, 0.1253232342323, 0.57235553354}, {0.234233423, 1.8645645645, 0.234234234}, 1.254856435,
-                           1.,           true,         5};
+  kep3::lambert_problem lp{{1.23, 0.1253232342323, 0.57235553354}, {0.234233423, 1.8645645645, 0.234234234}, 25.254856435,
+                           1.,           true,         10};
 
   // Store the string representation.
   std::stringstream ss;
