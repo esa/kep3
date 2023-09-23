@@ -99,6 +99,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
   // 2.1 - Let us first detect the maximum number of revolutions for which there
   // exists a solution
   m_Nmax = static_cast<unsigned>(T / kep3::pi);
+  m_Nmax = std::min(m_multi_revs, m_Nmax);
   double T00 = std::acos(m_lambda) + m_lambda * std::sqrt(1.0 - lambda2);
   double T0 = (T00 + m_Nmax * kep3::pi);
   double T1 = 2.0 / 3.0 * (1.0 - lambda3), DT = 0.0, DDT = 0.0, DDDT = 0.0;
@@ -125,10 +126,10 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r1_a,
         m_Nmax -= 1;
       }
     }
+    // We exit this if clause with Nmax being the maximum number of revolutions
+    // for which there exists a solution. We crop it to m_multi_revs
+    m_Nmax = std::min(m_multi_revs, m_Nmax);
   }
-  // We exit this if clause with Nmax being the maximum number of revolutions
-  // for which there exists a solution. We crop it to m_multi_revs
-  m_Nmax = std::min(m_multi_revs, m_Nmax);
 
   // 2.2 We now allocate the memory for the output variables
   m_v1.resize(static_cast<size_t>(m_Nmax) * 2 + 1);

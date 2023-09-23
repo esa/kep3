@@ -29,13 +29,12 @@ TEST_CASE("delta_guidance") {
   // Here we test that in a number of randomly generated Lambert Problems
   // The boundary data must satisfy the Delta Guidance law
 
-
   // Preamble
   std::array<double, 3> r1{{0, 0, 0}}, r2{{0, 0, 0}};
   double tof = 0.;
 
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-  std::mt19937 rng_engine(122012203u);
+  std::mt19937 rng_engine(12201203u);
   std::uniform_int_distribution<unsigned> cw_d(0, 1);
   std::uniform_real_distribution<double> r_d(-2, 2);
   std::uniform_real_distribution<double> tof_d(2., 40.);
@@ -61,7 +60,12 @@ TEST_CASE("delta_guidance") {
 
     // 3 - Check the Delta guidance error
     for (const auto &v1 : lp.get_v1()) {
-      REQUIRE(kep3_tests::delta_guidance_error(r1, r2, v1, mu) < 1e-12);
+      double dg_err = kep3_tests::delta_guidance_error(r1, r2, v1, mu);
+      if (!(dg_err < 1e-12)) {
+        std::cout << lp << std::endl;
+        fmt::print("\nr1= {}\nr2= {}\ntof= {}\nmu= {}\ncw= {}\nrevs_max= {}", r1, r2,tof, mu, cw, revs_max);
+      }
+      REQUIRE(dg_err < 1e-12);
     }
   }
 }

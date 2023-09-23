@@ -90,7 +90,7 @@ void perform_test_accuracy(
   //
   // Distributions
   //
-  std::uniform_real_distribution<double> sma_d(0.5, 20.);
+  std::uniform_real_distribution<double> sma_d(0.5, 10.);
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
@@ -163,4 +163,16 @@ int main() {
   perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
   perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
   perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
+
+  fmt::print("\nComputes speed at different eccentricity ranges [keplerian "
+             "propagation]:\n");
+  perform_test_speed(0, 0.5, 1000000, &kep3::propagate_keplerian);
+  perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_keplerian);
+  perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_keplerian);
+
+  fmt::print("\nComputes error at different eccentricity ranges [keplerian "
+             "propagation]:\n");
+  perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_keplerian);
+  perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_keplerian);
+  perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_keplerian);
 }

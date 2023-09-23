@@ -42,8 +42,8 @@ using std::chrono::high_resolution_clock;
 using std::chrono::microseconds;
 
 int main() {
-  // Preamble
-  const unsigned trials = 10000u;
+  // Number of trials
+  const unsigned trials = 50000u;
 
   std::array<std::array<double, 3>, trials> r1s{}, r2s{};
   std::array<double, trials> tof{};
@@ -57,8 +57,7 @@ int main() {
   std::uniform_real_distribution<double> tof_d(2., 40.);
   std::uniform_real_distribution<double> mu_d(0.9, 1.1);
   unsigned revs_max = 20u;
-
-  unsigned count = 0u;
+  unsigned long count = 0lu;
 
   for (auto i = 0u; i < trials; ++i) {
     // 1 - generate a random problem geometry
@@ -77,9 +76,26 @@ int main() {
   for (auto i = 0u; i < trials; ++i) {
     // 2 - Solve the lambert problem
     kep3::lambert_problem lp(r1s[i], r2s[i], tof[i], mu[i], cw[i], revs_max);
-    count++;
+    count = count + lp.get_v1().size();
   }
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
-  fmt::print("{:.3f}s\n", (static_cast<double>(duration.count()) / 1e6));
+  fmt::print("Lambert:\n{} solutions computed in {:.3f}s\n", count,
+             (static_cast<double>(duration.count()) / 1e6));
+  fmt::print("Projected number of solutions per second: {}\n",
+             static_cast<double>(count) / ((static_cast<double>(duration.count()) / 1e6)));
+
+  count = 0; //reset counter
+  start = high_resolution_clock::now();
+  for (auto i = 0u; i < trials; ++i) {
+    // 3 - Solve the lambert problem for the singe rev case
+    kep3::lambert_problem lp(r1s[i], r2s[i], tof[i], mu[i], cw[i], 0u);
+    count += 1u;
+  }
+  stop = high_resolution_clock::now();
+  duration = duration_cast<microseconds>(stop - start);
+  fmt::print("\nLambert (0 revs only):\n{} solutions computed in {:.3f}s\n", count,
+             (static_cast<double>(duration.count()) / 1e6));
+  fmt::print("Projected number of solutions per second: {}\n",
+             static_cast<double>(count) / ((static_cast<double>(duration.count()) / 1e6)));
 }
