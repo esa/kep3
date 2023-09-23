@@ -8,11 +8,10 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <iostream>
+#include <stdexcept>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-#include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
 
 #include <kep3/lambert_problem.hpp>
 
@@ -20,9 +19,22 @@
 #include "test_helpers.hpp"
 
 TEST_CASE("construct") {
-  // Here we test construction of a few simple geometries
-  kep3::lambert_problem lp{{1., 0., 0.}, {0., 1., 0.}, 3 * kep3::pi / 2,
-                           1.,           true,         100};
+  // Here we test construction for a simple geometry
+  REQUIRE_NOTHROW(kep3::lambert_problem{
+      {1., 0., 0.}, {0., 1., 0.}, 3 * kep3::pi / 2, 1., true, 100});
+  // And we test the throws
+  REQUIRE_THROWS_AS(
+      (kep3::lambert_problem{
+          {1., 0., 0.}, {0., 1., 0.}, 3 * kep3::pi / 2, -1.2, true, 100}),
+      std::domain_error);
+  REQUIRE_THROWS_AS(
+      (kep3::lambert_problem{
+          {1., 0., 0.}, {0., 1., 0.}, -3 * kep3::pi / 2, 1.2, true, 100}),
+      std::domain_error);
+  REQUIRE_THROWS_AS(
+      (kep3::lambert_problem{
+          {0, 0., 1.}, {0., 1., 0.}, 3 * kep3::pi / 2, 1.2, true, 100}),
+      std::domain_error);
 }
 
 TEST_CASE("delta_guidance") {
@@ -63,9 +75,53 @@ TEST_CASE("delta_guidance") {
       double dg_err = kep3_tests::delta_guidance_error(r1, r2, v1, mu);
       if (!(dg_err < 1e-12)) {
         std::cout << lp << std::endl;
-        fmt::print("\nr1= {}\nr2= {}\ntof= {}\nmu= {}\ncw= {}\nrevs_max= {}", r1, r2,tof, mu, cw, revs_max);
+        fmt::print("\nr1= {}\nr2= {}\ntof= {}\nmu= {}\ncw= {}\nrevs_max= {}",
+                   r1, r2, tof, mu, cw, revs_max);
       }
       REQUIRE(dg_err < 1e-12);
     }
   }
+}
+
+TEST_CASE("methods") {
+  // Here we test construction for a simple geometry
+  kep3::lambert_problem lp{{1., 0., 0.}, {0., 1., 0.}, 3. * kep3::pi / 2.,
+                           1.,           true,         5};
+  auto v1 = lp.get_v1()[0];
+  auto v2 = lp.get_v2()[0];
+  REQUIRE(kep3_tests::floating_point_error_vector(v1, {0, -1, 0}) < 1e-13);
+  REQUIRE(kep3_tests::floating_point_error_vector(v2, {1, 0, 0}) < 1e-13);
+  auto r1 = lp.get_r1();
+  auto r2 = lp.get_r2();
+  REQUIRE(r1 == std::array<double, 3>{1,0,0});
+  REQUIRE(r2 == std::array<double, 3>{0,1,0});
+  REQUIRE(lp.get_tof() == 3 * kep3::pi / 2);
+  REQUIRE(lp.get_mu() == 1.);
+  REQUIRE(kep3_tests::floating_point_error(lp.get_x()[0], -0.3826834323650896) < 1e-13);
+  REQUIRE(lp.get_iters()[0] == 3u);
+}
+
+TEST_CASE("serialization_test") {
+  // Instantiate a generic lambert problem
+  kep3::lambert_problem lp{{1.23, 0.1253232342323, 0.57235553354}, {0.234233423, 1.8645645645, 0.234234234}, 1.254856435,
+                           1.,           true,         5};
+
+  // Store the string representation.
+  std::stringstream ss;
+  auto before = boost::lexical_cast<std::string>(lp);
+  // Now serialize
+  {
+    boost::archive::binary_oarchive oarchive(ss);
+    oarchive << lp;
+  }
+  // Deserialize
+  // Create a new lambert problem object
+   kep3::lambert_problem lp2{};
+  {
+    boost::archive::binary_iarchive iarchive(ss);
+    iarchive >> lp2;
+  }
+  auto after = boost::lexical_cast<std::string>(lp2);
+  // Compare the string represetation
+  REQUIRE(before == after);
 }

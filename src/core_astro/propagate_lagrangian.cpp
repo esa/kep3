@@ -45,7 +45,24 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
   if (a > 0) { // Solve Kepler's equation in DE, elliptical case
     sqrta = std::sqrt(a);
     double DM = std::sqrt(mu / std::pow(a, 3)) * dt;
-    double IG = DM;
+    double sinDM = std::sin(DM), cosDM = std::cos(DM);
+    // Here we use the atan2 to recover the mean anomaly difference in the
+    // [0,2pi] range. This makes sure that for high value of M no catastrophic
+    // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
+    double DM_cropped = std::atan2(sinDM, cosDM);
+    if (DM_cropped < 0) {
+      DM_cropped += 2 * kep3::pi;
+    }
+    double s0 = sigma0 / sqrta;
+    double c0 = (1 - R / a);
+    // This initial guess was developed applying Lagrange expansion theorem to
+    // the Kepler's equation in DE. We stopped at 3rd order.
+    double IG =
+        DM_cropped + c0 * sinDM - s0 * (1 - cosDM) +
+        (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0) +
+        0.5 * (c0 * sinDM + s0 * cosDM - s0) *
+            (2 * std::pow(c0 * cosDM - s0 * sinDM, 2) -
+             (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
 
     // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
@@ -54,8 +71,8 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
     // poor IG)
 
     double DE = boost::math::tools::newton_raphson_iterate(
-        [DM, sigma0, sqrta, a, R](double DE) {
-          return std::make_tuple(kepDE(DE, DM, sigma0, sqrta, a, R),
+        [DM_cropped, sigma0, sqrta, a, R](double DE) {
+          return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R),
                                  d_kepDE(DE, sigma0, sqrta, a, R));
         },
         IG, IG - pi, IG + pi, digits, max_iter);
@@ -229,7 +246,8 @@ void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel_0,
     double n = std::sqrt(-mu / par[0] / par[0] / par[0]);
     double N0 = kep3::f2n(par[5], par[1]);
     double Nf = N0 + n * dt;
-    // 3h - Update elements (here Kepler's equation gets solved in its hyperbolic version)
+    // 3h - Update elements (here Kepler's equation gets solved in its
+    // hyperbolic version)
     par[5] = kep3::n2f(Nf, par[1]);
   }
   // Update posvel

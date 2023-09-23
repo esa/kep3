@@ -46,7 +46,7 @@ void perform_test_speed(
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
-  std::uniform_real_distribution<double> tof_d(0.1, 20.);
+  std::uniform_real_distribution<double> tof_d(10., 100.);
 
   // We generate the random dataset
   std::vector<std::array<std::array<double, 3>, 2>> pos_vels(N);
@@ -86,7 +86,7 @@ void perform_test_accuracy(
   // Engines
   //
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-  std::mt19937 rng_engine(122012203u);
+  std::mt19937 rng_engine(53534535u);
   //
   // Distributions
   //
@@ -96,7 +96,7 @@ void perform_test_accuracy(
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
-  std::uniform_real_distribution<double> tof_d(0.1, 20.);
+  std::uniform_real_distribution<double> tof_d(10, 100.);
 
   // We generate the random dataset
   std::vector<std::array<std::array<double, 3>, 2>> pos_vels(N);
@@ -150,29 +150,29 @@ int main() {
   perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian);
   perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian);
   perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian);
-
-  fmt::print("\nComputes speed at different eccentricity ranges [Universal "
-             "Anomaly]:\n");
-  perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
-
-  fmt::print("\nComputes error at different eccentricity ranges [Universal "
-             "Anomaly]:\n");
-  perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
-  perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
-  perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
-
-  fmt::print("\nComputes speed at different eccentricity ranges [keplerian "
-             "propagation]:\n");
-  perform_test_speed(0, 0.5, 1000000, &kep3::propagate_keplerian);
-  perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_keplerian);
-  perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_keplerian);
-
-  fmt::print("\nComputes error at different eccentricity ranges [keplerian "
-             "propagation]:\n");
-  perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_keplerian);
-  perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_keplerian);
-  perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_keplerian);
+//
+  //fmt::print("\nComputes speed at different eccentricity ranges [Universal "
+  //           "Anomaly]:\n");
+  //perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
+//
+  //fmt::print("\nComputes error at different eccentricity ranges [Universal "
+  //           "Anomaly]:\n");
+  //perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
+  //perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
+  //perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
+//
+  //fmt::print("\nComputes speed at different eccentricity ranges [keplerian "
+  //           "propagation]:\n");
+  //perform_test_speed(0, 0.5, 1000000, &kep3::propagate_keplerian);
+  //perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_keplerian);
+  //perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_keplerian);
+//
+  //fmt::print("\nComputes error at different eccentricity ranges [keplerian "
+  //           "propagation]:\n");
+  //perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_keplerian);
+  //perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_keplerian);
+  //perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_keplerian);
 }
