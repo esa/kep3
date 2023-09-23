@@ -16,10 +16,10 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 
+namespace kep3 {
+
 using xt::linalg::cross;
 using xt::linalg::dot;
-
-namespace kep3 {
 
 // r,v,mu -> keplerian osculating elements [a,e,i,W,w,f]. The last
 // is the true anomaly. The semi-major axis a is positive for ellipses, negative

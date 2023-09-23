@@ -7,13 +7,16 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "kep3/core_astro/ic2par2ic.hpp"
 #include <array>
 #include <cmath>
 #include <stdexcept>
 
 #include <boost/math/tools/roots.hpp>
+#include <fmt/core.h>
 
 #include <kep3/core_astro/constants.hpp>
+#include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/kepler_equations.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/core_astro/special_functions.hpp>
@@ -42,22 +45,43 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
   if (a > 0) { // Solve Kepler's equation in DE, elliptical case
     sqrta = std::sqrt(a);
     double DM = std::sqrt(mu / std::pow(a, 3)) * dt;
-    double IG = DM;
+    double sinDM = std::sin(DM), cosDM = std::cos(DM);
+    // Here we use the atan2 to recover the mean anomaly difference in the
+    // [0,2pi] range. This makes sure that for high value of M no catastrophic
+    // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
+    double DM_cropped = std::atan2(sinDM, cosDM);
+    if (DM_cropped < 0) {
+      DM_cropped += 2 * kep3::pi;
+    }
+    double s0 = sigma0 / sqrta;
+    double c0 = (1 - R / a);
+    // This initial guess was developed applying Lagrange expansion theorem to
+    // the Kepler's equation in DE. We stopped at 3rd order.
+    double IG =
+        DM_cropped + c0 * sinDM - s0 * (1 - cosDM) +
+        (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0) +
+        0.5 * (c0 * sinDM + s0 * cosDM - s0) *
+            (2 * std::pow(c0 * cosDM - s0 * sinDM, 2) -
+             (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
 
     // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
     std::uintmax_t max_iter = 100u;
-    double DE = boost::math::tools::halley_iterate(
-        [DM, sigma0, sqrta, a, R](double DE) {
-          return std::make_tuple(kepDE(DE, DM, sigma0, sqrta, a, R),
-                                 d_kepDE(DE, sigma0, sqrta, a, R),
-                                 dd_kepDE(DE, sigma0, sqrta, a, R));
+    // NOTE: Halley iterates may result into instabilities (specially with a
+    // poor IG)
+
+    double DE = boost::math::tools::newton_raphson_iterate(
+        [DM_cropped, sigma0, sqrta, a, R](double DE) {
+          return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R),
+                                 d_kepDE(DE, sigma0, sqrta, a, R));
         },
         IG, IG - pi, IG + pi, digits, max_iter);
     if (max_iter == 100u) {
-      throw std::domain_error(
+      throw std::domain_error(fmt::format(
           "Maximum number of iterations exceeded when solving Kepler's "
-          "equation for the eccentric anomaly in propagate_lagrangian.");
+          "equation for the eccentric anomaly in propagate_lagrangian.\n"
+          "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
+          DM, sigma0, sqrta, a, R, DE));
     }
     double r = a + (R - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
 
@@ -71,35 +95,40 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0,
     sqrta = std::sqrt(-a);
     double DN = std::sqrt(-mu / a / a / a) * dt;
     double IG = 0.;
-    dt > 0. ? IG = 3.
-            : IG = -3.; // TODO(darioizzo): find a better initial guess.
+    dt > 0. ? IG = 1.
+            : IG = -1.; // TODO(darioizzo): find a better initial guess.
                         // I tried with 0 and DN (both have numercial
                         // problems and result in exceptions)
 
     // Solve Kepler Equation for ellipses in DH (hyperbolic anomaly difference)
     const int digits = std::numeric_limits<double>::digits;
     std::uintmax_t max_iter = 100u;
-    double DH = boost::math::tools::halley_iterate(
+    // NOTE: Halley iterates may result into instabilities (specially with a
+    // poor IG)
+    double DH = boost::math::tools::newton_raphson_iterate(
         [DN, sigma0, sqrta, a, R](double DH) {
           return std::make_tuple(kepDH(DH, DN, sigma0, sqrta, a, R),
-                                 d_kepDH(DH, sigma0, sqrta, a, R),
-                                 dd_kepDH(DH, sigma0, sqrta, a, R));
+                                 d_kepDH(DH, sigma0, sqrta, a, R));
         },
-        IG, IG - pi, IG + pi, digits, max_iter);
+        IG, IG - 50, IG + 50, digits,
+        max_iter); // TODO (dario): study this hyperbolic equation in more
+                   // details as to provide decent and well proved bounds
     if (max_iter == 100u) {
-      throw std::domain_error(
+      throw std::domain_error(fmt::format(
           "Maximum number of iterations exceeded when solving Kepler's "
-          "equation for the hyperbolic anomaly in propagate_lagrangian.");
+          "equation for the hyperbolic anomaly in propagate_lagrangian.\n"
+          "DN={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDH={}",
+          DN, sigma0, sqrta, a, R, DH));
     }
 
     double r = a + (R - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
 
     // Lagrange coefficients
-    F = 1 - a / R * (1 - std::cosh(DH));
-    G = a * sigma0 / std::sqrt(mu) * (1 - std::cosh(DH)) +
+    F = 1. - a / R * (1. - std::cosh(DH));
+    G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) +
         R * std::sqrt(-a / mu) * std::sinh(DH);
     Ft = -std::sqrt(-mu * a) / (r * R) * std::sinh(DH);
-    Gt = 1 - a / r * (1 - std::cosh(DH));
+    Gt = 1. - a / r * (1. - std::cosh(DH));
   }
 
   double temp[3] = {r0[0], r0[1], r0[2]};
@@ -147,8 +176,8 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0,
   // Solve Kepler Equation in DS (univrsal anomaly difference)
   const int digits = std::numeric_limits<double>::digits;
   std::uintmax_t max_iter = 100u;
-  // NOTE: Halley iterate here seems to introduce issues in corner cases
-  // and be slower anyway.
+  // NOTE: Halley iterates may result into instabilities (specially with a poor
+  // IG)
   double DS = boost::math::tools::newton_raphson_iterate(
       [dt_copy, R0, VR0, alpha, mu](double DS) {
         return std::make_tuple(kepDS(DS, dt_copy, R0, VR0, alpha, mu),
@@ -191,6 +220,38 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0,
     v0[1] = -v0[1];
     v0[2] = -v0[2];
   }
+}
+
+/// Keplerian (not using the lagrangian coefficients) propagation
+/**
+ * This function propagates an initial Cartesian state for a time t assuming a
+ * central body and a keplerian motion. Simple conversions are used to compute
+ * M0 then Mt, etc.. It only here for study purposes as its x10 slower (strange
+ * such a high factor ..investigate?)
+ */
+void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel_0,
+                         const double dt, const double mu) { // NOLINT
+
+  // 1 - Compute the orbital parameters at t0
+  auto par = kep3::ic2par(pos_vel_0, mu);
+  if (par[0] > 0) {
+    // 2e - Compute the mean anomalies
+    double n = std::sqrt(mu / par[0] / par[0] / par[0]);
+    double M0 = kep3::f2m(par[5], par[1]);
+    double Mf = M0 + n * dt;
+    // 3e - Update elements (here Kepler's equation gets solved)
+    par[5] = kep3::m2f(Mf, par[1]);
+  } else {
+    // 2h - Compute the mean hyperbolic anomalies
+    double n = std::sqrt(-mu / par[0] / par[0] / par[0]);
+    double N0 = kep3::f2n(par[5], par[1]);
+    double Nf = N0 + n * dt;
+    // 3h - Update elements (here Kepler's equation gets solved in its
+    // hyperbolic version)
+    par[5] = kep3::n2f(Nf, par[1]);
+  }
+  // Update posvel
+  pos_vel_0 = kep3::par2ic(par, mu);
 }
 
 } // namespace kep3

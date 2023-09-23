@@ -34,15 +34,16 @@ inline double m2e(double M, double ecc) {
   if (M_cropped < 0) {
     M_cropped += 2 * kep3::pi;
   }
-  // The Initial guess follows from a third order expansion of Kepler's equation.
+  // The Initial guess follows from a third order expansion of Kepler's
+  // equation.
   double IG = M_cropped + ecc * sinM + ecc * ecc * sinM * cosM +
               ecc * ecc * ecc * sinM * (1.5 * cosM * cosM - 0.5);
 
   const int digits = std::numeric_limits<double>::digits;
   std::uintmax_t max_iter = 100u;
 
-  // Newton-raphson or Halley iterates can be used here. Similar performances, thus
-  // we choose the simplest algorithm.
+  // Newton-raphson or Halley iterates can be used here. Similar performances,
+  // thus we choose the simplest algorithm.
   double sol = boost::math::tools::newton_raphson_iterate(
       [M_cropped, ecc](double E) {
         return std::make_tuple(kepE(E, M_cropped, ecc), d_kepE(E, ecc));
@@ -62,6 +63,7 @@ inline double e2m(double E, double ecc) { return (E - ecc * std::sin(E)); }
 inline double e2f(double E, double ecc) {
   return 2 * std::atan(std::sqrt((1 + ecc) / (1 - ecc)) * std::tan(E / 2));
 }
+
 // true to eccentric (only ellipses) e<1 (returns in range [-pi,pi])
 inline double f2e(double f, double ecc) {
   return 2 * std::atan(std::sqrt((1 - ecc) / (1 + ecc)) * std::tan(f / 2));
@@ -69,6 +71,7 @@ inline double f2e(double f, double ecc) {
 
 // mean to true (only ellipses) e<1 (returns in range [-pi,pi])
 inline double m2f(double M, double ecc) { return e2f(m2e(M, ecc), ecc); }
+
 // true to mean (only ellipses) e<1 (returns in range [-pi,pi])
 inline double f2m(double f, double ecc) { return e2m(f2e(f, ecc), ecc); }
 
@@ -76,9 +79,54 @@ inline double f2m(double f, double ecc) { return e2m(f2e(f, ecc), ecc); }
 inline double zeta2f(double f, double ecc) {
   return 2 * std::atan(std::sqrt((1 + ecc) / (ecc - 1)) * std::tan(f / 2));
 }
+
 // true to gudermannian (only hyperbolas) e>1 (returns in range [-pi,pi])
 inline double f2zeta(double zeta, double ecc) {
   return 2 * std::atan(std::sqrt((ecc - 1) / (1 + ecc)) * std::tan(zeta / 2));
 }
+
+// mean to hyperbolic (only hyperbolas) e>1.
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+inline double n2h(double N, double ecc) {
+
+  // The Initial guess (TODO(darioizo) improve)
+  double IG = 1.;
+
+  const int digits = std::numeric_limits<double>::digits;
+  std::uintmax_t max_iter = 100u;
+
+  // Newton-raphson iterates.
+  double sol = boost::math::tools::newton_raphson_iterate(
+      [N, ecc](double H) {
+        return std::make_tuple(kepH(H, N, ecc), d_kepH(H, ecc));
+      },
+      IG, IG - 20 * kep3::pi, IG + 20 * kep3::pi, digits, max_iter);
+  if (max_iter == 100u) {
+    throw std::domain_error(
+        "Maximum number of iterations exceeded when solving Kepler's "
+        "equation for the hyperbolic anomaly in m2h.");
+  }
+  return sol;
+}
+
+// hyperbolic H to hyperbolic mean N (only hyperbolas) e>1
+inline double h2n(double H, double ecc) { return (ecc * std::sinh(H) - H); }
+
+// hyperbolic H to true (only hyperbolas) e>1 (returns in range [-pi,pi])
+inline double h2f(double H, double ecc) {
+  return 2 * std::atan(std::sqrt((1 + ecc) / (ecc - 1)) * std::tanh(H / 2));
+}
+
+// true to hyperbolic H (only hyperbolas) e>1 (returns in range [-pi,pi])
+inline double f2h(double f, double ecc) {
+  return 2 * std::atanh(std::sqrt((ecc - 1) / (1 + ecc)) * std::tan(f / 2));
+}
+
+// mean hyperbolic to true (only hyperbolas) e>1 (returns in range [-pi,pi])
+inline double n2f(double N, double ecc) { return h2f(n2h(N, ecc), ecc); }
+
+// true to mean hyperbolic (only hyperbolas) e>1 (returns in range [-pi,pi])
+inline double f2n(double f, double ecc) { return h2n(f2h(f, ecc), ecc); }
+
 } // namespace kep3
 #endif // kep3_TOOLBOX_M2E_H
