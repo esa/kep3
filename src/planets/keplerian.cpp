@@ -7,7 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/eq2par2eq.hpp"
 #include <cmath>
 #include <limits>
 #include <stdexcept>
@@ -18,6 +17,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/eq2par2eq.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
