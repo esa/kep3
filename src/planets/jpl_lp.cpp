@@ -7,6 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "kep3/core_astro/eq2par2eq.hpp"
+#include "kep3/epoch.hpp"
 #include <cmath>
 #include <stdexcept>
 #include <unordered_map>
@@ -16,12 +18,14 @@
 #include <fmt/ranges.h>
 
 #include <kep3/core_astro/constants.hpp>
+#include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/planets/jpl_lp.hpp>
 
 namespace kep3::udpla {
 
 // Data from: https://ssd.jpl.nasa.gov/planets/approx_pos.html
+// a,e,i,L,W,w
 // clang-format off
 static const std::array<double, 6> mercury_el = {0.38709927, 0.20563593, 7.00497902, 252.25032350, 77.45779628, 48.33076593};
 static const std::array<double, 6> mercury_el_dot = {0.00000037, 0.00001906, -0.00594749, 149472.67411175, 0.16047689, -0.12534081};
@@ -116,6 +120,57 @@ jpl_lp::jpl_lp(const std::string &name)
   }
 }
 
+// Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.
+std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const {
+  double mjd2000 = ep.mjd2000();
+  if (mjd2000 <= -73048.0 || mjd2000 >= 18263.0) {
+    throw std::domain_error("Low precision Ephemeris are only valid in the "
+                            "range range [1800-2050]");
+  }
+  // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
+  // 2023.
+  std::array<double, 6> elements_updated{}, elements_f{};
+  double dt = (mjd2000 - 2451545.0) /
+              36525.; // Number of centuries passed since J2000.0
+  for (unsigned int i = 0; i < 6; ++i) {
+    elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
+  }
+  elements_f[0] = elements_updated[0] * get_mu_central_body();
+  elements_f[1] = elements_updated[1];
+  elements_f[2] = elements_updated[2] * kep3::DEG2RAD;
+  elements_f[3] = elements_updated[5] * kep3::DEG2RAD;
+  elements_f[4] = (elements_updated[4] - elements_updated[5]) * kep3::DEG2RAD;
+  elements_f[5] = (elements_updated[3] - elements_updated[4]) * kep3::DEG2RAD;
+  elements_f[5] = kep3::m2e(elements_updated[5], elements_updated[1]);
+  return elements_f;
+}
+
+std::array<std::array<double, 3>, 2> jpl_lp::eph(const epoch &ep) const {
+  auto elements_f = _f_elements(ep);
+  return par2ic(elements_f, get_mu_central_body());
+}
+
+std::array<double, 6> jpl_lp::elements(const kep3::epoch &ep,
+                                       kep3::elements_type el_type) const {
+  auto elements = _f_elements(ep);
+  switch (el_type) {
+  case kep3::elements_type::KEP_F:
+    break;
+  case kep3::elements_type::KEP_M:
+    elements[5] = kep3::f2m(elements[5], elements[1]);
+    break;
+  case kep3::elements_type::MEQ:
+    elements = kep3::par2eq(elements, false);
+    break;
+  case kep3::elements_type::MEQ_R:
+    elements = kep3::par2eq(elements, true);
+    break;
+  default:
+    throw std::logic_error("You should not go here!");
+  }
+  return elements;
+}
+
 std::string jpl_lp::get_name() const { return m_name; }
 
 double jpl_lp::get_mu_central_body() const { return m_mu_central_body; }
@@ -128,7 +183,24 @@ double jpl_lp::get_safe_radius() const { return m_safe_radius; }
 
 std::string jpl_lp::get_extra_info() const {
   auto par = elements();
-  std::string retval = fmt::format("Keplerian planet elements: \n");
+  kep3::epoch ep{0., kep3::epoch::MJD2000};
+  auto pos_vel = eph(ep);
+
+  std::string retval =
+      fmt::format("Low-precision planet elements: \n") +
+      fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU) +
+      fmt::format("Eccentricity: {}\n", par[1]) +
+      fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG) +
+      fmt::format("Big Omega (deg.): {}\n", par[3] * kep3::RAD2DEG) +
+      fmt::format("Small omega (deg.): {}\n", par[4] * kep3::RAD2DEG) +
+      fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
+  retval += fmt::format("Mean anomly (deg.): {}\n",
+                        kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
+  retval +=
+      fmt::format("Elements reference epoch (MJD2000): {}\n", ep.mjd2000()) +
+      fmt::format("Elements reference epoch (date): {}\n", ep) +
+      fmt::format("r at ref. = {}\n", pos_vel[0]) +
+      fmt::format("v at ref. = {}\n", pos_vel[1]);
   return retval;
 }
 

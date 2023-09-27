@@ -27,8 +27,8 @@ namespace kep3::udpla {
  * This class allows to instantiate planets of
  * the solar system by referring to their common names. The ephemeris used
  * are low_precision ephemeris defined in the JPL pages:
- * https://ssd.jpl.nasa.gov/planets/approx_pos.html and valid for the timeframe 1800AD -
- * 2050 AD
+ * https://ssd.jpl.nasa.gov/planets/approx_pos.html and valid for the timeframe
+ * 1800AD - 2050 AD
  */
 
 class kep3_DLL_PUBLIC jpl_lp {
@@ -70,6 +70,10 @@ public:
   [[nodiscard]] std::array<double, 6>
   elements(const kep3::epoch & = kep3::epoch(),
            kep3::elements_type = kep3::elements_type::KEP_F) const;
+
+private:
+  [[nodiscard]] std::array<double, 6>
+  _f_elements(const kep3::epoch & = kep3::epoch()) const;
 };
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
                                          const kep3::udpla::jpl_lp &);
