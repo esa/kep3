@@ -120,6 +120,15 @@ TEST_CASE("elements") {
   }
 }
 
+TEST_CASE("getters") {
+  jpl_lp udpla{"nePTUne"}; // casing is not important
+  REQUIRE(udpla.get_name() == "neptune");
+  REQUIRE(udpla.get_mu_central_body() == kep3::MU_SUN);
+  REQUIRE(udpla.get_mu_self() == 6836529e9);
+  REQUIRE(udpla.get_radius() == 24622000.);
+  REQUIRE(udpla.get_safe_radius() == 1.1 * 24622000.);
+}
+
 TEST_CASE("stream_operator") {
   REQUIRE_NOTHROW((std::cout << jpl_lp{} << '\n'));
 }

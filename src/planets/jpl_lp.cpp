@@ -62,56 +62,56 @@ jpl_lp::jpl_lp(const std::string &name)
     m_elements = mercury_el;
     m_elements_dot = mercury_el_dot;
     m_radius = 2440000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 22032e9;
   } break;
   case (2): {
     m_elements = venus_el;
     m_elements_dot = venus_el_dot;
     m_radius = 6052000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 324859e9;
   } break;
   case (3): {
     m_elements = earth_moon_el;
     m_elements_dot = earth_moon_el_dot;
     m_radius = 6378000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 398600.4418e9;
   } break;
   case (4): {
     m_elements = mars_el;
     m_elements_dot = mars_el_dot;
     m_radius = 3397000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 42828e9;
   } break;
   case (5): {
     m_elements = jupiter_el;
     m_elements_dot = jupiter_el_dot;
     m_radius = 71492000.;
-    m_safe_radius = 9.;
+    m_safe_radius = 9. * m_radius;
     m_mu_self = 126686534e9;
   } break;
   case (6): {
     m_elements = saturn_el;
     m_elements_dot = saturn_el_dot;
     m_radius = 60330000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 37931187e9;
   } break;
   case (7): {
     m_elements = uranus_el;
     m_elements_dot = uranus_el_dot;
     m_radius = 25362000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 5793939e9;
   } break;
   case (8): {
     m_elements = neptune_el;
     m_elements_dot = neptune_el_dot;
     m_radius = 24622000.;
-    m_safe_radius = 1.1;
+    m_safe_radius = 1.1 * m_radius;
     m_mu_self = 6836529e9;
   } break;
   default: {
