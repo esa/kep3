@@ -41,20 +41,6 @@ TEST_CASE("eph") {
   // We use 2030-01-01 as a reference epoch for all these tests
   kep3::epoch ref_epoch{2458849.5, kep3::epoch::JD};
   {
-    // This is the Earth-Moon w.r.t. the Sun queried from JPL Horizon at
-    // 2020-01-01
-    std::array<std::array<double, 3>, 2> pos_vel_0{
-        {{-2.488023054631234E+10, 1.449771522542222E+11,
-          -6.590293144971132E+02},
-         {-2.984589828430694E+04, -5.151004951052294E+03,
-          3.108878527788850E-01}}};
-    // The Earth in jpl_lp mode
-    jpl_lp udpla{"earth"};
-    auto [r, v] = udpla.eph(ref_epoch);
-    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
-    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
-  }
-  {
     // This is Mercury w.r.t. the Sun queried from JPL Horizon at
     // 2020-01-01
     std::array<std::array<double, 3>, 2> pos_vel_0{
@@ -81,6 +67,21 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.02);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.02);
   }
+  {
+    // This is the Earth-Moon w.r.t. the Sun queried from JPL Horizon at
+    // 2020-01-01
+    std::array<std::array<double, 3>, 2> pos_vel_0{
+        {{-2.488023054631234E+10, 1.449771522542222E+11,
+          -6.590293144971132E+02},
+         {-2.984589828430694E+04, -5.151004951052294E+03,
+          3.108878527788850E-01}}};
+    // The Earth in jpl_lp mode
+    jpl_lp udpla{"earth"};
+    auto [r, v] = udpla.eph(ref_epoch);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
+  }
+
   {
     // This is Mars w.r.t. the Sun queried from JPL Horizon at
     // 2020-01-01
@@ -109,6 +110,19 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
   }
   {
+    // This is Saturn w.r.t. the Sun queried from JPL Horizon at
+    // 2020-01-01
+    std::array<std::array<double, 3>, 2> pos_vel_0{
+        {{5.680597453102431E+11, -1.389479460523918E+12, 1.545819892540634E+09},
+         {8.420955066542843E+03, 3.631222339233865E+03,
+          -3.987639953503348E+02}}};
+    // Uranus in jpl_lp mode
+    jpl_lp udpla{"sAtURN"};
+    auto [r, v] = udpla.eph(ref_epoch);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
+  }
+  {
     // This is Uranus w.r.t. the Sun queried from JPL Horizon at
     // 2020-01-01
     std::array<std::array<double, 3>, 2> pos_vel_0{
@@ -121,6 +135,9 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
   }
+  jpl_lp udpla{"uranus"};
+  REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534, kep3::epoch::MJD2000)),
+                    std::domain_error);
 }
 
 TEST_CASE("elements") {
