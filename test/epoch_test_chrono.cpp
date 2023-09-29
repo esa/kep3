@@ -88,19 +88,14 @@ TEST_CASE( "epoch_operators" )
     today -= chr::duration_cast<kep_clock::duration>( chr::days( 100 ) );
     REQUIRE( today == epoch() );
     auto oneday = chr::days( 1 );
-    std::cout << "Type of oneday: " << typeid( oneday ).name() << "\n";
     auto yesterday = today - chr::duration_cast<kep_clock::duration>( oneday );
-    std::cout << "Type of yesterday: " << typeid( yesterday ).name() << "\n";
     auto yesterday1 = today - oneday;
-    std::cout << "Type of yesterday1: " << typeid( yesterday1 ).name() << "\n";
 
     REQUIRE( yesterday == epoch( 0, 0, -1 ) );
     today = yesterday + chr::duration_cast<kep_clock::duration>( chr::days( 1 ) );
     REQUIRE( today == epoch() );
     auto diff{ today - yesterday };
-    std::cout << diff << "\n";
     REQUIRE( diff == chr::duration_cast<kep_clock::duration>( chr::days( 1 ) ) );
-    std::cout << "Type of diff: " << typeid( diff ).name() << "\n";
     REQUIRE_NOTHROW( ( std::cout << epoch() ) );
 }
 

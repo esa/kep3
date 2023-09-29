@@ -97,14 +97,12 @@ namespace kep3
         epoch( const dur<Num, Den>& duration )
             : tp{ kep_clock::time_point{} + duration }
         {
-            std::cout << "Constructor const & \n";
         }
 
         template <lint Num, lint Den>
         epoch( dur<Num, Den>&& duration )
             : tp{ kep_clock::time_point{} + duration }
         {
-            std::cout << "Constructor && \n";
         }
 
         epoch( const kep_clock::time_point& time_point );
@@ -186,7 +184,6 @@ namespace kep3
         template <lint Num, lint Den>
         kep3_DLL_PUBLIC epoch operator-( dur<Num, Den>&& duration )
         {
-            std::cout << "operator-()\n";
             return epoch( tp - chr::duration_cast<kep_clock::duration>( duration ) );
         }
 
@@ -194,7 +191,6 @@ namespace kep3
 
         kep3_DLL_PUBLIC epoch operator=( const epoch& ep )
         {
-            std::cout << "operator=()\n";
             return { ep.tp };
         }
         //        kep3_DLL_PUBLIC friend epoch& operator=( epoch&& ep );
