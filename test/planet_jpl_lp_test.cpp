@@ -75,7 +75,7 @@ TEST_CASE("eph") {
           -6.590293144971132E+02},
          {-2.984589828430694E+04, -5.151004951052294E+03,
           3.108878527788850E-01}}};
-    // The Earth in jpl_lp mode
+    // The Earth-Moon in jpl_lp mode
     jpl_lp udpla{"earth"};
     auto [r, v] = udpla.eph(ref_epoch);
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
