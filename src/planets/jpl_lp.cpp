@@ -130,18 +130,17 @@ std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const {
   // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
   // 2023.
   std::array<double, 6> elements_updated{}, elements_f{};
-  double dt = (mjd2000 - 2451545.0) /
-              36525.; // Number of centuries passed since J2000.0
+  double dt = mjd2000 / 36525.; // Number of centuries passed since J2000.0
   for (unsigned int i = 0; i < 6; ++i) {
     elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
   }
-  elements_f[0] = elements_updated[0] * get_mu_central_body();
+  elements_f[0] = elements_updated[0] * kep3::AU;
   elements_f[1] = elements_updated[1];
   elements_f[2] = elements_updated[2] * kep3::DEG2RAD;
   elements_f[3] = elements_updated[5] * kep3::DEG2RAD;
   elements_f[4] = (elements_updated[4] - elements_updated[5]) * kep3::DEG2RAD;
   elements_f[5] = (elements_updated[3] - elements_updated[4]) * kep3::DEG2RAD;
-  elements_f[5] = kep3::m2e(elements_updated[5], elements_updated[1]);
+  elements_f[5] = kep3::m2f(elements_f[5], elements_f[1]);
   return elements_f;
 }
 
@@ -182,12 +181,12 @@ double jpl_lp::get_radius() const { return m_radius; }
 double jpl_lp::get_safe_radius() const { return m_safe_radius; }
 
 std::string jpl_lp::get_extra_info() const {
-  auto par = elements();
   kep3::epoch ep{0., kep3::epoch::MJD2000};
+  auto par = elements(ep);
   auto pos_vel = eph(ep);
 
   std::string retval =
-      fmt::format("Low-precision planet elements: \n") +
+      fmt::format("\nLow-precision planet elements: \n") +
       fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU) +
       fmt::format("Eccentricity: {}\n", par[1]) +
       fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG) +
