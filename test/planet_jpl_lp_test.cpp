@@ -81,6 +81,46 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.02);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.02);
   }
+  {
+    // This is Mars w.r.t. the Sun queried from JPL Horizon at
+    // 2020-01-01
+    std::array<std::array<double, 3>, 2> pos_vel_0{
+        {{-1.974852868472516E+11, -1.325074305699912E+11,
+          2.068800235454373E+09},
+         {1.440720082303430E+04, -1.804659323991406E+04,
+          -7.316474757792575E+02}}};
+    // Mars in jpl_lp mode
+    jpl_lp udpla{"mars"};
+    auto [r, v] = udpla.eph(ref_epoch);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
+  }
+  {
+    // This is Jupiter w.r.t. the Sun queried from JPL Horizon at
+    // 2020-01-01
+    std::array<std::array<double, 3>, 2> pos_vel_0{
+        {{7.871048884706007E+10, -7.780620023532844E+11, 1.470618693758428E+09},
+         {1.285491315086331E+04, 1.933721291664580E+03,
+          -2.956500740610059E+02}}};
+    // Jupiter in jpl_lp mode
+    jpl_lp udpla{"jupiter"};
+    auto [r, v] = udpla.eph(ref_epoch);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
+  }
+  {
+    // This is Uranus w.r.t. the Sun queried from JPL Horizon at
+    // 2020-01-01
+    std::array<std::array<double, 3>, 2> pos_vel_0{
+        {{2.427299831783689E+12, 1.702279661193254E+12, -2.511573638659978E+09},
+         {-3.947889815690411E+03, 5.259970919483185E+03,
+          7.055304073010626E+01}}};
+    // Uranus in jpl_lp mode
+    jpl_lp udpla{"uranus"};
+    auto [r, v] = udpla.eph(ref_epoch);
+    REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 0.01);
+    REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
+  }
 }
 
 TEST_CASE("elements") {

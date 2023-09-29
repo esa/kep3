@@ -55,9 +55,8 @@ jpl_lp::jpl_lp(const std::string &name)
       {"mars", 4},    {"jupiter", 5}, {"saturn", 6},
       {"uranus", 7},  {"neptune", 8}, {"pluto", 9}};
 
-  std::string lower_case_name = name;
-  boost::algorithm::to_lower(lower_case_name);
-  switch (mapped_planets[lower_case_name]) {
+  boost::algorithm::to_lower(m_name);
+  switch (mapped_planets[m_name]) {
   case (1): {
     m_elements = mercury_el;
     m_elements_dot = mercury_el_dot;
