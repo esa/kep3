@@ -15,7 +15,6 @@
 
 #include "catch.hpp"
 #include <boost/lexical_cast.hpp>
-#include <kep3/detail/exceptions.hpp>
 
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
