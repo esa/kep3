@@ -12,11 +12,17 @@
 
 #include <fmt/core.h>
 
+
 #include "catch.hpp"
 #include <boost/lexical_cast.hpp>
 #include <kep3/detail/exceptions.hpp>
+
 #include <kep3/epoch.hpp>
+#include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
+
+#include "catch.hpp"
+#include "test_helpers.hpp"
 
 using kep3::epoch;
 using kep3::planet;
@@ -29,6 +35,7 @@ using kep3::detail::udpla_has_get_mu_self_v;
 using kep3::detail::udpla_has_get_name_v;
 using kep3::detail::udpla_has_get_radius_v;
 using kep3::detail::udpla_has_get_safe_radius_v;
+using kep3::detail::udpla_has_period_v;
 
 struct simple_udpla {
   simple_udpla() = default;
@@ -45,6 +52,44 @@ private:
   template <typename Archive> void serialize(Archive &, unsigned) {}
 };
 kep3_S11N_PLANET_EXPORT(simple_udpla);
+
+struct simple_udpla_mu {
+  simple_udpla_mu() = default;
+  static std::array<std::array<double, 3>, 2> eph(const epoch &) {
+    std::array<double, 3> pos = {1., 0., 0.};
+    std::array<double, 3> vel = {0., 1., 0.};
+    return {pos, vel};
+  };
+  static std::string get_name() { return "A simple planet with mu"; }
+  static std::string get_extra_info() {
+    return "The simplest planet ever but with mu!";
+  }
+  static double get_mu_central_body() { return 1.; }
+
+private:
+  friend class boost::serialization::access;
+  template <typename Archive> void serialize(Archive &, unsigned) {}
+};
+kep3_S11N_PLANET_EXPORT(simple_udpla_mu);
+
+struct simple_udpla_mu_h {
+  simple_udpla_mu_h() = default;
+  static std::array<std::array<double, 3>, 2> eph(const epoch &) {
+    std::array<double, 3> pos = {1., 0., 0.};
+    std::array<double, 3> vel = {0., 10., 0.};
+    return {pos, vel};
+  };
+  static std::string get_name() { return "A simple planet with mu"; }
+  static std::string get_extra_info() {
+    return "The simplest planet ever but with mu!";
+  }
+  static double get_mu_central_body() { return 1.; }
+
+private:
+  friend class boost::serialization::access;
+  template <typename Archive> void serialize(Archive &, unsigned) {}
+};
+kep3_S11N_PLANET_EXPORT(simple_udpla_mu_h);
 
 struct complete_udpla {
   explicit complete_udpla(std::array<double, 4> physical_properties = {-1., -1.,
@@ -65,6 +110,9 @@ struct complete_udpla {
   [[nodiscard]] double get_mu_self() const { return m_mu_self; }
   [[nodiscard]] double get_radius() const { return m_radius; }
   [[nodiscard]] double get_safe_radius() const { return m_safe_radius; }
+  [[nodiscard]] double period(const epoch &) const {
+    return m_radius - m_radius;
+  }
 
   [[nodiscard]] std::string get_extra_info() const {
     return fmt::format(
@@ -108,6 +156,7 @@ TEST_CASE("construction") {
     REQUIRE_THROWS_AS((pla.get_mu_self()), kep3::not_implemented_error);
     REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
     REQUIRE_THROWS_AS((pla.get_safe_radius()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
     REQUIRE(pla.extract<null_udpla>() != nullptr);
   }
   {
@@ -124,6 +173,36 @@ TEST_CASE("construction") {
     REQUIRE_THROWS_AS((pla.get_mu_self()), kep3::not_implemented_error);
     REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
     REQUIRE_THROWS_AS((pla.get_safe_radius()), kep3::not_implemented_error);
+    REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
+  }
+  {
+    // Constructor from a more complete udpla
+    complete_udpla udpla({1., 2., -1., 4.});
+    REQUIRE_NOTHROW(planet(udpla));
+    planet pla(udpla);
+    auto pos_vel = pla.eph(epoch(0.));
+    REQUIRE(pos_vel[0] == std::array<double, 3>{1., 0., 0.});
+    REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
+    REQUIRE(pla.get_name() == "A complete, albeit simple Planet");
+    REQUIRE(pla.get_mu_central_body() == 1.);
+    REQUIRE(pla.get_mu_self() == 2.);
+    REQUIRE_THROWS_AS((pla.get_radius()), kep3::not_implemented_error);
+    REQUIRE(pla.get_safe_radius() == 4.);
+  }
+  {
+    // Constructor from a simple udpla with mu and hyperbolic orbit
+    simple_udpla_mu_h udpla{};
+    REQUIRE_NOTHROW(planet(udpla));
+    planet pla(udpla);
+    REQUIRE(!std::isfinite(pla.period()));
+  }
+  {
+    // Constructor from a simple udpla with mu and elliptical orbit
+    simple_udpla_mu udpla{};
+    REQUIRE_NOTHROW(planet(udpla));
+    planet pla(udpla);
+    REQUIRE(kep3_tests::floating_point_error(pla.period(), kep3::pi * 2.) <
+            1e-14);
   }
   {
     // Constructor from a more complete udpla
@@ -208,6 +287,11 @@ TEST_CASE("type_traits") {
   REQUIRE(!udpla_has_get_safe_radius_v<simple_udpla>);
   REQUIRE(!udpla_has_get_safe_radius_v<double>);
   REQUIRE(udpla_has_get_safe_radius_v<complete_udpla>);
+  // check the udpla_has_period_v type trait.
+  REQUIRE(!udpla_has_period_v<null_udpla>);
+  REQUIRE(!udpla_has_period_v<simple_udpla>);
+  REQUIRE(!udpla_has_period_v<double>);
+  REQUIRE(udpla_has_period_v<complete_udpla>);
 }
 
 TEST_CASE("copy_constructor_test") {
@@ -377,6 +461,7 @@ TEST_CASE("planet_astro_methods_test") {
   REQUIRE(pla.get_mu_self() == 2.3);
   REQUIRE(pla.get_radius() == 4.02);
   REQUIRE(pla.get_safe_radius() == 4.5);
+  REQUIRE(pla.period(kep3::epoch(0.)) == 0.);
 }
 
 TEST_CASE("serialization_test") {
@@ -391,7 +476,7 @@ TEST_CASE("serialization_test") {
     boost::archive::binary_oarchive oarchive(ss);
     oarchive << pla;
   }
-  // Create a new algorithm object
+  // Create a new planet object
   auto pla2 = planet{simple_udpla{}};
   boost::lexical_cast<std::string>(pla2); // triggers the streaming operator
   {

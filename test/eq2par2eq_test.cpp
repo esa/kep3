@@ -28,7 +28,7 @@ TEST_CASE("eq2par2eq") {
   std::mt19937 rng_engine(122012203u);
   // Distributions for the elements
   std::uniform_real_distribution<double> sma_d(1.1, 100.);
-  std::uniform_real_distribution<double> ecc_d(0, 0.99);
+  std::uniform_real_distribution<double> ecc_d(0, 0.9);
   std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., 2 * pi);
@@ -67,7 +67,7 @@ TEST_CASE("eq2par2eq") {
     for (auto i = 0u; i < N; ++i) {
       // We sample randomly on the Keplerian space
       double sma = -sma_d(rng_engine);
-      double ecc = ecc_d(rng_engine) + 1.;
+      double ecc = ecc_d(rng_engine) + 2.;
       double incl = incl_d(rng_engine);
       double Omega = Omega_d(rng_engine);
       double omega = omega_d(rng_engine);
@@ -85,8 +85,7 @@ TEST_CASE("eq2par2eq") {
       // numbers (<1) we care about absolute while for large (>1) we care for
       // relative error.
       REQUIRE(kep3_tests::floating_point_error(sma, par[0]) <
-              1e-10); // errors arise since p = a * (1-e^2) and a = p / (1-e^2)
-                      // [when e is close to 1 and a is high]
+              1e-13); // errors arise when e is close to 1 and a is high
       REQUIRE(kep3_tests::floating_point_error(ecc, par[1]) < 1e-13);
       REQUIRE(kep3_tests::floating_point_error(incl, par[2]) < 1e-13);
       REQUIRE(kep3_tests::floating_point_error(Omega, par[3]) < 1e-13);

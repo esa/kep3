@@ -30,6 +30,9 @@ class kep3_DLL_PUBLIC keplerian {
   double m_mu_central_body;
   double m_mu_self;
   double m_radius;
+  double m_safe_radius;
+  double m_period;
+
   bool m_ellipse;
   double m_safe_radius;
   std::array<std::array<double, 3>, 2> m_pos_vel_0;
@@ -41,18 +44,22 @@ class kep3_DLL_PUBLIC keplerian {
     ar &m_mu_central_body;
     ar &m_mu_self;
     ar &m_radius;
+    ar &m_safe_radius;
+    ar &m_period;
     ar &m_ellipse;
     ar &m_safe_radius;
     ar &m_pos_vel_0;
   }
 
 public:
-  // NOTE: in here elem is a,e,i,W,w,M (Mean anomaly, not true anomaly)
   // NOTE: added_param contains mu_self, radius and safe_radius
   explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
                      double mu_central_body = 1., std::string name = "Unknown",
-                     std::array<double, 3> added_params = {-1., -1., -1.});
-  explicit keplerian(const epoch &ref_epoch = kep3::epoch(),
+
+                     std::array<double, 3> added_params = {-1., -1., -1.}, kep3::elements_type el_t = kep3::elements_type::KEP_F);
+  // Constructor from pos_vel
+  explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
+
                      const std::array<std::array<double, 3>, 2> &pos_vel =
                          {{{1.0, 0.0, 0.0}, {0., 1.0, 0.0}}},
                      double mu_central_body = 1., std::string name = "Unknown",
@@ -67,6 +74,7 @@ public:
   [[nodiscard]] double get_radius() const;
   [[nodiscard]] double get_safe_radius() const;
   [[nodiscard]] std::string get_extra_info() const;
+  [[nodiscard]] double period(const kep3::epoch & = kep3::epoch()) const;
 
   // Other methods
   [[nodiscard]] kep3::epoch get_ref_epoch() const;

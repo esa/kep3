@@ -23,70 +23,15 @@
 #include "catch.hpp"
 #include "test_helpers.hpp"
 
-using Catch::Matchers::WithinAbs;
-using kep3::propagate_lagrangian;
-using kep3::propagate_lagrangian_u;
+using kep3::propagate_keplerian;
 
 constexpr double pi{boost::math::constants::pi<double>()};
 
-void test_propagate_lagrangian(
+void test_propagate_keplerian(
     const std::function<void(std::array<std::array<double, 3>, 2> &, double,
                              double)> &propagate,
     unsigned int N = 10000) {
-  { // Elliptical circular motion xy
-    std::array<std::array<double, 3>, 2> pos_vel = {
-        {{1., 0, 0.}, {0., 1., 0.}}};
-    propagate(pos_vel, pi / 2., 1.);
-    auto &[pos, vel] = pos_vel;
 
-    REQUIRE_THAT(pos[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[1], WithinAbs(1., 1e-14));
-    REQUIRE_THAT(pos[2], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[0], WithinAbs(-1., 1e-14));
-    REQUIRE_THAT(vel[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
-  }
-  { // Elliptical circular motion xy
-    std::array<std::array<double, 3>, 2> pos_vel = {
-        {{1., 0, 0.}, {0., 1., 0.}}};
-    propagate(pos_vel, -pi / 2., 1.);
-    auto &[pos, vel] = pos_vel;
-
-    REQUIRE_THAT(pos[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[1], WithinAbs(-1., 1e-14));
-    REQUIRE_THAT(pos[2], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[0], WithinAbs(1., 1e-14));
-    REQUIRE_THAT(vel[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
-  }
-  { // Elliptical circular motion xz
-    std::array<std::array<double, 3>, 2> pos_vel = {
-        {{1., 0, 0.}, {0., 0., 1.}}};
-    propagate(pos_vel, pi / 2., 1.);
-    auto &[pos, vel] = pos_vel;
-
-    REQUIRE_THAT(pos[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[2], WithinAbs(1., 1e-14));
-    REQUIRE_THAT(vel[0], WithinAbs(-1., 1e-14));
-    REQUIRE_THAT(vel[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
-  }
-  { // Elliptical circular motion yz
-    std::array<std::array<double, 3>, 2> pos_vel = {
-        {{0., 1, 0.}, {0., 0., 1.}}};
-    propagate(pos_vel, pi / 2., 1.);
-    auto &[pos, vel] = pos_vel;
-
-    REQUIRE_THAT(pos[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[1], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(pos[2], WithinAbs(1., 1e-14));
-    REQUIRE_THAT(vel[0], WithinAbs(0., 1e-14));
-    REQUIRE_THAT(vel[1], WithinAbs(-1., 1e-14));
-    REQUIRE_THAT(vel[2], WithinAbs(0., 1e-14));
-  }
-  // We test orbital parameters are unchanged for random propagations
-  // Engines
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
   std::mt19937 rng_engine(1220202343u);
 
@@ -115,8 +60,10 @@ void test_propagate_lagrangian(
       auto pos_vel_after = pos_vel;
       propagate(pos_vel_after, tof, 1.);
       propagate(pos_vel_after, -tof, 1.);
-      REQUIRE(kep3_tests::floating_point_error_vector(
-                  pos_vel[0], pos_vel_after[0]) < 1e-13);
+      REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0],
+                                                      pos_vel_after[0]) <
+              1e-10); // Low precision requested. The funciton is only here for
+                      // academic purposes
     }
   }
 
@@ -144,26 +91,13 @@ void test_propagate_lagrangian(
         propagate(pos_vel_after, tof, 1.);
         propagate(pos_vel_after, -tof, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(
-                    pos_vel[0], pos_vel_after[0]) < 1e-13);
+                    pos_vel[0], pos_vel_after[0]) < 1e-10);
       }
     }
   }
 }
 
-TEST_CASE("propagate_lagrangian") {
+TEST_CASE("propagate_keplerian") {
   // We test both Normal and Universal variables version with the same data.
-  test_propagate_lagrangian(&propagate_lagrangian, 10000u);
-  test_propagate_lagrangian(&propagate_lagrangian_u, 10000u);
-}
-
-TEST_CASE("extreme_orbit_H") {
-  std::array<std::array<double, 3>, 2> pos_vel = {
-      {{-0.3167755980094844, -1.916113450769878, 0.899028670370861},
-       {1.2231112281789407, 7.472926753229921, -3.5814204332202086}}};
-  double tof = 0.5150723675394596;
-  double mu = 1.;
-  kep3::propagate_lagrangian(pos_vel, tof, mu);
-  REQUIRE(kep3_tests::floating_point_error_vector(
-              pos_vel[0], {0.6049892513157507, 1.314038087851452,
-                           1.747826097602214}) < 1e-11);
+  test_propagate_keplerian(&propagate_keplerian, 10000u);
 }

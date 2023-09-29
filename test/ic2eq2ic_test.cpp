@@ -30,7 +30,7 @@ constexpr double pi{boost::math::constants::pi<double>()};
 TEST_CASE("ic2eq") {
   // Zero inclination and eccentricity
   {
-    auto par = ic2eq({1.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1.0);
+    auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}}}, 1.0);
     REQUIRE(par[0] == 1.); // p is 1
     REQUIRE(par[1] == 0.); // f is zero
     REQUIRE(par[2] == 0.); // g is zero
@@ -40,7 +40,7 @@ TEST_CASE("ic2eq") {
   }
   // Orbit at 90 degrees inclination
   {
-    auto par = ic2eq({1.0, 0.0, 0.0, 0.0, 0.0, 1.1}, 1.0);
+    auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 0.0, 1.1}}}, 1.0);
     REQUIRE_THAT(par[0],
                  WithinRel(1.2658227848101269 * (1. - 0.21 * 0.21), 1e-14));
     REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
@@ -51,7 +51,7 @@ TEST_CASE("ic2eq") {
   }
   // Orbit at 90 degrees inclination
   {
-    auto par = ic2eq({1.0, 0.0, 0.0, 0.0, 0.0, -1.1}, 1.0);
+    auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 0.0, -1.1}}}, 1.0);
     REQUIRE_THAT(par[0],
                  WithinRel(1.2658227848101269 * (1. - 0.21 * 0.21), 1e-14));
     REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));

@@ -7,9 +7,14 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <bits/chrono.h>
+
+#include "kep3/core_astro/eq2par2eq.hpp"
+#include <cmath>
+#include <limits>
+
 #include <stdexcept>
 #include <string>
+#include <chrono>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -29,10 +34,10 @@ keplerian::keplerian(const epoch &ref_epoch,
                      const std::array<std::array<double, 3>, 2> &pos_vel,
                      double mu_central_body, std::string name,
                      std::array<double, 3> added_params)
-    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
+    : m_ref_epoch(ref_epoch), m_pos_vel_0(pos_vel), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_ellipse(), m_safe_radius(added_params[2]),
-      m_pos_vel_0(pos_vel) {
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
+      m_ellipse() {
   double R =
       std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] +
                 pos_vel[0][2] * pos_vel[0][2]);
@@ -41,15 +46,44 @@ keplerian::keplerian(const epoch &ref_epoch,
                   2. -
               mu_central_body / R;
   (en > 0) ? m_ellipse = false : m_ellipse = true;
+  double a = -m_mu_central_body / 2. / en;
+  if (m_ellipse) {
+    m_period = kep3::pi * 2. * std::sqrt(a * a * a / m_mu_central_body);
+  } else {
+    m_period = std::numeric_limits<double>::quiet_NaN();
+  }
 }
 
-keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
+keplerian::keplerian(const epoch &ref_epoch,
+                     const std::array<double, 6> &par_in,
                      double mu_central_body, std::string name,
-                     std::array<double, 3> added_params)
-    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
+                     std::array<double, 3> added_params,
+                     kep3::elements_type el_type)
+    : m_ref_epoch(ref_epoch), m_pos_vel_0(), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_ellipse(), m_safe_radius(added_params[2]),
-      m_pos_vel_0() {
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
+      m_ellipse() {
+  // orbital parameters a,e,i,W,w,f will be stored here
+  std::array<double, 6> par(par_in);
+  // we convert according to the chosen input
+  switch (el_type) {
+  case kep3::elements_type::KEP_F:
+    break;
+  case kep3::elements_type::KEP_M:
+    if (par[0] < 0) {
+      throw std::logic_error("Mean anomaly is only available for ellipses.");
+    }
+    par[5] = kep3::m2f(par[5], par[1]);
+    break;
+  case kep3::elements_type::MEQ:
+    par = kep3::eq2par(par, false);
+    break;
+  case kep3::elements_type::MEQ_R:
+    par = kep3::eq2par(par, true);
+    break;
+  default:
+    throw std::logic_error("You should not go here!");
+  }
 
   if (par[0] * (1 - par[1]) <= 0) {
     throw std::domain_error(
@@ -57,8 +91,16 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
         "a,e:"
         "The following must hold: a<0 -> e>1 [a>0 -> e<1].");
   }
+
   m_pos_vel_0 = kep3::par2ic(par, mu_central_body);
+
   (par[0] < 0) ? m_ellipse = false : m_ellipse = true;
+  if (m_ellipse) {
+    m_period =
+        kep3::pi * 2. * std::sqrt(par[0] * par[0] * par[0] / m_mu_central_body);
+  } else {
+    m_period = std::numeric_limits<double>::quiet_NaN();
+  }
 }
 
 std::array<std::array<double, 3>, 2>
@@ -80,6 +122,8 @@ double keplerian::get_mu_self() const { return m_mu_self; }
 double keplerian::get_radius() const { return m_radius; }
 
 double keplerian::get_safe_radius() const { return m_safe_radius; }
+
+double keplerian::period(const kep3::epoch &) const { return m_period; }
 
 kep3::epoch keplerian::get_ref_epoch() const { return m_ref_epoch; }
 

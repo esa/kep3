@@ -26,6 +26,7 @@
  * This namespace contains astrodynamics and space flight mechanics routines
  * that are related to keplerian motions or models.
  */
+
 using namespace std::literals;
 namespace chr = std::chrono;
 using lint = long int;

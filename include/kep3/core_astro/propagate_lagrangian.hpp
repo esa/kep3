@@ -13,6 +13,7 @@
 #include <array>
 #include <cmath>
 
+
 #include<kep3/detail/visibility.hpp>
 
 namespace kep3 {
@@ -29,6 +30,9 @@ kep3_DLL_PUBLIC void propagate_lagrangian(std::array<std::array<double, 3>, 2> &
                           double dt, double mu);
 
 kep3_DLL_PUBLIC void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel,
+                          double dt, double mu);
+
+kep3_DLL_PUBLIC void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel,
                           double dt, double mu);
 } // namespace kep3
 

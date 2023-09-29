@@ -14,13 +14,12 @@
 
 #include "catch.hpp"
 
-using kep3::e2m;
-using kep3::m2e;
 using kep3::e2f;
+using kep3::e2m;
 using kep3::f2e;
-using kep3::zeta2f;
 using kep3::f2zeta;
-
+using kep3::m2e;
+using kep3::zeta2f;
 
 TEST_CASE("m2e") {
   using Catch::Detail::Approx;
@@ -34,7 +33,7 @@ TEST_CASE("m2e") {
   //
   std::uniform_real_distribution<double> ecc_difficult_d(0.9, 0.99);
   std::uniform_real_distribution<double> ecc_easy_d(0., 0.9);
-  std::uniform_real_distribution<double> M_d(-100, 100.);
+  std::uniform_real_distribution<double> M_d(-1e6, 1e6);
 
   // Testing on N random calls (easy)
   unsigned N = 10000;
@@ -42,23 +41,22 @@ TEST_CASE("m2e") {
     double mean_anom = M_d(rng_engine);
     double ecc = ecc_easy_d(rng_engine);
     double res = e2m(m2e(mean_anom, ecc), ecc);
-    // We require 1e-13 and not 1e-14 as the range for m is [-100,100]. For high
-    // values of M some precision loss is to be expected as to maintain digits
-    // of the higher number.
+
     REQUIRE(std::sin(res) ==
-            Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-13));
+            Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
     REQUIRE(std::cos(res) ==
-            Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-13));
+            Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
   }
-  // Testing on N random calls (difficult)
+
+  // Testing on N random calls (difficult e> 0.9 e<1)
   for (auto i = 0u; i < N; ++i) {
     double mean_anom = M_d(rng_engine);
     double ecc = ecc_difficult_d(rng_engine);
     double res = e2m(m2e(mean_anom, ecc), ecc);
     REQUIRE(std::sin(res) ==
-            Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-13));
+            Approx(std::sin(mean_anom)).epsilon(0.).margin(1e-14));
     REQUIRE(std::cos(res) ==
-            Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-13));
+            Approx(std::cos(mean_anom)).epsilon(0.).margin(1e-14));
   }
 }
 

@@ -7,10 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/ic2par2ic.hpp"
-#include "kep3/core_astro/propagate_lagrangian.hpp"
 #include <chrono>
 #include <iostream>
+#include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <random>
 
 #include <fmt/core.h>
@@ -46,7 +46,7 @@ void perform_test_speed(
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
-  std::uniform_real_distribution<double> tof_d(0.1, 20.);
+  std::uniform_real_distribution<double> tof_d(10., 100.);
 
   // We generate the random dataset
   std::vector<std::array<std::array<double, 3>, 2>> pos_vels(N);
@@ -54,7 +54,7 @@ void perform_test_speed(
   for (auto i = 0u; i < N; ++i) {
     auto ecc = ecc_d(rng_engine);
     auto sma = sma_d(rng_engine);
-    ecc > 1. ? sma = -sma : sma = sma;
+    ecc > 1. ? sma = -sma : sma;
     double f = pi;
     while (std::cos(f) < -1. / ecc && sma < 0.) {
       f = f_d(rng_engine);
@@ -86,17 +86,17 @@ void perform_test_accuracy(
   // Engines
   //
   // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-  std::mt19937 rng_engine(122012203u);
+  std::mt19937 rng_engine(53534535u);
   //
   // Distributions
   //
-  std::uniform_real_distribution<double> sma_d(0.5, 20.);
+  std::uniform_real_distribution<double> sma_d(0.5, 10.);
   std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
   std::uniform_real_distribution<double> incl_d(0., pi);
   std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
   std::uniform_real_distribution<double> omega_d(0., 2 * pi);
   std::uniform_real_distribution<double> f_d(0, 2 * pi);
-  std::uniform_real_distribution<double> tof_d(0.1, 20.);
+  std::uniform_real_distribution<double> tof_d(10, 100.);
 
   // We generate the random dataset
   std::vector<std::array<std::array<double, 3>, 2>> pos_vels(N);
@@ -108,13 +108,13 @@ void perform_test_accuracy(
     while (std::cos(f) < -1. / ecc && sma < 0.) {
       ecc = ecc_d(rng_engine);
       sma = sma_d(rng_engine);
-      ecc > 1. ? sma = -sma : sma = sma;
+      ecc > 1. ? sma = -sma : sma;
       f = f_d(rng_engine);
     }
 
-    pos_vels[i] = {
-        sma, ecc, incl_d(rng_engine), Omega_d(rng_engine), omega_d(rng_engine),
-        f};
+    pos_vels[i] = kep3::par2ic({sma, ecc, incl_d(rng_engine),
+                                Omega_d(rng_engine), omega_d(rng_engine), f},
+                               1.);
     tofs[i] = tof_d(rng_engine);
   }
   // We log progress
@@ -150,17 +150,29 @@ int main() {
   perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian);
   perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian);
   perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian);
-
-  fmt::print("\nComputes speed at different eccentricity ranges [Universal "
-             "Anomaly]:\n");
-  perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
-  perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
-
-  fmt::print("\nComputes error at different eccentricity ranges [Universal "
-             "Anomaly]:\n");
-  perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
-  perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
-  perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
+//
+  //fmt::print("\nComputes speed at different eccentricity ranges [Universal "
+  //           "Anomaly]:\n");
+  //perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
+  //perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
+//
+  //fmt::print("\nComputes error at different eccentricity ranges [Universal "
+  //           "Anomaly]:\n");
+  //perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
+  //perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
+  //perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
+//
+  //fmt::print("\nComputes speed at different eccentricity ranges [keplerian "
+  //           "propagation]:\n");
+  //perform_test_speed(0, 0.5, 1000000, &kep3::propagate_keplerian);
+  //perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_keplerian);
+  //perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_keplerian);
+//
+  //fmt::print("\nComputes error at different eccentricity ranges [keplerian "
+  //           "propagation]:\n");
+  //perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_keplerian);
+  //perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_keplerian);
+  //perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_keplerian);
 }
