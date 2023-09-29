@@ -31,19 +31,7 @@ namespace kep3
         : tp{}
     {}
 
-    /// Constructor.
-    /**
-    * Constructs an epoch from a non-gregorian date.
-    * \param[in] epoch_in A double indicating the non-gregorian date
-    * \param[in] epoch_type One of [epoch::julian_type::MJD2000,
-    * \param[in] epoch_type epoch::julian_type::MJD2000
-    */
-    // template<class FP, std::enable_if<std::is_floating_point<FP>::value, FP>::type*>
-    // epoch::epoch( const FP epoch_in, const julian_type epoch_type )
-    //     : tp{ make_tp( epoch_in, epoch_type ) }
 
-    // {
-    // }
 
     /// Constructor.
     /**
@@ -59,17 +47,6 @@ namespace kep3
     {
     }
 
-    /// Constructor.
-    /**
-     * Constructs an epoch from a std::chrono::duration.
-     * The reference point is assumed to be MJD 0.
-     * \param[in] time The time as a duration
-     */
-    //    template <lint Num, lint Den>
-    //    epoch::epoch( const dur<Num, Den>& time )
-    //        : tp{ kep_clock::time_point( T( time ) ) }
-    //    {
-    //    }
 
     epoch::epoch( const kep_clock::time_point& time_point )
         : tp{ time_point }
@@ -80,12 +57,6 @@ namespace kep3
         : tp{ std::move( time_point ) }
     {
     }
-
-    // template<class Int, std::enable_if<std::is_integral<Int>::value, Int>::type*>
-    // epoch::epoch(const Int us)
-    //     : tp{ kep_clock::time_point{chr::microseconds(us)} }
-    // {
-    // }
 
     kep_clock::time_point
     epoch::make_tp(const int y, const int d, const int h, const int min,

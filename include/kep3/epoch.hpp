@@ -91,7 +91,12 @@ public:
   epoch();
 
   // Constructor for days (as a floating-point value)
-  template <class FP, std::enable_if<std::is_floating_point<FP>::value,
+  /**
+  * Constructs an epoch from a non-gregorian date.
+  * \param[in] epoch_in A double indicating the non-gregorian date
+  * \param[in] epoch_type epoch::julian_type
+  */
+  template <class FP, typename std::enable_if<std::is_floating_point<FP>::value,
                                      FP>::type * = nullptr>
   epoch(const FP epoch_in = 0.0,
         const julian_type epoch_type = julian_type::MJD2000)
@@ -101,6 +106,12 @@ public:
     }
 
   // Constructor for const duration&)
+
+  /**
+   * Constructs an epoch from a std::chrono::duration.
+   * The reference point is assumed to be MJD 0.
+   * \param[in] time The time as a duration
+   */
   template <lint Num, lint Den>
   epoch(const dur<Num, Den> &duration)
       : tp{kep_clock::time_point{} + duration} {}
@@ -115,7 +126,7 @@ public:
 
   // Constructor for microseconds
   template <class Int,
-            std::enable_if<std::is_integral<Int>::value, Int>::type * = nullptr>
+            typename std::enable_if<std::is_integral<Int>::value, Int>::type * = nullptr>
   epoch(const Int us)
       : tp{ kep_clock::time_point{chr::microseconds(us)} }
     {
