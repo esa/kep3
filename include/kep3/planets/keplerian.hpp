@@ -52,7 +52,7 @@ public:
   explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
                      double mu_central_body = 1., std::string name = "Unknown",
                      std::array<double, 3> added_params = {-1., -1., -1.});
-  explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
+  explicit keplerian(const epoch &ref_epoch = kep3::epoch(),
                      const std::array<std::array<double, 3>, 2> &pos_vel =
                          {{{1.0, 0.0, 0.0}, {0., 1.0, 0.0}}},
                      double mu_central_body = 1., std::string name = "Unknown",

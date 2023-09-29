@@ -22,8 +22,8 @@ message(STATUS "kep3 version: ${kep3_VERSION}")
 include(YACMACompilerLinkerSettings)
 
 # Build options.
-option(kep3_BUILD_TESTS "Build unit tests." ON)
-option(kep3_BUILD_BENCHMARKS "Build benchmarks." ON)
+option(kep3_BUILD_TESTS "Build unit tests." OFF)
+option(kep3_BUILD_BENCHMARKS "Build benchmarks." OFF)
 option(kep3_BUILD_PYTHON_BINDINGS "Build Python bindings." OFF)
 
 # NOTE: on Unix systems, the correct library installation path

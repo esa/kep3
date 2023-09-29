@@ -12,11 +12,11 @@
 
 #include <fmt/core.h>
 
+#include "catch.hpp"
+#include <boost/lexical_cast.hpp>
 #include <kep3/detail/exceptions.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
-
-#include "catch.hpp"
 
 using kep3::epoch;
 using kep3::planet;
@@ -345,9 +345,9 @@ TEST_CASE("generic_assignment") {
 
 TEST_CASE("type_index") {
   planet p0 = planet{null_udpla{}};
-  //REQUIRE(p0.get_type_index() == std::type_index(typeid(null_udpla)));
-  //p0 = planet{simple_udpla{}};
-  //REQUIRE(p0.get_type_index() == std::type_index(typeid(simple_udpla)));
+  // REQUIRE(p0.get_type_index() == std::type_index(typeid(null_udpla)));
+  // p0 = planet{simple_udpla{}};
+  // REQUIRE(p0.get_type_index() == std::type_index(typeid(simple_udpla)));
 }
 
 TEST_CASE("get_ptr") {
