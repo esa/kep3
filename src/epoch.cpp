@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <iostream>
 #include <ratio>
+#include <string>
+#include <type_traits>
 
 #include "kep3/core_astro/convert_julian_dates.hpp"
 #include "kep3/epoch.hpp"
@@ -23,16 +25,25 @@ namespace kep3
 
     /// Constructor.
     /**
-     * Constructs an epoch from a non-gregorian date.
-     * \param[in] epoch_in A double indicating the non-gregorian date
-     * \param[in] epoch_type One of [epoch::julian_type::MJD2000,
-     * \param[in] epoch_type epoch::julian_type::MJD2000
-     */
-    epoch::epoch( const double epoch_in, const julian_type epoch_type )
-        : tp{ make_tp( epoch_in, epoch_type ) }
+    * Constructs a reference epoch.
+    */
+    epoch::epoch()
+        : tp{}
+    {}
 
-    {
-    }
+    /// Constructor.
+    /**
+    * Constructs an epoch from a non-gregorian date.
+    * \param[in] epoch_in A double indicating the non-gregorian date
+    * \param[in] epoch_type One of [epoch::julian_type::MJD2000,
+    * \param[in] epoch_type epoch::julian_type::MJD2000
+    */
+    // template<class FP, std::enable_if<std::is_floating_point<FP>::value, FP>::type*>
+    // epoch::epoch( const FP epoch_in, const julian_type epoch_type )
+    //     : tp{ make_tp( epoch_in, epoch_type ) }
+
+    // {
+    // }
 
     /// Constructor.
     /**
@@ -43,8 +54,8 @@ namespace kep3
      * [0-59] \param[in] ms The milliseconds [0-999] \param[in] us The milliseconds
      * [0-999]
      */
-    epoch::epoch( const int yr, const int mon, const int day, const int hr, const int min, const int s, const int ms, const int us )
-        : tp{ make_tp( yr, mon, day, hr, min, s, ms, us ) }
+    epoch::epoch(const int y, const int d, const int h, const int min, const int s, const int ms, const int us)
+        : tp{ make_tp( y, d, h, min, s, ms, us ) }
     {
     }
 
@@ -70,14 +81,22 @@ namespace kep3
     {
     }
 
-    constexpr kep_clock::time_point epoch::make_tp( const int yr, const int mon, const int day, const int hr, const int min, const int s, const int ms, const int us )
+    // template<class Int, std::enable_if<std::is_integral<Int>::value, Int>::type*>
+    // epoch::epoch(const Int us)
+    //     : tp{ kep_clock::time_point{chr::microseconds(us)} }
+    // {
+    // }
+
+    kep_clock::time_point
+    epoch::make_tp(const int y, const int d, const int h, const int min,
+                   const int s, const int ms, const int us)
+
     {
-        return kep_clock::time_point{} + chr::years( yr ) + chr::months( mon ) +
-               chr::days( day ) + chr::hours( hr ) + chr::minutes( min ) + chr::seconds( s ) +
+        return kep_clock::time_point{} + chr::years( y ) + chr::days( d ) + chr::hours( h ) + chr::minutes( min ) + chr::seconds( s ) +
                chr::milliseconds( ms ) + chr::microseconds( us );
     }
 
-    constexpr kep_clock::time_point epoch::make_tp( const double epoch_in, const julian_type epoch_type )
+    kep_clock::time_point epoch::make_tp( const double epoch_in, const julian_type epoch_type )
     {
         switch ( epoch_type )
         {
@@ -175,10 +194,10 @@ namespace kep3
     //   return std::mktime(utc);
     // }
 
-    const char* epoch::as_utc_string( const kep_clock::time_point& tp )
+    auto epoch::as_utc_string( const kep_clock::time_point& tp )
     {
         auto t = kep_clock::to_time_t( tp );
-        return asctime( gmtime( &t ) );
+        return std::put_time( gmtime( &t ), "%FT%T");
     }
 
     //    template <lint Num, lint Den>
@@ -238,7 +257,7 @@ namespace kep3
      */
     std::ostream& operator<<( std::ostream& s, const epoch& ep )
     {
-        s << epoch::as_utc_string( ep.tp );
+        s << epoch::as_utc_string(ep.tp);
         return s;
     }
 
@@ -282,7 +301,7 @@ namespace kep3
     //        return lhs;                                         // return the result by value (uses move constructor)
     //    }
 
-    kep_clock::duration operator-( const epoch lhs, const epoch rhs )
+    kep_clock::duration operator-( const epoch& lhs, const epoch& rhs )
     {
         return lhs.tp - rhs.tp;
     }

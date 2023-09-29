@@ -32,9 +32,7 @@ class kep3_DLL_PUBLIC keplerian {
   double m_radius;
   double m_safe_radius;
   double m_period;
-
   bool m_ellipse;
-  double m_safe_radius;
   std::array<std::array<double, 3>, 2> m_pos_vel_0;
 
   friend class boost::serialization::access;

@@ -20,11 +20,8 @@
 
 using kep3::epoch;
 using kep3::kep_clock;
-// using kep3::epoch_from_iso_string;
-// using kep3::epoch_from_string;
-// using boost::gregorian::date;
-// using boost::posix_time::ptime;
 using namespace std::literals;
+namespace chr = std::chrono;
 
 TEST_CASE( "construct" )
 {
@@ -37,7 +34,7 @@ TEST_CASE( "construct" )
     REQUIRE_NOTHROW( epoch( 123.456, epoch::julian_type::JD ) );
     REQUIRE_NOTHROW( epoch( 0.0, epoch::julian_type::MJD ) );
     REQUIRE_NOTHROW( epoch( 123.456, epoch::julian_type::MJD ) );
-    REQUIRE_NOTHROW( epoch( 2034, 12, 31, 11, 36, 21, 121, 841 ) );
+    REQUIRE_NOTHROW( epoch( 34, 364, 11, 36, 21, 121, 841 ) );
     // // > 2000
     // boost::posix_time::ptime posix_time_test( date( 2034, 12, 31 ) );
     // REQUIRE_NOTHROW( epoch( posix_time_test ) );
@@ -68,13 +65,13 @@ TEST_CASE( "construct" )
 
 TEST_CASE( "epoch_operators" )
 {
-    REQUIRE( epoch( 2034, 12, 10 ) == epoch( 2034, 12, 10 ) );
-    REQUIRE( epoch( 2034, 12, 10 ) != epoch( 2034, 12, 11 ) );
+    REQUIRE( epoch( 34, 10 ) == epoch( 34, 10 ) );
+    REQUIRE( epoch( 34, 10 ) != epoch( 34, 11 ) );
     // Testing us precision
-    REQUIRE( epoch( 2034, 12, 10 ) != epoch( 2034, 12, 10, 0, 0, 0, 0, 1 ) );
+    REQUIRE( epoch( 34,  10 ) != epoch( 34, 10, 0, 0, 0, 0, 1 ) );
     // Check that ns precision is not supported
-    REQUIRE( epoch( 0, 12, 10 ) ==
-             epoch( 0, 12, 10, 0, 0, 0, 0, 0 ) + 100ns );
+    REQUIRE( epoch( 0, 10 ) ==
+             epoch( 0, 10, 0, 0, 0, 0, 0 ) + 100ns );
 
     //    Conversion from double (defaults to days)
     REQUIRE( epoch( 1. ) > epoch( 0. ) );
@@ -84,14 +81,14 @@ TEST_CASE( "epoch_operators" )
     REQUIRE( epoch( 1. ) <= epoch( 1. ) );
     epoch today( 0. );
     today += chr::days( 100 );
-    REQUIRE( today == epoch( 0, 0, 100 ) );
+    REQUIRE( today == epoch( 0, 100 ) );
     today -= chr::duration_cast<kep_clock::duration>( chr::days( 100 ) );
     REQUIRE( today == epoch() );
     auto oneday = chr::days( 1 );
     auto yesterday = today - chr::duration_cast<kep_clock::duration>( oneday );
     auto yesterday1 = today - oneday;
 
-    REQUIRE( yesterday == epoch( 0, 0, -1 ) );
+    REQUIRE( yesterday == epoch( 0, -1 ) );
     today = yesterday + chr::duration_cast<kep_clock::duration>( chr::days( 1 ) );
     REQUIRE( today == epoch() );
     auto diff{ today - yesterday };
