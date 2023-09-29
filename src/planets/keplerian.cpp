@@ -34,10 +34,10 @@ keplerian::keplerian(const epoch &ref_epoch,
                      const std::array<std::array<double, 3>, 2> &pos_vel,
                      double mu_central_body, std::string name,
                      std::array<double, 3> added_params)
-    : m_ref_epoch(ref_epoch), m_pos_vel_0(pos_vel), m_name(std::move(name)),
+    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
       m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
-      m_ellipse() {
+      m_ellipse(), m_pos_vel_0(pos_vel) {
   double R =
       std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] +
                 pos_vel[0][2] * pos_vel[0][2]);
@@ -59,10 +59,10 @@ keplerian::keplerian(const epoch &ref_epoch,
                      double mu_central_body, std::string name,
                      std::array<double, 3> added_params,
                      kep3::elements_type el_type)
-    : m_ref_epoch(ref_epoch), m_pos_vel_0(), m_name(std::move(name)),
+    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
       m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
-      m_ellipse() {
+      m_ellipse(), m_pos_vel_0() {
   // orbital parameters a,e,i,W,w,f will be stored here
   std::array<double, 6> par(par_in);
   // we convert according to the chosen input

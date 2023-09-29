@@ -216,14 +216,13 @@ public:
 
   kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs,
                                                        const epoch &rhs);
-  kep3_DLL_PUBLIC epoch operator=(const epoch &ep) { return {ep.tp}; }
 
 
 private:
   // Serialization code
   friend class boost::serialization::access;
   template <class Archive>
-  void serialize(Archive &ar, const unsigned int version) {
+  void serialize(Archive &ar, const unsigned int) {
     ar & boost::serialization::make_binary_object(&tp, sizeof(tp));
   }
   // Serialization code (END)
