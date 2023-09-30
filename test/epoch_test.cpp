@@ -43,6 +43,13 @@ TEST_CASE( "construct" )
     //   "\n"; std::cout << "Boost1: " << posix_time_test << "\n";
 
     // // < 2000
+    REQUIRE_NOTHROW( epoch( -123.456 ) );
+    REQUIRE_NOTHROW( epoch( -123.456, epoch::julian_type::MJD2000 ) );
+    REQUIRE_NOTHROW( epoch( -0.0, epoch::julian_type::JD ) );
+    REQUIRE_NOTHROW( epoch( -123.456, epoch::julian_type::JD ) );
+    REQUIRE_NOTHROW( epoch( -0.0, epoch::julian_type::MJD ) );
+    REQUIRE_NOTHROW( epoch( -123.456, epoch::julian_type::MJD ) );
+    REQUIRE_NOTHROW( epoch( -34, 364, 11, 36, 21, 121, 841 ) );
     //   boost::posix_time::ptime posix_time_test2(date(1980, 12, 31));
     //   REQUIRE_NOTHROW(epoch(posix_time_test2));
     //   REQUIRE(epoch(posix_time_test2).get_posix_time() == posix_time_test2);

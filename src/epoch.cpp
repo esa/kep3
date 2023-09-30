@@ -180,7 +180,7 @@ namespace kep3
         return std::put_time( gmtime( &t ), "%FT%T");
     }
 
-    //    template <lint Num, lint Den>
+    //    template <llint Num, llint Den>
     //    epoch& epoch::operator+=( dur<Num, Den>&& rhs )
     //    {
     //        /* addition of rhs to *this takes place here */
@@ -188,7 +188,7 @@ namespace kep3
     //        return *this;
     //    }
 
-    //    template <lint Num, lint Den>
+    //    template <llint Num, llint Den>
     //    epoch& epoch::operator-=( dur<Num, Den>&& rhs )
     //    {
     //        /* addition of rhs to *this takes place here */
@@ -266,14 +266,14 @@ namespace kep3
         return c1.tp != c2.tp;
     }
 
-    //    template <lint Num, lint Den>
+    //    template <llint Num, llint Den>
     //    epoch operator+( const epoch& lhs, dur<Num, Den>&& rhs )
     //    {
     //        lhs.tp +=
     //            chr::duration_cast<kep_clock::duration>( rhs ); // reuse compound assignment
     //        return lhs;                                         // return the result by value (uses move constructor)
     //    }
-    //    template <lint Num, lint Den>
+    //    template <llint Num, llint Den>
     //    epoch operator-( const epoch& lhs, dur<Num, Den>&& rhs )
     //    {
     //        lhs.tp -=

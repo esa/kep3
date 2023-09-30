@@ -12,11 +12,9 @@
 
 #include <chrono>
 #include <cstdint>
-#include <iostream>
-
-#include <chrono>
 #include <ctime>
 #include <fmt/ostream.h>
+#include <iostream>
 
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
@@ -34,8 +32,9 @@ namespace kep3 {
     using namespace std::literals;
     namespace chr = std::chrono;
     using lint = long int;
-    template <lint Num, lint Den>
-    using dur = chr::duration<lint, std::ratio<Num, Den>>;
+    using llint = long long int;
+    // template <class Num, class Den>
+    // using dur = chr::duration<lint, std::ratio<Num, Den>>;
 
 
 struct kep_clock : public chr::system_clock {
@@ -97,13 +96,17 @@ public:
    * The reference point is assumed to be MJD 0.
    * \param[in] time The time as a duration
    */
-  template <lint Num, lint Den>
-  epoch(const dur<Num, Den> &duration)
+//   template <llint Num, llint Den>
+//   epoch(const dur<Num, Den> &duration)
+  template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  epoch(const Duration &duration)
       : tp{kep_clock::time_point{} + duration} {}
 
   // Constructor for duration&&)
-  template <lint Num, lint Den>
-  epoch(dur<Num, Den> &&duration) : tp{kep_clock::time_point{} + duration} {}
+//   template <llint Num, llint Den>
+//   epoch(dur<Num, Den> &&duration) : tp{kep_clock::time_point{} + duration} {}
+  template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  epoch(Duration &&duration) : tp{kep_clock::time_point{} + duration} {}
 
   // Constructor for a const duration&)
   epoch(const kep_clock::time_point &time_point);
@@ -185,15 +188,17 @@ public:
 
   kep3_DLL_PUBLIC friend std::ostream &operator<<(std::ostream &s,
                                                   epoch const &epoch_in);
-  template <lint Num, lint Den>
-  kep3_DLL_PUBLIC epoch &operator+=(dur<Num, Den> &&duration) {
-    /* addition of rhs to *this takes place here */
+//   template <llint Num, llint Den>
+//   kep3_DLL_PUBLIC epoch &operator+=(dur<Num, Den> &&duration) {
+  template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  kep3_DLL_PUBLIC epoch &operator+=(Duration &&duration) {
     tp += chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
-  template <lint Num, lint Den>
-  kep3_DLL_PUBLIC epoch &operator-=(dur<Num, Den> &&duration) {
-    /* addition of rhs to *this takes place here */
+//   template <llint Num, llint Den>
+//   kep3_DLL_PUBLIC epoch &operator-=(dur<Num, Den> &&duration) {
+    template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  kep3_DLL_PUBLIC epoch &operator-=(Duration &&duration) {
     tp -= chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
@@ -205,12 +210,16 @@ public:
   kep3_DLL_PUBLIC friend bool operator==(const epoch &c1, const epoch &c2);
   kep3_DLL_PUBLIC friend bool operator!=(const epoch &c1, const epoch &c2);
 
-  template <lint Num, lint Den>
-  kep3_DLL_PUBLIC epoch operator+(dur<Num, Den> &&duration) {
+  //   template <llint Num, llint Den>
+  //   kep3_DLL_PUBLIC epoch operator+(dur<Num, Den> &&duration) {
+  template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  kep3_DLL_PUBLIC epoch operator+(Duration &&duration) {
     return epoch(tp + chr::duration_cast<kep_clock::duration>(duration));
   }
-  template <lint Num, lint Den>
-  kep3_DLL_PUBLIC epoch operator-(dur<Num, Den> &&duration) {
+//   template <llint Num, llint Den>
+//   kep3_DLL_PUBLIC epoch operator-(dur<Num, Den> &&duration) {
+  template <class Duration, class = chr::__enable_if_is_duration<Duration>>
+  kep3_DLL_PUBLIC epoch operator-(Duration &&duration) {
     return epoch(tp - chr::duration_cast<kep_clock::duration>(duration));
   }
 
