@@ -204,14 +204,14 @@ public:
 //   template <llint Num, llint Den>
 //   kep3_DLL_PUBLIC epoch &operator+=(dur<Num, Den> &&duration) {
   template <class Duration, class = enable_if_is_duration<Duration>>
-  kep3_DLL_PUBLIC epoch &operator+=(Duration &&duration) {
+  epoch &operator+=(Duration &&duration) {
     tp += chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
 //   template <llint Num, llint Den>
 //   kep3_DLL_PUBLIC epoch &operator-=(dur<Num, Den> &&duration) {
     template <class Duration, class = enable_if_is_duration<Duration>>
-  kep3_DLL_PUBLIC epoch &operator-=(Duration &&duration) {
+  epoch &operator-=(Duration &&duration) {
     tp -= chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
@@ -226,13 +226,13 @@ public:
   //   template <llint Num, llint Den>
   //   kep3_DLL_PUBLIC epoch operator+(dur<Num, Den> &&duration) {
   template <class Duration, class = enable_if_is_duration<Duration>>
-  kep3_DLL_PUBLIC epoch operator+(Duration &&duration) {
+  epoch operator+(Duration &&duration) {
     return epoch(tp + chr::duration_cast<kep_clock::duration>(duration));
   }
 //   template <llint Num, llint Den>
 //   kep3_DLL_PUBLIC epoch operator-(dur<Num, Den> &&duration) {
   template <class Duration, class = enable_if_is_duration<Duration>>
-  kep3_DLL_PUBLIC epoch operator-(Duration &&duration) {
+  epoch operator-(Duration &&duration) {
     return epoch(tp - chr::duration_cast<kep_clock::duration>(duration));
   }
 
