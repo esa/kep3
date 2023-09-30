@@ -8,7 +8,6 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#include "kep3/core_astro/eq2par2eq.hpp"
 #include <cmath>
 #include <limits>
 
