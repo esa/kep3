@@ -12,4 +12,5 @@ dependencies:
   - spdlog
   - xtensor
   - xtensor-blas
+  - pybind11
 
