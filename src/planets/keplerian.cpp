@@ -20,6 +20,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/eq2par2eq.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>

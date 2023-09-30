@@ -140,6 +140,7 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/lambert_problem.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planets/keplerian.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/planets/jpl_lp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2eq2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"
