@@ -50,16 +50,10 @@ TEST_CASE( "construct" )
     //   "\n"; std::cout << "Boost2: " << posix_time_test2 << "\n";
 
     // // test conversions
-    //   REQUIRE(epoch(123.456).mjd2000() ==
-    //           epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
-    //   REQUIRE(epoch(0.).mjd() == epoch(51544, epoch::julian_type::MJD).mjd());
-    //   REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::julian_type::JD).jd());
-    //   std::cout << "Chrono3: "
-    //             << kep3::epoch::as_utc_string(epoch(posix_time_test).jd()) <<
-    //             "\n";
-    //   std::cout << "Chrono3-1: "
-    //             << kep3::epoch::as_utc_string(epoch(2034, 12, 31).jd()) <<
-    //             "\n";
+      REQUIRE(epoch(123.456).mjd2000() ==
+              epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
+      REQUIRE(epoch(0.).mjd() == epoch(51544, epoch::julian_type::MJD).mjd());
+      REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::julian_type::JD).jd());
     //   REQUIRE(epoch(2034, 12, 31) == epoch(posix_time_test));
 }
 
@@ -71,7 +65,7 @@ TEST_CASE( "epoch_operators" )
     REQUIRE( epoch( 34,  10 ) != epoch( 34, 10, 0, 0, 0, 0, 1 ) );
     // Check that ns precision is not supported
     REQUIRE( epoch( 0, 10 ) ==
-             epoch( 0, 10, 0, 0, 0, 0, 0 ) + 100ns );
+             epoch( 0, 10, 0, 0, 0, 0, 0 ) + chr::nanoseconds(100) );
 
     //    Conversion from double (defaults to days)
     REQUIRE( epoch( 1. ) > epoch( 0. ) );
@@ -84,9 +78,9 @@ TEST_CASE( "epoch_operators" )
     REQUIRE( today == epoch( 0, 100 ) );
     today -= chr::duration_cast<kep_clock::duration>( chr::days( 100 ) );
     REQUIRE( today == epoch() );
-    auto oneday = chr::days( 1 );
-    auto yesterday = today - chr::duration_cast<kep_clock::duration>( oneday );
-    auto yesterday1 = today - oneday;
+    auto oneday{chr::days( 1 )};
+    auto yesterday{today - chr::duration_cast<kep_clock::duration>( oneday )};
+    auto yesterday1{today - oneday};
 
     REQUIRE( yesterday == epoch( 0, -1 ) );
     today = yesterday + chr::duration_cast<kep_clock::duration>( chr::days( 1 ) );

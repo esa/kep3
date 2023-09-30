@@ -11,6 +11,7 @@
 #define kep3_EPOCH_HPP
 
 #include <chrono>
+#include <cstdint>
 #include <iostream>
 
 #include <chrono>
@@ -33,7 +34,6 @@ namespace kep3 {
     using namespace std::literals;
     namespace chr = std::chrono;
     using lint = long int;
-    using llint = long long int;
     template <lint Num, lint Den>
     using dur = chr::duration<lint, std::ratio<Num, Den>>;
 
@@ -83,27 +83,12 @@ public:
    */
   enum class julian_type { MJD2000, MJD, JD };
 
-  enum class time_unit { D, H, MIN, S, MS, U };
-
-
   /** Constructors */
   // Default constructor
   epoch();
 
   // Constructor for days (as a floating-point value)
-  /**
-  * Constructs an epoch from a non-gregorian date.
-  * \param[in] epoch_in A double indicating the non-gregorian date
-  * \param[in] epoch_type epoch::julian_type
-  */
-  template <class FP, typename std::enable_if<std::is_floating_point<FP>::value,
-                                     FP>::type * = nullptr>
-  epoch(const FP epoch_in = 0.0,
-        const julian_type epoch_type = julian_type::MJD2000)
-      : tp{ make_tp( epoch_in, epoch_type ) }
-
-    {
-    }
+  epoch(const double epoch_in, const julian_type epoch_type = julian_type::MJD2000);
 
   // Constructor for const duration&)
 
@@ -124,13 +109,13 @@ public:
   epoch(const kep_clock::time_point &time_point);
   epoch(kep_clock::time_point &&time_point);
 
-  // Constructor for microseconds
-  template <class Int,
-            typename std::enable_if<std::is_integral<Int>::value, Int>::type * = nullptr>
-  epoch(const Int us)
-      : tp{ kep_clock::time_point{chr::microseconds(us)} }
-    {
-    }
+//   // Constructor for microseconds
+//   template <class Int,
+//             typename std::enable_if<std::is_integral<Int>::value, Int>::type * = nullptr>
+//   epoch(const Int us)
+//       : tp{ kep_clock::time_point{chr::microseconds(us)} }
+//     {
+//     }
 
   // Constructor for microseconds
   epoch(const int y,const int d, const int h = 0, const int min = 0, const int s = 0, const int ms = 0, const int us = 0);

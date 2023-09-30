@@ -30,7 +30,17 @@ namespace kep3
         : tp{}
     {}
 
+    /// Constructor.
+    /**
+    * Constructs an epoch from a non-gregorian date.
+    * \param[in] epoch_in A double indicating the non-gregorian date
+    * \param[in] epoch_type epoch::julian_type
+    */
+    epoch::epoch(const double epoch_in, const julian_type epoch_type)
+      : tp{ make_tp( epoch_in, epoch_type ) }
 
+    {
+    }
 
     /// Constructor.
     /**
