@@ -88,6 +88,7 @@ TEST_CASE( "epoch_operators" )
     auto oneday{chr::days( 1 )};
     auto yesterday{today - chr::duration_cast<kep_clock::duration>( oneday )};
     auto yesterday1{today - oneday};
+    REQUIRE(yesterday == yesterday1);
 
     REQUIRE( yesterday == epoch( 0, -1 ) );
     today = yesterday + chr::duration_cast<kep_clock::duration>( chr::days( 1 ) );
