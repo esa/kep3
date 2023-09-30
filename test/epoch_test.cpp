@@ -14,7 +14,7 @@
 #include <random>
 #include <string>
 
-#include "kep3/epoch.hpp"
+#include <kep3/epoch.hpp>
 
 #include "catch.hpp"
 
