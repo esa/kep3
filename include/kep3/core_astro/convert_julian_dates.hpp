@@ -14,7 +14,6 @@
 #include <chrono>
 namespace kep3
 {
-
     // inline double jd2mjd(double in) { return (in - 2400000.5); }
     // inline double jd2mjd2000(double in) { return (in - 2451544.5); }
     // inline double mjd2jd(double in) { return (in + 2400000.5); }
@@ -49,7 +48,6 @@ namespace kep3
     {
         return in + 4453401600s;
     }
-
 } // namespace kep3
 
 #endif // CONVERT_JULIAN_DATES_HPP

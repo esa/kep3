@@ -24,7 +24,7 @@ using kep3::udpla::jpl_lp;
 
 TEST_CASE("constructor") {
   REQUIRE_NOTHROW(jpl_lp{});
-  kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{12.22, kep3::epoch::julian_type::MJD2000};
   // From name
   REQUIRE_NOTHROW(jpl_lp{"Mars"});
   REQUIRE_NOTHROW(jpl_lp{"mars"});
@@ -39,7 +39,7 @@ TEST_CASE("constructor") {
 
 TEST_CASE("eph") {
   // We use 2030-01-01 as a reference epoch for all these tests
-  kep3::epoch ref_epoch{2458849.5, kep3::epoch::JD};
+  kep3::epoch ref_epoch{2458849.5, kep3::epoch::julian_type::JD};
   {
     // This is Mercury w.r.t. the Sun queried from JPL Horizon at
     // 2020-01-01
@@ -136,12 +136,12 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
   }
   jpl_lp udpla{"uranus"};
-  REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534, kep3::epoch::MJD2000)),
+  REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534, kep3::epoch::julian_type::MJD2000)),
                     std::domain_error);
 }
 
 TEST_CASE("elements") {
-  kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{12.22, kep3::epoch::julian_type::MJD2000};
   // We use Neptune
   jpl_lp udpla{"nePTUne"}; // casing is not important
   auto pos_vel = udpla.eph(ref_epoch);
@@ -192,7 +192,7 @@ TEST_CASE("stream_operator") {
 
 TEST_CASE("serialization_test") {
   // Instantiate a generic jpl_lp
-  kep3::epoch ref_epoch{2423.4343, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{2423.4343, kep3::epoch::julian_type::MJD2000};
   jpl_lp udpla{"neptune"};
 
   // Store the string representation.

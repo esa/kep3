@@ -109,21 +109,44 @@ public:
   epoch(const kep_clock::time_point &time_point);
   epoch(kep_clock::time_point &&time_point);
 
-//   // Constructor for microseconds
-//   template <class Int,
-//             typename std::enable_if<std::is_integral<Int>::value, Int>::type * = nullptr>
-//   epoch(const Int us)
-//       : tp{ kep_clock::time_point{chr::microseconds(us)} }
-//     {
-//     }
-
   // Constructor for microseconds
   epoch(const int y,const int d, const int h = 0, const int min = 0, const int s = 0, const int ms = 0, const int us = 0);
 
   /** Computing non-gregorian dates */
-  [[nodiscard]] kep_clock::time_point mjd2000() const;
-  [[nodiscard]] kep_clock::time_point jd() const;
-  [[nodiscard]] kep_clock::time_point mjd() const;
+      /// jd getter.
+    /**
+     * Returns the julian date
+     *
+     * @return double containing the julian date
+     *
+     */
+    constexpr double jd() const
+    {
+        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() + 211813444800s).count();
+    }
+
+    /// mjd getter.
+    /**
+     * Returns the modified julian date
+     *
+     * @return double containing the modified julian date
+     *
+     */
+    constexpr double mjd() const
+    {
+        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() + 4453401600s).count();
+    }
+
+    /// mjd2000 getter.
+    /**
+     * Gets the modified julian date 2000
+     * @return const reference to mjd2000
+     */
+    constexpr double mjd2000() const
+    {
+        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch()).count();
+    }
+
 
   /** Interface to boost::posix_time::ptime */
   //  [[nodiscard]] boost::posix_time::ptime get_posix_time() const;

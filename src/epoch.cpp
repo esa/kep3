@@ -90,39 +90,39 @@ namespace kep3
                 throw;
         }
     }
-    /// jd getter.
-    /**
-     * Returns the julian date
-     *
-     * @return double containing the julian date
-     *
-     */
-    kep_clock::time_point epoch::jd() const
-    {
-        return mjd20002jd( tp );
-    }
+    // /// jd getter.
+    // /**
+    //  * Returns the julian date
+    //  *
+    //  * @return double containing the julian date
+    //  *
+    //  */
+    // constexpr double epoch::jd() const
+    // {
+    //     return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() + 211813444800s).count();
+    // }
 
-    /// mjd getter.
-    /**
-     * Returns the modified julian date
-     *
-     * @return double containing the modified julian date
-     *
-     */
-    kep_clock::time_point epoch::mjd() const
-    {
-        return mjd20002mjd( tp );
-    }
+    // /// mjd getter.
+    // /**
+    //  * Returns the modified julian date
+    //  *
+    //  * @return double containing the modified julian date
+    //  *
+    //  */
+    // constexpr double epoch::mjd() const
+    // {
+    //     return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() + 4453401600s).count();
+    // }
 
-    /// mjd2000 getter.
-    /**
-     * Gets the modified julian date 2000
-     * @return const reference to mjd2000
-     */
-    kep_clock::time_point epoch::mjd2000() const
-    {
-        return tp;
-    }
+    // /// mjd2000 getter.
+    // /**
+    //  * Gets the modified julian date 2000
+    //  * @return const reference to mjd2000
+    //  */
+    // constexpr double epoch::mjd2000() const
+    // {
+    //     return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch()).count();
+    // }
 
     /// Extracts the posix time
     /**

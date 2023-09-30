@@ -167,7 +167,7 @@ std::string keplerian::get_extra_info() const {
                           kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
   }
   retval += fmt::format("Elements reference epoch (MJD2000): {}\n",
-                        m_ref_epoch.mjd2000().time_since_epoch().count()) +
+                        m_ref_epoch) +
             fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch) +
             fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) +
             fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
