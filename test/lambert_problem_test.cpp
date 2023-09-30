@@ -66,7 +66,6 @@ TEST_CASE("delta_guidance") {
     tof = tof_d(rng_engine);
     bool cw = static_cast<bool>(cw_d(rng_engine));
     double mu = mu_d(rng_engine);
-
     // 2 - Solve the lambert problem
     kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
 

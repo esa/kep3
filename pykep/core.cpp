@@ -59,4 +59,17 @@ PYBIND11_MODULE(core, m) {
 
   // We expose the various anomaly conversions
   m.def("m2e", &kep3::m2e, pk::m2e_doc().c_str());
+  m.def("e2m", &kep3::e2m, pk::e2m_doc().c_str());
+  m.def("m2f", &kep3::m2f, pk::m2f_doc().c_str());
+  m.def("f2m", &kep3::f2m, pk::f2m_doc().c_str());
+  m.def("e2f", &kep3::e2f, pk::e2f_doc().c_str());
+  m.def("f2e", &kep3::f2e, pk::f2e_doc().c_str());
+  m.def("n2h", &kep3::n2h, pk::n2h_doc().c_str());
+  m.def("h2n", &kep3::h2n, pk::h2n_doc().c_str());
+  m.def("n2f", &kep3::n2f, pk::n2f_doc().c_str());
+  m.def("f2n", &kep3::f2n, pk::f2n_doc().c_str());
+  m.def("h2f", &kep3::h2f, pk::h2f_doc().c_str());
+  m.def("f2h", &kep3::f2h, pk::f2h_doc().c_str());
+  m.def("zeta2f", &kep3::zeta2f, pk::zeta2f_doc().c_str());
+  m.def("f2zeta", &kep3::f2zeta, pk::f2zeta_doc().c_str());
 }

@@ -54,7 +54,7 @@ class kep3_DLL_PUBLIC jpl_lp {
 
 public:
   // Constructor
-  explicit jpl_lp(const std::string & = "earth");
+  explicit jpl_lp(std::string = "earth");
   // Mandatory UDPLA methods
   [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
 

@@ -41,7 +41,7 @@ target_compile_features(core PRIVATE cxx_std_17)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
 
 # Installation setup.
-if(kep3_INSTALL_PATH STREQUAL "")
+if(PYKEP_INSTALL_PATH STREQUAL "")
     message(STATUS "pykep will be installed in the default location: ${Python3_SITEARCH}")
     set(_PYKEP_INSTALL_DIR "${Python3_SITEARCH}/pykep")
 else()
