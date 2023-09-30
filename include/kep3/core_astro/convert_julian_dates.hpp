@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef CONVERT_JULIAN_DATES_HPP
-#define CONVERT_JULIAN_DATES_HPP
+#ifndef kep3_CONVERT_JULIAN_DATES_HPP
+#define kep3_CONVERT_JULIAN_DATES_HPP
 
 #include "kep3/epoch.hpp"
 #include <chrono>
@@ -50,4 +50,4 @@ namespace kep3
     }
 } // namespace kep3
 
-#endif // CONVERT_JULIAN_DATES_HPP
+#endif // kep3_CONVERT_JULIAN_DATES_HPP
