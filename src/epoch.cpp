@@ -25,7 +25,7 @@ namespace kep3
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : tp{} {}
+epoch::epoch() = default;
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
