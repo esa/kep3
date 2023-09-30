@@ -228,7 +228,7 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
       // period from the energy at epoch
       auto [r, v] = eph(ep);
       double mu = get_mu_central_body();
-      double R = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+      double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
       double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
       double en = v2 / 2. - mu / R;
       if (en > 0) {
