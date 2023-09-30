@@ -136,7 +136,7 @@ TEST_CASE("eph") {
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
   }
   jpl_lp udpla{"uranus"};
-  REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534, kep3::epoch::julian_type::MJD2000)),
+  REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534., kep3::epoch::MJD2000)),
                     std::domain_error);
 }
 

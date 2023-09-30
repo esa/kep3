@@ -97,7 +97,7 @@ struct kep_clock : public chr::system_clock {
  */
 class kep3_DLL_PUBLIC epoch {
 public:
-  enum class julian_type { MJD2000, MJD, JD };
+  enum julian_type { MJD2000, MJD, JD };
 
   /** Constructors */
   // Default constructor
@@ -105,7 +105,7 @@ public:
 
   // Constructor for days (as a floating-point value)
   explicit epoch(double epoch_in,
-                 julian_type epoch_type = julian_type::MJD2000);
+                 julian_type epoch_type = MJD2000);
 
   /**
    * Constructs an epoch from a std::chrono::duration.
@@ -116,7 +116,7 @@ public:
   explicit epoch(const Duration &duration)
       : tp{kep_clock::time_point{} + duration} {}
 
-  // Constructor for duration&&)
+  // Constructor from duration&&)
   template <class Duration, class = enable_if_is_duration<Duration>>
   explicit epoch(Duration &&duration)
       : tp{kep_clock::time_point{} + duration} {}
@@ -128,8 +128,8 @@ public:
   explicit epoch(kep_clock::time_point &&time_point);
 
   // Constructor for datetime broken down into its constituents.
-  epoch(int y, int d, int h = 0, int min = 0,
-        int s = 0,  int ms = 0, int us = 0);
+  explicit epoch(int y, int d, int h = 0, int min = 0, int s = 0, int ms = 0,
+        int us = 0);
 
   /* Computing non-Gregorian dates */
 
@@ -160,13 +160,10 @@ public:
   }
 
   /* Helper functions for constructors */
-  static kep_clock::time_point make_tp(int y, int d,
-                                       int h = 0, int min = 0,
-                                       int s = 0, int ms = 0,
-                                       int us = 0);
+  static kep_clock::time_point make_tp(int y, int d, int h = 0, int min = 0,
+                                       int s = 0, int ms = 0, int us = 0);
 
-  static kep_clock::time_point make_tp(double epoch_in,
-                                       julian_type epoch_type);
+  static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
 
   // Conversions
   static constexpr kep_clock::time_point tp_from_days(double days);

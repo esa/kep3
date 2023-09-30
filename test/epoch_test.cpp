@@ -59,8 +59,8 @@ TEST_CASE( "construct" )
     // // test conversions
       REQUIRE(epoch(123.456).mjd2000() ==
               epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
-      REQUIRE(epoch(0.).mjd() == epoch(51544, epoch::julian_type::MJD).mjd());
-      REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::julian_type::JD).jd());
+      REQUIRE(epoch(0.).mjd() == epoch(51544., epoch::MJD).mjd());
+      REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::JD).jd());
     //   REQUIRE(epoch(2034, 12, 31) == epoch(posix_time_test));
 }
 
