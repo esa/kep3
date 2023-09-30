@@ -7,13 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 #include <cmath>
 #include <limits>
 
+#include <chrono>
 #include <stdexcept>
 #include <string>
-#include <chrono>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -166,11 +165,11 @@ std::string keplerian::get_extra_info() const {
     retval += fmt::format("Mean anomly (deg.): {}\n",
                           kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
   }
-  retval += fmt::format("Elements reference epoch (MJD2000): {}\n",
-                        m_ref_epoch) +
-            fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch) +
-            fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) +
-            fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
+  retval +=
+      fmt::format("Elements reference epoch (MJD2000): {}\n", m_ref_epoch) +
+      fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch) +
+      fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) +
+      fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
   return retval;
 }
 
