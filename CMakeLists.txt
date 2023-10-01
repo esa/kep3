@@ -165,9 +165,12 @@ target_include_directories(kep3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 # Boost.
-# NOTE: need 1.73 for atomic_ref.
-find_package(Boost 1.73 REQUIRED)
+# NOTE: need 1.69 for safe numerics.
+set(_kep3_MIN_BOOST_VERSION "1.69")
+find_package(Boost ${_kep3_MIN_BOOST_VERSION} REQUIRED)
 target_link_libraries(kep3 PUBLIC Boost::boost)
+# NOTE: quench warnings from Boost when building the library.
+target_compile_definitions(kep3 PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
 
 # fmt.
 find_package(fmt CONFIG REQUIRED)
@@ -207,6 +210,17 @@ install(TARGETS kep3
     ARCHIVE DESTINATION "${kep3_INSTALL_LIBDIR}"
     RUNTIME DESTINATION bin
 )
+# Setup of the CMake config file.
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/kep3-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/kep3-config.cmake" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kep3-config.cmake"
+    DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
+install(EXPORT kep3_export NAMESPACE kep3:: DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
+# Take care of versioning.
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/kep3-config-version.cmake" COMPATIBILITY SameMinorVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kep3-config-version.cmake" DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
+
+
 if(kep3_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
@@ -214,4 +228,24 @@ endif()
 
 if(kep3_BUILD_BENCHMARKS)
     add_subdirectory(benchmark)
+
 endif()
+
+if(kep3_BUILD_PYTHON_BINDINGS)
+    # Find python
+    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+    message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
+    message(STATUS "Python3 installation directory: ${Python3_SITEARCH}")
+    set(PYKEP_INSTALL_PATH "" CACHE STRING "pykep module installation path")
+    mark_as_advanced(PYKEP_INSTALL_PATH)
+
+    # pybind11.
+    find_package(pybind11 REQUIRED)
+
+    # Finding kep3 (cpp) 
+    find_package(kep3 ${kep3_VERSION} EXACT REQUIRED)
+
+    # Build directory
+    add_subdirectory("${CMAKE_SOURCE_DIR}/pykep")
+endif()
+
