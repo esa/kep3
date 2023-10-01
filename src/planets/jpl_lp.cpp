@@ -7,8 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/eq2par2eq.hpp"
-#include "kep3/epoch.hpp"
 #include <cmath>
 #include <stdexcept>
 #include <unordered_map>
@@ -19,6 +17,8 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/planets/jpl_lp.hpp>
 
@@ -45,18 +45,17 @@ static const std::array<double, 6> neptune_el = {30.06992276, 0.00859048, 1.7700
 static const std::array<double, 6> neptune_el_dot = {0.00026291, 0.00005105, 0.00035372, 218.45945325, -0.32241464, -0.00508664};
 // clang-format on
 
-jpl_lp::jpl_lp(const std::string &name)
-    : m_elements(), m_elements_dot(), m_name(name),
+// NOLINTNEXTLINE(cert-err58-cpp)
+const std::unordered_map<std::string, int> mapped_planets = {
+    {"mercury", 1}, {"venus", 2},  {"earth", 3},   {"mars", 4}, {"jupiter", 5},
+    {"saturn", 6},  {"uranus", 7}, {"neptune", 8}, {"pluto", 9}};
+
+jpl_lp::jpl_lp(std::string name)
+    : m_elements(), m_elements_dot(), m_name(std::move(name)),
       m_mu_central_body(kep3::MU_SUN) {
 
-  // Cannot be marked const as operator[] is not and we use it.
-  static std::unordered_map<std::string, int> mapped_planets = {
-      {"mercury", 1}, {"venus", 2},   {"earth", 3},
-      {"mars", 4},    {"jupiter", 5}, {"saturn", 6},
-      {"uranus", 7},  {"neptune", 8}, {"pluto", 9}};
-
   boost::algorithm::to_lower(m_name);
-  switch (mapped_planets[m_name]) {
+  switch (mapped_planets.at(m_name)) {
   case (1): {
     m_elements = mercury_el;
     m_elements_dot = mercury_el_dot;
@@ -114,7 +113,7 @@ jpl_lp::jpl_lp(const std::string &name)
     m_mu_self = 6836529e9;
   } break;
   default: {
-    throw std::logic_error("unknown planet name: ");
+    throw std::logic_error("unknown planet name: "); // LCOV_EXCL_LINE
   }
   }
 }

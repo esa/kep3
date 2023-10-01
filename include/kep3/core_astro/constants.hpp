@@ -28,7 +28,7 @@ constexpr double pi = boost::math::constants::pi<double>();
 constexpr double half_pi = boost::math::constants::half_pi<double>();
 
 constexpr double AU = 149597870700.0;     // Astronomical Unit (m)
-constexpr double CAVENDISH = 73.6687e-11; // Cavendish constant
+constexpr double CAVENDISH = 73.6687e-11; // Cavendish constant (N M^2 / kg^2)
 constexpr double MU_SUN =
     1.32712440018e20; // Sun's gravitational parameter (m^3/s^2 kg)
 constexpr double MU_EARTH =

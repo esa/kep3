@@ -11,6 +11,7 @@
 #include <random>
 
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <stdexcept>
 
 #include "catch.hpp"
 
@@ -132,4 +133,23 @@ TEST_CASE("zeta2e") {
     REQUIRE(std::cos(res) ==
             Approx(std::cos(true_anom)).epsilon(0.).margin(1e-14));
   }
+}
+
+TEST_CASE("throws") {
+        REQUIRE_THROWS_AS(kep3::m2e(0.3,1.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::e2m(0.3,1.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::m2f(0.3,1.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::f2m(0.3,1.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::e2f(0.3,1.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::f2e(0.3,1.1), std::domain_error);
+
+        REQUIRE_THROWS_AS(kep3::n2h(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::h2n(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::n2f(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::f2n(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::h2f(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::f2h(0.3,0.1), std::domain_error);
+        
+        REQUIRE_THROWS_AS(kep3::zeta2f(0.3,0.1), std::domain_error);
+        REQUIRE_THROWS_AS(kep3::f2zeta(0.3,0.1), std::domain_error);
 }
