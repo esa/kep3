@@ -25,6 +25,7 @@ cmake --build . --target=install --config=Release -- -j 2
 # Then we build and install pykep
 cd ..
 mkdir build_pykep
+cd build_pykep
 cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -Dkep3_BUILD_TESTS=no -Dkep3_BUILD_BENCHMARKS=no -Dkep3_BUILD_PYTHON_BINDINGS=yes -DBoost_NO_BOOST_CMAKE=ON
 cmake --build . --target=install --config=Release -- -j 2
 
