@@ -16,5 +16,6 @@ dependencies:
   - numpy
   - sphinx
   - sphinx-book-theme
+  - myst-nb
 
 
