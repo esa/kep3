@@ -2,7 +2,7 @@
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/_version.py" @ONLY)   
 
 # The list of pydsyre's Python files.
-set(kep3_PYTHON_FILES __init__.py _version.py test.py)
+set(PYKEP_PYTHON_FILES __init__.py _version.py test.py)
 
 # Copy the python files in the current binary dir,
 # so that we can import pydesyre from the build dir.
@@ -25,10 +25,10 @@ target_link_libraries(core PRIVATE "${pybind11_LIBRARIES}")
 target_include_directories(core SYSTEM PRIVATE "${pybind11_INCLUDE_DIR}" "${Python3_INCLUDE_DIRS}")
 target_compile_definitions(core PRIVATE "${pybind11_DEFINITIONS}")
 target_compile_options(core PRIVATE
-    "$<$<CONFIG:Debug>:${KEP3_CXX_FLAGS_DEBUG}>"
-    "$<$<CONFIG:Release>:${KEP3_CXX_FLAGS_RELEASE}>"
-    "$<$<CONFIG:RelWithDebInfo>:${KEP3_CXX_FLAGS_RELEASE}>"
-    "$<$<CONFIG:MinSizeRel>:${KEP3_CXX_FLAGS_RELEASE}>"
+    "$<$<CONFIG:Debug>:${kep3_CXX_FLAGS_DEBUG}>"
+    "$<$<CONFIG:Release>:${kep3_CXX_FLAGS_RELEASE}>"
+    "$<$<CONFIG:RelWithDebInfo>:${kep3_CXX_FLAGS_RELEASE}>"
+    "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
     
 )
 target_include_directories(core PUBLIC

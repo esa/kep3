@@ -12,3 +12,6 @@ include/kep3/config.hpp
 
 # python stuff
 *__pycache__*
+
+# docs tmp files
+doc/_build*
