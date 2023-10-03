@@ -13,4 +13,8 @@ dependencies:
   - xtensor
   - xtensor-blas
   - pybind11
+  - numpy
+  - sphinx
+  - sphinx-book-theme
+
 
