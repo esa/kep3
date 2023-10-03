@@ -24,8 +24,9 @@ std::string m2e_doc() {
     Converts from Mean to Eccentric anomaly. Requires ecc < 1.
 
     Args:
-      M (float): the Mean anomaly (rad.)
-      ecc (float): the eccentricity
+      **M** (float): the Mean anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Eccentric anomaly in [-pi, pi] (rad.)
@@ -45,8 +46,9 @@ std::string e2m_doc() {
     Converts from Eccentric to Mean anomaly. Requires ecc < 1.
 
     Args:
-      E (float): the Eccentric anomaly (rad.)
-      ecc (float): the eccentricity
+      **E** (float): the Eccentric anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Mean anomaly (rad.)
@@ -66,8 +68,9 @@ std::string e2f_doc() {
     Converts from eccentric to true anomaly. Requires ecc < 1.
 
     Args:
-      E (float): the Eccentric anomaly (rad.)
-      ecc (float): the eccentricity
+      **E** (float): the Eccentric anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the True anomaly in [-pi, pi] (rad.)
@@ -87,8 +90,9 @@ std::string f2e_doc() {
     Converts from True to Eccentric anomaly. Requires ecc < 1.
 
     Args:
-      f (float): the True anomaly (rad.)
-      ecc (float): the eccentricity
+      **f** (float): the True anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Eccentric anomaly in [-pi, pi] (rad.)
@@ -108,8 +112,9 @@ std::string f2m_doc() {
     Converts from True to Mean anomaly. Requires ecc < 1.
 
     Args:
-      f (float): the True anomaly (rad.)
-      ecc (float): the eccentricity
+      **f** (float): the True anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Mean anomaly in [-pi, pi] (rad.)
@@ -129,8 +134,9 @@ std::string m2f_doc() {
     Converts from Mean to True anomaly. Requires ecc < 1.
 
     Args:
-      M (float): the Mean anomaly (rad.)
-      ecc (float): the eccentricity
+      **M** (float): the Mean anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the True anomaly in [-pi, pi] (rad.)
@@ -150,8 +156,9 @@ std::string h2n_doc() {
     Converts from Hyperbolic to Hyperbolic Mean anomaly. Requires ecc > 1.
 
     Args:
-      H (float): the Hyperbolic anomaly (rad.)
-      ecc (float): the eccentricity
+      **H** (float): the Hyperbolic anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Hyperbolic Mean anomaly (rad.)
@@ -171,8 +178,9 @@ std::string n2h_doc() {
     Converts from Hyperbolic Mean to Hyperbolic anomaly. Requires ecc > 1.
 
     Args:
-      N (float): the Hyperbolic Mean anomaly (rad.)
-      ecc (float): the eccentricity
+      **N** (float): the Hyperbolic Mean anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Hyperbolic anomaly (rad.)
@@ -192,8 +200,9 @@ std::string h2f_doc() {
     Converts from Hyperbolic to True anomaly. Requires ecc > 1.
 
     Args:
-      H (float): the Hyperbolic anomaly (rad.)
-      ecc (float): the eccentricity
+      **H** (float): the Hyperbolic anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the True anomaly in [-pi, pi] (rad.)
@@ -213,8 +222,9 @@ std::string f2h_doc() {
     Converts from True to Hyperbolic anomaly. Requires ecc > 1.
 
     Args:
-      f (float): the True anomaly (rad.)
-      ecc (float): the eccentricity
+      **f** (float): the True anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Hyperbolic anomaly
@@ -234,8 +244,9 @@ std::string f2n_doc() {
     Converts from True to Hyperbolic Mean anomaly. Requires ecc > 1.
 
     Args:
-      f (float): the True anomaly (rad.)
-      ecc (float): the eccentricity
+      **f** (float): the True anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Hyperbolic Mean anomaly
@@ -255,8 +266,9 @@ std::string n2f_doc() {
     Converts from Hyperbolic Mean to True anomaly. Requires ecc > 1.
 
     Args:
-      N (float): the Hyperbolic Mean anomaly (rad.)
-      ecc (float): the eccentricity
+      **N** (float): the Hyperbolic Mean anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the True anomaly
@@ -265,7 +277,7 @@ std::string n2f_doc() {
       >>> import pykep as pk
       >>> N = 10.32
       >>> ecc = 13.45
-      >>> pk.m2e(M, ecc)
+      >>> pk.n2f(N, ecc)
       0.7373697968359353
 )";
 }
@@ -279,8 +291,9 @@ std::string zeta2f_doc() {
     definition of zeta and the treatment of the resulting equations.
 
     Args:
-      zeta (float): the Gudermannian (rad.)
-      ecc (float): the eccentricity
+      **zeta** (float): the Gudermannian (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the True anomaly
@@ -300,8 +313,9 @@ std::string f2zeta_doc() {
     Converts from True anomaly to Gudermannian. Requires ecc > 1.
 
     Args:
-      f (float): the True anomaly (rad.)
-      ecc (float): the eccentricity
+      **f** (float): the True anomaly (rad.)
+
+      **ecc** (float): the eccentricity
 
     Returns:
       float: the Gudermannian 
@@ -312,6 +326,345 @@ std::string f2zeta_doc() {
       >>> ecc = 3.3
       >>> pk.f2zeta(f, ecc)
       0.36923933496389816
+)";
+}
+
+std::string m2e_v_doc() {
+  return R"(m2e_v(Ms, eccs)
+    
+    Converts from Mean to Eccentric anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **Ms** (np.array or float): the Mean anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Ms = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.375
+      >>> Es = pk.m2e_v(Ms, ecc)
+      >>> np.shape(Es)
+      (100,)
+)";
+}
+
+std::string e2m_v_doc() {
+  return R"(e2m_v(Es, eccs)
+    
+    Converts from Eccentric to Mean anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **Es** (np.array or float): the Eccentric anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Mean anomaly (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Es = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.86345
+      >>> Ms = pk.e2m_v(Es, ecc)
+      >>> np.shape(Ms)
+      (100,)
+)";
+}
+
+std::string e2f_v_doc() {
+  return R"(e2f_v(Es, eccs)
+    
+    Converts from eccentric to true anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **Es** (np.array or float): the Eccentric anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the True anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Es = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.0256
+      >>> fs = pk.e2f_v(Es, ecc)
+      >>> np.shape(fs)
+      (100,)
+)";
+}
+
+std::string f2e_v_doc() {
+  return R"(f2e_v(fs, eccs)
+    
+    Converts from True to Eccentric anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **fs** (np.array or float): the True anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.23
+      >>> Es = pk.f2e_v(fs, ecc)
+      >>> np.shape(Es)
+      (100,)
+)";
+}
+
+std::string f2m_v_doc() {
+  return R"(f2m_v(fs, eccs)
+    
+    Converts from True to Mean anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **fs** (np.array or float): the True anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Mean anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.4
+      >>> Ms = pk.f2m_v(fs, ecc)
+      >>> np.shape(Ms)
+      (100,)
+)";
+}
+
+std::string m2f_v_doc() {
+  return R"(m2f_v(Ms, eccs)
+    
+    Converts from Mean to True anomaly (vectorized version). Requires ecc < 1.
+
+    Args:
+      **Ms** (np.array or float): the Mean anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the True anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Ms = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 0.4
+      >>> fs = pk.m2f_v(Ms, ecc)
+      >>> np.shape(fs)
+      (100,)
+)";
+}
+
+std::string h2n_v_doc() {
+  return R"(h2n_v(Hs, eccs)
+    
+    Converts from Hyperbolic to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **Hs** (np.array or float): the Hyperbolic anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Hyperbolic Mean anomaly (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> =Hs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 4.5
+      >>> Ns = pk.h2n_v(Hs, ecc)
+      >>> np.shape(Ns)
+      (100,)
+)";
+}
+
+std::string n2h_v_doc() {
+  return R"(n2h_v(Ns, eccs)
+    
+    Converts from Hyperbolic Mean to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **Ns** (np.array or float): the Hyperbolic Mean anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Hyperbolic anomaly (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Ns = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 4.5
+      >>> Hs = pk.n2h_v(Ns, ecc)
+      >>> np.shape(Hs)
+      (100,)
+)";
+}
+
+std::string h2f_v_doc() {
+  return R"(h2f_v(Hs, eccs)
+    
+    Converts from Hyperbolic to True anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **Hs** (np.array or float): the Hyperbolic anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the True anomaly in [-pi, pi] (rad.)
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Hs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 4.5
+      >>> fs = pk.h2f_v(Hs, ecc)
+      >>> np.shape(fs)
+      (100,)
+)";
+}
+
+std::string f2h_v_doc() {
+  return R"(f2h_v(fs, eccs)
+    
+    Converts from True to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **fs** (np.array or float): the True anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Hyperbolic anomaly
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 5.7
+      >>> Hs = pk.n2h_v(fs, ecc)
+      >>> np.shape(hs)
+      (100,)
+)";
+}
+
+std::string f2n_v_doc() {
+  return R"(f2n_v(fs, eccs)
+    
+    Converts from True to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **fs** (np.array or float): the True anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Hyperbolic Mean anomaly
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 5.7
+      >>> Ns = pk.n2f_v(fs, ecc)
+      >>> np.shape(Ns)
+      (100,)
+)";
+}
+
+std::string n2f_v_doc() {
+  return R"(n2f_v(Ns, eccs)
+    
+    Converts from Hyperbolic Mean to True anomaly (vectorized version). Requires ecc > 1.
+
+    Args:
+      **Ns** (np.array or float): the Hyperbolic Mean anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the True anomaly
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> Ns = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 13.45
+      >>> fs = pk.n2f_v(Ns, ecc)
+      >>> np.shape(fs)
+      (100,)
+)";
+}
+
+std::string zeta2f_v_doc() {
+  return R"(zeta2f_v(zetas, eccs)
+    
+    Converts from Gudermannian to True anomaly (vectorized version). Requires ecc > 1.
+
+    See Battin: "An Introduction to the Mathematics and Methods of Astrodynamics" for a 
+    definition of zeta and the treatment of the resulting equations.
+
+    Args:
+      **zetas** (np.array or float): the Gudermannian (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the True anomaly
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> zetas = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 2.2
+      >>> fs = pk.zeta2f_v(zeta, ecc)
+      >>> np.shape(fs)
+      (100,)
+)";
+}
+
+std::string f2zeta_v_doc() {
+  return R"(f2zeta_v(fs, eccs)
+    
+    Converts from True anomaly to Gudermannian (vectorized version). Requires ecc > 1.
+
+    Args:
+      **fs** (np.array or float): the True anomaly (rad.)
+
+      **eccs** (np.array or float): the eccentricity
+
+    Returns:
+      np.array or float: the Gudermannian 
+
+    Examples:
+      >>> import pykep as pk
+      >>> import numpy as np
+      >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> ecc = 10.2
+      >>> zetas = pk.f2zeta_v(fs, ecc)
+      >>> np.shape(zetas)
+      (100,)
 )";
 }
 } // namespace pykep

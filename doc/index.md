@@ -15,13 +15,10 @@ several research papers as well as for the optimization of preliminary mission s
 the M-ARGO interplanetary cubesat concept, the phase 0 study for the the Titan and Enceladus Mission (TandEM)
 and for preliminary mission analysis of the HERA mission.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+```{toctree}
+:maxdepth: 2
+:caption: Contents
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+api
+tutorials
+```
