@@ -31,8 +31,7 @@
 namespace kep3 {
 using namespace std::literals;
 namespace chr = std::chrono;
-using lint = long int;
-using llint = long long int;
+using uint = unsigned int;
 
 template <typename T> struct is_duration : std::false_type {};
 
@@ -46,8 +45,8 @@ struct kep_clock : public chr::system_clock {
 
   /**
    * @brief Custom clock.
-   * Used for constructing epochs with a custom reference point.
-   * In particular, by defining a custom clock, we avoid the overflow
+   * Used for constructing epochs with a custom reference point (1 Jan 2000).
+   * By defining a custom clock, we avoid the overflow
    * that std::chrono::system_clock suffers at +/- 292 years.
    * To do that, we lower the resolution to 1 us (microsecond),
    * which gives the clock a range of +/- 292 thousand years.
@@ -228,7 +227,7 @@ public:
 
   // Serialization code
   friend class boost::serialization::access;
-  template <class Archive> void serialize(Archive &ar, const unsigned int) {
+  template <class Archive> void serialize(Archive &ar, const uint) {
     ar &boost::serialization::make_binary_object(&tp, sizeof(tp));
   }
   // Serialization code (END)
