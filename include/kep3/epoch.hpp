@@ -20,6 +20,7 @@
 #include <kep3/detail/visibility.hpp>
 #include <ratio>
 #include <type_traits>
+#include <utility>
 
 /// Keplerian Toolbox
 /**
@@ -97,7 +98,7 @@ struct kep_clock : public chr::system_clock {
  */
 class kep3_DLL_PUBLIC epoch {
 public:
-  enum julian_type { MJD2000, MJD, JD };
+  enum class julian_type { MJD2000, MJD, JD };
 
   /** Constructors */
   // Default constructor
@@ -105,7 +106,7 @@ public:
 
   // Constructor for days (as a floating-point value)
   explicit epoch(double epoch_in,
-                 julian_type epoch_type = MJD2000);
+                 julian_type epoch_type = julian_type::MJD2000);
 
   /**
    * Constructs an epoch from a std::chrono::duration.
@@ -119,17 +120,12 @@ public:
   // Constructor from duration&&)
   template <class Duration, class = enable_if_is_duration<Duration>>
   explicit epoch(Duration &&duration)
-      : tp{kep_clock::time_point{} + duration} {}
+      : tp{kep_clock::time_point{} + std::forward(duration)} {}
 
-  // Constructor for const time_point&)
-  explicit epoch(const kep_clock::time_point &time_point);
-
-  // Constructor for const time_point&&)
-  explicit epoch(kep_clock::time_point &&time_point);
 
   // Constructor for datetime broken down into its constituents.
-  explicit epoch(int y, int d, int h = 0, int min = 0, int s = 0, int ms = 0,
-        int us = 0);
+  explicit epoch(const uint y, const uint mon, const uint d, const uint h = 0,
+                 const uint min = 0, const uint s = 0, const uint ms = 0, const uint us = 0);
 
   /* Computing non-Gregorian dates */
 
@@ -137,31 +133,26 @@ public:
    * @return Number of days since 0 JD (including fractional days).
    */
   [[nodiscard]] constexpr double jd() const {
-    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() +
-                                                    211813444800s)
-        .count();
+    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813444800s).count();
   }
 
   /**
    * @return Number of days since 0 MJD (including fractional days).
    */
   [[nodiscard]] constexpr double mjd() const {
-    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() +
-                                                    4453401600s)
-        .count();
+    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 4453401600s).count();
   }
 
   /**
    * @return Number of days since 0 MJD2000 (including fractional days).
    */
   [[nodiscard]] constexpr double mjd2000() const {
-    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch())
-        .count();
+    return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset).count();
   }
 
   /* Helper functions for constructors */
-  static kep_clock::time_point make_tp(int y, int d, int h = 0, int min = 0,
-                                       int s = 0, int ms = 0, int us = 0);
+  static kep_clock::time_point make_tp(const uint y, const uint mon, const uint d, const uint h = 0,
+                                       const uint min = 0, const uint s = 0, const uint ms = 0, const uint us = 0);
 
   static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
 
@@ -175,7 +166,8 @@ public:
   }
 
   // Printing
-  static auto as_utc_string(const kep_clock::time_point &);
+  std::string as_utc_string() const;
+  static std::string as_utc_string(const kep_clock::time_point& tp);
 
   /** operator overloads for sum and diff (epoch-days) and comparison
    * operators
@@ -185,13 +177,13 @@ public:
                                                   epoch const &epoch_in);
 
   template <class Duration, class = enable_if_is_duration<Duration>>
-  epoch &operator+=(Duration &&duration) {
+  epoch &operator+=(const Duration &duration) {
     tp += chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
 
   template <class Duration, class = enable_if_is_duration<Duration>>
-  epoch &operator-=(Duration &&duration) {
+  epoch &operator-=(const Duration &duration) {
     tp -= chr::duration_cast<kep_clock::duration>(duration);
     return *this;
   }
@@ -226,7 +218,14 @@ public:
   kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs,
                                                        const epoch &rhs);
 
-private:
+  private:
+
+  // Constructor for const time_point&)
+  explicit epoch(const kep_clock::time_point &time_point);
+
+  // Constructor for const time_point&&)
+  explicit epoch(kep_clock::time_point &&time_point);
+
   // Serialization code
   friend class boost::serialization::access;
   template <class Archive> void serialize(Archive &ar, const unsigned int) {
