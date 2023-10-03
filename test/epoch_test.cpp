@@ -46,6 +46,11 @@ TEST_CASE("construct") {
   REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841));
   REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "1980-10-17T11:36:21.121841");
 
+  // Epoch from lvalue and rvalue references
+  epoch ep{2000, 1, 1};
+  REQUIRE(epoch(ep) == ep);
+  REQUIRE(epoch(epoch{2000,1,1}) == ep);
+
   // test conversions
   REQUIRE(epoch(123.456).mjd2000() ==
           epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
