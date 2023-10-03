@@ -124,7 +124,7 @@ public:
 
 
   // Constructor for datetime broken down into its constituents.
-  explicit epoch(const int y, const int mon, const int d, const int h = 0,
+  explicit epoch(const int y, const uint mon, const uint d, const int h = 0,
                  const int min = 0, const int s = 0, const int ms = 0, const int us = 0);
 
   /* Computing non-Gregorian dates */
@@ -151,7 +151,7 @@ public:
   }
 
   /* Helper functions for constructors */
-  static kep_clock::time_point make_tp(const int y, const int mon, const int d, const int h = 0,
+  static kep_clock::time_point make_tp(const int y, const uint mon, const uint d, const int h = 0,
                                        const int min = 0, const int s = 0, const int ms = 0, const int us = 0);
 
   static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);

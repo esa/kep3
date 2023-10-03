@@ -54,7 +54,7 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type)
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const int y, const int mon, const int d, const int h,
+epoch::epoch(const int y, const uint mon, const uint d, const int h,
              const int min, const int s, const int ms, const int us)
     : tp{make_tp(y, mon, d, h, min, s, ms, us)} {}
 
@@ -72,7 +72,7 @@ epoch::epoch(const kep_clock::time_point &time_point) : tp{time_point} {}
  */
 epoch::epoch(kep_clock::time_point &&time_point) : tp{std::move(time_point)} {}
 
-kep_clock::time_point epoch::make_tp(const int y, const int mon, const int d, const int h,
+kep_clock::time_point epoch::make_tp(const int y, const uint mon, const uint d, const int h,
                                      const int min, const int s, const int ms, const int us)
 
 {
