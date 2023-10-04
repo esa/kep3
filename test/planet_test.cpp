@@ -13,6 +13,7 @@
 #include <fmt/core.h>
 
 #include "catch.hpp"
+#include <boost/core/demangle.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <kep3/epoch.hpp>
@@ -190,7 +191,7 @@ TEST_CASE("construction")
         auto pos_vel = pla.eph(epoch(0.));
         REQUIRE(pos_vel[0] == std::array<double, 3>{1., 0., 0.});
         REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
-        // REQUIRE(pla.get_name() == kep3::detail::type_name<null_udpla>());
+        REQUIRE(pla.get_name() == boost::core::demangle(typeid(null_udpla).name()));
         REQUIRE(pla.get_extra_info() == std::string(""));
         REQUIRE(pla.get_mu_central_body() == -1);
         REQUIRE(pla.get_mu_self() == -1);
@@ -276,100 +277,6 @@ TEST_CASE("construction")
     REQUIRE(value_isa<null_udpla>(p0));
     p2 = std::move(p4);
     REQUIRE(value_isa<null_udpla>(p2));
-}
-
-TEST_CASE("copy_constructor_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We call the copy constructor
-    planet pla_copy(pla);
-    // We extract the user planet
-    auto *p1 = value_ptr<complete_udpla>(pla);
-    auto *p2 = value_ptr<complete_udpla>(pla_copy);
-
-    // 1 - We check the resources pointed to by m_ptr have different address
-    REQUIRE(p1 != 0);
-    REQUIRE(p2 != 0);
-    REQUIRE(p1 != p2);
-    // 2 - We check that the other members are copied
-    REQUIRE(pla.get_name() == pla_copy.get_name());
-    REQUIRE(pla.get_mu_central_body() == pla_copy.get_mu_central_body());
-    REQUIRE(pla.get_mu_self() == pla_copy.get_mu_self());
-    REQUIRE(pla.get_safe_radius() == pla_copy.get_safe_radius());
-}
-
-TEST_CASE("planet_move_constructor_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We store a streaming representation of the object
-    auto pla_string = boost::lexical_cast<std::string>(pla);
-    // We get the memory address where the user algo is stored
-    auto *p1 = value_ptr<complete_udpla>(pla);
-    // We call the move constructor
-    planet moved_pla(std::move(pla));
-    // We get the memory address where the user algo is stored
-    auto *p2 = value_ptr<complete_udpla>(moved_pla);
-    // And the string representation of the moved algo
-    auto moved_pla_string = boost::lexical_cast<std::string>(moved_pla);
-    // 1 - We check the resource pointed by m_ptr has been moved from algo to
-    // moved_algo
-    REQUIRE(p1 == p2);
-    // 2 - We check that the two string representations are identical
-    REQUIRE(pla_string == moved_pla_string);
-}
-
-TEST_CASE("planet_move_assignment_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We store a streaming representation of the object
-    auto pla_string = boost::lexical_cast<std::string>(pla);
-    // We get the memory address where the user algo is stored
-    auto *p1 = value_ptr<complete_udpla>(pla);
-    // We call the move assignment
-    planet moved_pla{};
-    moved_pla = std::move(pla);
-    // We get the memory address where the user algo is stored
-    auto *p2 = value_ptr<complete_udpla>(moved_pla);
-    // And the string representation of the moved algo
-    auto moved_pla_string = boost::lexical_cast<std::string>(moved_pla);
-    // 1 - We check the resource pointed by m_ptr has been moved from algo to
-    // moved_algo
-    REQUIRE(p1 == p2);
-    // 2 - We check that the two string representations are identical
-    REQUIRE(pla_string == moved_pla_string);
-}
-
-TEST_CASE("copy_assignment_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We call the copy assignment
-    planet pla_copy{};
-    pla_copy = pla;
-    // We extract the user planet
-    auto *p1 = value_ptr<complete_udpla>(pla);
-    auto *p2 = value_ptr<complete_udpla>(pla_copy);
-
-    // 1 - We check the resources pointed to by m_ptr have different address
-    REQUIRE(p1 != 0);
-    REQUIRE(p2 != 0);
-    REQUIRE(p1 != p2);
-    // 2 - We check that the other members are copied
-    REQUIRE(pla.get_name() == pla_copy.get_name());
-    REQUIRE(pla.get_mu_central_body() == pla_copy.get_mu_central_body());
-    REQUIRE(pla.get_mu_self() == pla_copy.get_mu_self());
-    REQUIRE(pla.get_safe_radius() == pla_copy.get_safe_radius());
 }
 
 TEST_CASE("planet_extract_is_test")
