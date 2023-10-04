@@ -12,7 +12,8 @@
 
 #include <string>
 
-namespace pykep {
+namespace pykep
+{
 // Modules
 std::string core_module_doc();
 

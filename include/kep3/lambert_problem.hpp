@@ -18,7 +18,8 @@
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
 
-namespace kep3 {
+namespace kep3
+{
 
 /// Lambert Problem
 /**
@@ -44,71 +45,69 @@ namespace kep3 {
 class kep3_DLL_PUBLIC lambert_problem;
 
 // Streaming operator for the class kep_toolbox::lambert_problem.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
-                                         const lambert_problem &);
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
 
-class kep3_DLL_PUBLIC lambert_problem {
-  static const std::array<double, 3> default_r1;
-  static const std::array<double, 3> default_r2;
+class kep3_DLL_PUBLIC lambert_problem
+{
+    static const std::array<double, 3> default_r1;
+    static const std::array<double, 3> default_r2;
 
 public:
-  friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
-                                                  const lambert_problem &);
-  explicit lambert_problem(const std::array<double, 3> &r1 = default_r1,
-                           const std::array<double, 3> &r2 = default_r2,
-                           double tof = kep3::pi / 2, double mu = 1.,
-                           bool cw = false, unsigned multi_revs = 5);
-  [[nodiscard]] const std::vector<std::array<double, 3>> &get_v1() const;
-  [[nodiscard]] const std::vector<std::array<double, 3>> &get_v2() const;
-  [[nodiscard]] const std::array<double, 3> &get_r1() const;
-  [[nodiscard]] const std::array<double, 3> &get_r2() const;
-  [[nodiscard]] const double &get_tof() const;
-  [[nodiscard]] const double &get_mu() const;
-  [[nodiscard]] const std::vector<double> &get_x() const;
-  [[nodiscard]] const std::vector<unsigned> &get_iters() const;
-  [[nodiscard]] unsigned get_Nmax() const;
+    friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
+    explicit lambert_problem(const std::array<double, 3> &r1 = default_r1, const std::array<double, 3> &r2 = default_r2,
+                             double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 5);
+    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v1() const;
+    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v2() const;
+    [[nodiscard]] const std::array<double, 3> &get_r1() const;
+    [[nodiscard]] const std::array<double, 3> &get_r2() const;
+    [[nodiscard]] const double &get_tof() const;
+    [[nodiscard]] const double &get_mu() const;
+    [[nodiscard]] const std::vector<double> &get_x() const;
+    [[nodiscard]] const std::vector<unsigned> &get_iters() const;
+    [[nodiscard]] unsigned get_Nmax() const;
 
 private:
-  unsigned householder(double, double &, unsigned, double, unsigned) const;
-  void dTdx(double &, double &, double &, double, double) const;
-  void x2tof(double &tof, double x0, unsigned N) const;
-  void x2tof2(double &tof, double x0, unsigned N) const ;
-  [[nodiscard]] double hypergeometricF(double z, double tol) const;
-  friend class boost::serialization::access;
-  template <class Archive> void serialize(Archive &ar, const unsigned int) {
-    ar &m_r1;
-    ar &m_r2;
-    ar &m_tof;
-    ar &m_mu;
-    ar &m_v1;
-    ar &m_v2;
-    ar &m_iters;
-    ar &m_x;
-    ar &m_s;
-    ar &m_c;
-    ar &m_lambda;
-    ar &m_iters;
-    ar &m_Nmax;
-    ar &m_has_converged;
-    ar &m_multi_revs;
-  }
+    unsigned householder(double, double &, unsigned, double, unsigned) const;
+    void dTdx(double &, double &, double &, double, double) const;
+    void x2tof(double &tof, double x0, unsigned N) const;
+    void x2tof2(double &tof, double x0, unsigned N) const;
+    [[nodiscard]] double hypergeometricF(double z, double tol) const;
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int)
+    {
+        ar & m_r1;
+        ar & m_r2;
+        ar & m_tof;
+        ar & m_mu;
+        ar & m_v1;
+        ar & m_v2;
+        ar & m_iters;
+        ar & m_x;
+        ar & m_s;
+        ar & m_c;
+        ar & m_lambda;
+        ar & m_iters;
+        ar & m_Nmax;
+        ar & m_has_converged;
+        ar & m_multi_revs;
+    }
 
-  std::array<double, 3> m_r1, m_r2;
-  double m_tof;
-  double m_mu;
-  std::vector<std::array<double, 3>> m_v1;
-  std::vector<std::array<double, 3>> m_v2;
-  std::vector<unsigned> m_iters;
-  std::vector<double> m_x;
-  double m_s, m_c, m_lambda;
-  unsigned m_Nmax;
-  bool m_has_converged;
-  unsigned m_multi_revs;
+    std::array<double, 3> m_r1, m_r2;
+    double m_tof;
+    double m_mu;
+    std::vector<std::array<double, 3>> m_v1;
+    std::vector<std::array<double, 3>> m_v2;
+    std::vector<unsigned> m_iters;
+    std::vector<double> m_x;
+    double m_s, m_c, m_lambda;
+    unsigned m_Nmax;
+    bool m_has_converged;
+    unsigned m_multi_revs;
 };
 
 // Streaming operator for the class kep3::lambert_problem.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
-                                         const lambert_problem &);
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
 
 } // namespace kep3
 

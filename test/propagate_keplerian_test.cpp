@@ -28,76 +28,75 @@ using kep3::propagate_keplerian;
 constexpr double pi{boost::math::constants::pi<double>()};
 
 void test_propagate_keplerian(
-    const std::function<void(std::array<std::array<double, 3>, 2> &, double,
-                             double)> &propagate,
-    unsigned int N = 10000) {
+    const std::function<void(std::array<std::array<double, 3>, 2> &, double, double)> &propagate,
+    unsigned int N = 10000)
+{
 
-  // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-  std::mt19937 rng_engine(1220202343u);
+    // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
+    std::mt19937 rng_engine(1220202343u);
 
-  { // Targeting Ellipses
-    std::uniform_real_distribution<double> sma_d(1.1, 10.);
-    std::uniform_real_distribution<double> ecc_d(0, 0.9);
-    std::uniform_real_distribution<double> incl_d(0., kep3::pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
-    std::uniform_real_distribution<double> omega_d(0., pi);
-    std::uniform_real_distribution<double> f_d(0, 2 * pi);
-    std::uniform_real_distribution<double> time_d(-2. * kep3::pi,
-                                                  2. * kep3::pi);
+    { // Targeting Ellipses
+        std::uniform_real_distribution<double> sma_d(1.1, 10.);
+        std::uniform_real_distribution<double> ecc_d(0, 0.9);
+        std::uniform_real_distribution<double> incl_d(0., kep3::pi);
+        std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
+        std::uniform_real_distribution<double> omega_d(0., pi);
+        std::uniform_real_distribution<double> f_d(0, 2 * pi);
+        std::uniform_real_distribution<double> time_d(-2. * kep3::pi, 2. * kep3::pi);
 
-    // Testing on N random calls on ellipses
-    for (auto i = 0u; i < N; ++i) {
-      double sma = sma_d(rng_engine);
-      double ecc = ecc_d(rng_engine);
-      double incl = incl_d(rng_engine);
-      double Omega = Omega_d(rng_engine);
-      double omega = omega_d(rng_engine);
-      double f = f_d(rng_engine);
+        // Testing on N random calls on ellipses
+        for (auto i = 0u; i < N; ++i) {
+            double sma = sma_d(rng_engine);
+            double ecc = ecc_d(rng_engine);
+            double incl = incl_d(rng_engine);
+            double Omega = Omega_d(rng_engine);
+            double omega = omega_d(rng_engine);
+            double f = f_d(rng_engine);
 
-      std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
-      auto pos_vel = kep3::par2ic(par, 1.);
-      double tof = time_d(rng_engine);
-      auto pos_vel_after = pos_vel;
-      propagate(pos_vel_after, tof, 1.);
-      propagate(pos_vel_after, -tof, 1.);
-      REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0],
-                                                      pos_vel_after[0]) <
-              1e-10); // Low precision requested. The funciton is only here for
-                      // academic purposes
+            std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
+            auto pos_vel = kep3::par2ic(par, 1.);
+            double tof = time_d(rng_engine);
+            auto pos_vel_after = pos_vel;
+            propagate(pos_vel_after, tof, 1.);
+            propagate(pos_vel_after, -tof, 1.);
+            REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0],
+                                                            pos_vel_after[0])
+                    < 1e-10); // Low precision requested. The funciton is only here for
+                              // academic purposes
+        }
     }
-  }
 
-  { // Targeting Hyperbolas
-    std::uniform_real_distribution<double> sma_d(1.1, 100.);
-    std::uniform_real_distribution<double> ecc_d(2., 20.);
-    std::uniform_real_distribution<double> incl_d(0., pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-    std::uniform_real_distribution<double> omega_d(0., pi);
-    std::uniform_real_distribution<double> f_d(0, 2 * pi);
-    std::uniform_real_distribution<double> time_d(0.1, 20.);
-    // Testing on N random calls on hyperbolas
-    for (auto i = 0u; i < N; ++i) {
-      double sma = sma_d(rng_engine);
-      double ecc = ecc_d(rng_engine);
-      double incl = incl_d(rng_engine);
-      double Omega = Omega_d(rng_engine);
-      double omega = omega_d(rng_engine);
-      double f = f_d(rng_engine);
-      if (std::cos(f) > -1 / ecc) {
-        std::array<double, 6> par = {-sma, ecc, incl, Omega, omega, f};
-        auto pos_vel = kep3::par2ic(par, 1.);
-        double tof = time_d(rng_engine);
-        auto pos_vel_after = pos_vel;
-        propagate(pos_vel_after, tof, 1.);
-        propagate(pos_vel_after, -tof, 1.);
-        REQUIRE(kep3_tests::floating_point_error_vector(
-                    pos_vel[0], pos_vel_after[0]) < 1e-10);
-      }
+    { // Targeting Hyperbolas
+        std::uniform_real_distribution<double> sma_d(1.1, 100.);
+        std::uniform_real_distribution<double> ecc_d(2., 20.);
+        std::uniform_real_distribution<double> incl_d(0., pi);
+        std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
+        std::uniform_real_distribution<double> omega_d(0., pi);
+        std::uniform_real_distribution<double> f_d(0, 2 * pi);
+        std::uniform_real_distribution<double> time_d(0.1, 20.);
+        // Testing on N random calls on hyperbolas
+        for (auto i = 0u; i < N; ++i) {
+            double sma = sma_d(rng_engine);
+            double ecc = ecc_d(rng_engine);
+            double incl = incl_d(rng_engine);
+            double Omega = Omega_d(rng_engine);
+            double omega = omega_d(rng_engine);
+            double f = f_d(rng_engine);
+            if (std::cos(f) > -1 / ecc) {
+                std::array<double, 6> par = {-sma, ecc, incl, Omega, omega, f};
+                auto pos_vel = kep3::par2ic(par, 1.);
+                double tof = time_d(rng_engine);
+                auto pos_vel_after = pos_vel;
+                propagate(pos_vel_after, tof, 1.);
+                propagate(pos_vel_after, -tof, 1.);
+                REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_vel_after[0]) < 1e-10);
+            }
+        }
     }
-  }
 }
 
-TEST_CASE("propagate_keplerian") {
-  // We test both Normal and Universal variables version with the same data.
-  test_propagate_keplerian(&propagate_keplerian, 10000u);
+TEST_CASE("propagate_keplerian")
+{
+    // We test both Normal and Universal variables version with the same data.
+    test_propagate_keplerian(&propagate_keplerian, 10000u);
 }

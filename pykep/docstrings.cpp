@@ -11,15 +11,18 @@
 
 #include "docstrings.hpp"
 
-namespace pykep {
+namespace pykep
+{
 
-std::string core_module_doc() {
-  return R"(core is the Pykep module that contains most of its core routines efficiently coded in c++
+std::string core_module_doc()
+{
+    return R"(core is the Pykep module that contains most of its core routines efficiently coded in c++
 )";
 }
 
-std::string m2e_doc() {
-  return R"(m2e(M, ecc)
+std::string m2e_doc()
+{
+    return R"(m2e(M, ecc)
     
     Converts from Mean to Eccentric anomaly. Requires ecc < 1.
 
@@ -40,8 +43,9 @@ std::string m2e_doc() {
 )";
 }
 
-std::string e2m_doc() {
-  return R"(e2m(E, ecc)
+std::string e2m_doc()
+{
+    return R"(e2m(E, ecc)
     
     Converts from Eccentric to Mean anomaly. Requires ecc < 1.
 
@@ -62,8 +66,9 @@ std::string e2m_doc() {
 )";
 }
 
-std::string e2f_doc() {
-  return R"(e2f(E, ecc)
+std::string e2f_doc()
+{
+    return R"(e2f(E, ecc)
     
     Converts from eccentric to true anomaly. Requires ecc < 1.
 
@@ -84,8 +89,9 @@ std::string e2f_doc() {
 )";
 }
 
-std::string f2e_doc() {
-  return R"(f2e(f, ecc)
+std::string f2e_doc()
+{
+    return R"(f2e(f, ecc)
     
     Converts from True to Eccentric anomaly. Requires ecc < 1.
 
@@ -106,8 +112,9 @@ std::string f2e_doc() {
 )";
 }
 
-std::string f2m_doc() {
-  return R"(f2m(f, ecc)
+std::string f2m_doc()
+{
+    return R"(f2m(f, ecc)
     
     Converts from True to Mean anomaly. Requires ecc < 1.
 
@@ -128,8 +135,9 @@ std::string f2m_doc() {
 )";
 }
 
-std::string m2f_doc() {
-  return R"(m2f(M, ecc)
+std::string m2f_doc()
+{
+    return R"(m2f(M, ecc)
     
     Converts from Mean to True anomaly. Requires ecc < 1.
 
@@ -150,8 +158,9 @@ std::string m2f_doc() {
 )";
 }
 
-std::string h2n_doc() {
-  return R"(h2n(H, ecc)
+std::string h2n_doc()
+{
+    return R"(h2n(H, ecc)
     
     Converts from Hyperbolic to Hyperbolic Mean anomaly. Requires ecc > 1.
 
@@ -172,8 +181,9 @@ std::string h2n_doc() {
 )";
 }
 
-std::string n2h_doc() {
-  return R"(n2h(N, ecc)
+std::string n2h_doc()
+{
+    return R"(n2h(N, ecc)
     
     Converts from Hyperbolic Mean to Hyperbolic anomaly. Requires ecc > 1.
 
@@ -194,8 +204,9 @@ std::string n2h_doc() {
 )";
 }
 
-std::string h2f_doc() {
-  return R"(h2f(H, ecc)
+std::string h2f_doc()
+{
+    return R"(h2f(H, ecc)
     
     Converts from Hyperbolic to True anomaly. Requires ecc > 1.
 
@@ -216,8 +227,9 @@ std::string h2f_doc() {
 )";
 }
 
-std::string f2h_doc() {
-  return R"(f2h(f, ecc)
+std::string f2h_doc()
+{
+    return R"(f2h(f, ecc)
     
     Converts from True to Hyperbolic anomaly. Requires ecc > 1.
 
@@ -238,8 +250,9 @@ std::string f2h_doc() {
 )";
 }
 
-std::string f2n_doc() {
-  return R"(f2n(f, ecc)
+std::string f2n_doc()
+{
+    return R"(f2n(f, ecc)
     
     Converts from True to Hyperbolic Mean anomaly. Requires ecc > 1.
 
@@ -260,8 +273,9 @@ std::string f2n_doc() {
 )";
 }
 
-std::string n2f_doc() {
-  return R"(n2f(N, ecc)
+std::string n2f_doc()
+{
+    return R"(n2f(N, ecc)
     
     Converts from Hyperbolic Mean to True anomaly. Requires ecc > 1.
 
@@ -282,8 +296,9 @@ std::string n2f_doc() {
 )";
 }
 
-std::string zeta2f_doc() {
-  return R"(zeta2f(zeta, ecc)
+std::string zeta2f_doc()
+{
+    return R"(zeta2f(zeta, ecc)
     
     Converts from Gudermannian to True anomaly. Requires ecc > 1.
 
@@ -307,8 +322,9 @@ std::string zeta2f_doc() {
 )";
 }
 
-std::string f2zeta_doc() {
-  return R"(f2zeta(f, ecc)
+std::string f2zeta_doc()
+{
+    return R"(f2zeta(f, ecc)
     
     Converts from True anomaly to Gudermannian. Requires ecc > 1.
 
@@ -329,8 +345,9 @@ std::string f2zeta_doc() {
 )";
 }
 
-std::string m2e_v_doc() {
-  return R"(m2e_v(Ms, eccs)
+std::string m2e_v_doc()
+{
+    return R"(m2e_v(Ms, eccs)
     
     Converts from Mean to Eccentric anomaly (vectorized version). Requires ecc < 1.
 
@@ -353,8 +370,9 @@ std::string m2e_v_doc() {
 )";
 }
 
-std::string e2m_v_doc() {
-  return R"(e2m_v(Es, eccs)
+std::string e2m_v_doc()
+{
+    return R"(e2m_v(Es, eccs)
     
     Converts from Eccentric to Mean anomaly (vectorized version). Requires ecc < 1.
 
@@ -377,8 +395,9 @@ std::string e2m_v_doc() {
 )";
 }
 
-std::string e2f_v_doc() {
-  return R"(e2f_v(Es, eccs)
+std::string e2f_v_doc()
+{
+    return R"(e2f_v(Es, eccs)
     
     Converts from eccentric to true anomaly (vectorized version). Requires ecc < 1.
 
@@ -401,8 +420,9 @@ std::string e2f_v_doc() {
 )";
 }
 
-std::string f2e_v_doc() {
-  return R"(f2e_v(fs, eccs)
+std::string f2e_v_doc()
+{
+    return R"(f2e_v(fs, eccs)
     
     Converts from True to Eccentric anomaly (vectorized version). Requires ecc < 1.
 
@@ -425,8 +445,9 @@ std::string f2e_v_doc() {
 )";
 }
 
-std::string f2m_v_doc() {
-  return R"(f2m_v(fs, eccs)
+std::string f2m_v_doc()
+{
+    return R"(f2m_v(fs, eccs)
     
     Converts from True to Mean anomaly (vectorized version). Requires ecc < 1.
 
@@ -449,8 +470,9 @@ std::string f2m_v_doc() {
 )";
 }
 
-std::string m2f_v_doc() {
-  return R"(m2f_v(Ms, eccs)
+std::string m2f_v_doc()
+{
+    return R"(m2f_v(Ms, eccs)
     
     Converts from Mean to True anomaly (vectorized version). Requires ecc < 1.
 
@@ -473,8 +495,9 @@ std::string m2f_v_doc() {
 )";
 }
 
-std::string h2n_v_doc() {
-  return R"(h2n_v(Hs, eccs)
+std::string h2n_v_doc()
+{
+    return R"(h2n_v(Hs, eccs)
     
     Converts from Hyperbolic to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
 
@@ -497,8 +520,9 @@ std::string h2n_v_doc() {
 )";
 }
 
-std::string n2h_v_doc() {
-  return R"(n2h_v(Ns, eccs)
+std::string n2h_v_doc()
+{
+    return R"(n2h_v(Ns, eccs)
     
     Converts from Hyperbolic Mean to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
 
@@ -521,8 +545,9 @@ std::string n2h_v_doc() {
 )";
 }
 
-std::string h2f_v_doc() {
-  return R"(h2f_v(Hs, eccs)
+std::string h2f_v_doc()
+{
+    return R"(h2f_v(Hs, eccs)
     
     Converts from Hyperbolic to True anomaly (vectorized version). Requires ecc > 1.
 
@@ -545,8 +570,9 @@ std::string h2f_v_doc() {
 )";
 }
 
-std::string f2h_v_doc() {
-  return R"(f2h_v(fs, eccs)
+std::string f2h_v_doc()
+{
+    return R"(f2h_v(fs, eccs)
     
     Converts from True to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
 
@@ -569,8 +595,9 @@ std::string f2h_v_doc() {
 )";
 }
 
-std::string f2n_v_doc() {
-  return R"(f2n_v(fs, eccs)
+std::string f2n_v_doc()
+{
+    return R"(f2n_v(fs, eccs)
     
     Converts from True to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
 
@@ -593,8 +620,9 @@ std::string f2n_v_doc() {
 )";
 }
 
-std::string n2f_v_doc() {
-  return R"(n2f_v(Ns, eccs)
+std::string n2f_v_doc()
+{
+    return R"(n2f_v(Ns, eccs)
     
     Converts from Hyperbolic Mean to True anomaly (vectorized version). Requires ecc > 1.
 
@@ -617,8 +645,9 @@ std::string n2f_v_doc() {
 )";
 }
 
-std::string zeta2f_v_doc() {
-  return R"(zeta2f_v(zetas, eccs)
+std::string zeta2f_v_doc()
+{
+    return R"(zeta2f_v(zetas, eccs)
     
     Converts from Gudermannian to True anomaly (vectorized version). Requires ecc > 1.
 
@@ -644,8 +673,9 @@ std::string zeta2f_v_doc() {
 )";
 }
 
-std::string f2zeta_v_doc() {
-  return R"(f2zeta_v(fs, eccs)
+std::string f2zeta_v_doc()
+{
+    return R"(f2zeta_v(fs, eccs)
     
     Converts from True anomaly to Gudermannian (vectorized version). Requires ecc > 1.
 

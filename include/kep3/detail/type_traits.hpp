@@ -15,7 +15,8 @@
 #include <type_traits>
 #include <vector>
 
-namespace kep3::detail {
+namespace kep3::detail
+{
 
 template <typename T>
 using uncvref_t = std::remove_cv_t<std::remove_reference_t<T>>;
