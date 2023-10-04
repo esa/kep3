@@ -40,16 +40,16 @@ class kep3_DLL_PUBLIC keplerian
     template <typename Archive>
     void serialize(Archive &ar, unsigned)
     {
-        ar & m_ref_epoch;
-        ar & m_name;
-        ar & m_mu_central_body;
-        ar & m_mu_self;
-        ar & m_radius;
-        ar & m_safe_radius;
-        ar & m_period;
-        ar & m_ellipse;
-        ar & m_safe_radius;
-        ar & m_pos_vel_0;
+        ar &m_ref_epoch;
+        ar &m_name;
+        ar &m_mu_central_body;
+        ar &m_mu_self;
+        ar &m_radius;
+        ar &m_safe_radius;
+        ar &m_period;
+        ar &m_ellipse;
+        ar &m_safe_radius;
+        ar &m_pos_vel_0;
     }
 
 public:

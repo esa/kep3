@@ -16,11 +16,13 @@
 #include <boost/optional.hpp>
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/planet.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include "docstrings.hpp"
+#include "python_udpla.hpp"
 
 namespace py = pybind11;
 namespace pk = pykep;
@@ -87,4 +89,12 @@ PYBIND11_MODULE(core, m)
     m.def("f2h_v", py::vectorize(kep3::f2h), pk::f2h_v_doc().c_str());
     m.def("zeta2f_v", py::vectorize(kep3::zeta2f), pk::zeta2f_v_doc().c_str());
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
+
+    // Class epoch
+    py::class_<kep3::epoch>(m, "epoch")
+        .def(py::init<double>());
+    // Type erased class planet
+    auto _planet = py::class_<kep3::planet>(m, "planet", py::dynamic_attr{});
+    _planet.def(py::init([](const py::object& o) { return kep3::planet{pk::python_udpla(o)}; }));
+    _planet.def("eph", &kep3::planet::eph);
 }

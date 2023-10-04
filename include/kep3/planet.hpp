@@ -177,7 +177,7 @@ struct kep3_DLL_PUBLIC_INLINE_CLASS planet_inner final : planet_inner_base {
     }
     [[nodiscard]] std::string get_extra_info() const final
     {
-        if constexpr (udpla_has_get_name_v<T>) {
+        if constexpr (udpla_has_get_extra_info_v<T>) {
             return m_value.get_extra_info();
         } else {
             return "";
@@ -254,13 +254,14 @@ private:
     void serialize(Archive &ar, unsigned)
     {
         ar &boost::serialization::base_object<planet_inner_base>(*this);
-        ar & m_value;
+        ar &m_value;
     }
 };
 template <typename T>
-using is_udpla = std::conjunction<std::is_same<T, detail::uncvref_t<T>>, std::is_default_constructible<T>,
-                                  std::is_copy_constructible<T>, std::is_move_constructible<T>, std::is_destructible<T>,
-                                  udpla_has_eph<T>>;
+using is_udpla
+    = std::conjunction<std::is_same<T, detail::uncvref_t<T>>, std::is_default_constructible<T>,
+                                        std::is_copy_constructible<T>, std::is_move_constructible<T>,
+                                        std::is_destructible<T>, udpla_has_eph<T>>;
 
 struct kep3_DLL_PUBLIC null_udpla {
     null_udpla() = default;
@@ -291,7 +292,7 @@ class kep3_DLL_PUBLIC planet
     template <typename Archive>
     void serialize(Archive &ar, unsigned)
     {
-        ar & m_ptr;
+        ar &m_ptr;
     }
 
     // Just two small helpers to make sure via assertions that whenever we require

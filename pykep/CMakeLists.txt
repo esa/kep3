@@ -8,9 +8,9 @@ set(PYKEP_PYTHON_FILES __init__.py _version.py test.py)
 # so that we can import pydesyre from the build dir.
 # NOTE: importing from the build dir will work
 # only on single-configuration generators.
-foreach(kep3_PYTHON_FILE ${kep3_PYTHON_FILES})
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${kep3_PYTHON_FILE}"
-        "${CMAKE_CURRENT_BINARY_DIR}/${kep3_PYTHON_FILE}" COPYONLY)
+foreach(PYKEP_PYTHON_FILES ${PYKEP_PYTHON_FILES})
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYKEP_PYTHON_FILES}"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PYKEP_PYTHON_FILES}" COPYONLY)
 endforeach()
 
 # Core module.

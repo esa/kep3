@@ -232,6 +232,8 @@ if(kep3_BUILD_PYTHON_BINDINGS)
     find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
     message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
     message(STATUS "Python3 installation directory: ${Python3_SITEARCH}")
+    message(STATUS "Python3 include directories: ${Python3_INCLUDE_DIRS}")
+
     set(PYKEP_INSTALL_PATH "" CACHE STRING "pykep module installation path")
     mark_as_advanced(PYKEP_INSTALL_PATH)
 
