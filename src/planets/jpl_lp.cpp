@@ -22,7 +22,8 @@
 #include <kep3/planet.hpp>
 #include <kep3/planets/jpl_lp.hpp>
 
-namespace kep3::udpla {
+namespace kep3::udpla
+{
 
 // Data from: https://ssd.jpl.nasa.gov/planets/approx_pos.html
 // a,e,i,L,W,w
@@ -46,164 +47,179 @@ static const std::array<double, 6> neptune_el_dot = {0.00026291, 0.00005105, 0.0
 // clang-format on
 
 // NOLINTNEXTLINE(cert-err58-cpp)
-const std::unordered_map<std::string, int> mapped_planets = {
-    {"mercury", 1}, {"venus", 2},  {"earth", 3},   {"mars", 4}, {"jupiter", 5},
-    {"saturn", 6},  {"uranus", 7}, {"neptune", 8}, {"pluto", 9}};
+const std::unordered_map<std::string, int> mapped_planets
+    = {{"mercury", 1}, {"venus", 2},  {"earth", 3},   {"mars", 4}, {"jupiter", 5},
+       {"saturn", 6},  {"uranus", 7}, {"neptune", 8}, {"pluto", 9}};
 
 jpl_lp::jpl_lp(std::string name)
-    : m_elements(), m_elements_dot(), m_name(std::move(name)),
-      m_mu_central_body(kep3::MU_SUN) {
+    : m_elements(), m_elements_dot(), m_name(std::move(name)), m_mu_central_body(kep3::MU_SUN)
+{
 
-  boost::algorithm::to_lower(m_name);
-  switch (mapped_planets.at(m_name)) {
-  case (1): {
-    m_elements = mercury_el;
-    m_elements_dot = mercury_el_dot;
-    m_radius = 2440000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 22032e9;
-  } break;
-  case (2): {
-    m_elements = venus_el;
-    m_elements_dot = venus_el_dot;
-    m_radius = 6052000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 324859e9;
-  } break;
-  case (3): {
-    m_elements = earth_moon_el;
-    m_elements_dot = earth_moon_el_dot;
-    m_radius = 6378000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 398600.4418e9;
-  } break;
-  case (4): {
-    m_elements = mars_el;
-    m_elements_dot = mars_el_dot;
-    m_radius = 3397000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 42828e9;
-  } break;
-  case (5): {
-    m_elements = jupiter_el;
-    m_elements_dot = jupiter_el_dot;
-    m_radius = 71492000.;
-    m_safe_radius = 9. * m_radius;
-    m_mu_self = 126686534e9;
-  } break;
-  case (6): {
-    m_elements = saturn_el;
-    m_elements_dot = saturn_el_dot;
-    m_radius = 60330000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 37931187e9;
-  } break;
-  case (7): {
-    m_elements = uranus_el;
-    m_elements_dot = uranus_el_dot;
-    m_radius = 25362000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 5793939e9;
-  } break;
-  case (8): {
-    m_elements = neptune_el;
-    m_elements_dot = neptune_el_dot;
-    m_radius = 24622000.;
-    m_safe_radius = 1.1 * m_radius;
-    m_mu_self = 6836529e9;
-  } break;
-  default: {
-    throw std::logic_error("unknown planet name: "); // LCOV_EXCL_LINE
-  }
-  }
+    boost::algorithm::to_lower(m_name);
+    switch (mapped_planets.at(m_name)) {
+        case (1): {
+            m_elements = mercury_el;
+            m_elements_dot = mercury_el_dot;
+            m_radius = 2440000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 22032e9;
+        } break;
+        case (2): {
+            m_elements = venus_el;
+            m_elements_dot = venus_el_dot;
+            m_radius = 6052000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 324859e9;
+        } break;
+        case (3): {
+            m_elements = earth_moon_el;
+            m_elements_dot = earth_moon_el_dot;
+            m_radius = 6378000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 398600.4418e9;
+        } break;
+        case (4): {
+            m_elements = mars_el;
+            m_elements_dot = mars_el_dot;
+            m_radius = 3397000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 42828e9;
+        } break;
+        case (5): {
+            m_elements = jupiter_el;
+            m_elements_dot = jupiter_el_dot;
+            m_radius = 71492000.;
+            m_safe_radius = 9. * m_radius;
+            m_mu_self = 126686534e9;
+        } break;
+        case (6): {
+            m_elements = saturn_el;
+            m_elements_dot = saturn_el_dot;
+            m_radius = 60330000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 37931187e9;
+        } break;
+        case (7): {
+            m_elements = uranus_el;
+            m_elements_dot = uranus_el_dot;
+            m_radius = 25362000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 5793939e9;
+        } break;
+        case (8): {
+            m_elements = neptune_el;
+            m_elements_dot = neptune_el_dot;
+            m_radius = 24622000.;
+            m_safe_radius = 1.1 * m_radius;
+            m_mu_self = 6836529e9;
+        } break;
+        default: {
+            throw std::logic_error("unknown planet name: "); // LCOV_EXCL_LINE
+        }
+    }
 }
 
 // Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.
-std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const {
-  double mjd2000 = ep.mjd2000();
-  if (mjd2000 <= -73048.0 || mjd2000 >= 18263.0) {
-    throw std::domain_error("Low precision Ephemeris are only valid in the "
-                            "range range [1800-2050]");
-  }
-  // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
-  // 2023.
-  std::array<double, 6> elements_updated{}, elements_f{};
-  double dt = mjd2000 / 36525.; // Number of centuries passed since J2000.0
-  for (unsigned int i = 0; i < 6; ++i) {
-    elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
-  }
-  elements_f[0] = elements_updated[0] * kep3::AU;
-  elements_f[1] = elements_updated[1];
-  elements_f[2] = elements_updated[2] * kep3::DEG2RAD;
-  elements_f[3] = elements_updated[5] * kep3::DEG2RAD;
-  elements_f[4] = (elements_updated[4] - elements_updated[5]) * kep3::DEG2RAD;
-  elements_f[5] = (elements_updated[3] - elements_updated[4]) * kep3::DEG2RAD;
-  elements_f[5] = kep3::m2f(elements_f[5], elements_f[1]);
-  return elements_f;
+std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const
+{
+    double mjd2000 = ep.mjd2000();
+    if (mjd2000 <= -73048.0 || mjd2000 >= 18263.0) {
+        throw std::domain_error("Low precision Ephemeris are only valid in the "
+                                "range range [1800-2050]");
+    }
+    // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
+    // 2023.
+    std::array<double, 6> elements_updated{}, elements_f{};
+    double dt = mjd2000 / 36525.; // Number of centuries passed since J2000.0
+    for (unsigned int i = 0; i < 6; ++i) {
+        elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
+    }
+    elements_f[0] = elements_updated[0] * kep3::AU;
+    elements_f[1] = elements_updated[1];
+    elements_f[2] = elements_updated[2] * kep3::DEG2RAD;
+    elements_f[3] = elements_updated[5] * kep3::DEG2RAD;
+    elements_f[4] = (elements_updated[4] - elements_updated[5]) * kep3::DEG2RAD;
+    elements_f[5] = (elements_updated[3] - elements_updated[4]) * kep3::DEG2RAD;
+    elements_f[5] = kep3::m2f(elements_f[5], elements_f[1]);
+    return elements_f;
 }
 
-std::array<std::array<double, 3>, 2> jpl_lp::eph(const epoch &ep) const {
-  auto elements_f = _f_elements(ep);
-  return par2ic(elements_f, get_mu_central_body());
+std::array<std::array<double, 3>, 2> jpl_lp::eph(const epoch &ep) const
+{
+    auto elements_f = _f_elements(ep);
+    return par2ic(elements_f, get_mu_central_body());
 }
 
-std::array<double, 6> jpl_lp::elements(const kep3::epoch &ep,
-                                       kep3::elements_type el_type) const {
-  auto elements = _f_elements(ep);
-  switch (el_type) {
-  case kep3::elements_type::KEP_F:
-    break;
-  case kep3::elements_type::KEP_M:
-    elements[5] = kep3::f2m(elements[5], elements[1]);
-    break;
-  case kep3::elements_type::MEQ:
-    elements = kep3::par2eq(elements, false);
-    break;
-  case kep3::elements_type::MEQ_R:
-    elements = kep3::par2eq(elements, true);
-    break;
-  default:
-    throw std::logic_error("You should not go here!");
-  }
-  return elements;
+std::array<double, 6> jpl_lp::elements(const kep3::epoch &ep, kep3::elements_type el_type) const
+{
+    auto elements = _f_elements(ep);
+    switch (el_type) {
+        case kep3::elements_type::KEP_F:
+            break;
+        case kep3::elements_type::KEP_M:
+            elements[5] = kep3::f2m(elements[5], elements[1]);
+            break;
+        case kep3::elements_type::MEQ:
+            elements = kep3::par2eq(elements, false);
+            break;
+        case kep3::elements_type::MEQ_R:
+            elements = kep3::par2eq(elements, true);
+            break;
+        default:
+            throw std::logic_error("You should not go here!");
+    }
+    return elements;
 }
 
-std::string jpl_lp::get_name() const { return m_name; }
-
-double jpl_lp::get_mu_central_body() const { return m_mu_central_body; }
-
-double jpl_lp::get_mu_self() const { return m_mu_self; }
-
-double jpl_lp::get_radius() const { return m_radius; }
-
-double jpl_lp::get_safe_radius() const { return m_safe_radius; }
-
-std::string jpl_lp::get_extra_info() const {
-  kep3::epoch ep{0., kep3::epoch::julian_type::MJD2000};
-  auto par = elements(ep);
-  auto pos_vel = eph(ep);
-
-  std::string retval =
-      fmt::format("\nLow-precision planet elements: \n") +
-      fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU) +
-      fmt::format("Eccentricity: {}\n", par[1]) +
-      fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG) +
-      fmt::format("Big Omega (deg.): {}\n", par[3] * kep3::RAD2DEG) +
-      fmt::format("Small omega (deg.): {}\n", par[4] * kep3::RAD2DEG) +
-      fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
-  retval += fmt::format("Mean anomly (deg.): {}\n",
-                        kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
-  retval +=
-      fmt::format("Elements reference epoch (MJD2000): {}\n", ep.mjd2000()) +
-      fmt::format("Elements reference epoch (date): {}\n", ep) +
-      fmt::format("r at ref. = {}\n", pos_vel[0]) +
-      fmt::format("v at ref. = {}\n", pos_vel[1]);
-  return retval;
+std::string jpl_lp::get_name() const
+{
+    return m_name;
 }
 
-std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla) {
-  os << udpla.get_extra_info() << std::endl;
-  return os;
+double jpl_lp::get_mu_central_body() const
+{
+    return m_mu_central_body;
+}
+
+double jpl_lp::get_mu_self() const
+{
+    return m_mu_self;
+}
+
+double jpl_lp::get_radius() const
+{
+    return m_radius;
+}
+
+double jpl_lp::get_safe_radius() const
+{
+    return m_safe_radius;
+}
+
+std::string jpl_lp::get_extra_info() const
+{
+    kep3::epoch ep{0., kep3::epoch::julian_type::MJD2000};
+    auto par = elements(ep);
+    auto pos_vel = eph(ep);
+
+    std::string retval = fmt::format("\nLow-precision planet elements: \n")
+                         + fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU)
+                         + fmt::format("Eccentricity: {}\n", par[1])
+                         + fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG)
+                         + fmt::format("Big Omega (deg.): {}\n", par[3] * kep3::RAD2DEG)
+                         + fmt::format("Small omega (deg.): {}\n", par[4] * kep3::RAD2DEG)
+                         + fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
+    retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
+    retval += fmt::format("Elements reference epoch (MJD2000): {}\n", ep.mjd2000())
+              + fmt::format("Elements reference epoch (date): {}\n", ep) + fmt::format("r at ref. = {}\n", pos_vel[0])
+              + fmt::format("v at ref. = {}\n", pos_vel[1]);
+    return retval;
+}
+
+std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
+{
+    os << udpla.get_extra_info() << std::endl;
+    return os;
 }
 
 } // namespace kep3::udpla

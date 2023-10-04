@@ -15,9 +15,10 @@
 #include <kep3/config.hpp>
 #include <kep3/detail/visibility.hpp>
 
-namespace kep3 {
+namespace kep3
+{
 struct kep3_DLL_PUBLIC not_implemented_error final : std::runtime_error {
-  using std::runtime_error::runtime_error;
+    using std::runtime_error::runtime_error;
 };
 
 } // namespace kep3

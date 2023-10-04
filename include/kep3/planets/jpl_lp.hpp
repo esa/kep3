@@ -20,7 +20,8 @@
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 
-namespace kep3::udpla {
+namespace kep3::udpla
+{
 
 /// Solar System Planet (jpl simplified ephemerides)
 /**
@@ -31,56 +32,58 @@ namespace kep3::udpla {
  * 1800AD - 2050 AD
  */
 
-class kep3_DLL_PUBLIC jpl_lp {
+class kep3_DLL_PUBLIC jpl_lp
+{
 
-  std::array<double, 6> m_elements;
-  std::array<double, 6> m_elements_dot;
-  std::string m_name;
-  double m_mu_central_body;
-  double m_mu_self;
-  double m_radius;
-  double m_safe_radius;
+    std::array<double, 6> m_elements;
+    std::array<double, 6> m_elements_dot;
+    std::string m_name;
+    double m_mu_central_body;
+    double m_mu_self;
+    double m_radius;
+    double m_safe_radius;
 
-  friend class boost::serialization::access;
-  template <typename Archive> void serialize(Archive &ar, unsigned) {
-    ar &m_elements;
-    ar &m_elements_dot;
-    ar &m_name;
-    ar &m_mu_central_body;
-    ar &m_mu_self;
-    ar &m_radius;
-    ar &m_safe_radius;
-  }
+    friend class boost::serialization::access;
+    template <typename Archive>
+    void serialize(Archive &ar, unsigned)
+    {
+        ar & m_elements;
+        ar & m_elements_dot;
+        ar & m_name;
+        ar & m_mu_central_body;
+        ar & m_mu_self;
+        ar & m_radius;
+        ar & m_safe_radius;
+    }
 
 public:
-  // Constructor
-  explicit jpl_lp(std::string = "earth");
-  // Mandatory UDPLA methods
-  [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
+    // Constructor
+    explicit jpl_lp(std::string = "earth");
+    // Mandatory UDPLA methods
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
 
-  // Optional UDPLA methods
-  [[nodiscard]] std::string get_name() const;
-  [[nodiscard]] double get_mu_central_body() const;
-  [[nodiscard]] double get_mu_self() const;
-  [[nodiscard]] double get_radius() const;
-  [[nodiscard]] double get_safe_radius() const;
-  [[nodiscard]] std::string get_extra_info() const;
+    // Optional UDPLA methods
+    [[nodiscard]] std::string get_name() const;
+    [[nodiscard]] double get_mu_central_body() const;
+    [[nodiscard]] double get_mu_self() const;
+    [[nodiscard]] double get_radius() const;
+    [[nodiscard]] double get_safe_radius() const;
+    [[nodiscard]] std::string get_extra_info() const;
 
-  // Other methods
-  [[nodiscard]] std::array<double, 6>
-  elements(const kep3::epoch & = kep3::epoch(),
-           kep3::elements_type = kep3::elements_type::KEP_F) const;
+    // Other methods
+    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
+                                                 kep3::elements_type = kep3::elements_type::KEP_F) const;
 
 private:
-  [[nodiscard]] std::array<double, 6>
-  _f_elements(const kep3::epoch & = kep3::epoch()) const;
+    [[nodiscard]] std::array<double, 6> _f_elements(const kep3::epoch & = kep3::epoch()) const;
 };
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &,
-                                         const kep3::udpla::jpl_lp &);
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::jpl_lp &);
 } // namespace kep3::udpla
 
 // fmt formatter redirecting to the stream operator
-template <> struct fmt::formatter<kep3::udpla::jpl_lp> : ostream_formatter {};
+template <>
+struct fmt::formatter<kep3::udpla::jpl_lp> : ostream_formatter {
+};
 // necessary for serialization
 kep3_S11N_PLANET_EXPORT_KEY(kep3::udpla::jpl_lp);
 

@@ -12,26 +12,29 @@
 
 #include <cmath>
 
-namespace kep3 {
+namespace kep3
+{
 
-inline double stumpff_s(const double x) {
-  if (x > 0) {
-    return (std::sqrt(x) - std::sin(std::sqrt(x))) / std::pow(std::sqrt(x), 3);
-  } else if (x < 0) {
-    return (std::sinh(std::sqrt(-x)) - std::sqrt(-x)) / std::pow(-x, 3. / 2);
-  } else {
-    return (1. / 6.);
-  }
+inline double stumpff_s(const double x)
+{
+    if (x > 0) {
+        return (std::sqrt(x) - std::sin(std::sqrt(x))) / std::pow(std::sqrt(x), 3);
+    } else if (x < 0) {
+        return (std::sinh(std::sqrt(-x)) - std::sqrt(-x)) / std::pow(-x, 3. / 2);
+    } else {
+        return (1. / 6.);
+    }
 }
 
-inline double stumpff_c(const double x) {
-  if (x > 0) {
-    return (1 - std::cos(std::sqrt(x))) / x;
-  } else if (x < 0) {
-    return (std::cosh(std::sqrt(-x)) - 1) / (-x);
-  } else {
-    return 0.5;
-  }
+inline double stumpff_c(const double x)
+{
+    if (x > 0) {
+        return (1 - std::cos(std::sqrt(x))) / x;
+    } else if (x < 0) {
+        return (std::cosh(std::sqrt(-x)) - 1) / (-x);
+    } else {
+        return 0.5;
+    }
 }
 } // namespace kep3
 

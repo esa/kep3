@@ -14,13 +14,30 @@
 #include <chrono>
 namespace kep3
 {
-    inline double jd2mjd(double in) { return (in - 2400000.5); }
-    inline double jd2mjd2000(double in) { return (in - 2451544.5); }
-    inline double mjd2jd(double in) { return (in + 2400000.5); }
-    inline double mjd2mjd2000(double in) { return (in - 51544); }
-    inline double mjd20002jd(double in) { return (in + 2451544.5); }
-    inline double mjd20002mjd(double in){ return (in + 51544); }
-
+inline double jd2mjd(double in)
+{
+    return (in - 2400000.5);
+}
+inline double jd2mjd2000(double in)
+{
+    return (in - 2451544.5);
+}
+inline double mjd2jd(double in)
+{
+    return (in + 2400000.5);
+}
+inline double mjd2mjd2000(double in)
+{
+    return (in - 51544);
+}
+inline double mjd20002jd(double in)
+{
+    return (in + 2451544.5);
+}
+inline double mjd20002mjd(double in)
+{
+    return (in + 51544);
+}
 
 } // namespace kep3
 
