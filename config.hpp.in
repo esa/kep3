@@ -10,10 +10,6 @@
 #ifndef kep3_CONFIG_HPP
 #define kep3_CONFIG_HPP
 
-// NOTE: include this so that we can
-// detect _LIBCPP_VERSION below.
-#include <ciso646>
-
 // Start of defines instantiated by CMake.
 
 // clang-format off
