@@ -54,8 +54,10 @@ html_theme_options = {
     "launch_buttons": {
         "binderhub_url": "https://mybinder.org",
         "notebook_interface": "jupyterlab",
+    "home_page_in_toc": True,
     },
 }
+
 
 nb_execution_mode = "force"
 
