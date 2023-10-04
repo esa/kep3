@@ -228,6 +228,7 @@ endif()
 
 if(kep3_BUILD_BENCHMARKS)
     add_subdirectory(benchmark)
+
 endif()
 
 if(kep3_BUILD_PYTHON_BINDINGS)
@@ -247,3 +248,4 @@ if(kep3_BUILD_PYTHON_BINDINGS)
     # Build directory
     add_subdirectory("${CMAKE_SOURCE_DIR}/pykep")
 endif()
+

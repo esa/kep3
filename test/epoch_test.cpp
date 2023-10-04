@@ -7,7 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <boost/date_time/gregorian/gregorian.hpp>
+#include <chrono>
+#include <ctime>
 #include <iostream>
 #include <random>
 #include <string>
@@ -17,65 +18,76 @@
 #include "catch.hpp"
 
 using kep3::epoch;
-using kep3::epoch_from_iso_string;
-using kep3::epoch_from_string;
-using boost::gregorian::date;
-using boost::posix_time::ptime;
+using kep3::kep_clock;
+using namespace std::literals;
+namespace chr = std::chrono;
 
 TEST_CASE("construct") {
   // test syntax
+
+  // // > 2000
   REQUIRE_NOTHROW(epoch());
   REQUIRE_NOTHROW(epoch(123.456));
-  REQUIRE_NOTHROW(epoch(123.456, epoch::MJD2000));
-  REQUIRE_NOTHROW(epoch(123.456, epoch::JD));
-  REQUIRE_NOTHROW(epoch(123.456, epoch::MJD));
-  REQUIRE_NOTHROW(epoch(31, 12, 2034));
-  // > 2000
-  boost::posix_time::ptime posix_time_test(date(2034, 12, 31));
-  REQUIRE_NOTHROW(epoch(posix_time_test));
-  REQUIRE(epoch(posix_time_test).get_posix_time() == posix_time_test);
-  // < 2000
-  boost::posix_time::ptime posix_time_test2(date(1980, 12, 31));
-  REQUIRE_NOTHROW(epoch(posix_time_test2));
-  REQUIRE(epoch(posix_time_test2).get_posix_time() == posix_time_test2);
+  REQUIRE_NOTHROW(epoch(123.456, epoch::julian_type::MJD2000));
+  REQUIRE_NOTHROW(epoch(0.0, epoch::julian_type::JD));
+  REQUIRE_NOTHROW(epoch(123.456, epoch::julian_type::JD));
+  REQUIRE_NOTHROW(epoch(0.0, epoch::julian_type::MJD));
+  REQUIRE_NOTHROW(epoch(123.456, epoch::julian_type::MJD));
+  REQUIRE_NOTHROW(epoch(2000, 10, 17, 11, 36, 21, 121, 841));
+  REQUIRE_NOTHROW(epoch(2064, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "2064-10-17T11:36:21.121841");
+
+  // // < 2000
+  REQUIRE_NOTHROW(epoch(-123.456));
+  REQUIRE_NOTHROW(epoch(-123.456, epoch::julian_type::MJD2000));
+  REQUIRE_NOTHROW(epoch(-0.0, epoch::julian_type::JD));
+  REQUIRE_NOTHROW(epoch(-123.456, epoch::julian_type::JD));
+  REQUIRE_NOTHROW(epoch(-0.0, epoch::julian_type::MJD));
+  REQUIRE_NOTHROW(epoch(-123.456, epoch::julian_type::MJD));
+  REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841));
+  REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "1980-10-17T11:36:21.121841");
+
+  // Epoch from lvalue and rvalue references
+  epoch ep{2000, 1, 1};
+  REQUIRE(epoch(ep) == ep);
+  REQUIRE(epoch(epoch{2000,1,1}) == ep);
 
   // test conversions
-  REQUIRE(epoch(123.456).mjd2000() == epoch(123.456, epoch::MJD2000).mjd2000());
-  REQUIRE(epoch(0.).mjd() == epoch(51544, epoch::MJD).mjd());
-  REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::JD).jd());
-  REQUIRE(epoch(31, 12, 2034).jd() == epoch(posix_time_test).jd());
+  REQUIRE(epoch(123.456).mjd2000() ==
+          epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
+  REQUIRE(epoch(0.).mjd() == epoch(51544., epoch::julian_type::MJD).mjd());
+  REQUIRE(epoch(0.).jd() == epoch(2451544.5, epoch::julian_type::JD).jd());
 }
 
 TEST_CASE("epoch_operators") {
-  REQUIRE(epoch(0.) == epoch(0.));
-  REQUIRE(epoch(0.) != epoch(1.));
+  REQUIRE(epoch(2034, 10, 17) == epoch(2034, 10, 17));
+  REQUIRE(epoch(2034, 10, 17) != epoch(2034, 11, 17));
+  // Testing us precision
+  REQUIRE(epoch(2034, 10, 17) != epoch(2034, 10, 17, 0, 0, 0, 0, 1));
+  // Check that ns precision is not supported
+  REQUIRE(epoch(2000, 10, 17) == epoch(2000, 10, 17, 0, 0, 0, 0, 0) + chr::nanoseconds(100));
+
+  // Conversion from double (defaults to days)
   REQUIRE(epoch(1.) > epoch(0.));
   REQUIRE(epoch(1.) >= epoch(1.));
   REQUIRE(epoch(1.) >= epoch(0.));
   REQUIRE(epoch(0.) < epoch(1.));
   REQUIRE(epoch(1.) <= epoch(1.));
   epoch today(0.);
-  today += 100.;
-  REQUIRE(today == epoch(100.));
-  today -= 100.;
-  REQUIRE(today == epoch(0.));
-  auto yesterday = today - 1.;
-  REQUIRE(yesterday == epoch(-1.));
-  today = yesterday + 1;
-  REQUIRE(today == epoch(0.));
-  REQUIRE(today - yesterday == 1.);
-  REQUIRE_NOTHROW((std::cout << epoch()));
-}
+  auto offset{chr::days(10963)};
+  today += offset;
+  std::cout << "TODAY: " << today << "\n";
+  REQUIRE(today == epoch(2030, 1, 6));
+  today -= chr::duration_cast<kep_clock::duration>(offset);
+  REQUIRE(today == epoch());
+  auto oneday{chr::days(1)};
+  auto yesterday{today - chr::duration_cast<kep_clock::duration>(oneday)};
+  auto yesterday1{today - oneday};
+  REQUIRE(yesterday == yesterday1);
 
-TEST_CASE("conversions_from_string") {
-  {
-    std::string ts("20020131T000000");
-    epoch e(epoch_from_iso_string(ts));
-    REQUIRE(e == epoch(boost::posix_time::ptime(date(2002, 01, 31))));
-  }
-  {
-    std::string ts("2002-01-20 00:00:00.000");
-    epoch e(epoch_from_string(ts));
-    REQUIRE(e == epoch(boost::posix_time::ptime(date(2002, 01, 20))));
-  }
+  REQUIRE(yesterday == epoch(1999, 12, 31));
+  today = yesterday + chr::duration_cast<kep_clock::duration>(chr::days(1));
+  REQUIRE(today == epoch());
+  auto diff{today - yesterday};
+  REQUIRE(diff == chr::duration_cast<kep_clock::duration>(chr::days(1)));
+  REQUIRE_NOTHROW((std::cout << epoch()));
 }

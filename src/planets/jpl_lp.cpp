@@ -179,7 +179,7 @@ double jpl_lp::get_radius() const { return m_radius; }
 double jpl_lp::get_safe_radius() const { return m_safe_radius; }
 
 std::string jpl_lp::get_extra_info() const {
-  kep3::epoch ep{0., kep3::epoch::MJD2000};
+  kep3::epoch ep{0., kep3::epoch::julian_type::MJD2000};
   auto par = elements(ep);
   auto pos_vel = eph(ep);
 

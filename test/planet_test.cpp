@@ -12,6 +12,10 @@
 
 #include <fmt/core.h>
 
+
+#include "catch.hpp"
+#include <boost/lexical_cast.hpp>
+
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>

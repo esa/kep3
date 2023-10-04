@@ -25,7 +25,6 @@ namespace kep3::udpla {
 class kep3_DLL_PUBLIC keplerian {
 
   kep3::epoch m_ref_epoch;
-  std::array<std::array<double, 3>, 2> m_pos_vel_0;
   std::string m_name;
   double m_mu_central_body;
   double m_mu_self;
@@ -33,11 +32,11 @@ class kep3_DLL_PUBLIC keplerian {
   double m_safe_radius;
   double m_period;
   bool m_ellipse;
+  std::array<std::array<double, 3>, 2> m_pos_vel_0;
 
   friend class boost::serialization::access;
   template <typename Archive> void serialize(Archive &ar, unsigned) {
     ar &m_ref_epoch;
-    ar &m_pos_vel_0;
     ar &m_name;
     ar &m_mu_central_body;
     ar &m_mu_self;
@@ -45,15 +44,19 @@ class kep3_DLL_PUBLIC keplerian {
     ar &m_safe_radius;
     ar &m_period;
     ar &m_ellipse;
+    ar &m_safe_radius;
+    ar &m_pos_vel_0;
   }
 
 public:
   // NOTE: added_param contains mu_self, radius and safe_radius
   explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par,
                      double mu_central_body = 1., std::string name = "Unknown",
+
                      std::array<double, 3> added_params = {-1., -1., -1.}, kep3::elements_type el_t = kep3::elements_type::KEP_F);
   // Constructor from pos_vel
   explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
+
                      const std::array<std::array<double, 3>, 2> &pos_vel =
                          {{{1.0, 0.0, 0.0}, {0., 1.0, 0.0}}},
                      double mu_central_body = 1., std::string name = "Unknown",

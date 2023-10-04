@@ -7,16 +7,21 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_CONVERT_JULIAN_DATES_H
-#define kep3_CONVERT_JULIAN_DATES_H
+#ifndef kep3_CONVERT_JULIAN_DATES_HPP
+#define kep3_CONVERT_JULIAN_DATES_HPP
 
-namespace kep3 {
-inline double jd2mjd(double in) { return (in - 2400000.5); }
-inline double jd2mjd2000(double in) { return (in - 2451544.5); }
-inline double mjd2jd(double in) { return (in + 2400000.5); }
-inline double mjd2mjd2000(double in) { return (in - 51544); }
-inline double mjd20002jd(double in) { return (in + 2451544.5); }
-inline double mjd20002mjd(double in) { return (in + 51544); }
+#include "kep3/epoch.hpp"
+#include <chrono>
+namespace kep3
+{
+    inline double jd2mjd(double in) { return (in - 2400000.5); }
+    inline double jd2mjd2000(double in) { return (in - 2451544.5); }
+    inline double mjd2jd(double in) { return (in + 2400000.5); }
+    inline double mjd2mjd2000(double in) { return (in - 51544); }
+    inline double mjd20002jd(double in) { return (in + 2451544.5); }
+    inline double mjd20002mjd(double in){ return (in + 51544); }
+
+
 } // namespace kep3
 
-#endif // kep3_CONVERT_JULIAN_DATES_H
+#endif // kep3_CONVERT_JULIAN_DATES_HPP

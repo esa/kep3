@@ -18,13 +18,15 @@
 #include <kep3/planets/keplerian.hpp>
 
 #include "catch.hpp"
+#include "kep3/epoch.hpp"
 #include "test_helpers.hpp"
 
 using kep3::udpla::keplerian;
+using kep3::epoch;
 
 TEST_CASE("constructor") {
   REQUIRE_NOTHROW(keplerian{});
-  kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{12.22, kep3::epoch::julian_type::MJD2000};
   // From posvel
   REQUIRE_NOTHROW(
       keplerian{ref_epoch, {{{0.3, 1., 0.2}, {0.0, 1.12, 0.}}}, 1., "unknown"});
@@ -124,7 +126,7 @@ TEST_CASE("constructor") {
 
 TEST_CASE("eph") {
   // We use 2000-01-01 as a reference epoch for all these tests
-  kep3::epoch ref_epoch{0., kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{0., kep3::epoch::julian_type::MJD2000};
   // This is a circular orbit at 1 AU.
   std::array<std::array<double, 3>, 2> pos_vel_0{
       {{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}};
@@ -132,13 +134,13 @@ TEST_CASE("eph") {
   keplerian udpla1{ref_epoch, pos_vel_0, kep3::MU_SUN};
   double period_in_days =
       (2 * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
-  auto [r, v] = udpla1.eph(ref_epoch + period_in_days);
+  auto [r, v] = udpla1.eph(ref_epoch + epoch::days(period_in_days));
   REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
   REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
 }
 
 TEST_CASE("elements") {
-  kep3::epoch ref_epoch{12.22, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{12.22, kep3::epoch::julian_type::MJD2000};
   // Non singular elements
   std::array<std::array<double, 3>, 2> pos_vel{
       {{1., 0.1, 0.1}, {0.1, 1., 0.1}}};
@@ -181,7 +183,7 @@ TEST_CASE("stream_operator") {
 
 TEST_CASE("serialization_test") {
   // Instantiate a generic udpla
-  kep3::epoch ref_epoch{2423.4343, kep3::epoch::MJD2000};
+  kep3::epoch ref_epoch{2423.4343, kep3::epoch::julian_type::MJD2000};
   keplerian udpla{ref_epoch,
                   {{{0.33, 1.3, 0.12}, {0.01, 1.123, 0.2}}},
                   1.12,
@@ -196,6 +198,7 @@ TEST_CASE("serialization_test") {
     boost::archive::binary_oarchive oarchive(ss);
     oarchive << udpla;
   }
+
   // Deserialize
   // Create a new udpla object
   keplerian udpla2{};

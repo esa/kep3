@@ -20,6 +20,7 @@ function(ADD_kep3_TESTCASE arg1)
     "$<$<CONFIG:RelWithDebInfo>:${kep3_CXX_FLAGS_RELEASE}>"
     "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
   )
+
   # Setup the C++ standard.
   target_compile_features(${arg1} PRIVATE cxx_std_20)
   set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)

@@ -9,6 +9,8 @@
 
 #include <cmath>
 #include <limits>
+
+#include <chrono>
 #include <stdexcept>
 #include <string>
 
@@ -31,10 +33,10 @@ keplerian::keplerian(const epoch &ref_epoch,
                      const std::array<std::array<double, 3>, 2> &pos_vel,
                      double mu_central_body, std::string name,
                      std::array<double, 3> added_params)
-    : m_ref_epoch(ref_epoch), m_pos_vel_0(pos_vel), m_name(std::move(name)),
+    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
       m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
-      m_ellipse() {
+      m_ellipse(), m_pos_vel_0(pos_vel) {
   double R =
       std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] +
                 pos_vel[0][2] * pos_vel[0][2]);
@@ -56,10 +58,10 @@ keplerian::keplerian(const epoch &ref_epoch,
                      double mu_central_body, std::string name,
                      std::array<double, 3> added_params,
                      kep3::elements_type el_type)
-    : m_ref_epoch(ref_epoch), m_pos_vel_0(), m_name(std::move(name)),
+    : m_ref_epoch(ref_epoch), m_name(std::move(name)),
       m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
       m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(),
-      m_ellipse() {
+      m_ellipse(), m_pos_vel_0() {
   // orbital parameters a,e,i,W,w,f will be stored here
   std::array<double, 6> par(par_in);
   // we convert according to the chosen input
@@ -103,7 +105,7 @@ keplerian::keplerian(const epoch &ref_epoch,
 std::array<std::array<double, 3>, 2>
 keplerian::eph(const kep3::epoch &ep) const {
   // 1 - We compute the dt
-  double dt = (ep.mjd2000() - m_ref_epoch.mjd2000()) * DAY2SEC;
+  auto dt = epoch::as_sec(ep - m_ref_epoch);
   // 2 - We propagate (make a copy as we do not want to change m_pos_vel_0)
   auto retval(m_pos_vel_0);
   kep3::propagate_lagrangian(retval, dt, m_mu_central_body);
@@ -163,11 +165,11 @@ std::string keplerian::get_extra_info() const {
     retval += fmt::format("Mean anomly (deg.): {}\n",
                           kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
   }
-  retval += fmt::format("Elements reference epoch (MJD2000): {}\n",
-                        m_ref_epoch.mjd2000()) +
-            fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch) +
-            fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) +
-            fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
+  retval +=
+      fmt::format("Elements reference epoch (MJD2000): {}\n", m_ref_epoch) +
+      fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch) +
+      fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) +
+      fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
   return retval;
 }
 
