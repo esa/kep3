@@ -15,3 +15,6 @@ include/kep3/config.hpp
 
 # docs tmp files
 doc/_build*
+
+# Stuff
+*DS_Store
