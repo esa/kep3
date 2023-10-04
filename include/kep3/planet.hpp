@@ -19,7 +19,6 @@
 #include <fmt/core.h>
 
 #include <kep3/detail/s11n.hpp>
-#include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
