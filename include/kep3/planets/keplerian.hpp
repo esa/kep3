@@ -88,7 +88,7 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::kepl
 template <>
 struct fmt::formatter<kep3::udpla::keplerian> : ostream_formatter {
 };
-// necessary for serialization
-kep3_S11N_PLANET_EXPORT_KEY(kep3::udpla::keplerian);
+
+TANUKI_S11N_WRAP_EXPORT_KEY(kep3::udpla::keplerian, kep3::detail::planet_iface)
 
 #endif // kep3_UDPLA_KEPLERIAN_H
