@@ -16,6 +16,7 @@
 #include <boost/core/demangle.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>

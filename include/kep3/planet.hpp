@@ -10,9 +10,7 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
-#include <cmath>
 #include <concepts>
-#include <limits>
 #include <string>
 #include <typeinfo>
 
@@ -20,8 +18,6 @@
 
 #include <fmt/core.h>
 
-#include <kep3/core_astro/constants.hpp>
-#include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/type_traits.hpp>
 #include <kep3/detail/visibility.hpp>
@@ -98,6 +94,8 @@ struct planet_iface<void> {
         }                                                                                                              \
     }
 
+kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const std::array<double, 3> &, double);
+
 // Planet interface implementation.
 template <typename Holder>
 struct planet_iface : planet_iface<void>, tanuki::iface_impl_helper<Holder> {
@@ -125,16 +123,7 @@ struct planet_iface : planet_iface<void>, tanuki::iface_impl_helper<Holder> {
             // period from the energy at epoch
             auto [r, v] = eph(ep);
             double mu = get_mu_central_body();
-            double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
-            double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-            double en = v2 / 2. - mu / R;
-            if (en > 0) {
-                // If the energy is positive we have an hyperbolae and we return nan
-                return std::numeric_limits<double>::quiet_NaN();
-            } else {
-                double a = -mu / 2. / en;
-                return kep3::pi * 2. * std::sqrt(a * a * a / mu);
-            }
+            return period_from_energy(r, v, mu);
         } else {
             // There is no way to compute a period for this planet
             throw not_implemented_error(fmt::format("A period nor a central body mu has been declared for '{}', "
@@ -207,7 +196,7 @@ using planet = tanuki::wrap<detail::planet_iface, tanuki::config<detail::null_ud
 namespace detail
 {
 
-// Streaming operator for algorithm.
+// Streaming operator for planet.
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const planet &);
 
 } // namespace detail

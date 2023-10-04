@@ -7,13 +7,33 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <array>
+#include <cmath>
+#include <limits>
+
 #include <boost/core/demangle.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
 namespace kep3::detail
 {
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+double period_from_energy(const std::array<double, 3> &r, const std::array<double, 3> &v, double mu)
+{
+    double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+    double en = v2 / 2. - mu / R;
+    if (en > 0) {
+        // If the energy is positive we have an hyperbolae and we return nan
+        return std::numeric_limits<double>::quiet_NaN();
+    } else {
+        double a = -mu / 2. / en;
+        return kep3::pi * 2. * std::sqrt(a * a * a / mu);
+    }
+}
 
 std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)
 {

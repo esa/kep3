@@ -18,6 +18,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/planets/jpl_lp.hpp>
