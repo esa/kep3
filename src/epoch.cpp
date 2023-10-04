@@ -69,7 +69,7 @@ epoch::epoch(const kep_clock::time_point &time_point) : tp{time_point} {}
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(kep_clock::time_point &&time_point) : tp{std::move(time_point)} {}
+epoch::epoch(kep_clock::time_point &&time_point) : tp{time_point} {}
 
 kep_clock::time_point epoch::make_tp(const int y, const uint mon, const uint d, const int h, const int min, const int s,
                                      const int ms, const int us)

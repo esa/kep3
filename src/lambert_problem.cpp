@@ -273,7 +273,7 @@ void lambert_problem::x2tof(double &tof, double x, unsigned N) const
     }
 }
 
-double lambert_problem::hypergeometricF(double z, double tol) const
+double lambert_problem::hypergeometricF(double z, double tol) // NOLINT
 { // NOLINT
     double Sj = 1.0;
     double Cj = 1.0;

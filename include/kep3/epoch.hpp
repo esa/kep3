@@ -127,8 +127,7 @@ public:
     }
 
     // Constructor for datetime broken down into its constituents.
-    explicit epoch(const int y, const uint mon, const uint d, const int h = 0, const int min = 0, const int s = 0,
-                   const int ms = 0, const int us = 0);
+    explicit epoch(int y, uint mon, uint d, int h = 0, int min = 0, int s = 0, int ms = 0, int us = 0);
 
     /* Computing non-Gregorian dates */
 
@@ -159,8 +158,8 @@ public:
     }
 
     /* Helper functions for constructors */
-    static kep_clock::time_point make_tp(const int y, const uint mon, const uint d, const int h = 0, const int min = 0,
-                                         const int s = 0, const int ms = 0, const int us = 0);
+    static kep_clock::time_point make_tp(int y, uint mon, uint d, int h = 0, int min = 0,
+                                         int s = 0, int ms = 0, int us = 0);
 
     static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
 
@@ -174,7 +173,7 @@ public:
     }
 
     // Printing
-    std::string as_utc_string() const;
+    [[nodiscard]] std::string as_utc_string() const;
     static std::string as_utc_string(const kep_clock::time_point &tp);
 
     /** operator overloads for sum and diff (epoch-days) and comparison
