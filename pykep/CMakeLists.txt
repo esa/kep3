@@ -17,6 +17,8 @@ endforeach()
 Python3_add_library(core MODULE WITH_SOABI
     core.cpp
     docstrings.cpp
+    common_utils.cpp
+    python_udpla.cpp
 )
 
 target_link_libraries(core PRIVATE kep3::kep3)

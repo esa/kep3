@@ -10,14 +10,11 @@
 #ifndef PYKEP_PLANET_HPP
 #define PYKEP_PLANET_HPP
 
-#include <memory>
+#include <array>
 #include <string>
-#include <type_traits>
-#include <typeindex>
 
+#include <kep3/epoch.hpp>
 #include <pybind11/pybind11.h>
-
-#include <kep3/planet.hpp>
 
 namespace pykep
 {
@@ -25,20 +22,20 @@ namespace py = pybind11;
 struct python_udpla {
     py::object m_obj;
 
-    python_udpla() = default;
-    explicit python_udpla(py::object obj) : m_obj(std::move(obj)) {};
+    python_udpla();
+    explicit python_udpla(py::object obj);
 
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const kep3::epoch &) const
-    {
-        return py::cast<std::array<std::array<double, 3>, 2>>(m_obj.attr("eph")());
-    }
+    // Mandatory methods
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const kep3::epoch &ep) const;
 
-    [[nodiscard]] std::string get_name() const
-    {
-        return py::cast<std::string>(m_obj.attr("get_name")());
-    }
-
-
+    // Optional methods
+    [[nodiscard]] std::string get_name() const;
+    [[nodiscard]] std::string get_extra_info() const;
+    [[nodiscard]] double get_mu_central_body() const;
+    [[nodiscard]] double get_mu_self() const;
+    [[nodiscard]] double get_radius() const;
+    [[nodiscard]] double get_safe_radius() const;
+    [[nodiscard]] double period() const;
 };
 } // namespace pykep
 

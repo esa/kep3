@@ -21,6 +21,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "common_utils.hpp"
 #include "docstrings.hpp"
 #include "python_udpla.hpp"
 
@@ -91,10 +92,28 @@ PYBIND11_MODULE(core, m)
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
 
     // Class epoch
-    py::class_<kep3::epoch>(m, "epoch")
-        .def(py::init<double>());
+    py::class_<kep3::epoch>(m, "epoch").def(py::init<double>());
     // Type erased class planet
-    auto _planet = py::class_<kep3::planet>(m, "planet", py::dynamic_attr{});
-    _planet.def(py::init([](const py::object& o) { return kep3::planet{pk::python_udpla(o)}; }));
-    _planet.def("eph", &kep3::planet::eph);
+    auto _planet = py::class_<kep3::planet>(m, "planet", py::dynamic_attr{})
+                       // Constructor.
+                       .def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }))
+                       // repr().
+                       .def("__repr__", &pykep::ostream_repr<kep3::planet>)
+                       // Copy and deepcopy.
+                       .def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>)
+                       .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>)
+                       // UDPLA extraction.
+                       .def("_py_extract", &pykep::generic_py_extract<kep3::planet>)
+                       // Pickle support.
+                       .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>,
+                                       &pykep::pickle_setstate_wrapper<kep3::planet>))
+                       // Planet methods.
+                       .def("eph", &kep3::planet::eph)
+                       .def("get_name", &kep3::planet::get_name)
+                       .def("get_extra_info", &kep3::planet::get_extra_info)
+                       .def("get_mu_central_body", &kep3::planet::get_mu_central_body)
+                       .def("get_mu_self", &kep3::planet::get_mu_self)
+                       .def("get_radius", &kep3::planet::get_radius)
+                       .def("get_safe_radius", &kep3::planet::get_safe_radius)
+                       .def("period", &kep3::planet::period);
 }

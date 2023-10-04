@@ -13,6 +13,7 @@
 #include <sstream>
 #include <string>
 
+#include <kep3/detail/s11n.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
@@ -89,6 +90,54 @@ inline py::object generic_py_extract(C &c, const py::object &t)
     // Either the user-defined entity is not pythonic, or the user specified the
     // wrong type. Return None.
     return py::none();
+}
+
+// Check if a mandatory method is present in a user-defined entity.
+void check_mandatory_method(const py::object &o, const char *s, const char *target);
+
+// Check if the user is trying to construct a pykep object from a type, rather than from an object.
+// This is an easy error to commit, and it is sneaky because the callable_attribute() machinery in
+// check_mandatory_method() will detect the methods of the *class* (rather than instance methods), and it will thus not
+// error out.
+void check_not_type(const py::object &o, const char *target);
+
+// Helpers to implement pickling on top of Boost.Serialization.
+template <typename T>
+inline py::tuple pickle_getstate_wrapper(const T &x)
+{
+    std::ostringstream oss;
+    {
+        boost::archive::binary_oarchive oa(oss);
+        oa << x;
+    }
+
+    return py::make_tuple(py::bytes(oss.str()));
+}
+
+template <typename T>
+inline T pickle_setstate_wrapper(const py::tuple &state)
+{
+    if (py::len(state) != 1) {
+        py_throw(PyExc_ValueError, ("The state tuple passed to the deserialization wrapper "
+                                    "must have 1 element, but instead it has "
+                                    + std::to_string(py::len(state)) + " element(s)")
+                                       .c_str());
+    }
+
+    auto *ptr = PyBytes_AsString(state[0].ptr());
+    if (!ptr) {
+        py_throw(PyExc_TypeError, "A bytes object is needed in the deserialization wrapper");
+    }
+
+    std::istringstream iss;
+    iss.str(std::string(ptr, ptr + py::len(state[0])));
+    T x;
+    {
+        boost::archive::binary_iarchive iarchive(iss);
+        iarchive >> x;
+    }
+
+    return x;
 }
 
 } // namespace pykep
