@@ -8,7 +8,7 @@ dependencies:
   - cmake >=3.18
   - boost-cpp >=1.73
   - fmt
-  - heyoka >=0.21.0
+  - heyoka =2.*
   - spdlog
   - xtensor
   - xtensor-blas

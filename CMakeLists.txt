@@ -177,12 +177,8 @@ find_package(fmt CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC fmt::fmt)
 
 # heyoka.
-find_package(heyoka CONFIG REQUIRED)
+find_package(heyoka 2.0.0 REQUIRED CONFIG)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
-message(STATUS "heyoka version: ${heyoka_VERSION}")
-if(heyoka_VERSION VERSION_LESS 0.21.0)
-    message(FATAL_ERROR "heyoka>=0.21.0 is required, but heyoka ${heyoka_VERSION} was found instead")
-endif()
 
 # spdlog.
 find_package(spdlog CONFIG REQUIRED)
