@@ -17,6 +17,8 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include "python_udpla.hpp"
+
 namespace pykep
 {
 
@@ -74,21 +76,14 @@ inline T *generic_cpp_extract(C &c, const T &)
 }
 
 template <typename C>
-inline py::object generic_py_extract(C &c, const py::object &t)
+inline py::object generic_py_extract(C &c)
 {
-    auto ptr = c.template extract<py::object>();
-    if (ptr && (t.equal(type(*ptr)) || t.equal(builtins().attr("object")))) {
-        // c contains a user-defined plapythonic entity and either:
-        // - the type passed in by the user is the exact type of the user-defined
-        //   entity, or
-        // - the user supplied as t the builtin 'object' type (which we use as a
-        //   wildcard for any Python type).
-        // Let's return the extracted object.
-        return *ptr;
+    auto ptr = c.template extract<pykep::python_udpla>();
+    if (ptr) {
+        return ptr->m_obj;
     }
 
-    // Either the user-defined entity is not pythonic, or the user specified the
-    // wrong type. Return None.
+    // The user-defined entity is not pythonic. Return None.
     return py::none();
 }
 

@@ -94,13 +94,12 @@ PYBIND11_MODULE(core, m)
     // Class epoch
     py::class_<kep3::epoch>(m, "epoch").def(py::init<double>());
 
-    // Type erased class planet
+    // Class planet (type erasure machinery here)
     py::class_<kep3::planet>(m, "planet", py::dynamic_attr{})
-        // Constructors from udpla
-        // Expose the algorithm constructor from Algo.
+        // Constructors from udplas
         .def(py::init<const kep3::udpla::keplerian &>(), py::arg("udpla"))
         // Constructor.
-        .def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }))
+        .def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"))
         // Expose extract.
         .def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
              py::return_value_policy::reference_internal)
@@ -114,20 +113,20 @@ PYBIND11_MODULE(core, m)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>))
         // Planet methods.
-        .def("eph", &kep3::planet::eph)
+        .def("eph", &kep3::planet::eph, py::arg("ep"))
         .def("get_name", &kep3::planet::get_name)
         .def("get_extra_info", &kep3::planet::get_extra_info)
         .def("get_mu_central_body", &kep3::planet::get_mu_central_body)
         .def("get_mu_self", &kep3::planet::get_mu_self)
         .def("get_radius", &kep3::planet::get_radius)
         .def("get_safe_radius", &kep3::planet::get_safe_radius)
-        .def("period", &kep3::planet::period);
+        .def("period", &kep3::planet::period, py::arg("ep"));
 
     // Eposing cpp UDPLAs
     auto m_udpla = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
 
     py::class_<kep3::udpla::keplerian>(m_udpla, "keplerian")
-        // Constructor.
+        // Constructors.
         .def(py::init<const kep3::epoch &, const std::array<double, 6> &, double, std::string, std::array<double, 3>,
                       kep3::elements_type>(),
              py::arg("ep"), py::arg("elem"), py::arg("mu_central_body"), py::arg("name") = "unknown",
@@ -138,5 +137,8 @@ PYBIND11_MODULE(core, m)
              py::arg("ep"), py::arg("posvel"), py::arg("mu_central_body"), py::arg("name") = "unknown",
              py::arg("added_params") = std::array<double, 3>({-1, -1, -1}))
         // repr().
-        .def("__repr__", &pykep::ostream_repr<kep3::udpla::keplerian>);
+        .def("__repr__", &pykep::ostream_repr<kep3::udpla::keplerian>)
+        // other methods
+        .def_property_readonly("ref_epoch", &kep3::udpla::keplerian::get_ref_epoch)
+        .def("elements", &kep3::udpla::keplerian::elements);
 }
