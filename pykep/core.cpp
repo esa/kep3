@@ -6,7 +6,6 @@
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 #include <cmath>
 #include <iostream>
 #include <random>
@@ -17,6 +16,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/planet.hpp>
+#include <kep3/planets/keplerian.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -93,27 +93,50 @@ PYBIND11_MODULE(core, m)
 
     // Class epoch
     py::class_<kep3::epoch>(m, "epoch").def(py::init<double>());
+
     // Type erased class planet
-    auto _planet = py::class_<kep3::planet>(m, "planet", py::dynamic_attr{})
-                       // Constructor.
-                       .def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }))
-                       // repr().
-                       .def("__repr__", &pykep::ostream_repr<kep3::planet>)
-                       // Copy and deepcopy.
-                       .def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>)
-                       .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>)
-                       // UDPLA extraction.
-                       .def("_py_extract", &pykep::generic_py_extract<kep3::planet>)
-                       // Pickle support.
-                       .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>,
-                                       &pykep::pickle_setstate_wrapper<kep3::planet>))
-                       // Planet methods.
-                       .def("eph", &kep3::planet::eph)
-                       .def("get_name", &kep3::planet::get_name)
-                       .def("get_extra_info", &kep3::planet::get_extra_info)
-                       .def("get_mu_central_body", &kep3::planet::get_mu_central_body)
-                       .def("get_mu_self", &kep3::planet::get_mu_self)
-                       .def("get_radius", &kep3::planet::get_radius)
-                       .def("get_safe_radius", &kep3::planet::get_safe_radius)
-                       .def("period", &kep3::planet::period);
+    py::class_<kep3::planet>(m, "planet", py::dynamic_attr{})
+        // Constructors from udpla
+        // Expose the algorithm constructor from Algo.
+        .def(py::init<const kep3::udpla::keplerian &>(), py::arg("udpla"))
+        // Constructor.
+        .def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }))
+        // Expose extract.
+        .def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
+             py::return_value_policy::reference_internal)
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::planet>)
+        // Copy and deepcopy.
+        .def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>)
+        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>)
+        // UDPLA extraction for python stuff.
+        .def("_py_extract", &pykep::generic_py_extract<kep3::planet>)
+        // Pickle support.
+        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>))
+        // Planet methods.
+        .def("eph", &kep3::planet::eph)
+        .def("get_name", &kep3::planet::get_name)
+        .def("get_extra_info", &kep3::planet::get_extra_info)
+        .def("get_mu_central_body", &kep3::planet::get_mu_central_body)
+        .def("get_mu_self", &kep3::planet::get_mu_self)
+        .def("get_radius", &kep3::planet::get_radius)
+        .def("get_safe_radius", &kep3::planet::get_safe_radius)
+        .def("period", &kep3::planet::period);
+
+    // Eposing cpp UDPLAs
+    auto m_udpla = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
+
+    py::class_<kep3::udpla::keplerian>(m_udpla, "keplerian")
+        // Constructor.
+        .def(py::init<const kep3::epoch &, const std::array<double, 6> &, double, std::string, std::array<double, 3>,
+                      kep3::elements_type>(),
+             py::arg("ep"), py::arg("elem"), py::arg("mu_central_body"), py::arg("name") = "unknown",
+             py::arg("added_params") = std::array<double, 3>({-1, -1, -1}),
+             py::arg("elem_type") = kep3::elements_type::KEP_F)
+        .def(py::init<const kep3::epoch &, const std::array<std::array<double, 3>, 2> &, double, std::string,
+                      std::array<double, 3>>(),
+             py::arg("ep"), py::arg("posvel"), py::arg("mu_central_body"), py::arg("name") = "unknown",
+             py::arg("added_params") = std::array<double, 3>({-1, -1, -1}))
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::udpla::keplerian>);
 }

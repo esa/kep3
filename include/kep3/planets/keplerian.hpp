@@ -55,13 +55,10 @@ class kep3_DLL_PUBLIC keplerian
 public:
     // NOTE: added_param contains mu_self, radius and safe_radius
     explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par, double mu_central_body = 1.,
-                       std::string name = "Unknown",
-
-                       std::array<double, 3> added_params = {-1., -1., -1.},
+                       std::string name = "Unknown", std::array<double, 3> added_params = {-1., -1., -1.},
                        kep3::elements_type el_t = kep3::elements_type::KEP_F);
     // Constructor from pos_vel
     explicit keplerian(const epoch &ref_epoch = kep3::epoch(0),
-
                        const std::array<std::array<double, 3>, 2> &pos_vel = {{{1.0, 0.0, 0.0}, {0., 1.0, 0.0}}},
                        double mu_central_body = 1., std::string name = "Unknown",
                        std::array<double, 3> added_params = {-1., -1., -1.});

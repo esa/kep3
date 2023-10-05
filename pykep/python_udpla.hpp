@@ -15,6 +15,8 @@
 
 #include <kep3/epoch.hpp>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
 
 namespace pykep
 {
@@ -35,7 +37,7 @@ struct python_udpla {
     [[nodiscard]] double get_mu_self() const;
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
-    [[nodiscard]] double period() const;
+    [[nodiscard]] double period(const kep3::epoch &) const;
 };
 } // namespace pykep
 

@@ -78,7 +78,7 @@ inline py::object generic_py_extract(C &c, const py::object &t)
 {
     auto ptr = c.template extract<py::object>();
     if (ptr && (t.equal(type(*ptr)) || t.equal(builtins().attr("object")))) {
-        // c contains a user-defined pythonic entity and either:
+        // c contains a user-defined plapythonic entity and either:
         // - the type passed in by the user is the exact type of the user-defined
         //   entity, or
         // - the user supplied as t the builtin 'object' type (which we use as a
@@ -100,6 +100,21 @@ void check_mandatory_method(const py::object &o, const char *s, const char *targ
 // check_mandatory_method() will detect the methods of the *class* (rather than instance methods), and it will thus not
 // error out.
 void check_not_type(const py::object &o, const char *target);
+
+// A simple wrapper for getters. It will try to:
+// - get the attribute "name" from the object o,
+// - call it without arguments,
+// - extract an instance from the ret value and return it.
+// If the attribute is not there or it is not callable, the value "def_value" will be returned.
+template <typename RetType>
+static RetType getter_wrapper(const py::object &o, const char *name, const RetType &def_value)
+{
+    auto a = callable_attribute(o, name);
+    if (a.is_none()) {
+        return def_value;
+    }
+    return py::cast<RetType>(a());
+}
 
 // Helpers to implement pickling on top of Boost.Serialization.
 template <typename T>
