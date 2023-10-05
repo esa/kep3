@@ -64,13 +64,13 @@ concept udpla_has_period = requires(const T &p, const epoch &e) {
     } -> std::same_as<double>;
 };
 
-template <typename>
+template <typename, typename>
 struct planet_iface;
 
 // Planet interface.
 template <>
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions, hicpp-special-member-functions)
-struct planet_iface<void> {
+struct planet_iface<void, void> {
     virtual ~planet_iface() = default;
 
     [[nodiscard]] virtual double get_mu_central_body() const = 0;
@@ -86,7 +86,7 @@ struct planet_iface<void> {
 #define KEP3_UDPLA_IMPLEMENT_GET(name, type, def_value)                                                                \
     [[nodiscard]] type get_##name() const final                                                                        \
     {                                                                                                                  \
-        if constexpr (udpla_has_get_##name<typename Holder::value_type>) {                                             \
+        if constexpr (udpla_has_get_##name<T>) {                                                                       \
             return this->value().get_##name();                                                                         \
         } else {                                                                                                       \
             return def_value;                                                                                          \
@@ -96,13 +96,13 @@ struct planet_iface<void> {
 kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const std::array<double, 3> &, double);
 
 // Planet interface implementation.
-template <typename Holder>
-struct planet_iface : planet_iface<void>, tanuki::iface_impl_helper<Holder> {
+template <typename Holder, typename T>
+struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder, T> {
     KEP3_UDPLA_IMPLEMENT_GET(mu_central_body, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(mu_self, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(radius, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(safe_radius, double, -1)
-    KEP3_UDPLA_IMPLEMENT_GET(name, std::string, boost::core::demangle(typeid(typename Holder::value_type).name()))
+    KEP3_UDPLA_IMPLEMENT_GET(name, std::string, boost::core::demangle(typeid(T).name()))
     KEP3_UDPLA_IMPLEMENT_GET(extra_info, std::string, "")
 
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const final
@@ -112,12 +112,10 @@ struct planet_iface : planet_iface<void>, tanuki::iface_impl_helper<Holder> {
 
     [[nodiscard]] double period(const epoch &ep) const final
     {
-        using value_type = typename Holder::value_type;
-
         // If the user provides an efficient way to compute the period, then use it
-        if constexpr (udpla_has_period<value_type>) {
+        if constexpr (udpla_has_period<T>) {
             return this->value().period(ep);
-        } else if constexpr (udpla_has_get_mu_central_body<value_type>) {
+        } else if constexpr (udpla_has_get_mu_central_body<T>) {
             // If the user provides the central body parameter, then compute the
             // period from the energy at epoch
             auto [r, v] = eph(ep);
