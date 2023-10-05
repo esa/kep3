@@ -83,6 +83,7 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual double period(const epoch &) const = 0;
 };
 
+// Helper macro to implement getters in the planet interface implementation.
 #define KEP3_UDPLA_IMPLEMENT_GET(name, type, def_value)                                                                \
     [[nodiscard]] type get_##name() const final                                                                        \
     {                                                                                                                  \
@@ -93,6 +94,8 @@ struct planet_iface<void, void> {
         }                                                                                                              \
     }
 
+// NOTE: implement this in the cpp in order to avoid
+// instantiating the same code over and over.
 kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const std::array<double, 3> &, double);
 
 // Planet interface implementation.
@@ -132,9 +135,12 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
 
 #undef KEP3_UDPLA_IMPLEMENT_GET
 
+// Concept detecting if the type T can be used as a udpla.
 template <typename T>
-concept any_udpla = udpla_has_eph<T>;
+concept any_udpla = std::default_initializable<T> && std::copy_constructible<T> && std::move_constructible<T>
+                    && std::destructible<T> && udpla_has_eph<T>;
 
+// The udpla used in the default constructor of planet.
 struct kep3_DLL_PUBLIC null_udpla {
     null_udpla() = default;
     static std::array<std::array<double, 3>, 2> eph(const epoch &);
@@ -144,16 +150,20 @@ private:
     template <typename Archive>
     void serialize(Archive &, unsigned){};
 };
+
 } // namespace kep3::detail
 
+// Make a def-constructed planet serialisable.
 TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
 
 namespace tanuki
 {
 
+// Make T wrappable in a planet only if it satisfies the any_udpla concept.
 template <typename T>
 inline constexpr bool is_wrappable<T, kep3::detail::planet_iface> = kep3::detail::any_udpla<T>;
 
+// Implement the reference interface for the planet class.
 template <typename Wrap>
 struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
@@ -164,6 +174,8 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
 
+    // NOTE: this needs to be implemented manually due
+    // to the presence of a default parameter value.
     [[nodiscard]] double period(const kep3::epoch &ep = kep3::epoch()) const
     {
         return iface_ptr(*static_cast<const Wrap *>(this))->period(ep);
@@ -182,6 +194,7 @@ namespace kep3
 
 #endif
 
+// Definition of the planet class.
 using planet = tanuki::wrap<detail::planet_iface, tanuki::config<detail::null_udpla>{.pointer_interface = false}>;
 
 #if defined(__GNUC__)
