@@ -33,7 +33,8 @@ namespace kep3::udpla
 keplerian::keplerian(const epoch &ref_epoch, const std::array<std::array<double, 3>, 2> &pos_vel,
                      double mu_central_body, std::string name, std::array<double, 3> added_params)
     : m_ref_epoch(ref_epoch), m_name(std::move(name)), m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(), m_ellipse(), m_pos_vel_0(pos_vel)
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(), m_ellipse(), m_pos_vel_0(pos_vel),
+      m_kep_f_elements()
 {
     double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] + pos_vel[0][2] * pos_vel[0][2]);
     double en = (pos_vel[1][0] * pos_vel[1][0] + pos_vel[1][1] * pos_vel[1][1] + pos_vel[1][2] * pos_vel[1][2]) / 2.
@@ -45,46 +46,48 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<std::array<double,
     } else {
         m_period = std::numeric_limits<double>::quiet_NaN();
     }
+    m_kep_f_elements = kep3::ic2par(pos_vel, mu_central_body);
 }
 
-keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &par_in, double mu_central_body,
+keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &elem, double mu_central_body,
                      std::string name, std::array<double, 3> added_params, kep3::elements_type el_type)
     : m_ref_epoch(ref_epoch), m_name(std::move(name)), m_mu_central_body(mu_central_body), m_mu_self(added_params[0]),
-      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(), m_ellipse(), m_pos_vel_0()
+      m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(), m_ellipse(), m_pos_vel_0(),
+      m_kep_f_elements(elem)
 {
-    // orbital parameters a,e,i,W,w,f will be stored here
-    std::array<double, 6> par(par_in);
-    // we convert according to the chosen input
-    switch (el_type) {
-        case kep3::elements_type::KEP_F:
-            break;
-        case kep3::elements_type::KEP_M:
-            if (par[0] < 0) {
-                throw std::logic_error("Mean anomaly is only available for ellipses.");
-            }
-            par[5] = kep3::m2f(par[5], par[1]);
-            break;
-        case kep3::elements_type::MEQ:
-            par = kep3::eq2par(par, false);
-            break;
-        case kep3::elements_type::MEQ_R:
-            par = kep3::eq2par(par, true);
-            break;
-        default:
-            throw std::logic_error("You should not go here!");
-    }
-
-    if (par[0] * (1 - par[1]) <= 0) {
+    // We check if the input is consistent with the pykep convention of a,e
+    if (m_kep_f_elements[0] * (1 - m_kep_f_elements[1]) <= 0) {
         throw std::domain_error("A Keplerian planet constructor was called with with non compatible "
                                 "a,e:"
                                 "The following must hold: a<0 -> e>1 [a>0 -> e<1].");
     }
 
-    m_pos_vel_0 = kep3::par2ic(par, mu_central_body);
+    // If so, we convert to the kep_f elements according to the chosen type for the input elem
+    switch (el_type) {
+        case kep3::elements_type::KEP_F:
+            break;
+        case kep3::elements_type::KEP_M:
+            if (m_kep_f_elements[0] < 0) {
+                throw std::logic_error("Mean anomaly is only available for ellipses.");
+            }
+            m_kep_f_elements[5] = kep3::m2f(m_kep_f_elements[5], m_kep_f_elements[1]);
+            break;
+        case kep3::elements_type::MEQ:
+            m_kep_f_elements = kep3::eq2par(m_kep_f_elements, false);
+            break;
+        case kep3::elements_type::MEQ_R:
+            m_kep_f_elements = kep3::eq2par(m_kep_f_elements, true);
+            break;
+        default:
+            throw std::logic_error("You should not go here!");
+    }
 
-    (par[0] < 0) ? m_ellipse = false : m_ellipse = true;
+    m_pos_vel_0 = kep3::par2ic(m_kep_f_elements, mu_central_body);
+
+    (m_kep_f_elements[0] < 0) ? m_ellipse = false : m_ellipse = true;
     if (m_ellipse) {
-        m_period = kep3::pi * 2. * std::sqrt(par[0] * par[0] * par[0] / m_mu_central_body);
+        m_period = kep3::pi * 2.
+                   * std::sqrt(m_kep_f_elements[0] * m_kep_f_elements[0] * m_kep_f_elements[0] / m_mu_central_body);
     } else {
         m_period = std::numeric_limits<double>::quiet_NaN();
     }
@@ -140,20 +143,22 @@ std::array<double, 6> keplerian::elements(kep3::elements_type el_type) const
     std::array<double, 6> retval{};
     switch (el_type) {
         case kep3::elements_type::KEP_F:
-            retval = kep3::ic2par(m_pos_vel_0, m_mu_central_body);
+            retval = m_kep_f_elements;
             break;
         case kep3::elements_type::KEP_M:
             if (!m_ellipse) {
                 throw std::logic_error("Mean anomaly is only available for ellipses.");
             }
-            retval = kep3::ic2par(m_pos_vel_0, m_mu_central_body);
+            retval = m_kep_f_elements;
             retval[5] = kep3::f2m(retval[5], retval[1]);
             break;
         case kep3::elements_type::MEQ:
-            retval = kep3::ic2eq(m_pos_vel_0, m_mu_central_body);
+            retval = m_kep_f_elements;
+            retval = kep3::par2eq(retval, false);
             break;
         case kep3::elements_type::MEQ_R:
-            retval = kep3::ic2eq(m_pos_vel_0, m_mu_central_body, true);
+            retval = m_kep_f_elements;
+            retval = kep3::par2eq(retval, true);
             break;
         default:
             throw std::logic_error("You should not go here!");
@@ -163,18 +168,17 @@ std::array<double, 6> keplerian::elements(kep3::elements_type el_type) const
 
 std::string keplerian::get_extra_info() const
 {
-    auto par = elements();
     std::string retval
-        = fmt::format("Keplerian planet elements: \n") + fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU)
-          + fmt::format("Eccentricity: {}\n", par[1]) + fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG)
-          + fmt::format("Big Omega (deg.): {}\n", par[3] * kep3::RAD2DEG)
-          + fmt::format("Small omega (deg.): {}\n", par[4] * kep3::RAD2DEG)
-          + fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
+        = fmt::format("Keplerian planet elements: \n") + fmt::format("Semi major axis (AU): {}\n", m_kep_f_elements[0] / kep3::AU)
+          + fmt::format("Eccentricity: {}\n", m_kep_f_elements[1]) + fmt::format("Inclination (deg.): {}\n", m_kep_f_elements[2] * kep3::RAD2DEG)
+          + fmt::format("Big Omega (deg.): {}\n", m_kep_f_elements[3] * kep3::RAD2DEG)
+          + fmt::format("Small omega (deg.): {}\n", m_kep_f_elements[4] * kep3::RAD2DEG)
+          + fmt::format("True anomly (deg.): {}\n", m_kep_f_elements[5] * kep3::RAD2DEG);
     if (m_ellipse) {
-        retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
+        retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(m_kep_f_elements[5], m_kep_f_elements[1]) * kep3::RAD2DEG);
     }
-    retval += fmt::format("Elements reference epoch (MJD2000): {}\n", m_ref_epoch)
-              + fmt::format("Elements reference epoch (date): {}\n", m_ref_epoch)
+    retval += fmt::format("Elements reference epoch (MJD2000): {}\n", m_ref_epoch.mjd2000())
+              + fmt::format("Elements reference epoch (UTC): {}\n", m_ref_epoch)
               + fmt::format("r at ref. = {}\n", m_pos_vel_0[0]) + fmt::format("v at ref. = {}\n", m_pos_vel_0[1]);
     return retval;
 }

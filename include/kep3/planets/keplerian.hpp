@@ -35,6 +35,7 @@ class kep3_DLL_PUBLIC keplerian
     double m_period;
     bool m_ellipse;
     std::array<std::array<double, 3>, 2> m_pos_vel_0;
+    std::array<double, 6> m_kep_f_elements;
 
     friend class boost::serialization::access;
     template <typename Archive>
@@ -50,11 +51,12 @@ class kep3_DLL_PUBLIC keplerian
         ar &m_ellipse;
         ar &m_safe_radius;
         ar &m_pos_vel_0;
+        ar &m_kep_f_elements;
     }
 
 public:
     // NOTE: added_param contains mu_self, radius and safe_radius
-    explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &par, double mu_central_body = 1.,
+    explicit keplerian(const epoch &ref_epoch, const std::array<double, 6> &elem, double mu_central_body = 1.,
                        std::string name = "Unknown", std::array<double, 3> added_params = {-1., -1., -1.},
                        kep3::elements_type el_t = kep3::elements_type::KEP_F);
     // Constructor from pos_vel

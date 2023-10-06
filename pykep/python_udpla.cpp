@@ -34,9 +34,9 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
                         ("a pykep.planet cannot be used as a UDPLA for another pykep.problem (if you need to copy a "
                          "planet please use the standard Python copy()/deepcopy() functions)"));
     }
-    //// Check that o is an instance of a class, and not just a type.
+    // Check that o is an instance of a class, and not just a type.
     check_not_type(m_obj, "planet");
-    //// Check the presence of the mandatory methods
+    // Check the presence of the mandatory methods
     check_mandatory_method(m_obj, "eph", "planet");
 };
 
