@@ -32,47 +32,57 @@ def _planet_extract(self, t):
         TypeError: if *t* is not a :class:`type`
 
     Examples:
-        >>> import pygmo as pg
-        >>> p1 = pg.problem(pg.rosenbrock())
-        >>> p1.extract(pg.rosenbrock) # doctest: +SKIP
-        <pygmo.core.rosenbrock at 0x7f56b870fd50>
-        >>> p1.extract(pg.ackley) is None
+        >>> import pykep as pk
+        >>> udpla = pk.udpla.keplerian(pk.epoch(0), [1,0,0,0,0,0], 1)
+        >>> pla = pk.planet(pla1)
+        >>> type(pla.extract(pk.udpla.keplerian)) 
+        pykep.core.udpla.keplerian
+        >>> pla.extract(pk.jpl_lp) is None
         True
-        >>> class prob:
-        ...     def fitness(self, x):
-        ...         return [x[0]]
-        ...     def get_bounds(self):
-        ...         return ([0],[1])
-        >>> p2 = pg.problem(prob())
+        >>> class my_udpla:
+        ...     def eph(self, ep):
+        ...         return [[1,0,0],[0,1,0]]
+        ...     def get_name(self):
+        ...         return "my_udpla"
+        ...     def get_mu_central_body(self):
+        ...         return 1.
+        >>> pla2 = pk.planet(my_udpla())
         >>> p2.extract(object) # doctest: +SKIP
-        <__main__.prob at 0x7f56a66b6588>
-        >>> p2.extract(prob) # doctest: +SKIP
-        <__main__.prob at 0x7f56a66b6588>
-        >>> p2.extract(pg.rosenbrock) is None
+        <__main__.my_udpla at 0x7ff68b63d210>
+        >>> pla2.extract(my_udpla) # doctest: +SKIP
+        <__main__.my_udpla at 0x7f8f7241c350>
+        >>> pla2.extract(pk.udpla.keplerian) is None
         True
 
     """
     if not isinstance(t, type):
         raise TypeError("the 't' parameter must be a type")
+    # This happens if the udpla is cpp
     if hasattr(t, "_pykep_cpp_udpla"):
         return self._cpp_extract(t())
-    return self._py_extract(t)
+    # Else we extract the UDPLA from the python class, check its type 
+    # and see if we want to return None or not as to have a consistent behaviour
+    udpla = self._py_extract()
+    if (type(udpla) == t):
+        return udpla
+    else:
+        return None
 
 
 def _planet_is(self, t):
-    """Check the type of the user-defined problem.
+    """Check the type of the user-defined planet.
 
-    This method returns :data:`False` if :func:`extract(t) <pygmo.problem.extract>` returns
+    This method returns :data:`False` if :func:`extract(t) <pykep.planet.extract>` returns
     :data:`None`, and :data:`True` otherwise.
 
     Args:
-        t (:class:`type`): the type that will be compared to the type of the UDP
+        t (:class:`type`): the type that will be compared to the type of the UDPLA
 
     Returns:
-        bool: whether the UDP is of type *t* or not
+        bool: whether the UDPLA is of type *t* or not
 
     Raises:
-        unspecified: any exception thrown by :func:`~pygmo.problem.extract()`
+        unspecified: any exception thrown by :func:`~pykep.planet.extract()`
 
     """
     return not self.extract(t) is None
