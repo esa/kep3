@@ -107,7 +107,7 @@ public:
     // Default constructor
     epoch();
 
-    // Constructor for days (as a floating-point value)
+    // Constructor from a julian date (as a floating-point value)
     explicit epoch(double epoch_in, julian_type epoch_type = julian_type::MJD2000);
 
     /**

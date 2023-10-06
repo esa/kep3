@@ -48,7 +48,6 @@ inline py::class_<Udpla> expose_one_udpla(py::module &p_module, py::class_<kep3:
     return c;
 }
 
-// Split algorithm exposition functions.
 void expose_all_udplas(py::module &, py::class_<kep3::planet> &);
 
 } // namespace pykep
