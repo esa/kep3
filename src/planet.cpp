@@ -7,6 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <fmt/core.h>
+
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
@@ -99,7 +101,8 @@ double planet::get_mu_central_body() const
 
 double planet::get_mu_self() const
 {
-    return ptr()->get_mu_self();;
+    return ptr()->get_mu_self();
+    ;
 }
 
 double planet::get_radius() const
@@ -109,13 +112,19 @@ double planet::get_radius() const
 
 double planet::get_safe_radius() const
 {
-    return ptr()->get_safe_radius();;
+    return ptr()->get_safe_radius();
+    ;
 }
 
 std::ostream &operator<<(std::ostream &os, const planet &p)
 {
     os << "Planet name: " << p.get_name();
     os << "\nC++ class name: " << detail::demangle_from_typeid(p.get_type_index().name()) << '\n';
+    os << fmt::format("mu central body (-1 if not defined): {}\n", p.get_mu_central_body());
+    os << fmt::format("mu body (-1 if not defined): {}\n", p.get_mu_self());
+    os << fmt::format("radius body (-1 if not defined): {}\n", p.get_radius());
+    os << fmt::format("safe body radius (-1 if not defined): {}\n", p.get_safe_radius());
+
     const auto extra_str = p.get_extra_info();
     if (!extra_str.empty()) {
         os << "\nExtra info:\n" << extra_str;

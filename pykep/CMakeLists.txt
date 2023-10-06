@@ -2,21 +2,24 @@
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/_version.py" @ONLY)   
 
 # The list of pydsyre's Python files.
-set(PYKEP_PYTHON_FILES __init__.py _version.py test.py)
+set(PYKEP_PYTHON_FILES __init__.py _patch_planet.py _version.py test.py)
 
 # Copy the python files in the current binary dir,
 # so that we can import pydesyre from the build dir.
 # NOTE: importing from the build dir will work
 # only on single-configuration generators.
-foreach(kep3_PYTHON_FILE ${kep3_PYTHON_FILES})
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${kep3_PYTHON_FILE}"
-        "${CMAKE_CURRENT_BINARY_DIR}/${kep3_PYTHON_FILE}" COPYONLY)
+foreach(PYKEP_PYTHON_FILES ${PYKEP_PYTHON_FILES})
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYKEP_PYTHON_FILES}"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PYKEP_PYTHON_FILES}" COPYONLY)
 endforeach()
 
 # Core module.
-Python3_add_library(core MODULE WITH_SOABI
+Python3_add_library(core MODULE WITH_SOABI 
     core.cpp
     docstrings.cpp
+    common_utils.cpp
+    python_udpla.cpp
+    expose_udplas.cpp
 )
 
 target_link_libraries(core PRIVATE kep3::kep3)

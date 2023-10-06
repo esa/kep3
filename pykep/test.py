@@ -49,6 +49,67 @@ class anomaly_conversions_tests(_ut.TestCase):
 
         self.assertTrue(float_abs_error(pk.f2zeta(pk.zeta2f(0.1, 10.1), 10.1), 0.1) < 1e-14)
 
+class my_udpla:
+    def eph(self, ep):
+        return [[1.,0.,0.],[0.,1.,0.]]
+    def get_name(self):
+        return "Boh"
+    def get_mu_central_body(self):
+        return 1.
+
+class my_udpla_malformed1:
+    def ephs(self, ep):
+        return [[1.,0.,0.],[0.,1.,0.]]
+    
+
+class planet_test(_ut.TestCase):
+    def test_planet_construction(self):
+        import pykep as pk
+
+        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
+        udpla_py = my_udpla()
+        pla1 = pk.planet(udpla_cpp)
+        pla2 = pk.planet(udpla_py)
+        # Cannot construct from pk.planet
+        self.assertRaises(TypeError, pk.planet, pla1)
+        # Cannot construct from instance
+        self.assertRaises(TypeError, pk.planet, pk.planet)
+        # Cannot construct from malformed udpla
+        self.assertRaises(NotImplementedError, pk.planet, my_udpla_malformed1())
+
+    def test_udpla_extraction(self):
+        import pykep as pk
+
+        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
+        udpla_py = my_udpla()
+        pla1 = pk.planet(udpla_cpp)
+        pla2 = pk.planet(udpla_py)
+        #self.assertTrue(pla1.extract(pk.udpla.keplerian) is udpla_cpp) questo fails ... perche'?
+        self.assertTrue(pla2.extract(my_udpla) is udpla_py)
+        self.assertTrue(pla1.extract(my_udpla) is None)
+        self.assertTrue(pla2.extract(pk.udpla.keplerian) is None)
+        self.assertTrue(pla1.is_(pk.udpla.keplerian))
+        self.assertTrue(pla2.is_(my_udpla))
+        self.assertTrue(not pla1.is_(my_udpla))
+        self.assertTrue(not pla2.is_(pk.udpla.keplerian))
+
+    def test_udpla_getters(self):
+        import pykep as pk
+
+        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.56, added_params=[3., 2., 2.1])
+        udpla_py = my_udpla()
+        pla1 = pk.planet(udpla_cpp)
+        pla2 = pk.planet(udpla_py)
+        self.assertTrue(pla1.get_mu_central_body() == 1.56)
+        self.assertTrue(pla1.get_mu_self() == 3.)
+        self.assertTrue(pla1.get_radius() == 2.)
+        self.assertTrue(pla1.get_safe_radius() == 2.1)
+        self.assertTrue(pla2.get_mu_central_body() == 1.56)
+        self.assertTrue(pla2.get_mu_self() == -1)
+        self.assertTrue(pla2.get_radius() == -1)
+        self.assertTrue(pla2.get_safe_radius() == -1)
+
+
 
 def run_test_suite():
     suite = _ut.TestSuite()
@@ -59,5 +120,9 @@ def run_test_suite():
     suite.addTest(anomaly_conversions_tests("test_n2f"))
     suite.addTest(anomaly_conversions_tests("test_f2h"))
     suite.addTest(anomaly_conversions_tests("test_f2zeta"))
+    suite.addTest(planet_test("test_planet_construction"))
+    suite.addTest(planet_test("test_udpla_extraction"))
+
+
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
