@@ -95,8 +95,6 @@ PYBIND11_MODULE(core, m)
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});
-    // Constructors from udplas
-    planet_class.def(py::init<const kep3::udpla::keplerian &>(), py::arg("udpla"));
     // Constructor.
     // Expose extract.
     planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
