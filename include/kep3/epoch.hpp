@@ -136,7 +136,7 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813444800s)
+        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813531200s)
             .count();
     }
 

@@ -89,7 +89,7 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
         case julian_type::MJD:
             return epoch::tp_from_days(epoch_in) - 4453401600s;
         case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - 211813444800s;
+            return epoch::tp_from_days(epoch_in) - 211813531200s;
         default:
             throw;
     }
