@@ -77,12 +77,12 @@ struct kep_clock : public chr::system_clock {
 
     static constexpr std::time_t to_time_t(const time_point &t) noexcept
     {
-        return static_cast<std::time_t>(chr::duration_cast<chr::seconds>(t.time_since_epoch() + y2k_offset).count());
+        return static_cast<std::time_t>(chr::duration_cast<chr::seconds>(t.time_since_epoch()).count());
     }
 
     static constexpr time_point from_time_t(std::time_t t) noexcept
     {
-        return chr::time_point_cast<duration>(time_point(chr::seconds(t) - y2k_offset));
+        return chr::time_point_cast<duration>(time_point(chr::seconds(t)));
     }
 };
 
@@ -136,7 +136,7 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813531200s)
+        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813444800s)
             .count();
     }
 
@@ -226,6 +226,8 @@ public:
     }
 
     kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs, const epoch &rhs);
+
+    kep_clock::time_point get_tp() const;
 
 private:
     // Constructor for const time_point&)

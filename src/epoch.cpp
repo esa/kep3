@@ -7,6 +7,7 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <bits/chrono.h>
 #include <chrono>
 #include <cmath>
 #include <ctime>
@@ -89,7 +90,7 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
         case julian_type::MJD:
             return epoch::tp_from_days(epoch_in) - 4453401600s;
         case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - 211813531200s;
+            return epoch::tp_from_days(epoch_in) - 211813444800s;
         default:
             throw;
     }
@@ -116,12 +117,10 @@ constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 {
     std::stringstream iss;
-    const auto tse{tp.time_since_epoch()};
-    const auto dp{std::chrono::duration_cast<std::chrono::days>(tse)};
-    const auto hms{std::chrono::duration_cast<std::chrono::seconds>(tse - dp)};
-    const auto us{std::chrono::duration_cast<std::chrono::microseconds>(tse - dp - hms)};
-    iss << fmt::format("{:%F}", chr::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
-        << fmt::format("{:06}", us.count());
+    const std::time_t tmt{kep_clock::to_time_t(tp)};
+    std::tm tmstruct;
+    const auto gmt{gmtime_r(&tmt, &tmstruct)};
+    iss << std::put_time(gmt, "%FT%T");
     return iss.str();
 }
 
@@ -172,6 +171,11 @@ bool operator!=(const epoch &c1, const epoch &c2)
 kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
 {
     return lhs.tp - rhs.tp;
+}
+
+kep_clock::time_point epoch::get_tp() const
+{
+    return tp;
 }
 
 } // namespace kep3
