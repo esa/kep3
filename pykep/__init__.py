@@ -14,5 +14,8 @@ del _version
 # Importing cpp functionalities
 from .core import *
 
+# Patch the problem class.
+from . import _patch_planet
+
 # We import the unit test submodule
 from . import test
