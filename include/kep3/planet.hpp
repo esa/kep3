@@ -80,7 +80,8 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual std::string get_name() const = 0;
     [[nodiscard]] virtual std::string get_extra_info() const = 0;
     [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
-    [[nodiscard]] virtual double period(const epoch &) const = 0;
+    // NOLINTNEXTLINE(google-default-arguments)
+    [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
 };
 
 // Helper macro to implement getters in the planet interface implementation.
@@ -113,7 +114,8 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
         return this->value().eph(ep);
     }
 
-    [[nodiscard]] double period(const epoch &ep) const final
+    // NOLINTNEXTLINE(google-default-arguments)
+    [[nodiscard]] double period(const epoch &ep = kep3::epoch()) const final
     {
         // If the user provides an efficient way to compute the period, then use it
         if constexpr (udpla_has_period<T>) {
@@ -173,13 +175,7 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_name)
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
-
-    // NOTE: this needs to be implemented manually due
-    // to the presence of a default parameter value.
-    [[nodiscard]] double period(const kep3::epoch &ep = kep3::epoch()) const
-    {
-        return iface_ptr(*static_cast<const Wrap *>(this))->period(ep);
-    }
+    TANUKI_REF_IFACE_MEMFUN(period)
 };
 
 } // namespace tanuki
