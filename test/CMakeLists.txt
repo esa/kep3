@@ -29,7 +29,6 @@ endfunction()
 
 ADD_kep3_TESTCASE(convert_anomalies_test)
 ADD_kep3_TESTCASE(epoch_test)
-ADD_kep3_TESTCASE(epoch_test_main)
 ADD_kep3_TESTCASE(planet_test)
 ADD_kep3_TESTCASE(planet_keplerian_test)
 ADD_kep3_TESTCASE(planet_jpl_lp_test)
