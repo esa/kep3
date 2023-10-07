@@ -176,6 +176,13 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
     TANUKI_REF_IFACE_MEMFUN(period)
+
+    // Implement the extract functionality.
+    template <typename T>
+    T *extract()
+    {
+        return value_ptr<T>(*static_cast<Wrap *>(this));
+    }
 };
 
 } // namespace tanuki

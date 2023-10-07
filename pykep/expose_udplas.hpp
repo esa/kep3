@@ -10,14 +10,11 @@
 #ifndef PYKEP_EXPOSE_UDPLAS_HPP
 #define PYKEP_EXPOSE_UDPLAS_HPP
 
-#include <string>
-
 #include <pybind11/pybind11.h>
 
 #include <kep3/planet.hpp>
 
 #include "common_utils.hpp"
-#include "docstrings.hpp"
 
 namespace pykep
 {
@@ -25,13 +22,13 @@ namespace py = pybind11;
 
 // C++ UDPLA exposition function.
 template <typename Udpla>
-inline py::class_<Udpla> expose_one_udpla(py::module &p_module, py::class_<kep3::planet> &pla, //NOLINT
-                                      const char *name, const char *descr)
+inline py::class_<Udpla> expose_one_udpla(py::module &p_module, py::class_<kep3::planet> &pla, // NOLINT
+                                          const char *name, const char *descr)
 {
     py::class_<Udpla> c(p_module, name, descr);
 
     // We require all udplas to be def-ctible at the bare minimum.
-    c.def(py::init<>()); 
+    c.def(py::init<>());
 
     // We mark it as a C++ udpla.
     c.attr("_pykep_cpp_udpla") = true;

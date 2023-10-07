@@ -7,13 +7,11 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <memory>
 #include <string>
-#include <type_traits>
-#include <typeindex>
 
 #include <fmt/core.h>
 #include <fmt/std.h>
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/planet.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
