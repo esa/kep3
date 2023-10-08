@@ -180,8 +180,8 @@ epoch utc_now() {
 
 epoch epoch_from_iso_string(const std::string & in) {
      int y = std::stoi(in.substr(0, 4));
-     unsigned m = std::stoi(in.substr(5, 2));
-     unsigned d = std::stoi(in.substr(8, 2));
+     auto m = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+     auto d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
      int h = std::stoi(in.substr(11, 2));
      int min = std::stoi(in.substr(14, 2));
      int s = std::stoi(in.substr(17, 2));
