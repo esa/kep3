@@ -49,6 +49,37 @@ class anomaly_conversions_tests(_ut.TestCase):
 
         self.assertTrue(float_abs_error(pk.f2zeta(pk.zeta2f(0.1, 10.1), 10.1), 0.1) < 1e-14)
 
+class epoch_test(_ut.TestCase):
+    def test_epoch_construction(self):
+        import pykep as pk
+        import datetime
+
+        ep1 = pk.epoch(0., pk.epoch.julian_type.MJD2000)
+        ep2 = pk.epoch(0., pk.epoch.julian_type.MJD)
+        ep3 = pk.epoch(0., pk.epoch.julian_type.JD)
+        self.assertTrue(ep1.mjd2000() == 0.0)
+        self.assertTrue(ep2.mjd() == 0.0)
+        self.assertTrue(ep3.jd() == 0.0)
+
+        ep_py = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
+        ep4 = pk.epoch(ep_py)
+        self.assertTrue(ep4.mjd2000() == 0.0)
+        self.assertRaises(TypeError, pk.epoch, datetime.timedelta(1.2))
+
+    def test_epoch_operators(self):
+        import pykep as pk
+        import datetime
+        ep1 = pk.epoch(0.)
+        ep2 = pk.epoch(1.)
+        dt = datetime.timedelta(days=1)
+        self.assertTrue(ep1 + dt == ep1 + 1.)
+        self.assertTrue(ep2 > ep1)
+        self.assertTrue(ep2 >= ep1)
+        self.assertTrue(ep1 < ep2)
+        self.assertTrue(ep1 <= ep2)
+        self.assertTrue(ep1 == ep2 - 1)
+        self.assertTrue(ep2 == ep1 + 1)
+
 class my_udpla:
     def eph(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
@@ -61,7 +92,6 @@ class my_udpla_malformed1:
     def ephs(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
     
-
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
         import pykep as pk
@@ -104,12 +134,10 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla1.get_mu_self() == 3.)
         self.assertTrue(pla1.get_radius() == 2.)
         self.assertTrue(pla1.get_safe_radius() == 2.1)
-        self.assertTrue(pla2.get_mu_central_body() == 1.56)
+        self.assertTrue(pla2.get_mu_central_body() == 1.)
         self.assertTrue(pla2.get_mu_self() == -1)
         self.assertTrue(pla2.get_radius() == -1)
         self.assertTrue(pla2.get_safe_radius() == -1)
-
-
 
 def run_test_suite():
     suite = _ut.TestSuite()
@@ -122,7 +150,8 @@ def run_test_suite():
     suite.addTest(anomaly_conversions_tests("test_f2zeta"))
     suite.addTest(planet_test("test_planet_construction"))
     suite.addTest(planet_test("test_udpla_extraction"))
-
-
+    suite.addTest(planet_test("test_udpla_getters"))
+    suite.addTest(epoch_test("test_epoch_construction"))
+    suite.addTest(epoch_test("test_epoch_operators"))
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)

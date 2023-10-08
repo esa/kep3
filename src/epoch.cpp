@@ -29,7 +29,7 @@ namespace kep3
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : tp{kep_clock::ref_epoch} {}
+epoch::epoch() : tp{kep_clock::y2k} {}
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
@@ -51,7 +51,7 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : tp{make_tp(e
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const int y, const uint mon, const uint d, const int h, const int min, const int s, const int ms,
+epoch::epoch(const int y, const unsigned mon, const unsigned d, const int h, const int min, const int s, const int ms,
              const int us)
     : tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
@@ -71,7 +71,7 @@ epoch::epoch(const kep_clock::time_point &time_point) : tp{time_point} {}
  */
 epoch::epoch(kep_clock::time_point &&time_point) : tp{time_point} {}
 
-kep_clock::time_point epoch::make_tp(const int y, const uint mon, const uint d, const int h, const int min, const int s,
+kep_clock::time_point epoch::make_tp(const int y, const unsigned mon, const unsigned d, const int h, const int min, const int s,
                                      const int ms, const int us)
 
 {
@@ -102,7 +102,7 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
  */
 constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 {
-    return kep_clock::ref_epoch
+    return kep_clock::y2k
            + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
 }
 
@@ -126,7 +126,7 @@ std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 }
 
 std::string epoch::as_utc_string() const
-{
+{ 
     return epoch::as_utc_string(tp);
 }
 
@@ -172,6 +172,20 @@ bool operator!=(const epoch &c1, const epoch &c2)
 kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
 {
     return lhs.tp - rhs.tp;
+}
+
+epoch utc_now() {
+    return epoch(kep_clock::utc_now());
+}
+
+epoch epoch_from_iso_string(const std::string & in) {
+     int y = std::stoi(in.substr(0, 4));
+     auto m = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+     auto d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
+     int h = std::stoi(in.substr(11, 2));
+     int min = std::stoi(in.substr(14, 2));
+     int s = std::stoi(in.substr(17, 2));
+     return kep3::epoch(y,m,d,h,min,s);
 }
 
 } // namespace kep3
