@@ -8,7 +8,7 @@ dependencies:
   - cmake >=3.18
   - boost-cpp >=1.73
   - fmt
-  - heyoka =2.*
+  - heyoka =3.*
   - spdlog
   - xtensor
   - xtensor-blas
@@ -17,5 +17,3 @@ dependencies:
   - sphinx
   - sphinx-book-theme
   - myst-nb
-
-
