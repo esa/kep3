@@ -112,6 +112,8 @@ PYBIND11_MODULE(core, m)
         // Construtor from julian floats
         .def(py::init<double, kep3::epoch::julian_type>(), py::arg("when"),
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
+        .def(py::init<int, kep3::epoch::julian_type>(), py::arg("when"),
+             py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
         // Constructor from datetime py::object
         .def(py::init([](const py::object &in) {
                  // We check that `in` is a datetimeobject
