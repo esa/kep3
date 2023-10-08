@@ -21,7 +21,6 @@ source activate $deps_dir
 mamba install numpy sphinx sphinx-book-theme myst-nb matplotlib pybind11
 
 # We build and install pykep (and the kep3 library)
-cd ..
 mkdir build
 cd build
 cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -Dkep3_BUILD_TESTS=no -Dkep3_BUILD_BENCHMARKS=no -Dkep3_BUILD_PYTHON_BINDINGS=yes -DBoost_NO_BOOST_CMAKE=ON
