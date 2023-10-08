@@ -6,6 +6,7 @@
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <optional>
@@ -14,6 +15,7 @@
 #include <valarray>
 #include <vector>
 
+#include <fmt/chrono.h>
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/epoch.hpp>
@@ -98,17 +100,36 @@ PYBIND11_MODULE(core, m)
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
 
     // Class epoch
-    py::class_<kep3::epoch> epoch_(m, "epoch");
+    py::class_<kep3::epoch> epoch_class(m, "epoch");
 
-    py::enum_<kep3::epoch::julian_type>(epoch_, "julian_type")
+    py::enum_<kep3::epoch::julian_type>(epoch_class, "julian_type")
         .value("MJD2000", kep3::epoch::julian_type::MJD2000, "Modified Julian Date 2000")
         .value("MJD", kep3::epoch::julian_type::MJD, "Modified Julian Date")
         .value("JD", kep3::epoch::julian_type::JD, "Julian Date");
 
     // This must go after the enum class registration
-    epoch_
+    epoch_class
         .def(py::init<double, kep3::epoch::julian_type>(), py::arg("when"),
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
+        .def(py::init([](const py::object &in) {
+                 // We check that `in` is a datetimeobject
+                 py::object Datetime = py::module_::import("datetime").attr("datetime");
+                 if (!py::isinstance(in, Datetime)) {
+                     pykep::py_throw(PyExc_TypeError, ("it seems you are trying to construct kep3::epoch object from a "
+                                                       "python object that is not of type datetime"));
+                 }
+                 // We collect its info
+                 int y = in.attr("year").cast<int>();
+                 uint m = in.attr("month").cast<uint>();
+                 uint d = in.attr("day").cast<uint>();
+                 int h = in.attr("hour").cast<int>();
+                 int min = in.attr("minute").cast<int>();
+                 int s = in.attr("second").cast<int>();
+                 int us = in.attr("microsecond").cast<int>();
+                 return kep3::epoch(y, m, d, h, min, s, 0, us);
+             }),
+             py::arg("when"))
+        //.def(py::init<const kep3::kep_clock::time_point&>(), py::arg("when"))
         // repr()
         .def("__repr__", &pykep::ostream_repr<kep3::epoch>)
         // Copy and deepcopy.
@@ -168,6 +189,7 @@ PYBIND11_MODULE(core, m)
     auto udpla_module = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
     pykep::expose_all_udplas(udpla_module, planet_class);
 
-    // Finalize (this constructor must be the last one else overload will fail with all the others)
+    // Finalize (this constructor must be the last one of the planet_class else overload will fail with the others
+    // accepting cpp udplas)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
 }

@@ -49,6 +49,16 @@ class anomaly_conversions_tests(_ut.TestCase):
 
         self.assertTrue(float_abs_error(pk.f2zeta(pk.zeta2f(0.1, 10.1), 10.1), 0.1) < 1e-14)
 
+class epoch_test(_ut.TestCase):
+    def test_epoch_construction(self):
+        import pykep as pk
+
+        ep1 = pk.epoch(0., pk.epoch.julian_type.MJD2000)
+        ep2 = pk.epoch(0., pk.epoch.julian_type.MJD)
+        ep3 = pk.epoch(0., pk.epoch.julian_type.JD)
+        self.assertTrue()
+
+
 class my_udpla:
     def eph(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]

@@ -73,7 +73,7 @@ struct kep_clock : public chr::system_clock {
     // Number of seconds from midnight on 1 Jan 1970 to midnight on 1 Jan 2000.
     static constexpr chr::seconds y2k_offset{946684800s};
 
-    static constexpr time_point ref_epoch{kep_clock::time_point{} + y2k_offset};
+     static constexpr time_point ref_epoch{kep_clock::time_point{} + y2k_offset};
 
     static constexpr std::time_t to_time_t(const time_point &t) noexcept
     {
@@ -109,6 +109,9 @@ public:
 
     // Constructor from a julian date (as a floating-point value)
     explicit epoch(double epoch_in, julian_type epoch_type = julian_type::MJD2000);
+
+    // Constructor for const time_point&)
+    explicit epoch(const kep_clock::time_point &time_point);
 
     /**
      * Constructs an epoch from a std::chrono::duration.
@@ -169,7 +172,7 @@ public:
     // Duration conversions
     static constexpr double as_sec(kep_clock::duration &&d)
     {
-        return std::chrono::duration<double, std::chrono::seconds::period>(d).count();
+        return chr::duration<double, chr::seconds::period>(d).count();
     }
 
     // Printing
@@ -228,9 +231,6 @@ public:
     kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs, const epoch &rhs);
 
 private:
-    // Constructor for const time_point&)
-    explicit epoch(const kep_clock::time_point &time_point);
-
     // Constructor for const time_point&&)
     explicit epoch(kep_clock::time_point &&time_point);
 
