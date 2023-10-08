@@ -18,7 +18,7 @@ mamba env create -f kep3_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
 # Install additional packages for docs building
-mamba install numpy sphinx sphinx-book-theme myst-nb matplotlib
+mamba install python=3.11 numpy sphinx sphinx-book-theme myst-nb matplotlib pybind11
 
 # We build and install pykep (and the kep3 library)
 cd ..

@@ -133,7 +133,6 @@ PYBIND11_MODULE(core, m)
                  return kep3::epoch(y, m, d, h, min, s, 0, us);
              }),
              py::arg("when"))
-        //.def(py::init<const kep3::kep_clock::time_point&>(), py::arg("when"))
         // repr()
         .def("__repr__", &pykep::ostream_repr<kep3::epoch>)
         // Copy and deepcopy.
@@ -159,6 +158,11 @@ PYBIND11_MODULE(core, m)
         .def("__sub__",
              [](kep3::epoch ep, double dt) { return ep - std::chrono::duration<double, std::ratio<86400>>(dt); })
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
+
+    // Epoch related utils
+    m.def("utc_now", &kep3::utc_now);
+    m.def("epoch_from_iso_string", &kep3::epoch_from_iso_string);
+
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});

@@ -60,9 +60,7 @@ struct kep_clock : public chr::system_clock {
      *
      * NOTE: As of C++20, the standard guarantees that std::chrono::system_clock
      * uses the UNIX time reference point, which is midnight on 1 January 1970
-     * (1970-01-01T00:00:00). We correct for that here in order to bring the
-     * reference point forward to midnight on 1 January 2000
-     * (2000-01-01T00:00:00), which is 0 MJD2000.
+     * (1970-01-01T00:00:00).
      */
     using rep = int_fast64_t;
     // Resolution of (1 / 1'000'000)s = 1 us
@@ -73,17 +71,24 @@ struct kep_clock : public chr::system_clock {
     // Number of seconds from midnight on 1 Jan 1970 to midnight on 1 Jan 2000.
     static constexpr chr::seconds y2k_offset{946684800s};
 
-     static constexpr time_point ref_epoch{kep_clock::time_point{} + y2k_offset};
+    static constexpr time_point y2k{kep_clock::time_point{} + y2k_offset};
 
     static constexpr std::time_t to_time_t(const time_point &t) noexcept
     {
-        return static_cast<std::time_t>(chr::duration_cast<chr::seconds>(t.time_since_epoch() + y2k_offset).count());
+        return static_cast<std::time_t>(chr::duration_cast<chr::seconds>(t.time_since_epoch()).count());
     }
 
     static constexpr time_point from_time_t(std::time_t t) noexcept
     {
-        return chr::time_point_cast<duration>(time_point(chr::seconds(t) - y2k_offset));
+        return chr::time_point_cast<duration>(time_point(chr::seconds(t)));
     }
+
+    static time_point utc_now() noexcept{
+        auto now = std::chrono::system_clock::now();
+        const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
+        return from_time_t(t_c);
+    }
+
 };
 
 /// epoch class.
@@ -112,6 +117,9 @@ public:
 
     // Constructor for const time_point&)
     explicit epoch(const kep_clock::time_point &time_point);
+
+    // Constructor for const time_point&&)
+    explicit epoch(kep_clock::time_point &&time_point);
 
     /**
      * Constructs an epoch from a std::chrono::duration.
@@ -231,9 +239,6 @@ public:
     kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs, const epoch &rhs);
 
 private:
-    // Constructor for const time_point&&)
-    explicit epoch(kep_clock::time_point &&time_point);
-
     // Serialization code
     friend class boost::serialization::access;
     template <class Archive>
@@ -246,6 +251,10 @@ private:
     // Time point relative to 1 Jan 2000 (MJD2000)
     kep_clock::time_point tp;
 };
+
+kep3_DLL_PUBLIC epoch utc_now();
+
+kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string&);
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s, const epoch &epoch_in);
 

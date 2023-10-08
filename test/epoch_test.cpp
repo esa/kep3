@@ -92,3 +92,8 @@ TEST_CASE("epoch_operators")
     REQUIRE(diff == chr::duration_cast<kep_clock::duration>(chr::days(1)));
     REQUIRE_NOTHROW((std::cout << epoch()));
 }
+
+TEST_CASE("epoch_now") {
+    fmt::print("\n{}", kep3::utc_now());
+}
+
