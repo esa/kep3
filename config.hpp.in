@@ -10,25 +10,15 @@
 #ifndef kep3_CONFIG_HPP
 #define kep3_CONFIG_HPP
 
-// NOTE: include this so that we can
-// detect _LIBCPP_VERSION below.
-#include <ciso646>
-
 // Start of defines instantiated by CMake.
+
+// clang-format off
 #define kep3_VERSION "@kep3_VERSION@"
 #define kep3_VERSION_MAJOR @kep3_VERSION_MAJOR@
 #define kep3_VERSION_MINOR @kep3_VERSION_MINOR@
 #define kep3_VERSION_PATCH @kep3_VERSION_PATCH@
+// clang-format on
 
 // End of defines instantiated by CMake.
-
-#if defined(__clang__) && defined(_LIBCPP_VERSION)
-
-// When using clang + libc++, prefer the name-based
-// extract() implementation for UDx classes. See
-// the explanation in typeid_name_extract.hpp.
-#define kep3_PREFER_TYPEID_NAME_EXTRACT
-
-#endif
 
 #endif

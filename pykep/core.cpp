@@ -6,14 +6,9 @@
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-#include <chrono>
-#include <cmath>
-#include <iostream>
-#include <optional>
-#include <random>
+#include <kep3/epoch.hpp>
 #include <string>
-#include <valarray>
-#include <vector>
+
 
 #include <fmt/chrono.h>
 #include <kep3/core_astro/constants.hpp>
@@ -166,38 +161,45 @@ PYBIND11_MODULE(core, m)
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});
-    // Constructors from udplas
-    planet_class
-        .def(py::init<const kep3::udpla::keplerian &>(), py::arg("udpla"))
-        // Constructor.
-        // Expose extract.
-        .def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
-             py::return_value_policy::reference_internal)
-        // repr().
-        .def("__repr__", &pykep::ostream_repr<kep3::planet>)
-        // Copy and deepcopy.
-        .def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>)
-        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>)
-        // UDPLA extraction for python stuff.
-        .def("_py_extract", &pykep::generic_py_extract<kep3::planet>)
-        // Pickle support.
-        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>))
-        // Planet methods.
-        .def("eph", &kep3::planet::eph, py::arg("ep"))
-        .def("get_name", &kep3::planet::get_name)
-        .def("get_extra_info", &kep3::planet::get_extra_info)
-        .def("get_mu_central_body", &kep3::planet::get_mu_central_body)
-        .def("get_mu_self", &kep3::planet::get_mu_self)
-        .def("get_radius", &kep3::planet::get_radius)
-        .def("get_safe_radius", &kep3::planet::get_safe_radius)
-        .def("period", &kep3::planet::period, py::arg("ep"));
+    // Constructor.
+    // Expose extract.
+    planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
+                     py::return_value_policy::reference_internal);
+    // repr().
+    planet_class.def("__repr__", &pykep::ostream_repr<kep3::planet>);
+    // Copy and deepcopy.
+    planet_class.def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>);
+    planet_class.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>);
+    // UDPLA extraction for python stuff.
+    planet_class.def("_py_extract", &pykep::generic_py_extract<kep3::planet>);
+    // Pickle support.
+    planet_class.def(
+        py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>));
+    // Planet methods.
+    planet_class.def(
+        "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+
+#define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
+    planet_class.def("get_" #name, [](const kep3::planet &pl) { return pl.get_##name(); })
+
+    PYKEP3_EXPOSE_PLANET_GETTER(name);
+    PYKEP3_EXPOSE_PLANET_GETTER(extra_info);
+    PYKEP3_EXPOSE_PLANET_GETTER(mu_central_body);
+    PYKEP3_EXPOSE_PLANET_GETTER(mu_self);
+    PYKEP3_EXPOSE_PLANET_GETTER(radius);
+    PYKEP3_EXPOSE_PLANET_GETTER(safe_radius);
+
+#undef PYKEP3_EXPOSE_PLANET_GETTER
+
+    planet_class.def(
+        "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
+        py::arg("ep") = kep3::epoch{});
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module
     auto udpla_module = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
     pykep::expose_all_udplas(udpla_module, planet_class);
 
-    // Finalize (this constructor must be the last one of the planet_class else overload will fail with the others
-    // accepting cpp udplas)
+    // Finalize (this constructor must be the last one else overload will fail with all the others)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
 }

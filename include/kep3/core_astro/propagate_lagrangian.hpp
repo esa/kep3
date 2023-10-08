@@ -11,7 +11,6 @@
 #define kep3_PROPAGATE_LAGRANGIAN_H
 
 #include <array>
-#include <cmath>
 
 #include <kep3/detail/visibility.hpp>
 

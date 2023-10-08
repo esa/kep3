@@ -7,13 +7,33 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <fmt/core.h>
+#include <array>
+#include <cmath>
+#include <limits>
 
+#include <boost/core/demangle.hpp>
+
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
 namespace kep3::detail
 {
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+double period_from_energy(const std::array<double, 3> &r, const std::array<double, 3> &v, double mu)
+{
+    double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+    double en = v2 / 2. - mu / R;
+    if (en > 0) {
+        // If the energy is positive we have an hyperbolae and we return nan
+        return std::numeric_limits<double>::quiet_NaN();
+    } else {
+        double a = -mu / 2. / en;
+        return kep3::pi * 2. * std::sqrt(a * a * a / mu);
+    }
+}
 
 std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)
 {
@@ -23,103 +43,13 @@ std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)
 };
 } // namespace kep3::detail
 
-namespace kep3
+namespace kep3::detail
 {
-planet::planet() : planet(detail::null_udpla{}){};
-planet::planet(const planet &other) : m_ptr(other.m_ptr->clone()){};
-planet::planet(planet &&other) noexcept : m_ptr(std::move(other.m_ptr)){};
-
-planet &planet::operator=(planet &&other) noexcept
-{
-    if (this != &other) {
-        m_ptr = std::move(other.m_ptr);
-    }
-    return *this;
-}
-
-planet &planet::operator=(const planet &other)
-{
-    return *this = planet(other);
-}
-
-bool planet::is_valid() const
-{
-    return static_cast<bool>(m_ptr);
-}
-
-std::type_index planet::get_type_index() const
-{
-    return ptr()->get_type_index();
-}
-
-const void *planet::get_ptr() const
-{
-    return ptr()->get_ptr();
-}
-
-void *planet::get_ptr()
-{
-    return ptr()->get_ptr();
-}
-
-detail::planet_inner_base const *planet::ptr() const
-{
-    assert(m_ptr.get() != nullptr);
-    return m_ptr.get();
-}
-
-detail::planet_inner_base *planet::ptr()
-{
-    assert(m_ptr.get() != nullptr);
-    return m_ptr.get();
-}
-
-std::array<std::array<double, 3>, 2> planet::eph(const epoch &ep)
-{
-    return ptr()->eph(ep);
-}
-
-double planet::period(const epoch &ep) const
-{
-    return ptr()->period(ep);
-}
-
-std::string planet::get_name() const
-{
-    return ptr()->get_name();
-}
-
-std::string planet::get_extra_info() const
-{
-    return ptr()->get_extra_info();
-}
-
-double planet::get_mu_central_body() const
-{
-    return ptr()->get_mu_central_body();
-}
-
-double planet::get_mu_self() const
-{
-    return ptr()->get_mu_self();
-    ;
-}
-
-double planet::get_radius() const
-{
-    return ptr()->get_radius();
-}
-
-double planet::get_safe_radius() const
-{
-    return ptr()->get_safe_radius();
-    ;
-}
 
 std::ostream &operator<<(std::ostream &os, const planet &p)
 {
     os << "Planet name: " << p.get_name();
-    os << "\nC++ class name: " << detail::demangle_from_typeid(p.get_type_index().name()) << '\n';
+    os << "\nC++ class name: " << boost::core::demangle(value_type_index(p).name()) << '\n';
     os << fmt::format("mu central body (-1 if not defined): {}\n", p.get_mu_central_body());
     os << fmt::format("mu body (-1 if not defined): {}\n", p.get_mu_self());
     os << fmt::format("radius body (-1 if not defined): {}\n", p.get_radius());
@@ -131,4 +61,8 @@ std::ostream &operator<<(std::ostream &os, const planet &p)
     }
     return os;
 }
-} // namespace kep3
+
+} // namespace kep3::detail
+
+// NOLINTNEXTLINE
+TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::detail::null_udpla, kep3::detail::planet_iface)

@@ -84,7 +84,8 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::jpl_
 template <>
 struct fmt::formatter<kep3::udpla::jpl_lp> : ostream_formatter {
 };
+
 // necessary for serialization
-kep3_S11N_PLANET_EXPORT_KEY(kep3::udpla::jpl_lp);
+TANUKI_S11N_WRAP_EXPORT_KEY(kep3::udpla::jpl_lp, kep3::detail::planet_iface)
 
 #endif // KEP_TOOLBOX_PLANET_JPL_LP_H

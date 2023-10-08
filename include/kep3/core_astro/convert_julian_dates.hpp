@@ -10,8 +10,6 @@
 #ifndef kep3_CONVERT_JULIAN_DATES_HPP
 #define kep3_CONVERT_JULIAN_DATES_HPP
 
-#include "kep3/epoch.hpp"
-#include <chrono>
 namespace kep3
 {
 inline double jd2mjd(double in)
