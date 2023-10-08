@@ -161,7 +161,7 @@ PYBIND11_MODULE(core, m)
 
     // Epoch related utils
     m.def("utc_now", &kep3::utc_now);
-    m.def("epoch_from_iso_string", &kep3::epoch_from_iso_string);
+    m.def("epoch_from_iso_string", &kep3::epoch_from_iso_string); 
 
 
     // Class planet (type erasure machinery here)

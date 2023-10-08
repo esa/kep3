@@ -126,7 +126,7 @@ std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 }
 
 std::string epoch::as_utc_string() const
-{
+{ 
     return epoch::as_utc_string(tp);
 }
 
@@ -180,7 +180,7 @@ epoch utc_now() {
 
 epoch epoch_from_iso_string(const std::string & in) {
      int y = std::stoi(in.substr(0, 4));
-     uint m = std::stoi(in.substr(5, 2)) - 1;
+     uint m = std::stoi(in.substr(5, 2));
      uint d = std::stoi(in.substr(8, 2));
      int h = std::stoi(in.substr(11, 2));
      int min = std::stoi(in.substr(14, 2));
