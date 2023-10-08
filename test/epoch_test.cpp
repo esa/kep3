@@ -92,11 +92,3 @@ TEST_CASE("epoch_operators")
     REQUIRE(diff == chr::duration_cast<kep_clock::duration>(chr::days(1)));
     REQUIRE_NOTHROW((std::cout << epoch()));
 }
-
-TEST_CASE("trial")
-{
-    auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(kep3::kep_clock::ref_epoch.time_since_epoch());
-    std::cout << "\n" << int_ms << std::endl;
-    std::cout << kep3::epoch::as_utc_string(kep3::kep_clock::ref_epoch) << std::endl;
-
-}
