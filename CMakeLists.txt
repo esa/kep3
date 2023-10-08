@@ -240,9 +240,6 @@ if(kep3_BUILD_PYTHON_BINDINGS)
     # pybind11.
     find_package(pybind11 REQUIRED)
 
-    # Finding kep3 (cpp) 
-    find_package(kep3 ${kep3_VERSION} EXACT REQUIRED)
-
     # Build directory
     add_subdirectory("${CMAKE_SOURCE_DIR}/pykep")
 endif()

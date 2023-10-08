@@ -92,7 +92,6 @@ class my_udpla_malformed1:
     def ephs(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
     
-
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
         import pykep as pk
@@ -140,8 +139,6 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla2.get_radius() == -1)
         self.assertTrue(pla2.get_safe_radius() == -1)
 
-
-
 def run_test_suite():
     suite = _ut.TestSuite()
     suite.addTest(anomaly_conversions_tests("test_m2e"))
@@ -156,9 +153,5 @@ def run_test_suite():
     suite.addTest(planet_test("test_udpla_getters"))
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
-
-
-
-
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
