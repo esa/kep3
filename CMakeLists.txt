@@ -177,7 +177,7 @@ find_package(fmt CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC fmt::fmt)
 
 # heyoka.
-find_package(heyoka 2.0.0 REQUIRED CONFIG)
+find_package(heyoka 3.0.0 REQUIRED CONFIG)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
 
 # spdlog.

@@ -1,7 +1,7 @@
 # Mandatory public dependencies on Boost and fmt.
 find_package(Boost @_kep3_MIN_BOOST_VERSION@ REQUIRED serialization)
 find_package(fmt REQUIRED CONFIG)
-find_package(heyoka 2.0.0 REQUIRED CONFIG)
+find_package(heyoka 3.0.0 REQUIRED CONFIG)
 find_package(xtensor REQUIRED CONFIG)
 find_package(xtensor-blas REQUIRED CONFIG)
 
