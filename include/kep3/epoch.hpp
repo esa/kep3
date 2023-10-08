@@ -32,7 +32,6 @@ namespace kep3
 {
 using namespace std::literals;
 namespace chr = std::chrono;
-using uint = unsigned int;
 
 template <typename T>
 struct is_duration : std::false_type {
@@ -138,7 +137,7 @@ public:
     }
 
     // Constructor for datetime broken down into its constituents.
-    explicit epoch(int y, uint mon, uint d, int h = 0, int min = 0, int s = 0, int ms = 0, int us = 0);
+    explicit epoch(int y, unsigned mon, unsigned d, int h = 0, int min = 0, int s = 0, int ms = 0, int us = 0);
 
     /* Computing non-Gregorian dates */
 
@@ -169,7 +168,7 @@ public:
     }
 
     /* Helper functions for constructors */
-    static kep_clock::time_point make_tp(int y, uint mon, uint d, int h = 0, int min = 0,
+    static kep_clock::time_point make_tp(int y, unsigned mon, unsigned d, int h = 0, int min = 0,
                                          int s = 0, int ms = 0, int us = 0);
 
     static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
@@ -242,7 +241,7 @@ private:
     // Serialization code
     friend class boost::serialization::access;
     template <class Archive>
-    void serialize(Archive &ar, const uint)
+    void serialize(Archive &ar, const unsigned)
     {
         ar &boost::serialization::make_binary_object(&tp, sizeof(tp));
     }

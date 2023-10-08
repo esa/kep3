@@ -124,8 +124,8 @@ PYBIND11_MODULE(core, m)
                  }
                  // We collect its info
                  int y = in.attr("year").cast<int>();
-                 uint m = in.attr("month").cast<uint>();
-                 uint d = in.attr("day").cast<uint>();
+                 auto m = in.attr("month").cast<unsigned>();
+                 auto d = in.attr("day").cast<unsigned>();
                  int h = in.attr("hour").cast<int>();
                  int min = in.attr("minute").cast<int>();
                  int s = in.attr("second").cast<int>();
