@@ -26,8 +26,7 @@
 
 #if defined(_MSC_VER)
 
-// NOTE: The order of the arguments for gmtime is reversed in MSVC
-#define GMTIME(x, y) gmtime_s(y, x)
+#define GMTIME(x, y) gmtime_s(x, y)
 
 #else
 
