@@ -24,16 +24,6 @@
 #include "kep3/core_astro/convert_julian_dates.hpp"
 #include "kep3/epoch.hpp"
 
-#if defined(_MSC_VER)
-
-#define GMTIME(x, y) gmtime_s(x, y)
-
-#else
-
-#define GMTIME(x, y) gmtime_r(x, y)
-
-#endif
-
 namespace kep3
 {
 
@@ -127,16 +117,12 @@ constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 {
     std::stringstream iss;
-
-    const std::time_t tmt{kep_clock::to_time_t(tp)};
-    // This is a thread-safe version of gmtime
-    // that takes a tm struct as an argument.
-    std::tm tmstruct;
-    const auto gmt{GMTIME(&tmt, &tmstruct)};
-    // Compute the microseconds
-    auto tse{tp.time_since_epoch()};
-    const auto us{tse - std::chrono::floor<std::chrono::seconds>(tse)};
-    iss << std::put_time(gmt, "%FT%T") << "." << fmt::format("{:06}", us.count());
+    const auto tse{tp.time_since_epoch()};
+    const auto dp{std::chrono::floor<std::chrono::days>(tse)};
+    const auto hms{std::chrono::floor<std::chrono::seconds>(tse - dp)};
+    const auto us{std::chrono::floor<std::chrono::microseconds>(tse - dp - hms)};
+    iss << fmt::format("{:%F}", chr::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
+        << fmt::format("{:06}", us.count());
     return iss.str();
 }
 
