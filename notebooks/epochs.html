@@ -391,7 +391,19 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="epochs-and-julian-dates">
 <h1>Epochs and Julian Dates<a class="headerlink" href="#epochs-and-julian-dates" title="Permalink to this heading">#</a></h1>
-<p>The representation of an epoch, that is of a specific point in time, be it in the future or in the past, can be rather confusing. In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> we opted to offer the dedicated class named <span class="xref myst">epoch</span> that takes care to offer a simple interface and, under the hoods, interfaces seamlessly both to the c++ <code class="docutils literal notranslate"><span class="pre">std::chrono</span></code>  library and the python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> module. Let us briefly show its interface, but first lets import stuff.</p>
+<p>The representation of an epoch, that is of a specific point in time, be it in the future or in the past, can be rather confusing. In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> we opted to offer the dedicated class named <span class="xref myst">epoch</span> that takes care to offer a simple interface and, under the hoods, interfaces seamlessly both to the c++ <code class="docutils literal notranslate"><span class="pre">std::chrono</span></code>  library and the python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> module.</p>
+<p>Let us briefly show its interface.</p>
+<p>A <span class="xref myst">epoch</span> may be created in one of four ways:</p>
+<ol class="arabic simple">
+<li><p>constructing one from a Julian Date (i.e. a float representing the number of days passed from some historical date).</p></li>
+<li><p>constructing one from a datetime object.</p></li>
+<li><p>constructing directly from an ISO 8601 string</p></li>
+<li><p>requesting the current date from the <span class="xref myst">utc_now</span> global function</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>MJD2000</strong> is the Default Julian Date. When not specified othewise by the user, in the context of epoch arithmetics a float will always be considered by <code class="docutils literal notranslate"><span class="pre">pykep</span></code> as a Mofified Julian Date 2000, i.e. as the number of days from <code class="docutils literal notranslate"><span class="pre">2000-01-01T00:00:00.000000</span></code>, or as days if it represents a duration.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
@@ -399,17 +411,6 @@ document.write(`
 </pre></div>
 </div>
 </div>
-</div>
-<p>A <span class="xref myst">epoch</span> may be created in one of four ways:</p>
-<ol class="arabic simple">
-<li><p>constructing one from a Julian Date (i.e. a float representing the number of days passed from some historical date).</p></li>
-<li><p>constructing one from a datetime object.</p></li>
-<li><p>requesting the current date from the <span class="xref myst">utc_now</span> global function</p></li>
-<li><p>converting directly from an ISO 8601 string</p></li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>MJD2000</strong> is the Default Julian Date. When not specified othewise by the user, in the context of epoch arithmetics a float will always be considered by <code class="docutils literal notranslate"><span class="pre">pykep</span></code> as a Mofified Julian Date 2000, i.e. as the number of days from <code class="docutils literal notranslate"><span class="pre">2000-01-01T00:00:00.000000</span></code>.</p>
 </div>
 <section id="julian-dates">
 <h2>Julian dates<a class="headerlink" href="#julian-dates" title="Permalink to this heading">#</a></h2>
@@ -464,8 +465,8 @@ document.write(`
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">pykep</span></code> supports the following Julian Dates MJD2000 (the default), MJD and JD.</p>
-<p>We may also request an epoch corresponding to the current UTC time:</p>
 </div>
+<p>We may also request an epoch corresponding to the current UTC time:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">utc_now</span><span class="p">()</span>
@@ -474,7 +475,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-09T17:10:03.109513
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-09T17:52:09.019154
 </pre></div>
 </div>
 </div>
@@ -482,13 +483,13 @@ document.write(`
 <p>or construct it from an iso string:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch_from_iso_string</span><span class="p">(</span><span class="s2">&quot;2023-10-28T00:01:02&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s2">&quot;2023-10-28T00:01:02.12&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ep</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-28T00:01:02.000000
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-28T00:01:02.120000
 </pre></div>
 </div>
 </div>
@@ -511,7 +512,7 @@ document.write(`
 </div>
 </div>
 </div>
-<p>and immediately convert it to a julian representation too:</p>
+<p>and convert it, when needed, to a julian representation:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">mjd</span><span class="p">())</span>
