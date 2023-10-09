@@ -7,6 +7,7 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <boost/lexical_cast.hpp>
 #include <chrono>
 #include <ctime>
 #include <iostream>
@@ -111,5 +112,31 @@ TEST_CASE("epoch_operators")
 
 TEST_CASE("epoch_now")
 {
-    fmt::print("\n{}", kep3::utc_now());
+    REQUIRE_NOTHROW(kep3::utc_now());
+}
+
+TEST_CASE("serialization_test")
+{
+    // Instantiate a planet
+    epoch ep1{23.456789};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(ep1);
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << ep1;
+    }
+    // Create a new planet object
+    auto ep2 = epoch{};
+    boost::lexical_cast<std::string>(ep2); // triggers the streaming operator
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> ep2;
+    }
+    auto after = boost::lexical_cast<std::string>(ep2);
+    REQUIRE(before == after);
+    REQUIRE(ep1 == ep2);
+
 }
