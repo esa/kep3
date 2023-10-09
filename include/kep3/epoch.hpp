@@ -82,12 +82,7 @@ struct kep_clock : public chr::system_clock {
         return chr::time_point_cast<duration>(time_point(chr::seconds(t)));
     }
 
-    static time_point utc_now() noexcept{
-        auto now = std::chrono::system_clock::now();
-        const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
-        return from_time_t(t_c);
-    }
-
+    static time_point utc_now() noexcept;
 };
 
 /// epoch class.
@@ -106,6 +101,7 @@ class kep3_DLL_PUBLIC epoch
 {
 public:
     enum class julian_type { MJD2000, MJD, JD };
+    enum class string_format { ISO };
 
     /** Constructors */
     // Default constructor
@@ -113,6 +109,9 @@ public:
 
     // Constructor from a julian date (as a floating-point value)
     explicit epoch(double epoch_in, julian_type epoch_type = julian_type::MJD2000);
+
+    // Conxtructor from string
+    explicit epoch(const std::string &, string_format = epoch::string_format::ISO);
 
     // Constructor for const time_point&)
     explicit epoch(const kep_clock::time_point &time_point);
@@ -126,13 +125,13 @@ public:
      * \param[in] time The time as a duration.
      */
     template <class Duration, class = enable_if_is_duration<Duration>>
-    explicit epoch(const Duration &duration) : tp{kep_clock::time_point{} + duration}
+    explicit epoch(const Duration &duration) : m_tp{kep_clock::time_point{} + duration}
     {
     }
 
     // Constructor from duration&&)
     template <class Duration, class = enable_if_is_duration<Duration>>
-    explicit epoch(Duration &&duration) : tp{kep_clock::time_point{} + std::forward(duration)}
+    explicit epoch(Duration &&duration) : m_tp{kep_clock::time_point{} + std::forward(duration)}
     {
     }
 
@@ -146,7 +145,7 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 211813444800s)
+        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset + 211813444800s)
             .count();
     }
 
@@ -155,7 +154,7 @@ public:
      */
     [[nodiscard]] constexpr double mjd() const
     {
-        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset + 4453401600s)
+        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset + 4453401600s)
             .count();
     }
 
@@ -164,12 +163,12 @@ public:
      */
     [[nodiscard]] constexpr double mjd2000() const
     {
-        return chr::duration<double, std::ratio<86400>>(tp.time_since_epoch() - kep_clock::y2k_offset).count();
+        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset).count();
     }
 
     /* Helper functions for constructors */
-    static kep_clock::time_point make_tp(int y, unsigned mon, unsigned d, int h = 0, int min = 0,
-                                         int s = 0, int ms = 0, int us = 0);
+    static kep_clock::time_point make_tp(int y, unsigned mon, unsigned d, int h = 0, int min = 0, int s = 0, int ms = 0,
+                                         int us = 0);
 
     static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
 
@@ -195,14 +194,14 @@ public:
     template <class Duration, class = enable_if_is_duration<Duration>>
     epoch &operator+=(const Duration &duration)
     {
-        tp += chr::duration_cast<kep_clock::duration>(duration);
+        m_tp += chr::duration_cast<kep_clock::duration>(duration);
         return *this;
     }
 
     template <class Duration, class = enable_if_is_duration<Duration>>
     epoch &operator-=(const Duration &duration)
     {
-        tp -= chr::duration_cast<kep_clock::duration>(duration);
+        m_tp -= chr::duration_cast<kep_clock::duration>(duration);
         return *this;
     }
 
@@ -216,13 +215,13 @@ public:
     template <class Duration, class = enable_if_is_duration<Duration>>
     epoch operator+(const Duration &duration)
     {
-        return epoch(tp + chr::duration_cast<kep_clock::duration>(duration));
+        return epoch(m_tp + chr::duration_cast<kep_clock::duration>(duration));
     }
 
     template <class Duration, class = enable_if_is_duration<Duration>>
     epoch operator-(const Duration &duration)
     {
-        return epoch(tp - chr::duration_cast<kep_clock::duration>(duration));
+        return epoch(m_tp - chr::duration_cast<kep_clock::duration>(duration));
     }
 
     static constexpr auto days(const double value)
@@ -243,17 +242,15 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned)
     {
-        ar &boost::serialization::make_binary_object(&tp, sizeof(tp));
+        ar &boost::serialization::make_binary_object(&m_tp, sizeof(m_tp));
     }
     // Serialization code (END)
 
     // Time point relative to 1 Jan 2000 (MJD2000)
-    kep_clock::time_point tp;
+    kep_clock::time_point m_tp;
 };
 
 kep3_DLL_PUBLIC epoch utc_now();
-
-kep3_DLL_PUBLIC epoch epoch_from_iso_string(const std::string&);
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s, const epoch &epoch_in);
 

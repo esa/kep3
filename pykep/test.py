@@ -66,6 +66,13 @@ class epoch_test(_ut.TestCase):
         self.assertTrue(ep4.mjd2000() == 0.0)
         self.assertRaises(TypeError, pk.epoch, datetime.timedelta(1.2))
 
+        self.assertTrue(pk.epoch("2000-01") == ep1)
+        self.assertTrue(pk.epoch("2000-01-01") == ep1)
+        self.assertTrue(pk.epoch("2000-01-01T00") == ep1)
+        self.assertTrue(pk.epoch("2000-01-01T00:00") == ep1)
+        self.assertTrue(pk.epoch("2000-01-01T00:00:00") == ep1)
+
+
     def test_epoch_operators(self):
         import pykep as pk
         import datetime
