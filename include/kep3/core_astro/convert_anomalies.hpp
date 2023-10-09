@@ -11,8 +11,8 @@
 #define kep3_CONVERT_ANOMALIES_H
 
 #include <cmath>
-#include <stdexcept>
 #include <limits>
+#include <stdexcept>
 
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/tools/roots.hpp>
@@ -29,7 +29,7 @@ namespace kep3
 inline double m2e(double M, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     }
     // We compute the sin and cos of the mean anomaly which are used also later
     // for the initial guess (3rd order expansion of Kepler's equation).
@@ -61,7 +61,7 @@ inline double m2e(double M, double ecc)
 inline double e2m(double E, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     }
     return (E - ecc * std::sin(E));
 }
@@ -70,7 +70,7 @@ inline double e2m(double E, double ecc)
 inline double e2f(double E, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     }
     return 2 * std::atan(std::sqrt((1 + ecc) / (1 - ecc)) * std::tan(E / 2));
 }
@@ -79,7 +79,7 @@ inline double e2f(double E, double ecc)
 inline double f2e(double f, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     }
     return 2 * std::atan(std::sqrt((1 - ecc) / (1 + ecc)) * std::tan(f / 2));
 }
@@ -88,7 +88,7 @@ inline double f2e(double f, double ecc)
 inline double m2f(double M, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return e2f(m2e(M, ecc), ecc);
 }
@@ -97,7 +97,7 @@ inline double m2f(double M, double ecc)
 inline double f2m(double f, double ecc)
 {
     if (ecc >= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return e2m(f2e(f, ecc), ecc);
 }
@@ -106,7 +106,7 @@ inline double f2m(double f, double ecc)
 inline double zeta2f(double f, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return 2 * std::atan(std::sqrt((1 + ecc) / (ecc - 1)) * std::tan(f / 2));
 }
@@ -115,7 +115,7 @@ inline double zeta2f(double f, double ecc)
 inline double f2zeta(double zeta, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return 2 * std::atan(std::sqrt((ecc - 1) / (1 + ecc)) * std::tan(zeta / 2));
 }
@@ -125,7 +125,7 @@ inline double f2zeta(double zeta, double ecc)
 inline double n2h(double N, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     // The Initial guess (TODO(darioizo) improve)
     double IG = 1.;
@@ -148,7 +148,7 @@ inline double n2h(double N, double ecc)
 inline double h2n(double H, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return (ecc * std::sinh(H) - H);
 }
@@ -157,7 +157,7 @@ inline double h2n(double H, double ecc)
 inline double h2f(double H, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return 2 * std::atan(std::sqrt((1 + ecc) / (ecc - 1)) * std::tanh(H / 2));
 }
@@ -166,7 +166,7 @@ inline double h2f(double H, double ecc)
 inline double f2h(double f, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return 2 * std::atanh(std::sqrt((ecc - 1) / (1 + ecc)) * std::tan(f / 2));
 }
@@ -175,7 +175,7 @@ inline double f2h(double f, double ecc)
 inline double n2f(double N, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return h2f(n2h(N, ecc), ecc);
 }
@@ -184,7 +184,7 @@ inline double n2f(double N, double ecc)
 inline double f2n(double f, double ecc)
 {
     if (ecc <= 1) {
-        return std::numeric_limits<double>::quiet_NaN() ;
+        return std::numeric_limits<double>::quiet_NaN();
     };
     return h2n(f2h(f, ecc), ecc);
 }

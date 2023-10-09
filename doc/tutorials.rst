@@ -25,3 +25,5 @@ Basic tutorials
   :maxdepth: 1
 
   notebooks/anomalies
+  notebooks/epochs
+

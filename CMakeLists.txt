@@ -138,7 +138,6 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2eq2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/detail/type_name.cpp"
 )
 
 # Setup of the kep3 shared library.
@@ -177,7 +176,7 @@ find_package(fmt CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC fmt::fmt)
 
 # heyoka.
-find_package(heyoka 2.0.0 REQUIRED CONFIG)
+find_package(heyoka 3.0.0 REQUIRED CONFIG)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
 
 # spdlog.
@@ -239,9 +238,6 @@ if(kep3_BUILD_PYTHON_BINDINGS)
 
     # pybind11.
     find_package(pybind11 REQUIRED)
-
-    # Finding kep3 (cpp) 
-    find_package(kep3 ${kep3_VERSION} EXACT REQUIRED)
 
     # Build directory
     add_subdirectory("${CMAKE_SOURCE_DIR}/pykep")

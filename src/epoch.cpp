@@ -30,7 +30,7 @@ namespace kep3
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : tp{kep_clock::ref_epoch} {}
+epoch::epoch() : tp{kep_clock::y2k} {}
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
@@ -52,8 +52,8 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : tp{make_tp(e
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const int y, const uint mon, const uint d, const int h, const int min, const int s, const int ms,
-             const int us)
+epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
+             const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
     : tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
 }
@@ -72,8 +72,8 @@ epoch::epoch(const kep_clock::time_point &time_point) : tp{time_point} {}
  */
 epoch::epoch(kep_clock::time_point &&time_point) : tp{time_point} {}
 
-kep_clock::time_point epoch::make_tp(const int y, const uint mon, const uint d, const int h, const int min, const int s,
-                                     const int ms, const int us)
+kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
+                                     const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
 
 {
     return kep_clock::time_point{}
@@ -88,9 +88,9 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
         case julian_type::MJD2000:
             return epoch::tp_from_days(epoch_in);
         case julian_type::MJD:
-            return epoch::tp_from_days(epoch_in) - 4453401600s;
+            return epoch::tp_from_days(epoch_in) - chr::seconds{4453401600};
         case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - 211813444800s;
+            return epoch::tp_from_days(epoch_in) - chr::seconds{211813444800};
         default:
             throw;
     }
@@ -103,7 +103,7 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
  */
 constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 {
-    return kep_clock::ref_epoch
+    return kep_clock::y2k
            + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
 }
 
@@ -117,10 +117,16 @@ constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 {
     std::stringstream iss;
+
     const std::time_t tmt{kep_clock::to_time_t(tp)};
+    // This is a thread-safe version of gmtime
+    // that takes a tm struct as an argument.
     std::tm tmstruct;
     const auto gmt{gmtime_r(&tmt, &tmstruct)};
-    iss << std::put_time(gmt, "%FT%T");
+    // Compute the microseconds
+    auto tse{tp.time_since_epoch()};
+    const auto us{tse - std::chrono::floor<std::chrono::seconds>(tse)};
+    iss << std::put_time(gmt, "%FT%T") << "." << fmt::format("{:06}", us.count());
     return iss.str();
 }
 
@@ -176,6 +182,19 @@ kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
 kep_clock::time_point epoch::get_tp() const
 {
     return tp;
+}
+epoch utc_now() {
+    return epoch(kep_clock::utc_now());
+}
+
+epoch epoch_from_iso_string(const std::string & in) {
+     int y = std::stoi(in.substr(0, 4));
+     auto m = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+     auto d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
+     int h = std::stoi(in.substr(11, 2));
+     int min = std::stoi(in.substr(14, 2));
+     int s = std::stoi(in.substr(17, 2));
+     return kep3::epoch(y,m,d,h,min,s);
 }
 
 } // namespace kep3

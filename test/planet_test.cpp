@@ -13,27 +13,19 @@
 #include <fmt/core.h>
 
 #include "catch.hpp"
+#include <boost/core/demangle.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
-#include "catch.hpp"
 #include "test_helpers.hpp"
 
 using kep3::epoch;
 using kep3::planet;
-using kep3::detail::is_udpla;
 using kep3::detail::null_udpla;
-using kep3::detail::udpla_has_eph;
-using kep3::detail::udpla_has_get_extra_info_v;
-using kep3::detail::udpla_has_get_mu_central_body_v;
-using kep3::detail::udpla_has_get_mu_self_v;
-using kep3::detail::udpla_has_get_name_v;
-using kep3::detail::udpla_has_get_radius_v;
-using kep3::detail::udpla_has_get_safe_radius_v;
-using kep3::detail::udpla_has_period_v;
 
 struct simple_udpla {
     simple_udpla() = default;
@@ -59,7 +51,8 @@ private:
     {
     }
 };
-kep3_S11N_PLANET_EXPORT(simple_udpla);
+
+TANUKI_S11N_WRAP_EXPORT(simple_udpla, kep3::detail::planet_iface)
 
 struct simple_udpla_mu {
     simple_udpla_mu() = default;
@@ -89,7 +82,8 @@ private:
     {
     }
 };
-kep3_S11N_PLANET_EXPORT(simple_udpla_mu);
+
+TANUKI_S11N_WRAP_EXPORT(simple_udpla_mu, kep3::detail::planet_iface)
 
 struct simple_udpla_mu_h {
     simple_udpla_mu_h() = default;
@@ -119,7 +113,8 @@ private:
     {
     }
 };
-kep3_S11N_PLANET_EXPORT(simple_udpla_mu_h);
+
+TANUKI_S11N_WRAP_EXPORT(simple_udpla_mu_h, kep3::detail::planet_iface)
 
 struct complete_udpla {
     explicit complete_udpla(std::array<double, 4> physical_properties = {-1., -1., -1., -1.})
@@ -175,14 +170,15 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, unsigned)
     {
-        ar &m_name;
-        ar &m_mu_central_body;
-        ar &m_mu_self;
-        ar &m_radius;
-        ar &m_safe_radius;
+        ar & m_name;
+        ar & m_mu_central_body;
+        ar & m_mu_self;
+        ar & m_radius;
+        ar & m_safe_radius;
     }
 };
-kep3_S11N_PLANET_EXPORT(complete_udpla);
+
+TANUKI_S11N_WRAP_EXPORT(complete_udpla, kep3::detail::planet_iface)
 
 TEST_CASE("construction")
 {
@@ -196,14 +192,14 @@ TEST_CASE("construction")
         auto pos_vel = pla.eph(epoch(0.));
         REQUIRE(pos_vel[0] == std::array<double, 3>{1., 0., 0.});
         REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
-        REQUIRE(pla.get_name() == kep3::detail::type_name<null_udpla>());
+        REQUIRE(pla.get_name() == boost::core::demangle(typeid(null_udpla).name()));
         REQUIRE(pla.get_extra_info() == std::string(""));
         REQUIRE(pla.get_mu_central_body() == -1);
         REQUIRE(pla.get_mu_self() == -1);
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
-        REQUIRE(pla.extract<null_udpla>() != nullptr);
+        REQUIRE(value_isa<null_udpla>(pla));
     }
     {
         // Constructor from a simple udpla
@@ -266,172 +262,22 @@ TEST_CASE("construction")
     // Check copy semantics.
     auto p0 = planet();
     planet p1{p0};
-    REQUIRE(p0.extract<null_udpla>() != nullptr);
-    REQUIRE(p1.extract<null_udpla>() != nullptr);
+    REQUIRE(value_isa<null_udpla>(p0));
+    REQUIRE(value_isa<null_udpla>(p1));
     planet p2{simple_udpla{}};
     p2 = p1;
-    REQUIRE(p2.extract<null_udpla>() != nullptr);
-    // Move semantics.
+    REQUIRE(value_isa<null_udpla>(p2));
+    //  Move semantics.
     planet p3{std::move(p0)};
-    REQUIRE(p3.extract<null_udpla>() != nullptr);
+    REQUIRE(value_isa<null_udpla>(p3));
     planet p4{simple_udpla{}};
     p4 = std::move(p2);
-    REQUIRE((p4.extract<null_udpla>() != nullptr));
-    // Check we can revive moved-from objects.
+    REQUIRE(value_isa<null_udpla>(p4));
+    //  Check we can revive moved-from objects.
     p0 = p4;
-    REQUIRE((p0.extract<null_udpla>() != nullptr));
+    REQUIRE(value_isa<null_udpla>(p0));
     p2 = std::move(p4);
-    REQUIRE((p2.extract<null_udpla>() != nullptr));
-}
-
-TEST_CASE("type_traits")
-{
-    // Check the is_udpla type trait.
-    REQUIRE(is_udpla<simple_udpla>::value);
-    REQUIRE(is_udpla<null_udpla>::value);
-    REQUIRE(!is_udpla<simple_udpla &>::value);
-    REQUIRE(!is_udpla<const simple_udpla>::value);
-    REQUIRE(!is_udpla<int>::value);
-    REQUIRE(!is_udpla<void>::value);
-    REQUIRE(!is_udpla<std::string>::value);
-    REQUIRE(std::is_constructible<planet, simple_udpla>::value);
-    REQUIRE(std::is_constructible<planet, null_udpla>::value);
-    REQUIRE(std::is_constructible<planet, simple_udpla &>::value);
-    REQUIRE(std::is_constructible<planet, const null_udpla &>::value);
-    REQUIRE(std::is_constructible<planet, simple_udpla &&>::value);
-    REQUIRE(!std::is_constructible<planet, int>::value);
-    REQUIRE(!std::is_constructible<planet, std::string>::value);
-    // check the udpla_has_eph type trait.
-    REQUIRE(udpla_has_eph<null_udpla>::value);
-    REQUIRE(udpla_has_eph<simple_udpla>::value);
-    REQUIRE(!udpla_has_eph<int>::value);
-    // check the udpla_has_get_name_v type trait.
-    REQUIRE(!udpla_has_get_name_v<null_udpla>);
-    REQUIRE(udpla_has_get_name_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_name_v<double>);
-    // check the udpla_has_get_extra_info_v type trait.
-    REQUIRE(!udpla_has_get_extra_info_v<null_udpla>);
-    REQUIRE(udpla_has_get_extra_info_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_extra_info_v<double>);
-    // check the udpla_has_get_mu_central_body_v type trait.
-    REQUIRE(!udpla_has_get_mu_central_body_v<null_udpla>);
-    REQUIRE(!udpla_has_get_mu_central_body_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_mu_central_body_v<double>);
-    REQUIRE(udpla_has_get_mu_central_body_v<complete_udpla>);
-    // check the udpla_has_get_mu_self_v type trait.
-    REQUIRE(!udpla_has_get_mu_self_v<null_udpla>);
-    REQUIRE(!udpla_has_get_mu_self_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_mu_self_v<double>);
-    REQUIRE(udpla_has_get_mu_self_v<complete_udpla>);
-    // check the udpla_has_get_radius_v type trait.
-    REQUIRE(!udpla_has_get_radius_v<null_udpla>);
-    REQUIRE(!udpla_has_get_radius_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_radius_v<double>);
-    REQUIRE(udpla_has_get_radius_v<complete_udpla>);
-    // check the udpla_has_get_safe_radius_v type trait.
-    REQUIRE(!udpla_has_get_safe_radius_v<null_udpla>);
-    REQUIRE(!udpla_has_get_safe_radius_v<simple_udpla>);
-    REQUIRE(!udpla_has_get_safe_radius_v<double>);
-    REQUIRE(udpla_has_get_safe_radius_v<complete_udpla>);
-    // check the udpla_has_period_v type trait.
-    REQUIRE(!udpla_has_period_v<null_udpla>);
-    REQUIRE(!udpla_has_period_v<simple_udpla>);
-    REQUIRE(!udpla_has_period_v<double>);
-    REQUIRE(udpla_has_period_v<complete_udpla>);
-}
-
-TEST_CASE("copy_constructor_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We call the copy constructor
-    planet pla_copy(pla);
-    // We extract the user planet
-    auto *p1 = pla.extract<complete_udpla>();
-    auto *p2 = pla_copy.extract<complete_udpla>();
-
-    // 1 - We check the resources pointed to by m_ptr have different address
-    REQUIRE(p1 != 0);
-    REQUIRE(p2 != 0);
-    REQUIRE(p1 != p2);
-    // 2 - We check that the other members are copied
-    REQUIRE(pla.get_name() == pla_copy.get_name());
-    REQUIRE(pla.get_mu_central_body() == pla_copy.get_mu_central_body());
-    REQUIRE(pla.get_mu_self() == pla_copy.get_mu_self());
-    REQUIRE(pla.get_safe_radius() == pla_copy.get_safe_radius());
-}
-
-TEST_CASE("planet_move_constructor_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We store a streaming representation of the object
-    auto pla_string = boost::lexical_cast<std::string>(pla);
-    // We get the memory address where the user algo is stored
-    auto *p1 = pla.extract<complete_udpla>();
-    // We call the move constructor
-    planet moved_pla(std::move(pla));
-    // We get the memory address where the user algo is stored
-    auto *p2 = moved_pla.extract<complete_udpla>();
-    // And the string representation of the moved algo
-    auto moved_pla_string = boost::lexical_cast<std::string>(moved_pla);
-    // 1 - We check the resource pointed by m_ptr has been moved from algo to
-    // moved_algo
-    REQUIRE(p1 == p2);
-    // 2 - We check that the two string representations are identical
-    REQUIRE(pla_string == moved_pla_string);
-}
-
-TEST_CASE("planet_move_assignment_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We store a streaming representation of the object
-    auto pla_string = boost::lexical_cast<std::string>(pla);
-    // We get the memory address where the user algo is stored
-    auto *p1 = pla.extract<complete_udpla>();
-    // We call the move assignment
-    planet moved_pla{};
-    moved_pla = std::move(pla);
-    // We get the memory address where the user algo is stored
-    auto *p2 = moved_pla.extract<complete_udpla>();
-    // And the string representation of the moved algo
-    auto moved_pla_string = boost::lexical_cast<std::string>(moved_pla);
-    // 1 - We check the resource pointed by m_ptr has been moved from algo to
-    // moved_algo
-    REQUIRE(p1 == p2);
-    // 2 - We check that the two string representations are identical
-    REQUIRE(pla_string == moved_pla_string);
-}
-
-TEST_CASE("copy_assignment_test")
-{
-    // We instantiate a planet
-    complete_udpla udpla({1., 2., -1., 4.});
-    planet pla{udpla};
-
-    // We call the copy assignment
-    planet pla_copy{};
-    pla_copy = pla;
-    // We extract the user planet
-    auto *p1 = pla.extract<complete_udpla>();
-    auto *p2 = pla_copy.extract<complete_udpla>();
-
-    // 1 - We check the resources pointed to by m_ptr have different address
-    REQUIRE(p1 != 0);
-    REQUIRE(p2 != 0);
-    REQUIRE(p1 != p2);
-    // 2 - We check that the other members are copied
-    REQUIRE(pla.get_name() == pla_copy.get_name());
-    REQUIRE(pla.get_mu_central_body() == pla_copy.get_mu_central_body());
-    REQUIRE(pla.get_mu_self() == pla_copy.get_mu_self());
-    REQUIRE(pla.get_safe_radius() == pla_copy.get_safe_radius());
+    REQUIRE(value_isa<null_udpla>(p2));
 }
 
 TEST_CASE("planet_extract_is_test")
@@ -439,7 +285,7 @@ TEST_CASE("planet_extract_is_test")
     // We instantiate a planet
     planet pla{complete_udpla({1., 2., -1., 4.})};
 
-    auto *p0 = pla.extract<complete_udpla>();
+    auto *p0 = value_ptr<complete_udpla>(pla);
 
     // We check thet we can access to public data members
     REQUIRE(p0->m_mu_central_body == 1.);
@@ -448,54 +294,19 @@ TEST_CASE("planet_extract_is_test")
     REQUIRE(p0->m_safe_radius == 4.);
 
     // We check that a non successful cast returns a null pointer
-    REQUIRE(!pla.extract<simple_udpla>());
+    REQUIRE(!value_ptr<simple_udpla>(pla));
 
     // We check the is method
-    REQUIRE(pla.is<complete_udpla>());
-    REQUIRE(!pla.is<simple_udpla>());
-}
-
-TEST_CASE("is_valid")
-{
-    planet p0;
-    REQUIRE(p0.is_valid());
-    planet p1(std::move(p0));
-    REQUIRE(!p0.is_valid());
-    p0 = planet{simple_udpla{}};
-    REQUIRE(p0.is_valid());
-    p1 = std::move(p0);
-    REQUIRE(!p0.is_valid());
+    REQUIRE(value_isa<complete_udpla>(pla));
+    REQUIRE(!value_isa<simple_udpla>(pla));
 }
 
 TEST_CASE("generic_assignment")
 {
-    planet p0;
-    REQUIRE(p0.is<null_udpla>());
-    REQUIRE(&(p0 = simple_udpla{}) == &p0);
-    REQUIRE(p0.is_valid());
-    REQUIRE(p0.is<simple_udpla>());
     REQUIRE((!std::is_assignable<planet, void>::value));
     REQUIRE((!std::is_assignable<planet, int &>::value));
     REQUIRE((!std::is_assignable<planet, const int &>::value));
     REQUIRE((!std::is_assignable<planet, int &&>::value));
-}
-
-TEST_CASE("type_index")
-{
-    planet p0 = planet{null_udpla{}};
-    // REQUIRE(p0.get_type_index() == std::type_index(typeid(null_udpla)));
-    // p0 = planet{simple_udpla{}};
-    // REQUIRE(p0.get_type_index() == std::type_index(typeid(simple_udpla)));
-}
-
-TEST_CASE("get_ptr")
-{
-    planet p0;
-    REQUIRE(p0.get_ptr() == p0.extract<null_udpla>());
-    REQUIRE(static_cast<const planet &>(p0).get_ptr() == static_cast<const planet &>(p0).extract<null_udpla>());
-    p0 = planet{simple_udpla{}};
-    REQUIRE(p0.get_ptr() == p0.extract<simple_udpla>());
-    REQUIRE(static_cast<const planet &>(p0).get_ptr() == static_cast<const planet &>(p0).extract<simple_udpla>());
 }
 
 TEST_CASE("stream_operator")
@@ -542,8 +353,8 @@ TEST_CASE("serialization_test")
     auto after = boost::lexical_cast<std::string>(pla2);
     REQUIRE(before == after);
     // Check explicitly that the properties of base_p where restored as well.
-    REQUIRE(pla.extract<complete_udpla>()->m_mu_central_body == pla.extract<complete_udpla>()->m_mu_central_body);
-    REQUIRE(pla.extract<complete_udpla>()->m_mu_self == pla.extract<complete_udpla>()->m_mu_self);
-    REQUIRE(pla.extract<complete_udpla>()->m_radius == pla.extract<complete_udpla>()->m_radius);
-    REQUIRE(pla.extract<complete_udpla>()->m_safe_radius == pla.extract<complete_udpla>()->m_safe_radius);
+    REQUIRE(value_ref<complete_udpla>(pla).m_mu_central_body == value_ref<complete_udpla>(pla2).m_mu_central_body);
+    REQUIRE(value_ref<complete_udpla>(pla).m_mu_self == value_ref<complete_udpla>(pla2).m_mu_self);
+    REQUIRE(value_ref<complete_udpla>(pla).m_radius == value_ref<complete_udpla>(pla2).m_radius);
+    REQUIRE(value_ref<complete_udpla>(pla).m_safe_radius == value_ref<complete_udpla>(pla2).m_safe_radius);
 }
