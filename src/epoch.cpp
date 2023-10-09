@@ -24,6 +24,17 @@
 #include "kep3/core_astro/convert_julian_dates.hpp"
 #include "kep3/epoch.hpp"
 
+#if defined(_MSC_VER)
+
+// NOTE: The order of the arguments for gmtime is reversed in MSVC
+#define GMTIME(x, y) gmtime_s(y, x)
+
+#else
+
+#define GMTIME(x, y) gmtime_r(x, y)
+
+#endif
+
 namespace kep3
 {
 
@@ -122,7 +133,7 @@ std::string epoch::as_utc_string(const kep_clock::time_point &tp)
     // This is a thread-safe version of gmtime
     // that takes a tm struct as an argument.
     std::tm tmstruct;
-    const auto gmt{gmtime_r(&tmt, &tmstruct)};
+    const auto gmt{GMTIME(&tmt, &tmstruct)};
     // Compute the microseconds
     auto tse{tp.time_since_epoch()};
     const auto us{tse - std::chrono::floor<std::chrono::seconds>(tse)};
