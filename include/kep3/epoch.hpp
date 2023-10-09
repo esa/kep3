@@ -235,13 +235,6 @@ public:
 private:
     // Serialization code
     friend class boost::serialization::access;
-    // template <class Archive>
-    // void serialize(Archive &ar, const unsigned)
-    // {
-    //     // ar &boost::serialization::make_binary_object(&tp, sizeof(tp));
-    //     ar & tp;
-    // }
-    // // Serialization code (END)
 
     template<class Archive>
     void save(Archive&ar, const unsigned) const
@@ -287,7 +280,7 @@ namespace boost::serialization
     template<class Archive>
     void save(Archive&ar, const std::chrono::microseconds&us, const unsigned)
     {
-        auto rep{reinterpret_cast<kep3::kep_clock::rep>(us)};
+        auto rep{reinterpret_cast<kep3::kep_clock::rep>(us.count())};
         ar & rep;
     }
     template<class Archive>
