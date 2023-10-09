@@ -71,9 +71,9 @@ epoch::epoch(const std::string &in, epoch::string_format)
     // Right now the ISO format is the only one implemented so we ignore
     // the second argument. We thus assume: 1980-10-17T11:36:21.121841
     // and allow crops such as 1980-10.
-    std::array<int, 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
+    std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
     auto len = in.size();
-    auto *foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len);
+    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); //NOLINT
     if (foo == std::end(allowed_lenghts)) {
         throw std::logic_error(
             "Malformed input string when constructing an epoch. Must be 'YYYY-MM-DD HH:MM:SS:XXXXXX'. "
