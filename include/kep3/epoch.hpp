@@ -123,11 +123,11 @@ public:
     {
     }
 
-    // Constructor from duration&&
-    template <Duration D>
-    explicit epoch(D &&duration) : m_tp{kep_clock::time_point{} + std::forward(duration)}
-    {
-    }
+    // Constructor from duration&& (IS THIS NEEDED?)
+    //template <Duration D>
+    //explicit epoch(D &&duration) : m_tp{kep_clock::time_point{} + std::forward(duration)}
+    //{
+    //}
 
     // Constructor for datetime broken down into its constituents.
     explicit epoch(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0, std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
