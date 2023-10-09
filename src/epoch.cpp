@@ -17,6 +17,7 @@
 #include <iostream>
 #include <ratio>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -27,10 +28,15 @@
 namespace kep3
 {
 
+kep_clock::time_point kep_clock::utc_now() noexcept
+{
+    return kep_clock::time_point{chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
+}
+
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : tp{kep_clock::y2k} {}
+epoch::epoch() : m_tp{kep_clock::y2k} {}
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
@@ -39,7 +45,7 @@ epoch::epoch() : tp{kep_clock::y2k} {}
                         since day 0 in the specified calendar.
  * @param[in] epoch_type epoch::julian_type
  */
-epoch::epoch(const double epoch_in, const julian_type epoch_type) : tp{make_tp(epoch_in, epoch_type)} {}
+epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp(epoch_in, epoch_type)} {}
 
 /**
  * @brief Constructs an epoch from offsets relative to 0 MJD2000.
@@ -52,10 +58,50 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : tp{make_tp(e
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
+epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, //NOLINT
              const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
-    : tp{make_tp(y, mon, d, h, min, s, ms, us)}
+    : m_tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
+}
+
+// Epoch constructor from string
+epoch::epoch(const std::string &in, epoch::string_format)
+{
+    // Right now the ISO format is the only one implemented so we ignore
+    // the second argument. We thus assume: 1980-10-17T11:36:21.121841
+    // and allow crops such as 1980-10.
+    std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
+    auto len = in.size();
+    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); //NOLINT
+    if (foo == std::end(allowed_lenghts)) {
+        throw std::logic_error(
+            "Malformed input string when constructing an epoch. Must be 'YYYY-MM-DD HH:MM:SS:XXXXXX'. "
+            "D,H,M,S and X can be missing incrementally.");
+    }
+    unsigned d = 1u;
+    int h = 0, min = 0, s = 0, us = 0;
+    int y = std::stoi(in.substr(0, 4));
+    auto mon = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+    if (len >= 10) {
+        d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
+        if (len >= 13) {
+            h = std::stoi(in.substr(11, 2));
+            if (len >= 16) {
+                min = std::stoi(in.substr(14, 2));
+                if (len >= 19) {
+                    s = std::stoi(in.substr(17, 2));
+                    if (len >= 21) {
+                        std::string rest = in.substr(20);
+                        us = std::stoi(rest);
+                        for (decltype(rest.size()) i = 0; i < 6u - rest.size(); ++i) {
+                            us *= 10;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    m_tp = make_tp(y, mon, d, h, min, s, 0, us);
 }
 
 /**
@@ -63,14 +109,14 @@ epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t 
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(const kep_clock::time_point &time_point) : tp{time_point} {}
+epoch::epoch(const kep_clock::time_point &time_point) : m_tp{time_point} {}
 
 /**
  * @brief Constructs an epoch from an rvalue reference to a time point.
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(kep_clock::time_point &&time_point) : tp{time_point} {}
+epoch::epoch(kep_clock::time_point &&time_point) : m_tp{time_point} {}
 
 kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
                                      const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
@@ -103,8 +149,7 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
  */
 constexpr kep_clock::time_point epoch::tp_from_days(const double days)
 {
-    return kep_clock::y2k
-           + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
+    return kep_clock::y2k + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
 }
 
 /**
@@ -128,7 +173,7 @@ std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 
 std::string epoch::as_utc_string() const
 {
-    return epoch::as_utc_string(tp);
+    return epoch::as_utc_string(m_tp);
 }
 
 /**
@@ -147,50 +192,40 @@ std::ostream &operator<<(std::ostream &s, const epoch &ep)
 
 bool operator>(const epoch &c1, const epoch &c2)
 {
-    return c1.tp > c2.tp;
+    return c1.m_tp > c2.m_tp;
 }
 bool operator<(const epoch &c1, const epoch &c2)
 {
-    return c1.tp < c2.tp;
+    return c1.m_tp < c2.m_tp;
 }
 bool operator>=(const epoch &c1, const epoch &c2)
 {
-    return c1.tp >= c2.tp;
+    return c1.m_tp >= c2.m_tp;
 }
 bool operator<=(const epoch &c1, const epoch &c2)
 {
-    return c1.tp <= c2.tp;
+    return c1.m_tp <= c2.m_tp;
 }
 bool operator==(const epoch &c1, const epoch &c2)
 {
-    return c1.tp == c2.tp;
+    return c1.m_tp == c2.m_tp;
 }
 bool operator!=(const epoch &c1, const epoch &c2)
 {
-    return c1.tp != c2.tp;
+    return c1.m_tp != c2.m_tp;
 }
 
 kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
 {
-    return lhs.tp - rhs.tp;
+    return lhs.m_tp - rhs.m_tp;
 }
 
 kep_clock::time_point epoch::get_tp() const
 {
-    return tp;
+    return m_tp;
 }
 epoch utc_now() {
     return epoch(kep_clock::utc_now());
-}
-
-epoch epoch_from_iso_string(const std::string & in) {
-     int y = std::stoi(in.substr(0, 4));
-     auto m = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
-     auto d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
-     int h = std::stoi(in.substr(11, 2));
-     int min = std::stoi(in.substr(14, 2));
-     int s = std::stoi(in.substr(17, 2));
-     return kep3::epoch(y,m,d,h,min,s);
 }
 
 } // namespace kep3

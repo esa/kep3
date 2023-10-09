@@ -6,9 +6,7 @@
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-#include <kep3/epoch.hpp>
 #include <string>
-
 
 #include <fmt/chrono.h>
 #include <kep3/core_astro/constants.hpp>
@@ -102,13 +100,19 @@ PYBIND11_MODULE(core, m)
         .value("MJD", kep3::epoch::julian_type::MJD, "Modified Julian Date")
         .value("JD", kep3::epoch::julian_type::JD, "Julian Date");
 
+    py::enum_<kep3::epoch::string_format>(epoch_class, "string_format")
+        .value("ISO", kep3::epoch::string_format::ISO, "ISO 8601 format for dates");
+
     // This must go after the enum class registration
     epoch_class
-        // Construtor from julian floats
+        // Construtor from julian floats/int
         .def(py::init<double, kep3::epoch::julian_type>(), py::arg("when"),
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
         .def(py::init<int, kep3::epoch::julian_type>(), py::arg("when"),
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
+        // Constructor from string
+        .def(py::init<std::string, kep3::epoch::string_format>(), py::arg("when"),
+             py::arg("string_format") = kep3::epoch::string_format::ISO)
         // Constructor from datetime py::object
         .def(py::init([](const py::object &in) {
                  // We check that `in` is a datetimeobject
@@ -156,8 +160,6 @@ PYBIND11_MODULE(core, m)
 
     // Epoch related utils
     m.def("utc_now", &kep3::utc_now);
-    m.def("epoch_from_iso_string", &kep3::epoch_from_iso_string); 
-
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});

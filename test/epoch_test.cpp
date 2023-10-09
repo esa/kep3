@@ -7,10 +7,12 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <boost/lexical_cast.hpp>
 #include <chrono>
 #include <ctime>
 #include <iostream>
 #include <random>
+#include <stdexcept>
 #include <string>
 
 #include <kep3/epoch.hpp>
@@ -36,6 +38,19 @@ TEST_CASE("construct")
     REQUIRE_NOTHROW(epoch(123.456, epoch::julian_type::MJD));
     REQUIRE_NOTHROW(epoch(2000, 10, 17, 11, 36, 21, 121, 841));
     REQUIRE_NOTHROW(epoch(2064, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "2064-10-17T11:36:21.121841");
+    REQUIRE_NOTHROW(epoch("2064-10"));
+    REQUIRE_NOTHROW(epoch("2064-10-17"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.1"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.12"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.121"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.1218"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.12183"));
+    REQUIRE_NOTHROW(epoch("2064-10-17T11:36:21.121834"));
+    REQUIRE_THROWS_AS(epoch("2064-10-"), std::logic_error);
+    REQUIRE_THROWS_AS(epoch("2064-10-17T11:36:21.12183434"), std::logic_error);
 
     // // < 2000
     REQUIRE_NOTHROW(epoch(-123.456));
@@ -51,6 +66,8 @@ TEST_CASE("construct")
     epoch ep{2000, 1, 1};
     REQUIRE(epoch(ep) == ep);
     REQUIRE(epoch(epoch{2000, 1, 1}) == ep);
+    REQUIRE_NOTHROW(epoch("2000-01-01") == ep);
+    REQUIRE(epoch("1980-10-17T11:36:21.121841") == epoch(1980, 10, 17, 11, 36, 21, 121, 841));
 
     // test conversions
     REQUIRE(epoch(123.456).mjd2000() == epoch(123.456, epoch::julian_type::MJD2000).mjd2000());
@@ -93,7 +110,33 @@ TEST_CASE("epoch_operators")
     REQUIRE_NOTHROW((std::cout << epoch()));
 }
 
-TEST_CASE("epoch_now") {
-    fmt::print("\n{}", kep3::utc_now());
+TEST_CASE("epoch_now")
+{
+    REQUIRE_NOTHROW(kep3::utc_now());
 }
 
+TEST_CASE("serialization_test")
+{
+    // Instantiate a planet
+    epoch ep1{23.456789};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(ep1);
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << ep1;
+    }
+    // Create a new planet object
+    auto ep2 = epoch{};
+    boost::lexical_cast<std::string>(ep2); // triggers the streaming operator
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> ep2;
+    }
+    auto after = boost::lexical_cast<std::string>(ep2);
+    REQUIRE(before == after);
+    REQUIRE(ep1 == ep2);
+
+}
