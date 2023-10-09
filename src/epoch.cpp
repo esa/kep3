@@ -7,6 +7,7 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+
 #include <chrono>
 #include <cmath>
 #include <ctime>
@@ -29,9 +30,7 @@ namespace kep3
 
 kep_clock::time_point kep_clock::utc_now() noexcept
 {
-    auto now = std::chrono::system_clock::now();
-    const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
-    return kep_clock::from_time_t(t_c);
+    return kep_clock::time_point{chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
 }
 
 /**
@@ -59,8 +58,8 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const int y, const unsigned mon, const unsigned d, const int h, const int min, const int s, const int ms,
-             const int us)
+epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, //NOLINT
+             const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
     : m_tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
 }
@@ -119,8 +118,8 @@ epoch::epoch(const kep_clock::time_point &time_point) : m_tp{time_point} {}
  */
 epoch::epoch(kep_clock::time_point &&time_point) : m_tp{time_point} {}
 
-kep_clock::time_point epoch::make_tp(const int y, const unsigned mon, const unsigned d, const int h, const int min,
-                                     const int s, const int ms, const int us)
+kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
+                                     const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
 
 {
     return kep_clock::time_point{}
@@ -135,9 +134,9 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
         case julian_type::MJD2000:
             return epoch::tp_from_days(epoch_in);
         case julian_type::MJD:
-            return epoch::tp_from_days(epoch_in) - 4453401600s;
+            return epoch::tp_from_days(epoch_in) - chr::seconds{4453401600};
         case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - 211813444800s;
+            return epoch::tp_from_days(epoch_in) - chr::seconds{211813444800};
         default:
             throw;
     }
@@ -164,9 +163,9 @@ std::string epoch::as_utc_string(const kep_clock::time_point &tp)
 {
     std::stringstream iss;
     const auto tse{tp.time_since_epoch()};
-    const auto dp{std::chrono::duration_cast<std::chrono::days>(tse)};
-    const auto hms{std::chrono::duration_cast<std::chrono::seconds>(tse - dp)};
-    const auto us{std::chrono::duration_cast<std::chrono::microseconds>(tse - dp - hms)};
+    const auto dp{std::chrono::floor<std::chrono::days>(tse)};
+    const auto hms{std::chrono::floor<std::chrono::seconds>(tse - dp)};
+    const auto us{std::chrono::floor<std::chrono::microseconds>(tse - dp - hms)};
     iss << fmt::format("{:%F}", chr::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
         << fmt::format("{:06}", us.count());
     return iss.str();
@@ -221,8 +220,11 @@ kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
     return lhs.m_tp - rhs.m_tp;
 }
 
-epoch utc_now()
+kep_clock::time_point epoch::get_tp() const
 {
+    return m_tp;
+}
+epoch utc_now() {
     return epoch(kep_clock::utc_now());
 }
 
