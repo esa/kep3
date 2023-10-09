@@ -53,6 +53,9 @@ std::string f2h_v_doc();
 std::string zeta2f_v_doc();
 std::string f2zeta_v_doc();
 
+// Epoch
+std::string epoch_from_float_doc();
+std::string epoch_from_datetime_doc();
 } // namespace pykep
 
 #endif

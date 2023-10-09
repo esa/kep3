@@ -1,7 +1,7 @@
 .. _anomalies:
 
-Convert Anomalies
-=================
+Anomalies Conversions
+=======================
 
 In pykep we adopt the following naming for the various anomalies: 
 :math:`M` is the Mean Anomaly,

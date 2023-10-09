@@ -107,7 +107,7 @@ PYBIND11_MODULE(core, m)
     epoch_class
         // Construtor from julian floats/int
         .def(py::init<double, kep3::epoch::julian_type>(), py::arg("when"),
-             py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
+             py::arg("julian_type") = kep3::epoch::julian_type::MJD2000, pk::epoch_from_float_doc().c_str())
         .def(py::init<int, kep3::epoch::julian_type>(), py::arg("when"),
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
         // Constructor from string
@@ -131,7 +131,7 @@ PYBIND11_MODULE(core, m)
                  int us = in.attr("microsecond").cast<int>();
                  return kep3::epoch(y, m, d, h, min, s, 0, us);
              }),
-             py::arg("when"))
+             py::arg("when"), pk::epoch_from_datetime_doc().c_str())
         // repr()
         .def("__repr__", &pykep::ostream_repr<kep3::epoch>)
         // Copy and deepcopy.

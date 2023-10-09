@@ -697,4 +697,39 @@ std::string f2zeta_v_doc()
       (100,)
 )";
 }
+
+std::string epoch_from_float_doc()
+{
+    return R"(**epoch(when, julian_type = MJD2000)**
+    
+    Constructs an epoch from a Julian Date.
+
+    Args:
+      **when** (float): the Julian Date (days since reference)
+
+      **julian_type** (pk.epoch.julian_type): one of MJD2000, JD or MJD
+
+    Examples:
+      >>> import pykep as pk
+      >>> pk.epoch(12.3, pk.epoch.julian_type.MJD2000)
+      2000-01-13T07:12:00.000000
+)";
+}
+
+std::string epoch_from_datetime_doc()
+{
+    return R"(**epoch(when)**
+    
+    Constructs an epoch from a datetime object.
+
+    Args:
+      **when** (datetime): a date
+
+    Examples:
+      >>> import pykep as pk
+      >>> from datetime import datetime
+      >>> pk.epoch(datetime(year=2000, month=01, day=13))
+      2000-01-13T00:00:00.000000
+)";
+}
 } // namespace pykep

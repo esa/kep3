@@ -28,6 +28,11 @@ intersphinx_mapping = {
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# Add 'epoch.rst' to your documentation sources
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.ipynb': 'myst-nb',
+}
 
 
 # -- Options for HTML output -------------------------------------------------

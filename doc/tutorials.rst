@@ -1,6 +1,6 @@
 .. _tutorials:
 
-Basic tutorials
+Tutorials
 ===============
 
 .. only:: html
@@ -20,6 +20,13 @@ Basic tutorials
      Some tutorials may use features not available yet in the latest stable release
      of pykep, and thus might fail to execute correctly in the online interactive
      notebooks.
+
+-------------------------------
+
+Basic
+^^^^^^^^^^^
+Start with these tutorials to get the basic gist of how `pykep` works and its conventions when dealing with
+astrodynamical notation and computations.
 
 .. toctree::
   :maxdepth: 1
