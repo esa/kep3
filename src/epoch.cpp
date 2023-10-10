@@ -7,22 +7,15 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 #include <chrono>
-#include <cmath>
-#include <ctime>
 #include <fmt/chrono.h>
 #include <fmt/core.h>
-#include <iomanip>
 #include <iostream>
 #include <ratio>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
-#include <utility>
 
-#include "kep3/core_astro/convert_julian_dates.hpp"
 #include "kep3/epoch.hpp"
 
 namespace kep3
@@ -30,7 +23,8 @@ namespace kep3
 
 kep_clock::time_point kep_clock::utc_now() noexcept
 {
-    return kep_clock::time_point{chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
+    return kep_clock::time_point{
+        chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
 }
 
 /**
@@ -58,7 +52,7 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, //NOLINT
+epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, // NOLINT
              const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
     : m_tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
@@ -72,7 +66,7 @@ epoch::epoch(const std::string &in, epoch::string_format)
     // and allow crops such as 1980-10.
     std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
     auto len = in.size();
-    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); //NOLINT
+    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); // NOLINT
     if (foo == std::end(allowed_lenghts)) {
         throw std::logic_error(
             "Malformed input string when constructing an epoch. Must be 'YYYY-MM-DD HH:MM:SS:XXXXXX'. "
@@ -118,8 +112,9 @@ epoch::epoch(const kep_clock::time_point &time_point) : m_tp{time_point} {}
  */
 epoch::epoch(kep_clock::time_point &&time_point) : m_tp{time_point} {}
 
-kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
-                                     const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
+kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d,
+                                     const std::int32_t h, const std::int32_t min, const std::int32_t s,
+                                     const std::int32_t ms, const std::int32_t us)
 
 {
     return kep_clock::time_point{}
@@ -224,7 +219,8 @@ kep_clock::time_point epoch::get_tp() const
 {
     return m_tp;
 }
-epoch utc_now() {
+epoch utc_now()
+{
     return epoch(kep_clock::utc_now());
 }
 

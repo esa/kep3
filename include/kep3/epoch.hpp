@@ -270,23 +270,4 @@ template <>
 struct fmt::formatter<kep3::epoch> : fmt::ostream_formatter {
 };
 
-namespace boost::serialization
-{
-// template <class Archive>
-// void save(Archive &ar, const std::chrono::microseconds &us, const unsigned)
-// {
-//     auto rep{static_cast<kep3::kep_clock::rep>(us.count())};
-//     ar & rep;
-// }
-// template <class Archive>
-// void load(Archive &ar, std::chrono::microseconds &us, const unsigned)
-// {
-//     kep3::kep_clock::rep rep{0};
-//     ar & rep;
-//     us = std::chrono::microseconds{rep};
-// }
-} // namespace boost::serialization
-
-BOOST_SERIALIZATION_SPLIT_FREE(std::chrono::microseconds)
-
 #endif // kep3_EPOCH_HPP
