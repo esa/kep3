@@ -755,67 +755,51 @@ std::string planet_docstring()
 
 Planet class.
 
-This class represents a generic moving object. Basically anything which can be defined by its position and velocity 
-in some reference frame.
+This type-erasing class represents a generic object moving in space. 
+Basically anything which can be defined by its position and velocity in some reference frame.
 
 In order to define a planet in pykep, the user must first define a class
 whose methods describe the properties of the planet and allow to compute
-its ephemerides, its osculating elements,etc.. In pykep, we refer to such
-a class as a **user-defined planet**, or UDPLA for short. Once defined and instantiated,
-a UDPLA can then be used to construct an instance of this class, :class:`~pykep.planet`, which
-provides a generic interface to orbiting objects.
+its ephemerides (position and velocity), possibly its osculating elements, etc.. 
+In pykep, we refer to such a class as a **user-defined planet**, or UDPLA for short. 
+Once defined and instantiated, a UDPLA can then be used to construct an instance
+of this class, the :class:`~pykep.planet`.
 
 Every UDPLA must implement at least the following method:
 
 .. code-block::
 
-   def eph(self, pk.epoch):
+   def eph(self, epoch):
      ...
 
-The ``eph()`` method is expected to return the Cartesian position and velocity in some chosen reference frame.
+The ``eph()`` method is expected to return the Cartesian position and velocity at epoch
+in some chosen reference frame.
 
-The ``eph()`` method of the UDPLA are accessible from the corresponding
+The ``eph()`` method of the UDPLA will then be accessible from the corresponding
 :func:`pykep.planet.eph()` method (see its documentation for information on how the method should be implemented
 in the UDPLA and other details).
 
-The mandatory method above allow to define a simple planet, which in its minimal case could actually even be fixed point in space
-should its ``eph()`` return a constant position and zero velocity. 
+The mandatory method above allow to define a simple planet, which, in a minimal case,
+could actually be also just a fixed point in space, for example if its ``eph()`` method
+returns a constant position and zero velocity. 
 
 In order to consider more complex cases, the UDPLA may implement one or more of the following methods:
 
 .. code-block::
 
-   def get_nobj(self):
+   def get_mu_central_body(self):
      ...
-   def get_nec(self):
+   def get_mu_self(self):
      ...
-   def get_nic(self):
+   def get_radius(self):
      ...
-   def get_nix(self):
+   def get_safe_radius(self):
      ...
-   def batch_fitness(self, dvs):
+   def period(self, epoch):
      ...
-   def has_batch_fitness(self):
+   def elements(self, epoch, elements_type):
      ...
    def has_gradient(self):
-     ...
-   def gradient(self, dv):
-     ...
-   def has_gradient_sparsity(self):
-     ...
-   def gradient_sparsity(self):
-     ...
-   def has_hessians(self):
-     ...
-   def hessians(self, dv):
-     ...
-   def has_hessians_sparsity(self):
-     ...
-   def hessians_sparsity(self):
-     ...
-   def has_set_seed(self):
-     ...
-   def set_seed(self, s):
      ...
    def get_name(self):
      ...

@@ -138,7 +138,7 @@ kep3::epoch keplerian::get_ref_epoch() const
     return m_ref_epoch;
 }
 
-std::array<double, 6> keplerian::elements(kep3::elements_type el_type) const
+std::array<double, 6> keplerian::elements(kep3::epoch, kep3::elements_type el_type) const
 {
     std::array<double, 6> retval{};
     switch (el_type) {

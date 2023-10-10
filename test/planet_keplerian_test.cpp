@@ -111,32 +111,32 @@ TEST_CASE("elements")
     keplerian udpla{ref_epoch, pos_vel};
     // Test on various element types
     {
-        auto par = udpla.elements(kep3::elements_type::KEP_F);
+        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::KEP_F);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::elements_type::KEP_M);
+        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::KEP_M);
         par[5] = kep3::m2f(par[5], par[1]);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::elements_type::MEQ);
+        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::MEQ);
         auto [r, v] = kep3::eq2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::elements_type::MEQ_R);
+        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::MEQ_R);
         auto [r, v] = kep3::eq2ic(par, 1., true);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        REQUIRE_THROWS_AS(udpla.elements(kep3::elements_type::POSVEL), std::logic_error);
+        REQUIRE_THROWS_AS(udpla.elements(kep3::epoch{}, kep3::elements_type::POSVEL), std::logic_error);
     }
 }
 
