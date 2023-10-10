@@ -105,14 +105,11 @@ public:
     // Constructor from a julian date (as a floating-point value)
     explicit epoch(double epoch_in, julian_type epoch_type = julian_type::MJD2000);
 
-    // Conxtructor from string
-    explicit epoch(const std::string &, string_format = epoch::string_format::ISO);
+    // Constructor from string
+    explicit epoch(const std::string &, string_format = string_format::ISO);
 
-    // Constructor for const time_point&)
-    explicit epoch(const kep_clock::time_point &time_point);
-
-    // Constructor for const time_point&&)
-    explicit epoch(kep_clock::time_point &&time_point);
+    // Constructor from time point.
+    explicit epoch(kep_clock::time_point);
 
     /**
      * Constructs an epoch from a std::chrono::duration.

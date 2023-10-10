@@ -59,7 +59,7 @@ epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t 
 }
 
 // Epoch constructor from string
-epoch::epoch(const std::string &in, epoch::string_format)
+epoch::epoch(const std::string &in, string_format)
 {
     // Right now the ISO format is the only one implemented so we ignore
     // the second argument. We thus assume: 1980-10-17T11:36:21.121841
@@ -99,18 +99,11 @@ epoch::epoch(const std::string &in, epoch::string_format)
 }
 
 /**
- * @brief Constructs an epoch from a const reference to a time point.
+ * @brief Constructs an epoch from a time point.
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(const kep_clock::time_point &time_point) : m_tp{time_point} {}
-
-/**
- * @brief Constructs an epoch from an rvalue reference to a time point.
- *
- * @param[in] time_point Self-explanatory.
- */
-epoch::epoch(kep_clock::time_point &&time_point) : m_tp{time_point} {}
+epoch::epoch(kep_clock::time_point time_point) : m_tp{time_point} {}
 
 kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d,
                                      const std::int32_t h, const std::int32_t min, const std::int32_t s,
