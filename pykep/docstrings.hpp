@@ -56,6 +56,11 @@ std::string f2zeta_v_doc();
 // Epoch
 std::string epoch_from_float_doc();
 std::string epoch_from_datetime_doc();
+std::string epoch_from_string_doc();
+
+// Planet
+std::string planet_docstring();
+
 } // namespace pykep
 
 #endif

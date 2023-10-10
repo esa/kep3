@@ -96,12 +96,12 @@ PYBIND11_MODULE(core, m)
     py::class_<kep3::epoch> epoch_class(m, "epoch");
 
     py::enum_<kep3::epoch::julian_type>(epoch_class, "julian_type")
-        .value("MJD2000", kep3::epoch::julian_type::MJD2000, "Modified Julian Date 2000")
-        .value("MJD", kep3::epoch::julian_type::MJD, "Modified Julian Date")
-        .value("JD", kep3::epoch::julian_type::JD, "Julian Date");
+        .value("MJD2000", kep3::epoch::julian_type::MJD2000, "Modified Julian Date 2000.")
+        .value("MJD", kep3::epoch::julian_type::MJD, "Modified Julian Date.")
+        .value("JD", kep3::epoch::julian_type::JD, "Julian Date.");
 
     py::enum_<kep3::epoch::string_format>(epoch_class, "string_format")
-        .value("ISO", kep3::epoch::string_format::ISO, "ISO 8601 format for dates");
+        .value("ISO", kep3::epoch::string_format::ISO, "ISO 8601 format for dates.");
 
     // This must go after the enum class registration
     epoch_class
@@ -112,7 +112,7 @@ PYBIND11_MODULE(core, m)
              py::arg("julian_type") = kep3::epoch::julian_type::MJD2000)
         // Constructor from string
         .def(py::init<std::string, kep3::epoch::string_format>(), py::arg("when"),
-             py::arg("string_format") = kep3::epoch::string_format::ISO)
+             py::arg("string_format") = kep3::epoch::string_format::ISO, pk::epoch_from_string_doc().c_str())
         // Constructor from datetime py::object
         .def(py::init([](const py::object &in) {
                  // We check that `in` is a datetimeobject
@@ -140,9 +140,9 @@ PYBIND11_MODULE(core, m)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::epoch>, &pykep::pickle_setstate_wrapper<kep3::epoch>))
         // julian dates
-        .def("mjd2000", &kep3::epoch::mjd2000)
-        .def("mjd", &kep3::epoch::mjd)
-        .def("jd", &kep3::epoch::jd)
+        .def("mjd2000", &kep3::epoch::mjd2000, "Returns the Modified Julian Date 2000")
+        .def("mjd", &kep3::epoch::mjd, "Returns the Modified Julian Date")
+        .def("jd", &kep3::epoch::jd, "Returns the Julian Date")
         // comparison operators
         .def("__lt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 < ep2; })
         .def("__gt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 > ep2; })
@@ -159,11 +159,10 @@ PYBIND11_MODULE(core, m)
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
 
     // Epoch related utils
-    m.def("utc_now", &kep3::utc_now);
+    m.def("utc_now", &kep3::utc_now, "Returns a pykep.epoch with the current UTC date.");
 
     // Class planet (type erasure machinery here)
-    py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});
-    // Constructor.
+    py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{}, pykep::planet_docstring().c_str());
     // Expose extract.
     planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
                      py::return_value_policy::reference_internal);

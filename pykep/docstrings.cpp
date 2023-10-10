@@ -732,4 +732,95 @@ std::string epoch_from_datetime_doc()
       2000-01-13T00:00:00.000000
 )";
 }
+
+std::string epoch_from_string_doc()
+{
+    return R"(**epoch(when, string_format = pk.epoch.string_format.ISO)**
+    
+    Constructs an epoch from a string.
+
+    Args:
+      **when** (string): a date
+
+    Examples:
+      >>> import pykep as pk
+      >>> pk.epoch("2000-01-14T:00:00:00.000001")
+      2000-01-13T00:00:00.000001
+)";
+}
+
+std::string planet_docstring()
+{
+    return R"(__init__(udpla = null_planet())
+
+Planet class.
+
+This class represents a generic moving object. Basically anything which can be defined by its position and velocity 
+in some reference frame.
+
+In order to define a planet in pykep, the user must first define a class
+whose methods describe the properties of the planet and allow to compute
+its ephemerides, its osculating elements,etc.. In pykep, we refer to such
+a class as a **user-defined planet**, or UDPLA for short. Once defined and instantiated,
+a UDPLA can then be used to construct an instance of this class, :class:`~pykep.planet`, which
+provides a generic interface to orbiting objects.
+
+Every UDPLA must implement at least the following method:
+
+.. code-block::
+
+   def eph(self, pk.epoch):
+     ...
+
+The ``eph()`` method is expected to return the Cartesian position and velocity in some chosen reference frame.
+
+The ``eph()`` method of the UDPLA are accessible from the corresponding
+:func:`pykep.planet.eph()` method (see its documentation for information on how the method should be implemented
+in the UDPLA and other details).
+
+The mandatory method above allow to define a simple planet, which in its minimal case could actually even be fixed point in space
+should its ``eph()`` return a constant position and zero velocity. 
+
+In order to consider more complex cases, the UDPLA may implement one or more of the following methods:
+
+.. code-block::
+
+   def get_nobj(self):
+     ...
+   def get_nec(self):
+     ...
+   def get_nic(self):
+     ...
+   def get_nix(self):
+     ...
+   def batch_fitness(self, dvs):
+     ...
+   def has_batch_fitness(self):
+     ...
+   def has_gradient(self):
+     ...
+   def gradient(self, dv):
+     ...
+   def has_gradient_sparsity(self):
+     ...
+   def gradient_sparsity(self):
+     ...
+   def has_hessians(self):
+     ...
+   def hessians(self, dv):
+     ...
+   def has_hessians_sparsity(self):
+     ...
+   def hessians_sparsity(self):
+     ...
+   def has_set_seed(self):
+     ...
+   def set_seed(self, s):
+     ...
+   def get_name(self):
+     ...
+   def get_extra_info(self):
+     ...
+)";
+}
 } // namespace pykep
