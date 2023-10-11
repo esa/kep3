@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <array>
+#include <stdexcept>
 #include <string>
 
 #include <fmt/core.h>
@@ -152,6 +153,11 @@ struct complete_udpla {
         return m_radius - m_radius;
     }
 
+    [[nodiscard]] std::array<double, 6> elements(kep3::epoch, kep3::elements_type) const
+    {
+        return {m_radius, m_radius, m_radius, m_radius, m_radius, m_radius};
+    }
+
     [[nodiscard]] std::string get_extra_info() const
     {
         return fmt::format("Gravitational parameter of main attracting body: {}\nGravitational "
@@ -170,11 +176,11 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, unsigned)
     {
-        ar & m_name;
-        ar & m_mu_central_body;
-        ar & m_mu_self;
-        ar & m_radius;
-        ar & m_safe_radius;
+        ar &m_name;
+        ar &m_mu_central_body;
+        ar &m_mu_self;
+        ar &m_radius;
+        ar &m_safe_radius;
     }
 };
 
@@ -199,6 +205,7 @@ TEST_CASE("construction")
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
+        REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
         REQUIRE(value_isa<null_udpla>(pla));
     }
     {
@@ -216,6 +223,8 @@ TEST_CASE("construction")
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
+        REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
+
     }
     {
         // Constructor from a more complete udpla
@@ -230,6 +239,9 @@ TEST_CASE("construction")
         REQUIRE(pla.get_mu_self() == 2.);
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == 4.);
+        REQUIRE(std::isfinite(pla.period()));
+        REQUIRE(pla.elements() == std::array<double, 6>{-1,-1,-1,-1,-1,-1});
+
     }
     {
         // Constructor from a simple udpla with mu and hyperbolic orbit
@@ -237,6 +249,12 @@ TEST_CASE("construction")
         REQUIRE_NOTHROW(planet(udpla));
         planet pla(udpla);
         REQUIRE(!std::isfinite(pla.period()));
+        REQUIRE(pla.elements()[0] < 0);
+        REQUIRE_THROWS_AS(pla.elements(kep3::epoch(), kep3::elements_type::KEP_M), std::logic_error);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] < 0);
+
     }
     {
         // Constructor from a simple udpla with mu and elliptical orbit
@@ -244,6 +262,12 @@ TEST_CASE("construction")
         REQUIRE_NOTHROW(planet(udpla));
         planet pla(udpla);
         REQUIRE(kep3_tests::floating_point_error(pla.period(), kep3::pi * 2.) < 1e-14);
+        REQUIRE(pla.elements()[0] > 0);
+        REQUIRE(pla.elements()[1] < 1);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_M)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] > 0);
     }
     {
         // Constructor from a more complete udpla

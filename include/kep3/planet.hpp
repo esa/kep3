@@ -91,7 +91,7 @@ struct planet_iface<void, void> {
     // NOLINTNEXTLINE(google-default-arguments)
     [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
-    [[nodiscard]] virtual std::array<double, 6> elements(const epoch & = kep3::epoch(),
+    [[nodiscard]] virtual std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
                                                          kep3::elements_type = kep3::elements_type::KEP_F) const
         = 0;
 };
@@ -212,6 +212,7 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
     TANUKI_REF_IFACE_MEMFUN(period)
+    TANUKI_REF_IFACE_MEMFUN(elements)
 
     // Implement the extract functionality.
     template <typename T>

@@ -799,12 +799,25 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
      ...
    def elements(self, epoch, elements_type):
      ...
-   def has_gradient(self):
-     ...
    def get_name(self):
      ...
    def get_extra_info(self):
      ...
+
+See the documentation of the corresponding methods in this class for details on how the optional
+methods in the UDPLA should be implemented and on how they are used by :class:`~pykep.planet`.
+
+
+Args:
+    udpla: a user-defined planet, either C++ or Python
+
+Raises:
+    NotImplementedError: if *udpla* does not implement the mandatory methods detailed above
+    unspecified: any exception thrown by methods of the UDP invoked during construction,
+    the deep copy of the UDP, the constructor of the underlying C++ class,
+    failures at the intersection between C++ and Python (e.g., type conversion errors, mismatched function
+    signatures, etc.)
+
 )";
 }
 } // namespace pykep

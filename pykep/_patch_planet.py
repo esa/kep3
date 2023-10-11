@@ -14,10 +14,9 @@ def _planet_extract(self, t):
     :class:`~pykep.planet` instance. The behaviour of this function depends on the value
     of *t* (which must be a :class:`type`) and on the type of the internal UDPLA:
 
-    * if the type of the UDPLA is *t*, then a reference to the UDP will be returned
-      (this mirrors the behaviour of the corresponding C++ method),
+    * if the type of the UDPLA is *t*, then a reference to the UDP will be returned,
     * if *t* is :class:`object` and the UDP is a Python object (as opposed to an
-      :ref:`exposed C++ planet `), then a reference to the
+      :ref:`exposed C++ planets`), then a reference to the
       UDPLA will be returned (this allows to extract a Python UDPLA without knowing its type),
     * otherwise, :data:`None` will be returned.
 
