@@ -3,7 +3,7 @@
 Anomalies Conversions
 =======================
 
-In pykep we adopt the following naming for the various anomalies: 
+In `pykep` we adopt the following naming for the various anomalies: 
 :math:`M` is the Mean Anomaly,
 :math:`E` is the Eccentric Anomaly,
 :math:`L` is the True Longitude,

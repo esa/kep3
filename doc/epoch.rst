@@ -9,9 +9,13 @@ seamlessly both to the c++ `std::chrono <https://en.cppreference.com/w/cpp/heade
 library and to the python `datetime <https://docs.python.org/3/library/datetime.html>`_ module. 
 
 .. note::
-    In pykep the default Julian Date is the Modified Julian Date, defined as a `float` representing the number
+    In `pykep`` the default Julian Date is the Modified Julian Date, defined as a `float` representing the number
     of days since the start of 2000-1-1. 
 
+.. note::
+    The date in `pykep` **does** account for leap seconds. If the user wishes to use the exact ISO 8601 representation of some epoch, 
+    also including leap seconds, he will have to account for the offset himself. As of of 2023 this may account to maximum 28 seconds.
+    `More info <https://en.wikipedia.org/wiki/Leap_second>`_ on leap seconds.
 
 .. currentmodule:: pykep
 

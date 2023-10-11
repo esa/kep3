@@ -51,11 +51,11 @@ PYBIND11_MODULE(core, m)
 
     // We expose here global enums:
     py::enum_<kep3::elements_type>(m, "el_type", "")
-        .value("KEP_M", kep3::KEP_M, "Keplerian Elements a,e,i,W,w,M (Mean anomaly)")
-        .value("KEP_F", kep3::KEP_F, "Keplerian Elements a,e,i,W,w,f (True anomaly)")
-        .value("MEQ", kep3::MEQ, "Modified Equinoctial Elements p,f,g,h,k,L (Mean Longitude)")
+        .value("KEP_M", kep3::KEP_M, "Keplerian Elements :math:`[a,e,i,\\Omega,\\omega,M]` (Mean anomaly)")
+        .value("KEP_F", kep3::KEP_F, "Keplerian Elements :math:`[a,e,i,\\Omega,\\omega,f]` (True anomaly)")
+        .value("MEQ", kep3::MEQ, "Modified Equinoctial Elements :math:`[p,f,g,h,k,L]` (Mean Longitude)")
         .value("MEQ_R", kep3::MEQ_R,
-               "Modified Equinoctial Elements (retrograde) p,f,g,h,k,L (Mean "
+               "Modified Equinoctial Elements (retrograde) :math:`[p,f,g,h,k,L]` (Mean "
                "Longitude)")
         .value("POSVEL", kep3::POSVEL, "Position and Velocity")
         .export_values();

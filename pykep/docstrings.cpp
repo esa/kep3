@@ -959,7 +959,8 @@ Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the e
 
 Args:
     *ep* (:class:`~pykep.epoch`): the epoch at which compute the elements.
-    *el_ty* (:class:'~pykep.el_type`): the elements type.
+    
+    *el_ty* (:class:`~pykep.el_type`): the elements type.
 
 Returns:
     :class:`list`: the planet's elements at epoch.
