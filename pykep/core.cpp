@@ -50,7 +50,7 @@ PYBIND11_MODULE(core, m)
     m.attr("G0") = py::float_(kep3::G0);
 
     // We expose here global enums:
-    py::enum_<kep3::elements_type>(m, "elements_type", "")
+    py::enum_<kep3::elements_type>(m, "el_type", "")
         .value("KEP_M", kep3::KEP_M, "Keplerian Elements a,e,i,W,w,M (Mean anomaly)")
         .value("KEP_F", kep3::KEP_F, "Keplerian Elements a,e,i,W,w,f (True anomaly)")
         .value("MEQ", kep3::MEQ, "Modified Equinoctial Elements p,f,g,h,k,L (Mean Longitude)")
@@ -181,7 +181,9 @@ PYBIND11_MODULE(core, m)
         "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
-    planet_class.def("get_" #name, [](const kep3::planet &pl) { return pl.get_##name(); })
+    planet_class.def(                                                                                                  \
+        "get_" #name, [](const kep3::planet &pl) { return pl.get_##name(); },                                          \
+        pykep::planet_get_##name##_docstring().c_str());
 
     PYKEP3_EXPOSE_PLANET_GETTER(name);
     PYKEP3_EXPOSE_PLANET_GETTER(extra_info);
@@ -194,13 +196,17 @@ PYBIND11_MODULE(core, m)
 
     planet_class.def(
         "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
-        py::arg("ep") = kep3::epoch{});
+        py::arg("ep") = kep3::epoch{}, pykep::planet_period_docstring().c_str());
+    planet_class.def(
+        "elements",
+        [](const kep3::planet &pl, const kep3::epoch &ep, kep3::elements_type el_ty) { return pl.elements(ep, el_ty); },
+        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F, pykep::planet_elements_docstring().c_str());
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module
     auto udpla_module = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
     pykep::expose_all_udplas(udpla_module, planet_class);
 
-    // Finalize (this constructor must be the last one else overload will fail with all the others)
+    // Finalize (this constructor must be the last one of planet_class: else overload will fail with all the others)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
 }

@@ -60,6 +60,16 @@ std::string epoch_from_string_doc();
 
 // Planet
 std::string planet_docstring();
+std::string planet_get_name_docstring();
+std::string planet_get_extra_info_docstring();
+std::string planet_get_mu_central_body_docstring();
+std::string planet_get_mu_self_docstring();
+std::string planet_get_radius_docstring();
+std::string planet_get_safe_radius_docstring();
+std::string planet_period_docstring();
+std::string planet_elements_docstring();
+
+
 
 } // namespace pykep
 

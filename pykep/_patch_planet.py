@@ -10,7 +10,7 @@ from .core import planet
 def _planet_extract(self, t):
     """Extract the user-defined planet.
 
-    This method allows to extract a reference to the user-defined planet (UDPLA) stored within this
+    This method allows to extract a reference to the user-defined planet (UDPLA) stored within the
     :class:`~pykep.planet` instance. The behaviour of this function depends on the value
     of *t* (which must be a :class:`type`) and on the type of the internal UDPLA:
 
@@ -21,13 +21,13 @@ def _planet_extract(self, t):
     * otherwise, :data:`None` will be returned.
 
     Args:
-        t (:class:`type`): the type of the user-defined planet to extract
+        *t* (:class:`type`): the type of the user-defined planet to extract
 
     Returns:
         a reference to the internal user-defined planet, or :data:`None` if the extraction fails
 
     Raises:
-        TypeError: if *t* is not a :class:`type`
+        *TypeError*: if *t* is not a :class:`type`
 
     Examples:
         >>> import pykep as pk
@@ -69,17 +69,17 @@ def _planet_extract(self, t):
 def _planet_is(self, t):
     """Check the type of the user-defined planet.
 
-    This method returns :data:`False` if :func:`extract(t) <~pykep.planet.extract>` returns
+    This method returns :data:`False` if :func:`~pykep.planet.extract` returns
     :data:`None`, and :data:`True` otherwise.
 
     Args:
-        t (:class:`type`): the type that will be compared to the type of the UDPLA
+        *t*  (:class:`type`): the type that will be compared to the type of the UDPLA
 
     Returns:
         bool: whether the UDPLA is of type *t* or not
 
     Raises:
-        unspecified: any exception thrown by :func:`~pykep.planet.extract()`
+        *unspecified*: any exception thrown by :func:`~pykep.planet.extract()`
 
     """
     return not self.extract(t) is None
