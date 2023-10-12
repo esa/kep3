@@ -10,6 +10,7 @@
 #ifndef PYKEP_DOCSTRINGS_HPP
 #define PYKEP_DOCSTRINGS_HPP
 
+#include "kep3/lambert_problem.hpp"
 #include <string>
 
 namespace pykep
@@ -69,7 +70,11 @@ std::string planet_get_safe_radius_docstring();
 std::string planet_period_docstring();
 std::string planet_elements_docstring();
 
+// Lambert Problem
+std::string lambert_problem_docstring();
 
+// Propagators
+std::string propagate_lagrangian_docstring();
 
 } // namespace pykep
 

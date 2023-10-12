@@ -225,21 +225,22 @@ PYBIND11_MODULE(core, m)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
 
     // Exposing the Lambert problem class
-    py::class_<kep3::lambert_problem> lambert_problem(m, "lambert_problem");
+    py::class_<kep3::lambert_problem> lambert_problem(m, "lambert_problem", pykep::lambert_problem_docstring().c_str());
     lambert_problem
         .def(py::init<const std::array<double, 3> &, const std::array<double, 3> &, double, double, bool, unsigned>(),
              py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{1., 0., 0}},
              py::arg("tof") = kep3::pi / 2, py::arg("mu") = 1., py::arg("cw") = false, py::arg("multi_revs") = 1)
-        .def("get_vs", &kep3::lambert_problem::get_vs)
-        .def("get_vf", &kep3::lambert_problem::get_vf)
-        .def("get_rs", &kep3::lambert_problem::get_rs)
-        .def("get_rf", &kep3::lambert_problem::get_rf)
-        .def("get_tof", &kep3::lambert_problem::get_tof)
-        .def("get_mu", &kep3::lambert_problem::get_mu)
-        .def("get_x", &kep3::lambert_problem::get_x)
-        .def("get_iters", &kep3::lambert_problem::get_iters)
-        .def("get_Nmax", &kep3::lambert_problem::get_Nmax);
+        .def("get_vs", &kep3::lambert_problem::get_v0, "Returns the velocity at the first point.")
+        .def("get_vf", &kep3::lambert_problem::get_v1, "Returns the velocity at the second point.")
+        .def("get_rs", &kep3::lambert_problem::get_r0, "Returns the first point.")
+        .def("get_rf", &kep3::lambert_problem::get_r1, "Returns the second point.")
+        .def("get_tof", &kep3::lambert_problem::get_tof, "Returns the time of flight between the two points.")
+        .def("get_mu", &kep3::lambert_problem::get_mu, "Returns the gravitational parameter of the attracting body.")
+        .def("get_x", &kep3::lambert_problem::get_x, "Returns the Battin variable x along the time of flight curves.")
+        .def("get_iters", &kep3::lambert_problem::get_iters, "Returns the number of iteration made.")
+        .def("get_Nmax", &kep3::lambert_problem::get_Nmax, "Returns the maximum number of iterations allowed.");
 
     // Exposing propagators
-    m.def("propagate_lagrangian", &kep3::propagate_lagrangian, py::arg("rv"), py::arg("dt"), py::arg("mu"));
+    m.def("propagate_lagrangian", &kep3::propagate_lagrangian, py::arg("rv"), py::arg("dt"), py::arg("mu"),
+          pykep::propagate_lagrangian_docstring().c_str());
 }

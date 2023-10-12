@@ -23,23 +23,23 @@ namespace kep3
 
 using xt::linalg::cross;
 
-const std::array<double, 3> lambert_problem::default_rs = {{1.0, 0.0, 0.0}};
-const std::array<double, 3> lambert_problem::default_rf = {{0.0, 1.0, 0.0}};
+const std::array<double, 3> lambert_problem::default_r0 = {{1.0, 0.0, 0.0}};
+const std::array<double, 3> lambert_problem::default_r1 = {{0.0, 1.0, 0.0}};
 
 /// Constructor
 /** Constructs and solves a Lambert problem.
  *
- * \param[in] rs_a start cartesian position
- * \param[in] rf_a final cartesian position
+ * \param[in] r0_a start cartesian position
+ * \param[in] r1_a final cartesian position
  * \param[in] tof time of flight
  * \param[in] mu gravity parameter
  * \param[in] cw when true a retrograde orbit is assumed
  * \param[in] multi_revs maximum number of multirevolutions to compute
  */
-lambert_problem::lambert_problem(const std::array<double, 3> &rs_a, const std::array<double, 3> &rf_a,
+lambert_problem::lambert_problem(const std::array<double, 3> &r0_a, const std::array<double, 3> &r1_a,
                                  double tof, // NOLINT
                                  double mu, bool cw, unsigned multi_revs)
-    : m_rs(rs_a), m_rf(rf_a), m_tof(tof), m_mu(mu), m_has_converged(true), m_multi_revs(multi_revs)
+    : m_r0(r0_a), m_r1(r1_a), m_tof(tof), m_mu(mu), m_has_converged(true), m_multi_revs(multi_revs)
 {
     // 0 - Sanity checks
     if (tof <= 0) {
@@ -50,8 +50,8 @@ lambert_problem::lambert_problem(const std::array<double, 3> &rs_a, const std::a
     }
 
     // Creating xtensor objects binded to the kep3 arrays
-    const auto rs = xt::adapt(rs_a);
-    const auto rf = xt::adapt(rf_a);
+    const auto rs = xt::adapt(r0_a);
+    const auto rf = xt::adapt(r1_a);
 
     // 1 - Getting lambda and T
     m_c = xt::linalg::norm(rf - rs);
@@ -130,8 +130,8 @@ lambert_problem::lambert_problem(const std::array<double, 3> &rs_a, const std::a
     }
 
     // 2.2 We now allocate the memory for the output variables
-    m_vs.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
-    m_vf.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
+    m_v0.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
+    m_v1.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
     m_iters.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
     m_x.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
 
@@ -173,10 +173,10 @@ lambert_problem::lambert_problem(const std::array<double, 3> &rs_a, const std::a
         vts = vt / Rs;
         vtf = vt / Rf;
         for (auto j = 0lu; j < 3lu; ++j) {
-            m_vs[i][j] = vrs * irs[j] + vts * its[j];
+            m_v0[i][j] = vrs * irs[j] + vts * its[j];
         }
         for (auto j = 0lu; j < 3lu; ++j) {
-            m_vf[i][j] = vrf * irf[j] + vtf * itf[j];
+            m_v1[i][j] = vrf * irf[j] + vtf * itf[j];
         }
     }
 }
@@ -298,9 +298,9 @@ double lambert_problem::hypergeometricF(double z, double tol) // NOLINT
  * \return an std::vector containing 3-d arrays with the cartesian components of
  * the velocities at r1 for all 2N_max+1 solutions
  */
-const std::vector<std::array<double, 3>> &lambert_problem::get_vs() const
+const std::vector<std::array<double, 3>> &lambert_problem::get_v0() const
 {
-    return m_vs;
+    return m_v0;
 }
 
 /// Gets velocity at r2
@@ -309,9 +309,9 @@ const std::vector<std::array<double, 3>> &lambert_problem::get_vs() const
  * \return an std::vector containing 3-d arrays with the cartesian components of
  * the velocities at r2 for all 2N_max+1 solutions
  */
-const std::vector<std::array<double, 3>> &lambert_problem::get_vf() const
+const std::vector<std::array<double, 3>> &lambert_problem::get_v1() const
 {
-    return m_vf;
+    return m_v1;
 }
 
 /// Gets r1
@@ -319,9 +319,9 @@ const std::vector<std::array<double, 3>> &lambert_problem::get_vf() const
  *
  * \return a 3-d array with the cartesian components of r1
  */
-const std::array<double, 3> &lambert_problem::get_rs() const
+const std::array<double, 3> &lambert_problem::get_r0() const
 {
-    return m_rs;
+    return m_r0;
 }
 
 /// Gets r2
@@ -329,9 +329,9 @@ const std::array<double, 3> &lambert_problem::get_rs() const
  *
  * \return a 3-d array with the cartesian components of r2
  */
-const std::array<double, 3> &lambert_problem::get_rf() const
+const std::array<double, 3> &lambert_problem::get_r1() const
 {
-    return m_rf;
+    return m_r1;
 }
 
 /// Gets the time of flight between r1 and r2
@@ -393,9 +393,9 @@ std::ostream &operator<<(std::ostream &s, const lambert_problem &lp)
     s << std::setprecision(16) << "Lambert's problem:" << std::endl;
     s << "mu = " << lp.m_mu << std::endl;
     s << "r1 = "
-      << "[" << lp.m_rs[0] << ", " << lp.m_rs[1] << ", " << lp.m_rs[2] << "]" << std::endl;
+      << "[" << lp.m_r0[0] << ", " << lp.m_r0[1] << ", " << lp.m_r0[2] << "]" << std::endl;
     s << "r2 = "
-      << "[" << lp.m_rf[0] << ", " << lp.m_rf[1] << ", " << lp.m_rf[2] << "]" << std::endl;
+      << "[" << lp.m_r1[0] << ", " << lp.m_r1[1] << ", " << lp.m_r1[2] << "]" << std::endl;
     s << "Time of flight: " << lp.m_tof << std::endl << std::endl;
     s << "chord = " << lp.m_c << std::endl;
     s << "semiperimeter = " << lp.m_s << std::endl;
@@ -407,23 +407,23 @@ std::ostream &operator<<(std::ostream &s, const lambert_problem &lp)
     s << "0 revs, Iters: " << lp.m_iters[0] << ", x: " << lp.m_x[0]
       << ", a: " << lp.m_s / 2.0 / (1 - lp.m_x[0] * lp.m_x[0]) << std::endl;
     s << "\tv1 = "
-      << "[" << lp.m_vs[0][0] << ", " << lp.m_vs[0][1] << ", " << lp.m_vs[0][2] << "]";
+      << "[" << lp.m_v0[0][0] << ", " << lp.m_v0[0][1] << ", " << lp.m_v0[0][2] << "]";
     s << " v2 = "
-      << "[" << lp.m_vf[0][0] << ", " << lp.m_vf[0][1] << ", " << lp.m_vf[0][2] << "]" << std::endl;
+      << "[" << lp.m_v1[0][0] << ", " << lp.m_v1[0][1] << ", " << lp.m_v1[0][2] << "]" << std::endl;
     for (std::vector<double>::size_type i = 0lu; i < lp.m_Nmax; ++i) {
         s << i + 1 << " revs,  left. Iters: " << lp.m_iters[1 + 2 * i] << ", x: " << lp.m_x[1 + 2 * i]
           << ", a: " << lp.m_s / 2.0 / (1 - lp.m_x[1 + 2 * i] * lp.m_x[1 + 2 * i]) << std::endl;
         s << "\tv1 = "
-          << "[" << lp.m_vs[1 + 2 * i][0] << ", " << lp.m_vs[1 + 2 * i][1] << ", " << lp.m_vs[1 + 2 * i][2] << "]";
+          << "[" << lp.m_v0[1 + 2 * i][0] << ", " << lp.m_v0[1 + 2 * i][1] << ", " << lp.m_v0[1 + 2 * i][2] << "]";
         s << " v2 = "
-          << "[" << lp.m_vf[1 + 2 * i][0] << ", " << lp.m_vf[1 + 2 * i][1] << ", " << lp.m_vf[1 + 2 * i][2] << "]"
+          << "[" << lp.m_v1[1 + 2 * i][0] << ", " << lp.m_v1[1 + 2 * i][1] << ", " << lp.m_v1[1 + 2 * i][2] << "]"
           << std::endl;
         s << i + 1 << " revs, right. Iters: " << lp.m_iters[2 + 2 * i] << ", a: " << lp.m_x[2 + 2 * i]
           << ", a: " << lp.m_s / 2.0 / (1 - lp.m_x[2 + 2 * i] * lp.m_x[2 + 2 * i]) << std::endl;
         s << "\tv1 = "
-          << "[" << lp.m_vs[2 + 2 * i][0] << ", " << lp.m_vs[2 + 2 * i][1] << ", " << lp.m_vs[2 + 2 * i][2] << "]";
+          << "[" << lp.m_v0[2 + 2 * i][0] << ", " << lp.m_v0[2 + 2 * i][1] << ", " << lp.m_v0[2 + 2 * i][2] << "]";
         s << " v2 = "
-          << "[" << lp.m_vf[2 + 2 * i][0] << ", " << lp.m_vf[2 + 2 * i][1] << ", " << lp.m_vf[2 + 2 * i][2] << "]"
+          << "[" << lp.m_v1[2 + 2 * i][0] << ", " << lp.m_v1[2 + 2 * i][1] << ", " << lp.m_v1[2 + 2 * i][2] << "]"
           << std::endl;
     }
     return s;

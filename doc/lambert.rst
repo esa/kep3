@@ -1,4 +1,4 @@
-.. _planet:
+.. _lambert:
 
 Lambert class
 ====================

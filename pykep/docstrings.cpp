@@ -968,4 +968,63 @@ Returns:
 )";
 }
 
+std::string lambert_problem_docstring()
+{
+    return R"(__init__(rs = [1,0,0], rf = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
+
+      Args:
+          *r1* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
+
+          *r2* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *cw* (:class:`bool`): True for retrograde motion (clockwise). Defaults to False.
+
+          *max_revs* (:class:`float`): Maximum number of multiple revolutions to be computed. Defaults to 0.
+
+      .. note::
+
+        Units need to be consistent. The multirev Lambert's problem will be solved upon construction
+        and its solution stored in data members.
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> r0 = [1,0,0]
+        >>> r1 = [0,1,0]
+        >>> tof = np.pi/2
+        >>> mu = 1.
+        >>> lp = pk.lambert_problem(r0, r1, tof, mu)
+        >>> lp.get_vs()[0]
+        [-4.1028493158958256e-16, 1.0000000000000002, 0.0]
+)";
+}
+
+std::string propagate_lagrangian_docstring()
+{
+    return R"(propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1)
+
+    Args:
+          *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
+
+          *v0* (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+    Returns:
+          
+
+Returns a tuple (rf, vf) containing the final position and velocity after the propagation.
+
+Example::
+
+  rf,vf = propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1)
+)";
+}
+
 } // namespace pykep
