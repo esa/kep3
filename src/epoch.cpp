@@ -12,6 +12,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <fmt/chrono.h>
 #include <fmt/core.h>
@@ -33,7 +36,24 @@ epoch::epoch() = default;
                         since day 0 in the specified calendar.
  * @param[in] epoch_type epoch::julian_type
  */
-epoch::epoch(double epoch_in, julian_type epoch_type) : m_tp{make_tp(epoch_in, epoch_type)} {}
+epoch::epoch(double epoch_in, julian_type epoch_type)
+{
+    switch (epoch_type) {
+        case julian_type::MJD2000:
+            m_tp = epoch::tp_from_days(epoch_in);
+            break;
+        case julian_type::MJD:
+            m_tp = epoch::tp_from_days(epoch_in) - mjd_offset;
+            break;
+        case julian_type::JD:
+            m_tp = epoch::tp_from_days(epoch_in) - jd_offset;
+            break;
+        default:
+            throw std::invalid_argument(
+                fmt::format("An unsupported julian_type enumerator with value {} was used in the epoch constructor",
+                            static_cast<std::underlying_type_t<julian_type>>(epoch_type)));
+    }
+}
 
 /**
  * @brief Constructs an epoch from offsets relative to 0 MJD2000.
@@ -53,12 +73,17 @@ epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t 
 }
 
 // Epoch constructor from string
-epoch::epoch(const std::string &in, string_format)
+epoch::epoch(const std::string &in, string_format sf)
 {
-    // Right now the ISO format is the only one implemented so we ignore
-    // the second argument. We thus assume: 1980-10-17T11:36:21.121841
-    // and allow crops such as 1980-10.
-    std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
+    // NOTE: only ISO format supported so far.
+    if (sf != string_format::ISO) {
+        throw std::invalid_argument(
+            fmt::format("An unsupported string_format enumerator with value {} was used in the epoch constructor",
+                        static_cast<std::underlying_type_t<string_format>>(sf)));
+    }
+
+    // We assume: 1980-10-17T11:36:21.121841 and allow crops such as 1980-10.
+    constexpr std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
     auto len = in.size();
     auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); // NOLINT
     if (foo == std::end(allowed_lenghts)) {
@@ -69,9 +94,9 @@ epoch::epoch(const std::string &in, string_format)
     unsigned d = 1u;
     int h = 0, min = 0, s = 0, us = 0;
     int y = std::stoi(in.substr(0, 4));
-    auto mon = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+    auto mon = boost::numeric_cast<unsigned>(std::stoi(in.substr(5, 2)));
     if (len >= 10) {
-        d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
+        d = boost::numeric_cast<unsigned>(std::stoi(in.substr(8, 2)));
         if (len >= 13) {
             h = std::stoi(in.substr(11, 2));
             if (len >= 16) {
@@ -114,28 +139,14 @@ time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const s
             + std::chrono::milliseconds(ms) + std::chrono::microseconds(us));
 }
 
-time_point epoch::make_tp(const double epoch_in, const julian_type epoch_type)
-{
-    switch (epoch_type) {
-        case julian_type::MJD2000:
-            return epoch::tp_from_days(epoch_in);
-        case julian_type::MJD:
-            return epoch::tp_from_days(epoch_in) - mjd_offset;
-        case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - jd_offset;
-        default:
-            throw;
-    }
-}
-
 /**
  * @brief Creates time point from the number of days since 0 MJD2000.
  *
  * @return A time point
  */
-constexpr time_point epoch::tp_from_days(const double days)
+time_point epoch::tp_from_days(double days)
 {
-    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, std::ratio<86400>>(days));
+    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, day_ratio>(days));
 }
 
 /**

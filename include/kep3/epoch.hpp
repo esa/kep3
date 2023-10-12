@@ -75,6 +75,13 @@ class kep3_DLL_PUBLIC epoch
     // Offset of 0 MJD wrt y2k.
     static constexpr auto mjd_offset = microseconds{4453401600000000};
 
+    // Used in several places.
+    using day_ratio = std::ratio<86400>;
+
+    /* Helper functions for constructors */
+    static time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
+                              std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
+
 public:
     enum class julian_type { MJD2000, MJD, JD };
     enum class string_format { ISO };
@@ -114,8 +121,7 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset + jd_offset)
-            .count();
+        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset + jd_offset).count();
     }
 
     /**
@@ -123,8 +129,7 @@ public:
      */
     [[nodiscard]] constexpr double mjd() const
     {
-        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset + mjd_offset)
-            .count();
+        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset + mjd_offset).count();
     }
 
     /**
@@ -132,17 +137,11 @@ public:
      */
     [[nodiscard]] constexpr double mjd2000() const
     {
-        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset).count();
+        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset).count();
     }
 
-    /* Helper functions for constructors */
-    static time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
-                              std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
-
-    static time_point make_tp(double epoch_in, julian_type epoch_type);
-
     // Conversions
-    static constexpr time_point tp_from_days(double days);
+    static time_point tp_from_days(double days);
 
     // Duration conversions
     static constexpr double as_sec(const microseconds &d)
@@ -195,7 +194,7 @@ public:
 
     static constexpr auto days(double value)
     {
-        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, std::ratio<86400>>(value));
+        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, day_ratio>(value));
     }
 
     static constexpr auto sec(double value)
