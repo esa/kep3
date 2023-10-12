@@ -8,29 +8,23 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <chrono>
-#include <fmt/chrono.h>
-#include <fmt/core.h>
 #include <iostream>
-#include <ratio>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
+#include <fmt/chrono.h>
+#include <fmt/core.h>
 
 #include "kep3/epoch.hpp"
 
 namespace kep3
 {
 
-kep_clock::time_point kep_clock::utc_now() noexcept
-{
-    return kep_clock::time_point{
-        chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
-}
-
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : m_tp{kep_clock::y2k} {}
+epoch::epoch() = default;
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
@@ -39,7 +33,7 @@ epoch::epoch() : m_tp{kep_clock::y2k} {}
                         since day 0 in the specified calendar.
  * @param[in] epoch_type epoch::julian_type
  */
-epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp(epoch_in, epoch_type)} {}
+epoch::epoch(double epoch_in, julian_type epoch_type) : m_tp{make_tp(epoch_in, epoch_type)} {}
 
 /**
  * @brief Constructs an epoch from offsets relative to 0 MJD2000.
@@ -103,28 +97,32 @@ epoch::epoch(const std::string &in, string_format)
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(kep_clock::time_point time_point) : m_tp{time_point} {}
+epoch::epoch(time_point time_point) : m_tp{time_point} {}
 
-kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d,
-                                     const std::int32_t h, const std::int32_t min, const std::int32_t s,
-                                     const std::int32_t ms, const std::int32_t us)
+time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
+                          const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
 
 {
-    return kep_clock::time_point{}
-           + chr::sys_days(chr::year_month_day{chr::year(y) / chr::month(mon) / chr::day(d)} + chr::months{0})
-                 .time_since_epoch()
-           + chr::hours(h) + chr::minutes(min) + chr::seconds(s) + chr::milliseconds(ms) + chr::microseconds(us);
+    return /*time_point{}
+           +*/
+        static_cast<time_point>(
+            std::chrono::sys_days(
+                std::chrono::year_month_day{std::chrono::year(y) / std::chrono::month(mon) / std::chrono::day(d)}
+                + std::chrono::months{0})
+                .time_since_epoch()
+            + std::chrono::hours(h) + std::chrono::minutes(min) + std::chrono::seconds(s)
+            + std::chrono::milliseconds(ms) + std::chrono::microseconds(us));
 }
 
-kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type epoch_type)
+time_point epoch::make_tp(const double epoch_in, const julian_type epoch_type)
 {
     switch (epoch_type) {
         case julian_type::MJD2000:
             return epoch::tp_from_days(epoch_in);
         case julian_type::MJD:
-            return epoch::tp_from_days(epoch_in) - chr::seconds{4453401600};
+            return epoch::tp_from_days(epoch_in) - mjd_offset;
         case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - chr::seconds{211813444800};
+            return epoch::tp_from_days(epoch_in) - jd_offset;
         default:
             throw;
     }
@@ -135,9 +133,9 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
  *
  * @return A time point
  */
-constexpr kep_clock::time_point epoch::tp_from_days(const double days)
+constexpr time_point epoch::tp_from_days(const double days)
 {
-    return kep_clock::y2k + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
+    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, std::ratio<86400>>(days));
 }
 
 /**
@@ -147,14 +145,14 @@ constexpr kep_clock::time_point epoch::tp_from_days(const double days)
  * @param tp The time point.
  * @return A formatted date/time string.
  */
-std::string epoch::as_utc_string(const kep_clock::time_point &tp)
+std::string epoch::as_utc_string(const time_point &tp)
 {
     std::stringstream iss;
     const auto tse{tp.time_since_epoch()};
     const auto dp{std::chrono::floor<std::chrono::days>(tse)};
     const auto hms{std::chrono::floor<std::chrono::seconds>(tse - dp)};
     const auto us{std::chrono::floor<std::chrono::microseconds>(tse - dp - hms)};
-    iss << fmt::format("{:%F}", chr::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
+    iss << fmt::format("{:%F}", std::chrono::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
         << fmt::format("{:06}", us.count());
     return iss.str();
 }
@@ -203,18 +201,20 @@ bool operator!=(const epoch &c1, const epoch &c2)
     return c1.m_tp != c2.m_tp;
 }
 
-kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
+microseconds operator-(const epoch &lhs, const epoch &rhs)
 {
     return lhs.m_tp - rhs.m_tp;
 }
 
-kep_clock::time_point epoch::get_tp() const
+time_point epoch::get_tp() const
 {
     return m_tp;
 }
 epoch utc_now()
 {
-    return epoch(kep_clock::utc_now());
+    auto tp = time_point{std::chrono::duration_cast<microseconds>(std::chrono::system_clock::now().time_since_epoch())};
+
+    return epoch(tp);
 }
 
 } // namespace kep3

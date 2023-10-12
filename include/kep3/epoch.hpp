@@ -12,7 +12,6 @@
 
 #include <chrono>
 #include <cstdint>
-#include <ctime>
 #include <iostream>
 #include <ratio>
 #include <type_traits>
@@ -33,52 +32,22 @@
 namespace kep3
 {
 
-namespace chr = std::chrono;
-
 // Concept to detect a chrono duration
 // of any Rep/Period.
 template <typename T>
 concept any_duration = detail::is_duration<T>::value;
 
-struct kep_clock : public chr::system_clock {
-    /**
-     * @brief Custom clock.
-     * Used for constructing epochs with a custom reference point (1 Jan 2000).
-     * By defining a custom clock, we avoid the overflow
-     * that std::chrono::system_clock suffers at +/- 292 years.
-     * To do that, we lower the resolution to 1 us (microsecond),
-     * which gives the clock a range of +/- 292 thousand years.
-     *
-     * NOTE: Adding durations of less than 1 us to an epoch (defined below)
-     * would not be registered.
-     *
-     * NOTE: As of C++20, the standard guarantees that std::chrono::system_clock
-     * uses the UNIX time reference point, which is midnight on 1 January 1970
-     * (1970-01-01T00:00:00).
-     */
-    using rep = std::int_fast64_t;
-    // Resolution of (1 / 1'000'000)s = 1 us
-    using period = std::ratio<1, 1'000'000>;
-    using duration = chr::duration<rep, period>;
-    using time_point = chr::time_point<kep_clock, duration>;
-    static constexpr bool is_steady = false;
-    // Number of seconds from midnight on 1 Jan 1970 to midnight on 1 Jan 2000.
-    static constexpr chr::seconds y2k_offset{chr::seconds{946684800}};
+// NOTE: we provide our own definition of microseconds
+// in order to portably guarantee that we can represent a time range
+// wider than the one guaranteed by the standard's definitions.
+// Using a 64-bit integer, we are guaranteed to cover a time range
+// of +-292k years around the reference epoch.
+using microseconds = std::chrono::duration<std::int_fast64_t, std::micro>;
 
-    static constexpr time_point y2k{kep_clock::time_point{} + y2k_offset};
-
-    static constexpr std::time_t to_time_t(const time_point &t) noexcept
-    {
-        return static_cast<std::time_t>(chr::duration_cast<chr::seconds>(t.time_since_epoch()).count());
-    }
-
-    static constexpr time_point from_time_t(std::time_t t) noexcept
-    {
-        return chr::time_point_cast<duration>(time_point(chr::seconds(t)));
-    }
-
-    static time_point utc_now() noexcept;
-};
+// Similarly, we define our own time point counting ticks via std::int64_t
+// and with microsesecond resolution. We use system_clock as the time point
+// clock.
+using time_point = std::chrono::time_point<std::chrono::system_clock, microseconds>;
 
 /// epoch class.
 /**
@@ -94,6 +63,18 @@ struct kep_clock : public chr::system_clock {
  */
 class kep3_DLL_PUBLIC epoch
 {
+    // Offset of 0 MJD2000 wrt Unix time.
+    static constexpr auto y2k_offset = microseconds{946684800000000};
+
+    // MJD2000 time point.
+    static constexpr auto y2k = time_point{} + y2k_offset;
+
+    // Offset of 0 JD wrt y2k.
+    static constexpr auto jd_offset = microseconds{211813444800000000};
+
+    // Offset of 0 MJD wrt y2k.
+    static constexpr auto mjd_offset = microseconds{4453401600000000};
+
 public:
     enum class julian_type { MJD2000, MJD, JD };
     enum class string_format { ISO };
@@ -103,13 +84,13 @@ public:
     epoch();
 
     // Constructor from a julian date (as a floating-point value)
-    explicit epoch(double epoch_in, julian_type epoch_type = julian_type::MJD2000);
+    explicit epoch(double epoch_in, julian_type = julian_type::MJD2000);
 
     // Constructor from string
     explicit epoch(const std::string &, string_format = string_format::ISO);
 
     // Constructor from time point.
-    explicit epoch(kep_clock::time_point);
+    explicit epoch(time_point);
 
     /**
      * Constructs an epoch from a std::chrono::duration.
@@ -118,7 +99,7 @@ public:
      */
     template <typename D>
         requires any_duration<std::remove_cvref_t<D>>
-    explicit epoch(D &&duration) : m_tp{kep_clock::time_point{} + std::forward<D>(duration)}
+    explicit epoch(D &&duration) : m_tp{std::chrono::duration_cast<microseconds>(std::forward<D>(duration))}
     {
     }
 
@@ -133,8 +114,7 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset
-                                                        + chr::seconds{211813444800})
+        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset + jd_offset)
             .count();
     }
 
@@ -143,8 +123,7 @@ public:
      */
     [[nodiscard]] constexpr double mjd() const
     {
-        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset
-                                                        + chr::seconds{4453401600})
+        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset + mjd_offset)
             .count();
     }
 
@@ -153,28 +132,27 @@ public:
      */
     [[nodiscard]] constexpr double mjd2000() const
     {
-        return chr::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - kep_clock::y2k_offset).count();
+        return std::chrono::duration<double, std::ratio<86400>>(m_tp.time_since_epoch() - y2k_offset).count();
     }
 
     /* Helper functions for constructors */
-    static kep_clock::time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
-                                         std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0,
-                                         std::int32_t us = 0);
+    static time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
+                              std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
 
-    static kep_clock::time_point make_tp(double epoch_in, julian_type epoch_type);
+    static time_point make_tp(double epoch_in, julian_type epoch_type);
 
     // Conversions
-    static constexpr kep_clock::time_point tp_from_days(double days);
+    static constexpr time_point tp_from_days(double days);
 
     // Duration conversions
-    static constexpr double as_sec(const kep_clock::duration &d)
+    static constexpr double as_sec(const microseconds &d)
     {
-        return chr::duration<double, chr::seconds::period>(d).count();
+        return std::chrono::duration<double, std::ratio<1>>(d).count();
     }
 
     // Printing
     [[nodiscard]] std::string as_utc_string() const;
-    static std::string as_utc_string(const kep_clock::time_point &tp);
+    static std::string as_utc_string(const time_point &tp);
 
     /** operator overloads for sum and diff (epoch-days) and comparison
      * operators
@@ -183,16 +161,16 @@ public:
     kep3_DLL_PUBLIC friend std::ostream &operator<<(std::ostream &s, epoch const &epoch_in);
 
     template <any_duration D>
-    epoch &operator+=(const D &duration)
+    epoch &operator+=(const D &d)
     {
-        m_tp += chr::duration_cast<kep_clock::duration>(duration);
+        m_tp += std::chrono::duration_cast<microseconds>(d);
         return *this;
     }
 
     template <any_duration D>
-    epoch &operator-=(const D &duration)
+    epoch &operator-=(const D &d)
     {
-        m_tp -= chr::duration_cast<kep_clock::duration>(duration);
+        m_tp -= std::chrono::duration_cast<microseconds>(d);
         return *this;
     }
 
@@ -204,30 +182,30 @@ public:
     kep3_DLL_PUBLIC friend bool operator!=(const epoch &c1, const epoch &c2);
 
     template <any_duration D>
-    epoch operator+(const D &duration)
+    epoch operator+(const D &d)
     {
-        return epoch(m_tp + chr::duration_cast<kep_clock::duration>(duration));
+        return epoch(m_tp + std::chrono::duration_cast<microseconds>(d));
     }
 
     template <any_duration D>
-    epoch operator-(const D &duration)
+    epoch operator-(const D &d)
     {
-        return epoch(m_tp - chr::duration_cast<kep_clock::duration>(duration));
+        return epoch(m_tp - std::chrono::duration_cast<microseconds>(d));
     }
 
-    static constexpr auto days(const double value)
+    static constexpr auto days(double value)
     {
-        return chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(value));
+        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, std::ratio<86400>>(value));
     }
 
-    static constexpr auto sec(const double value)
+    static constexpr auto sec(double value)
     {
-        return chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<1>>(value));
+        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, std::ratio<1>>(value));
     }
 
-    kep3_DLL_PUBLIC friend kep_clock::duration operator-(const epoch &lhs, const epoch &rhs);
+    kep3_DLL_PUBLIC friend microseconds operator-(const epoch &lhs, const epoch &rhs);
 
-    [[nodiscard]] kep_clock::time_point get_tp() const;
+    [[nodiscard]] time_point get_tp() const;
 
 private:
     // Serialization code
@@ -242,9 +220,9 @@ private:
     template <class Archive>
     void load(Archive &ar, const unsigned)
     {
-        kep3::kep_clock::rep count{0};
+        std::int64_t count{0};
         ar & count;
-        m_tp = kep_clock::time_point{std::chrono::microseconds(count)};
+        m_tp = time_point{microseconds(count)};
     }
 
     template <class Archive>
@@ -253,8 +231,7 @@ private:
         boost::serialization::split_member(ar, *this, file_version);
     }
 
-    // Time point relative to 1 Jan 2000 (MJD2000)
-    kep_clock::time_point m_tp;
+    time_point m_tp = y2k;
 };
 
 kep3_DLL_PUBLIC epoch utc_now();
