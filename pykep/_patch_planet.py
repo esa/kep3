@@ -69,7 +69,7 @@ def _planet_extract(self, t):
 def _planet_is(self, t):
     """Check the type of the user-defined planet.
 
-    This method returns :data:`False` if :func:`~pykep.planet.extract` returns
+    This method returns :data:`False` if :func:`~pykep.planet.extract()` returns
     :data:`None`, and :data:`True` otherwise.
 
     Args:

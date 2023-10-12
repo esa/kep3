@@ -11,6 +11,9 @@
 #include <fmt/chrono.h>
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/planets/keplerian.hpp>
@@ -91,6 +94,14 @@ PYBIND11_MODULE(core, m)
     m.def("f2h_v", py::vectorize(kep3::f2h), pk::f2h_v_doc().c_str());
     m.def("zeta2f_v", py::vectorize(kep3::zeta2f), pk::zeta2f_v_doc().c_str());
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
+
+    // Eposing element conversions
+    m.def("ic2par", &kep3::ic2par);
+    m.def("par2ic", &kep3::par2ic);
+    m.def("ic2eq", &kep3::ic2eq);
+    m.def("eq2ic", &kep3::eq2ic);
+    m.def("par2eq", &kep3::par2eq);
+    m.def("eq2par", &kep3::eq2par);
 
     // Class epoch
     py::class_<kep3::epoch> epoch_class(m, "epoch");
@@ -200,7 +211,8 @@ PYBIND11_MODULE(core, m)
     planet_class.def(
         "elements",
         [](const kep3::planet &pl, const kep3::epoch &ep, kep3::elements_type el_ty) { return pl.elements(ep, el_ty); },
-        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F, pykep::planet_elements_docstring().c_str());
+        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F,
+        pykep::planet_elements_docstring().c_str());
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module

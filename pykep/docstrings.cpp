@@ -751,7 +751,7 @@ std::string epoch_from_string_doc()
 
 std::string planet_docstring()
 {
-    return R"(__init__(udpla = null_planet())
+    return R"(__init__(udpla = null_udpla())
 
 Planet class.
 
