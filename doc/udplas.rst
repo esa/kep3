@@ -1,4 +1,4 @@
-.. _planet:
+.. _udplas:
 
 List of implemented planets
 ============================
