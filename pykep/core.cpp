@@ -27,6 +27,8 @@
 #include "common_utils.hpp"
 #include "docstrings.hpp"
 #include "expose_udplas.hpp"
+#include "kep3/core_astro/propagate_lagrangian.hpp"
+#include "kep3/lambert_problem.hpp"
 #include "python_udpla.hpp"
 
 namespace py = pybind11;
@@ -221,4 +223,23 @@ PYBIND11_MODULE(core, m)
 
     // Finalize (this constructor must be the last one of planet_class: else overload will fail with all the others)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
+
+    // Exposing the Lambert problem class
+    py::class_<kep3::lambert_problem> lambert_problem(m, "lambert_problem");
+    lambert_problem
+        .def(py::init<const std::array<double, 3> &, const std::array<double, 3> &, double, double, bool, unsigned>(),
+             py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{1., 0., 0}},
+             py::arg("tof") = kep3::pi / 2, py::arg("mu") = 1., py::arg("cw") = false, py::arg("multi_revs") = 1)
+        .def("get_v1", &kep3::lambert_problem::get_v1)
+        .def("get_v2", &kep3::lambert_problem::get_v2)
+        .def("get_r1", &kep3::lambert_problem::get_r1)
+        .def("get_r2", &kep3::lambert_problem::get_r2)
+        .def("get_tof", &kep3::lambert_problem::get_tof)
+        .def("get_mu", &kep3::lambert_problem::get_mu)
+        .def("get_x", &kep3::lambert_problem::get_x)
+        .def("get_iters", &kep3::lambert_problem::get_iters)
+        .def("get_Nmax", &kep3::lambert_problem::get_Nmax);
+
+    // Exposing propagators
+    m.def("propagate_lagrangian", &kep3::propagate_lagrangian);
 }

@@ -55,7 +55,7 @@ class kep3_DLL_PUBLIC lambert_problem
 public:
     friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
     explicit lambert_problem(const std::array<double, 3> &r1 = default_r1, const std::array<double, 3> &r2 = default_r2,
-                             double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 5);
+                             double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 1);
     [[nodiscard]] const std::vector<std::array<double, 3>> &get_v1() const;
     [[nodiscard]] const std::vector<std::array<double, 3>> &get_v2() const;
     [[nodiscard]] const std::array<double, 3> &get_r1() const;
