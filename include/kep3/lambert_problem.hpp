@@ -49,17 +49,17 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &
 
 class kep3_DLL_PUBLIC lambert_problem
 {
-    static const std::array<double, 3> default_r1;
-    static const std::array<double, 3> default_r2;
+    static const std::array<double, 3> default_rs;
+    static const std::array<double, 3> default_rf;
 
 public:
     friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
-    explicit lambert_problem(const std::array<double, 3> &r1 = default_r1, const std::array<double, 3> &r2 = default_r2,
+    explicit lambert_problem(const std::array<double, 3> &rs = default_rs, const std::array<double, 3> &rf = default_rf,
                              double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 1);
-    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v1() const;
-    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v2() const;
-    [[nodiscard]] const std::array<double, 3> &get_r1() const;
-    [[nodiscard]] const std::array<double, 3> &get_r2() const;
+    [[nodiscard]] const std::vector<std::array<double, 3>> &get_vs() const;
+    [[nodiscard]] const std::vector<std::array<double, 3>> &get_vf() const;
+    [[nodiscard]] const std::array<double, 3> &get_rs() const;
+    [[nodiscard]] const std::array<double, 3> &get_rf() const;
     [[nodiscard]] const double &get_tof() const;
     [[nodiscard]] const double &get_mu() const;
     [[nodiscard]] const std::vector<double> &get_x() const;
@@ -76,12 +76,12 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
     {
-        ar & m_r1;
-        ar & m_r2;
+        ar & m_rs;
+        ar & m_rf;
         ar & m_tof;
         ar & m_mu;
-        ar & m_v1;
-        ar & m_v2;
+        ar & m_vs;
+        ar & m_vf;
         ar & m_iters;
         ar & m_x;
         ar & m_s;
@@ -93,11 +93,11 @@ private:
         ar & m_multi_revs;
     }
 
-    std::array<double, 3> m_r1, m_r2;
+    std::array<double, 3> m_rs, m_rf;
     double m_tof;
     double m_mu;
-    std::vector<std::array<double, 3>> m_v1;
-    std::vector<std::array<double, 3>> m_v2;
+    std::vector<std::array<double, 3>> m_vs;
+    std::vector<std::array<double, 3>> m_vf;
     std::vector<unsigned> m_iters;
     std::vector<double> m_x;
     double m_s, m_c, m_lambda;

@@ -65,7 +65,7 @@ TEST_CASE("delta_guidance")
         kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
 
         // 3 - Check the Delta guidance error
-        for (const auto &v1 : lp.get_v1()) {
+        for (const auto &v1 : lp.get_vs()) {
             double dg_err = kep3_tests::delta_guidance_error(r1, r2, v1, mu);
             if (!(dg_err < 1e-12)) {
                 std::cout << lp << std::endl;
@@ -80,12 +80,12 @@ TEST_CASE("methods")
 {
     // Here we test construction for a simple geometry
     kep3::lambert_problem lp{{1., 0., 0.}, {0., 1., 0.}, 3. * kep3::pi / 2., 1., true, 5};
-    auto v1 = lp.get_v1()[0];
-    auto v2 = lp.get_v2()[0];
+    auto v1 = lp.get_vs()[0];
+    auto v2 = lp.get_vf()[0];
     REQUIRE(kep3_tests::floating_point_error_vector(v1, {0, -1, 0}) < 1e-13);
     REQUIRE(kep3_tests::floating_point_error_vector(v2, {1, 0, 0}) < 1e-13);
-    auto r1 = lp.get_r1();
-    auto r2 = lp.get_r2();
+    auto r1 = lp.get_rs();
+    auto r2 = lp.get_rf();
     REQUIRE(r1 == std::array<double, 3>{1, 0, 0});
     REQUIRE(r2 == std::array<double, 3>{0, 1, 0});
     REQUIRE(lp.get_tof() == 3 * kep3::pi / 2);
