@@ -39,7 +39,7 @@ std::string m2e_doc()
       >>> M = 1.2
       >>> ecc = 0.1
       >>> pk.m2e(M, ecc)
-      1.1929459841174401
+      1.296254963787226
 )";
 }
 
@@ -131,7 +131,7 @@ std::string f2m_doc()
       >>> f = -0.34
       >>> ecc = 0.67
       >>> pk.f2m(f, ecc)
-      -0.8380280766377411
+      -0.05065883735669101
 )";
 }
 
@@ -244,9 +244,9 @@ std::string f2h_doc()
     Examples:
       >>> import pykep as pk
       >>> f = 1.2
-      >>> ecc = 0.1
+      >>> ecc = 1.1
       >>> pk.f2h(f, ecc)
-      1.1929459841174401
+      0.30083016696826936
 )";
 }
 
@@ -512,7 +512,7 @@ std::string h2n_v_doc()
     Examples:
       >>> import pykep as pk
       >>> import numpy as np
-      >>> =Hs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> Hs = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 4.5
       >>> Ns = pk.h2n_v(Hs, ecc)
       >>> np.shape(Ns)
@@ -590,7 +590,7 @@ std::string f2h_v_doc()
       >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 5.7
       >>> Hs = pk.n2h_v(fs, ecc)
-      >>> np.shape(hs)
+      >>> np.shape(Hs)
       (100,)
 )";
 }
@@ -728,7 +728,7 @@ std::string epoch_from_datetime_doc()
     Examples:
       >>> import pykep as pk
       >>> from datetime import datetime
-      >>> pk.epoch(datetime(year=2000, month=01, day=13))
+      >>> pk.epoch(datetime(year=2000, month=1, day=13))
       2000-01-13T00:00:00.000000
 )";
 }
@@ -744,8 +744,8 @@ std::string epoch_from_string_doc()
 
     Examples:
       >>> import pykep as pk
-      >>> pk.epoch("2000-01-14T:00:00:00.000001")
-      2000-01-13T00:00:00.000001
+      >>> pk.epoch("2000-01-14T00:00:00.000001")
+      2000-01-14T00:00:00.000001
 )";
 }
 
@@ -1017,13 +1017,16 @@ std::string propagate_lagrangian_docstring()
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
     Returns:
-          
+          :class:`list` of :class:`list`: the final position and velocity after the propagation.
 
-Returns a tuple (rf, vf) containing the final position and velocity after the propagation.
-
-Example::
-
-  rf,vf = propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1)
+    Example::
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> r0 = [1,0,0]
+        >>> v0 = [0,1,0]
+        >>> tof = pi/2
+        >>> mu = 1
+        >>> rf,vf = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
 )";
 }
 

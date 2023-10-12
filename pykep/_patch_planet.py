@@ -32,9 +32,9 @@ def _planet_extract(self, t):
     Examples:
         >>> import pykep as pk
         >>> udpla = pk.udpla.keplerian(pk.epoch(0), [1,0,0,0,0,0], 1)
-        >>> pla = pk.planet(pla1)
+        >>> pla = pk.planet(udpla)
         >>> type(pla.extract(pk.udpla.keplerian)) 
-        pykep.core.udpla.keplerian
+        <class 'pykep.core.udpla.keplerian'>
         >>> pla.extract(pk.jpl_lp) is None
         True
         >>> class my_udpla:

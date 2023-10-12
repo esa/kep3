@@ -230,6 +230,14 @@ PYBIND11_MODULE(core, m)
         .def(py::init<const std::array<double, 3> &, const std::array<double, 3> &, double, double, bool, unsigned>(),
              py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{1., 0., 0}},
              py::arg("tof") = kep3::pi / 2, py::arg("mu") = 1., py::arg("cw") = false, py::arg("multi_revs") = 1)
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::lambert_problem>)
+        // Copy and deepcopy.
+        .def("__copy__", &pykep::generic_copy_wrapper<kep3::lambert_problem>)
+        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::lambert_problem>)
+        // Pickle support.
+        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::lambert_problem>,
+                        &pykep::pickle_setstate_wrapper<kep3::lambert_problem>))
         .def("get_vs", &kep3::lambert_problem::get_v0, "Returns the velocity at the first point.")
         .def("get_vf", &kep3::lambert_problem::get_v1, "Returns the velocity at the second point.")
         .def("get_rs", &kep3::lambert_problem::get_r0, "Returns the first point.")
@@ -241,6 +249,12 @@ PYBIND11_MODULE(core, m)
         .def("get_Nmax", &kep3::lambert_problem::get_Nmax, "Returns the maximum number of iterations allowed.");
 
     // Exposing propagators
-    m.def("propagate_lagrangian", &kep3::propagate_lagrangian, py::arg("rv"), py::arg("dt"), py::arg("mu"),
-          pykep::propagate_lagrangian_docstring().c_str());
+    m.def(
+        "propagate_lagrangian",
+        [](const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu) {
+            auto retval = pos_vel;
+            kep3::propagate_lagrangian(retval, dt, mu);
+            return retval;
+        },
+        py::arg("rv"), py::arg("dt"), py::arg("mu"), pykep::propagate_lagrangian_docstring().c_str());
 }
