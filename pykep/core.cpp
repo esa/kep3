@@ -228,7 +228,7 @@ PYBIND11_MODULE(core, m)
     py::class_<kep3::lambert_problem> lambert_problem(m, "lambert_problem", pykep::lambert_problem_docstring().c_str());
     lambert_problem
         .def(py::init<const std::array<double, 3> &, const std::array<double, 3> &, double, double, bool, unsigned>(),
-             py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{1., 0., 0}},
+             py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{0., 1., 0}},
              py::arg("tof") = kep3::pi / 2, py::arg("mu") = 1., py::arg("cw") = false, py::arg("multi_revs") = 1)
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::lambert_problem>)
@@ -256,5 +256,6 @@ PYBIND11_MODULE(core, m)
             kep3::propagate_lagrangian(retval, dt, mu);
             return retval;
         },
-        py::arg("rv"), py::arg("dt"), py::arg("mu"), pykep::propagate_lagrangian_docstring().c_str());
+        py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("dt") = kep3::pi / 2,
+        py::arg("mu") = 1, pykep::propagate_lagrangian_docstring().c_str());
 }
