@@ -122,7 +122,7 @@ epoch::epoch(const std::string &in, string_format sf)
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(time_point time_point) : m_tp{time_point} {}
+epoch::epoch(time_point tp) : m_tp{tp} {}
 
 time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
                           const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
@@ -146,7 +146,7 @@ time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const s
  */
 time_point epoch::tp_from_days(double days)
 {
-    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, day_ratio>(days));
+    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, seconds_day_ratio>(days));
 }
 
 /**

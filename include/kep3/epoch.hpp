@@ -14,8 +14,6 @@
 #include <cstdint>
 #include <iostream>
 #include <ratio>
-#include <type_traits>
-#include <utility>
 
 #include <fmt/ostream.h>
 
@@ -31,11 +29,6 @@
 
 namespace kep3
 {
-
-// Concept to detect a chrono duration
-// of any Rep/Period.
-template <typename T>
-concept any_duration = detail::is_duration<T>::value;
 
 // NOTE: we provide our own definition of microseconds
 // in order to portably guarantee that we can represent a time range
@@ -76,7 +69,7 @@ class kep3_DLL_PUBLIC epoch
     static constexpr auto mjd_offset = microseconds{4453401600000000};
 
     // Used in several places.
-    using day_ratio = std::ratio<86400>;
+    using seconds_day_ratio = std::ratio<86400>;
 
     /* Helper functions for constructors */
     static time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
@@ -104,9 +97,9 @@ public:
      * The reference point is assumed to be MJD2000.
      * \param[in] time The time as a duration.
      */
-    template <typename D>
-        requires any_duration<std::remove_cvref_t<D>>
-    explicit epoch(D &&duration) : m_tp{std::chrono::duration_cast<microseconds>(std::forward<D>(duration))}
+    template <typename Rep, typename Period>
+    explicit epoch(std::chrono::duration<Rep, Period> duration)
+        : m_tp{std::chrono::duration_cast<microseconds>(duration)}
     {
     }
 
@@ -121,7 +114,8 @@ public:
      */
     [[nodiscard]] constexpr double jd() const
     {
-        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset + jd_offset).count();
+        return std::chrono::duration<double, seconds_day_ratio>(m_tp.time_since_epoch() - y2k_offset + jd_offset)
+            .count();
     }
 
     /**
@@ -129,7 +123,8 @@ public:
      */
     [[nodiscard]] constexpr double mjd() const
     {
-        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset + mjd_offset).count();
+        return std::chrono::duration<double, seconds_day_ratio>(m_tp.time_since_epoch() - y2k_offset + mjd_offset)
+            .count();
     }
 
     /**
@@ -137,7 +132,7 @@ public:
      */
     [[nodiscard]] constexpr double mjd2000() const
     {
-        return std::chrono::duration<double, day_ratio>(m_tp.time_since_epoch() - y2k_offset).count();
+        return std::chrono::duration<double, seconds_day_ratio>(m_tp.time_since_epoch() - y2k_offset).count();
     }
 
     // Conversions
@@ -159,15 +154,15 @@ public:
 
     kep3_DLL_PUBLIC friend std::ostream &operator<<(std::ostream &s, epoch const &epoch_in);
 
-    template <any_duration D>
-    epoch &operator+=(const D &d)
+    template <typename Rep, typename Period>
+    epoch &operator+=(const std::chrono::duration<Rep, Period> &d)
     {
         m_tp += std::chrono::duration_cast<microseconds>(d);
         return *this;
     }
 
-    template <any_duration D>
-    epoch &operator-=(const D &d)
+    template <typename Rep, typename Period>
+    epoch &operator-=(const std::chrono::duration<Rep, Period> &d)
     {
         m_tp -= std::chrono::duration_cast<microseconds>(d);
         return *this;
@@ -175,21 +170,21 @@ public:
 
     friend auto operator<=>(const epoch &, const epoch &) = default;
 
-    template <any_duration D>
-    epoch operator+(const D &d)
+    template <typename Rep, typename Period>
+    epoch operator+(const std::chrono::duration<Rep, Period> &d)
     {
         return epoch(m_tp + std::chrono::duration_cast<microseconds>(d));
     }
 
-    template <any_duration D>
-    epoch operator-(const D &d)
+    template <typename Rep, typename Period>
+    epoch operator-(const std::chrono::duration<Rep, Period> &d)
     {
         return epoch(m_tp - std::chrono::duration_cast<microseconds>(d));
     }
 
     static constexpr auto days(double value)
     {
-        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, day_ratio>(value));
+        return std::chrono::duration_cast<microseconds>(std::chrono::duration<double, seconds_day_ratio>(value));
     }
 
     static constexpr auto sec(double value)
