@@ -187,31 +187,6 @@ std::ostream &operator<<(std::ostream &s, const epoch &ep)
     return s;
 }
 
-bool operator>(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp > c2.m_tp;
-}
-bool operator<(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp < c2.m_tp;
-}
-bool operator>=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp >= c2.m_tp;
-}
-bool operator<=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp <= c2.m_tp;
-}
-bool operator==(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp == c2.m_tp;
-}
-bool operator!=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp != c2.m_tp;
-}
-
 microseconds operator-(const epoch &lhs, const epoch &rhs)
 {
     return lhs.m_tp - rhs.m_tp;

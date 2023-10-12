@@ -173,12 +173,7 @@ public:
         return *this;
     }
 
-    kep3_DLL_PUBLIC friend bool operator>(const epoch &c1, const epoch &c2);
-    kep3_DLL_PUBLIC friend bool operator<(const epoch &c1, const epoch &c2);
-    kep3_DLL_PUBLIC friend bool operator>=(const epoch &c1, const epoch &c2);
-    kep3_DLL_PUBLIC friend bool operator<=(const epoch &c1, const epoch &c2);
-    kep3_DLL_PUBLIC friend bool operator==(const epoch &c1, const epoch &c2);
-    kep3_DLL_PUBLIC friend bool operator!=(const epoch &c1, const epoch &c2);
+    friend auto operator<=>(const epoch &, const epoch &) = default;
 
     template <any_duration D>
     epoch operator+(const D &d)
