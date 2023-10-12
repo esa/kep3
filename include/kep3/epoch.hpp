@@ -209,7 +209,7 @@ private:
     template <class Archive>
     void load(Archive &ar, const unsigned)
     {
-        std::int64_t count{0};
+        microseconds::rep count{0};
         ar & count;
         m_tp = time_point{microseconds(count)};
     }

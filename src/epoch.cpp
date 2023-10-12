@@ -84,7 +84,7 @@ epoch::epoch(const std::string &in, string_format sf)
 
     // We assume: 1980-10-17T11:36:21.121841 and allow crops such as 1980-10.
     constexpr std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
-    auto len = in.size();
+    const auto len = in.size();
     auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); // NOLINT
     if (foo == std::end(allowed_lenghts)) {
         throw std::logic_error(
@@ -92,7 +92,8 @@ epoch::epoch(const std::string &in, string_format sf)
             "D,H,M,S and X can be missing incrementally.");
     }
     unsigned d = 1u;
-    int h = 0, min = 0, s = 0, us = 0;
+    int h = 0, min = 0, s = 0;
+    std::int32_t us = 0;
     int y = std::stoi(in.substr(0, 4));
     auto mon = boost::numeric_cast<unsigned>(std::stoi(in.substr(5, 2)));
     if (len >= 10) {
@@ -126,7 +127,6 @@ epoch::epoch(time_point tp) : m_tp{tp} {}
 
 time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
                           const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
-
 {
     return /*time_point{}
            +*/
