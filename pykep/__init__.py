@@ -14,6 +14,8 @@ del _version
 # Importing cpp functionalities
 from .core import *
 
+from .udpla import tle_satellite
+
 # Patch the problem class.
 from . import _patch_planet
 

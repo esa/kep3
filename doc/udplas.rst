@@ -1,4 +1,4 @@
-.. _udplas:
+.. _planet:
 
 List of implemented planets
 ============================
@@ -9,4 +9,7 @@ List of implemented planets
    :members:
 
 .. autoclass:: null_udpla
+   :members:
+
+.. autoclass:: tle_satellite
    :members:
