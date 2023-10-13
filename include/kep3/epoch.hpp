@@ -20,7 +20,6 @@
 
 #include <fmt/ostream.h>
 
-#include <kep3/detail/duration.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
 
