@@ -66,8 +66,8 @@ epoch::epoch(double epoch_in, julian_type epoch_type)
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, // NOLINT
-             const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
+epoch::epoch(int y, unsigned mon, unsigned d, const std::int32_t h, const std::int32_t min, const std::int32_t s,
+             const std::int32_t ms, const std::int32_t us)
     : m_tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
 }
@@ -91,22 +91,21 @@ epoch::epoch(const std::string &in, string_format sf)
             "Malformed input string when constructing an epoch. Must be 'YYYY-MM-DD HH:MM:SS:XXXXXX'. "
             "D,H,M,S and X can be missing incrementally.");
     }
-    unsigned d = 1u;
-    int h = 0, min = 0, s = 0;
-    std::int32_t us = 0;
+    unsigned d = 1;
+    std::int32_t h = 0, min = 0, s = 0, us = 0;
     int y = std::stoi(in.substr(0, 4));
     auto mon = boost::numeric_cast<unsigned>(std::stoi(in.substr(5, 2)));
     if (len >= 10) {
         d = boost::numeric_cast<unsigned>(std::stoi(in.substr(8, 2)));
         if (len >= 13) {
-            h = std::stoi(in.substr(11, 2));
+            h = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(11, 2)));
             if (len >= 16) {
-                min = std::stoi(in.substr(14, 2));
+                min = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(14, 2)));
                 if (len >= 19) {
-                    s = std::stoi(in.substr(17, 2));
+                    s = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(17, 2)));
                     if (len >= 21) {
                         std::string rest = in.substr(20);
-                        us = std::stoi(rest);
+                        us = boost::numeric_cast<std::int32_t>(std::stoi(rest));
                         for (decltype(rest.size()) i = 0; i < 6u - rest.size(); ++i) {
                             us *= 10;
                         }
@@ -125,18 +124,54 @@ epoch::epoch(const std::string &in, string_format sf)
  */
 epoch::epoch(time_point tp) : m_tp{tp} {}
 
-time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
-                          const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+time_point epoch::make_tp(int y, unsigned mon, unsigned d, const std::int32_t h, const std::int32_t min,
+                          const std::int32_t s, const std::int32_t ms, const std::int32_t us)
 {
-    return /*time_point{}
-           +*/
-        static_cast<time_point>(
-            std::chrono::sys_days(
-                std::chrono::year_month_day{std::chrono::year(y) / std::chrono::month(mon) / std::chrono::day(d)}
-                + std::chrono::months{0})
-                .time_since_epoch()
-            + std::chrono::hours(h) + std::chrono::minutes(min) + std::chrono::seconds(s)
-            + std::chrono::milliseconds(ms) + std::chrono::microseconds(us));
+    // Construct and validate year, month and day.
+    const std::chrono::year chr_y(y);
+    if (!chr_y.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid year value of {} was specified in the construction of a time point", y));
+    }
+
+    const std::chrono::month chr_mon(mon);
+    if (!chr_mon.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid month value of {} was specified in the construction of a time point", mon));
+    }
+
+    const std::chrono::day chr_d(d);
+    if (!chr_d.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid day value of {} was specified in the construction of a time point", d));
+    }
+
+    // Build the year_month_day object.
+    auto ymd = std::chrono::year_month_day(chr_y, chr_mon, chr_d);
+
+    // Normalise year and month (see https://en.cppreference.com/w/cpp/chrono/year_month_day/operator_days).
+    ymd += std::chrono::months{0};
+
+    // Convert ymd to a std::chrono::time_point. This also normalises the day.
+    const auto chr_tp = static_cast<std::chrono::sys_days>(ymd);
+
+    // Convert chr_tp to our time point.
+    // NOTE: this is guaranteed to work because the conversion factor is 86400 * 10**6,
+    // which is always representable by std::int_max_t. See the docs for the constructor
+    // of std::time_point and the constructor for std::duration:
+    // https://en.cppreference.com/w/cpp/chrono/time_point/time_point
+    // https://en.cppreference.com/w/cpp/chrono/duration/duration
+    auto tp = static_cast<time_point>(chr_tp);
+
+    // Add the rest.
+    tp += ensure_64bit<std::chrono::hours>(h);
+    tp += ensure_64bit<std::chrono::minutes>(min);
+    tp += ensure_64bit<std::chrono::seconds>(s);
+    tp += ensure_64bit<std::chrono::milliseconds>(ms);
+    tp += ensure_64bit<std::chrono::microseconds>(us);
+
+    return tp;
 }
 
 /**

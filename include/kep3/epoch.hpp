@@ -11,9 +11,12 @@
 #define kep3_EPOCH_HPP
 
 #include <chrono>
+#include <concepts>
 #include <cstdint>
 #include <iostream>
+#include <limits>
 #include <ratio>
+#include <type_traits>
 
 #include <fmt/ostream.h>
 
@@ -30,14 +33,37 @@
 namespace kep3
 {
 
+namespace detail
+{
+
+template <typename T>
+struct ensure_64bit_duration_impl {
+};
+
+template <typename Rep, typename Period>
+    requires std::signed_integral<Rep>
+struct ensure_64bit_duration_impl<std::chrono::duration<Rep, Period>> {
+    using rep_t = std::conditional_t<(std::numeric_limits<Rep>::digits < std::numeric_limits<std::int64_t>::digits),
+                                     std::int64_t, Rep>;
+    using type = std::chrono::duration<rep_t, Period>;
+};
+
+} // namespace detail
+
+// Small utility that takes the input duration T and checks its Rep type:
+// if Rep is at least 64 bits long, then T is returned unchanged, otherwise
+// T is widened to use std::int64_t as Rep type.
+template <typename T>
+using ensure_64bit = detail::ensure_64bit_duration_impl<T>::type;
+
 // NOTE: we provide our own definition of microseconds
 // in order to portably guarantee that we can represent a time range
 // wider than the one guaranteed by the standard's definitions.
-// Using a 64-bit integer, we are guaranteed to cover a time range
-// of +-292k years around the reference epoch.
-using microseconds = std::chrono::duration<std::int_fast64_t, std::micro>;
+// Using at least a 64-bit integer, we are guaranteed to cover a time range
+// of at least +-292k years around the reference epoch.
+using microseconds = ensure_64bit<std::chrono::microseconds>;
 
-// Similarly, we define our own time point counting ticks via std::int64_t
+// Similarly, we define our own time point counting ticks via (at least) std::int64_t
 // and with microsesecond resolution. We use system_clock as the time point
 // clock.
 using time_point = std::chrono::time_point<std::chrono::system_clock, microseconds>;
@@ -68,12 +94,12 @@ class kep3_DLL_PUBLIC epoch
     // Offset of 0 MJD wrt y2k.
     static constexpr auto mjd_offset = microseconds{4453401600000000};
 
-    // Used in several places.
+    // Used in several places below.
     using seconds_day_ratio = std::ratio<86400>;
 
     /* Helper functions for constructors */
-    static time_point make_tp(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0,
-                              std::int32_t min = 0, std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
+    static time_point make_tp(int y, unsigned mon, unsigned d, std::int32_t h = 0, std::int32_t min = 0,
+                              std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
 
 public:
     enum class julian_type { MJD2000, MJD, JD };
@@ -104,8 +130,8 @@ public:
     }
 
     // Constructor for datetime broken down into its constituents.
-    explicit epoch(std::int32_t y, std::uint32_t mon, std::uint32_t d, std::int32_t h = 0, std::int32_t min = 0,
-                   std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
+    explicit epoch(int y, unsigned mon, unsigned d, std::int32_t h = 0, std::int32_t min = 0, std::int32_t s = 0,
+                   std::int32_t ms = 0, std::int32_t us = 0);
 
     /* Computing non-Gregorian dates */
 
