@@ -218,8 +218,7 @@ PYBIND11_MODULE(core, m)
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module
-    auto udpla_module = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
-    pykep::expose_all_udplas(udpla_module, planet_class);
+    pykep::expose_all_udplas(m, planet_class);
 
     // Finalize (this constructor must be the last one of planet_class: else overload will fail with all the others)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
@@ -245,7 +244,7 @@ PYBIND11_MODULE(core, m)
         .def("get_tof", &kep3::lambert_problem::get_tof, "Returns the time of flight between the two points.")
         .def("get_mu", &kep3::lambert_problem::get_mu, "Returns the gravitational parameter of the attracting body.")
         .def("get_x", &kep3::lambert_problem::get_x, "Returns the Battin variable x along the time of flight curves.")
-        .def("get_iters", &kep3::lambert_problem::get_iters, "Returns the number of iteration made.")
+        .def("get_iters", &kep3::lambert_problem::get_iters, "Returns the number of iterations made.")
         .def("get_Nmax", &kep3::lambert_problem::get_Nmax, "Returns the maximum number of iterations allowed.");
 
     // Exposing propagators

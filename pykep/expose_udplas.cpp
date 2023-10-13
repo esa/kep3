@@ -12,6 +12,7 @@
 #include <pybind11/pybind11.h>
 
 #include <kep3/planet.hpp>
+#include <kep3/planets/jpl_lp.hpp>
 #include <kep3/planets/keplerian.hpp>
 
 #include "common_utils.hpp"
@@ -27,12 +28,13 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
 {
     // null udpla
     auto null_udpla = pykep::expose_one_udpla<kep3::detail::null_udpla>(
-        udpla_module, planet_class, "null_udpla", "A moot udpla used as default to construct a planet.");
+        udpla_module, planet_class, "_null_udpla", "A moot udpla used as default to construct a planet.");
     // Constructor.
     null_udpla.def(py::init<>());
+
     // keplerian udpla
     auto keplerian_udpla
-        = pykep::expose_one_udpla<kep3::udpla::keplerian>(udpla_module, planet_class, "keplerian", "keplerian udpla");
+        = pykep::expose_one_udpla<kep3::udpla::keplerian>(udpla_module, planet_class, "_keplerian", "keplerian udpla");
     // Constructors.
     keplerian_udpla
         .def(py::init<const kep3::epoch &, const std::array<double, 6> &, double, std::string, std::array<double, 3>,
@@ -47,8 +49,16 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::udpla::keplerian>)
         // other methods
-        .def_property_readonly("ref_epoch", &kep3::udpla::keplerian::get_ref_epoch)
-        .def("elements", &kep3::udpla::keplerian::elements);
+        .def_property_readonly("ref_epoch", &kep3::udpla::keplerian::get_ref_epoch);
+
+    // jpl_lp_udpla udpla
+    auto jpl_lp_udpla = pykep::expose_one_udpla<kep3::udpla::jpl_lp>(
+        udpla_module, planet_class, "_jpl_lp", "Low precision ephemerides from JPL for the solar system planets");
+    // Constructors.
+    jpl_lp_udpla
+        .def(py::init<std::string>(), py::arg("name") = "earth")
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::udpla::jpl_lp>);
 }
 
 } // namespace pykep

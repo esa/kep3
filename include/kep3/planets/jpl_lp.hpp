@@ -69,8 +69,6 @@ public:
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
     [[nodiscard]] std::string get_extra_info() const;
-
-    // Other methods
     [[nodiscard]] std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
                                                  kep3::elements_type = kep3::elements_type::KEP_F) const;
 
