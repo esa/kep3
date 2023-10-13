@@ -10,33 +10,31 @@ from .core import planet
 def _planet_extract(self, t):
     """Extract the user-defined planet.
 
-    This method allows to extract a reference to the user-defined planet (UDPLA) stored within this
+    This method allows to extract a reference to the user-defined planet (UDPLA) stored within the
     :class:`~pykep.planet` instance. The behaviour of this function depends on the value
     of *t* (which must be a :class:`type`) and on the type of the internal UDPLA:
 
-    * if the type of the UDPLA is *t*, then a reference to the UDP will be returned
-      (this mirrors the behaviour of the corresponding C++ method
-      :cpp:func:`kep3::planet::extract()`),
+    * if the type of the UDPLA is *t*, then a reference to the UDP will be returned,
     * if *t* is :class:`object` and the UDP is a Python object (as opposed to an
-      :ref:`exposed C++ planet `), then a reference to the
+      :ref:`exposed C++ planets`), then a reference to the
       UDPLA will be returned (this allows to extract a Python UDPLA without knowing its type),
     * otherwise, :data:`None` will be returned.
 
     Args:
-        t (:class:`type`): the type of the user-defined planet to extract
+        *t* (:class:`type`): the type of the user-defined planet to extract
 
     Returns:
         a reference to the internal user-defined planet, or :data:`None` if the extraction fails
 
     Raises:
-        TypeError: if *t* is not a :class:`type`
+        *TypeError*: if *t* is not a :class:`type`
 
     Examples:
         >>> import pykep as pk
         >>> udpla = pk.udpla.keplerian(pk.epoch(0), [1,0,0,0,0,0], 1)
-        >>> pla = pk.planet(pla1)
+        >>> pla = pk.planet(udpla)
         >>> type(pla.extract(pk.udpla.keplerian)) 
-        pykep.core.udpla.keplerian
+        <class 'pykep.core.udpla.keplerian'>
         >>> pla.extract(pk.jpl_lp) is None
         True
         >>> class my_udpla:
@@ -53,7 +51,6 @@ def _planet_extract(self, t):
         <__main__.my_udpla at 0x7f8f7241c350>
         >>> pla2.extract(pk.udpla.keplerian) is None
         True
-
     """
     if not isinstance(t, type):
         raise TypeError("the 't' parameter must be a type")
@@ -72,17 +69,17 @@ def _planet_extract(self, t):
 def _planet_is(self, t):
     """Check the type of the user-defined planet.
 
-    This method returns :data:`False` if :func:`extract(t) <pykep.planet.extract>` returns
+    This method returns :data:`False` if :func:`~pykep.planet.extract()` returns
     :data:`None`, and :data:`True` otherwise.
 
     Args:
-        t (:class:`type`): the type that will be compared to the type of the UDPLA
+        *t*  (:class:`type`): the type that will be compared to the type of the UDPLA
 
     Returns:
         bool: whether the UDPLA is of type *t* or not
 
     Raises:
-        unspecified: any exception thrown by :func:`~pykep.planet.extract()`
+        *unspecified*: any exception thrown by :func:`~pykep.planet.extract()`
 
     """
     return not self.extract(t) is None

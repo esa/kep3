@@ -7,6 +7,9 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "kep3/core_astro/convert_anomalies.hpp"
+#include "kep3/core_astro/eq2par2eq.hpp"
+#include "kep3/core_astro/ic2par2ic.hpp"
 #include <array>
 #include <cmath>
 #include <limits>
@@ -33,6 +36,31 @@ double period_from_energy(const std::array<double, 3> &r, const std::array<doubl
         double a = -mu / 2. / en;
         return kep3::pi * 2. * std::sqrt(a * a * a / mu);
     }
+}
+
+std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &pos_vel,
+                                                           double mu, kep3::elements_type el_type)
+{
+    std::array<double, 6> retval = kep3::ic2par(pos_vel, mu);
+    switch (el_type) {
+        case kep3::elements_type::KEP_F:
+            break;
+        case kep3::elements_type::KEP_M:
+            if (retval[0] < 1) {
+                throw std::logic_error("Mean anomaly is only available for ellipses.");
+            }
+            retval[5] = kep3::f2m(retval[5], retval[1]);
+            break;
+        case kep3::elements_type::MEQ:
+            retval = kep3::par2eq(retval, false);
+            break;
+        case kep3::elements_type::MEQ_R:
+            retval = kep3::par2eq(retval, true);
+            break;
+        default:
+            throw std::logic_error("You should not go here!");
+    }
+    return retval;
 }
 
 std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)

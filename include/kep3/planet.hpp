@@ -10,6 +10,7 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
+#include "kep3/core_astro/constants.hpp"
 #include <concepts>
 #include <string>
 #include <typeinfo>
@@ -64,6 +65,13 @@ concept udpla_has_period = requires(const T &p, const epoch &e) {
     } -> std::same_as<double>;
 };
 
+template <typename T>
+concept udpla_has_elements = requires(const T &p, const epoch &e, kep3::elements_type el_t) {
+    {
+        p.elements(e, el_t)
+    } -> std::same_as<std::array<double, 6>>;
+};
+
 template <typename, typename>
 struct planet_iface;
 
@@ -82,6 +90,10 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
     [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
+    // NOLINTNEXTLINE(google-default-arguments)
+    [[nodiscard]] virtual std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
+                                                         kep3::elements_type = kep3::elements_type::KEP_F) const
+        = 0;
 };
 
 // Helper macro to implement getters in the planet interface implementation.
@@ -98,6 +110,8 @@ struct planet_iface<void, void> {
 // NOTE: implement this in the cpp in order to avoid
 // instantiating the same code over and over.
 kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const std::array<double, 3> &, double);
+kep3_DLL_PUBLIC std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &, double,
+                                                           kep3::elements_type);
 
 // Planet interface implementation.
 template <typename Holder, typename T>
@@ -131,6 +145,28 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
             throw not_implemented_error(fmt::format("A period nor a central body mu has been declared for '{}', "
                                                     "impossible to provide a default implementation",
                                                     get_name()));
+        }
+    }
+
+    // NOLINTNEXTLINE(google-default-arguments)
+    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep = kep3::epoch(),
+                                                 kep3::elements_type el_type = kep3::elements_type::KEP_F) const final
+    {
+        // If the user provides an efficient way to compute the orbital elements, then use it.
+        if constexpr (udpla_has_elements<T>) {
+            return this->value().elements(ep, el_type);
+        } else if constexpr (udpla_has_get_mu_central_body<T>) {
+            // If the user provides the central body parameter, then compute the
+            // elements using posvel computed at ep and converted.
+            auto pos_vel = eph(ep);
+            double mu = get_mu_central_body();
+            return elements_from_posvel(pos_vel, mu, el_type);
+        } else {
+            // There is no way to compute osculating elements for this planet
+            throw not_implemented_error(
+                fmt::format("A central body mu has not been declared for '{}', "
+                            "impossible to provide a default implementation to compute the osculating elements",
+                            get_name()));
         }
     }
 };
@@ -176,6 +212,7 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
     TANUKI_REF_IFACE_MEMFUN(period)
+    TANUKI_REF_IFACE_MEMFUN(elements)
 
     // Implement the extract functionality.
     template <typename T>

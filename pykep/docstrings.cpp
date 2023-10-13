@@ -27,19 +27,19 @@ std::string m2e_doc()
     Converts from Mean to Eccentric anomaly. Requires ecc < 1.
 
     Args:
-      **M** (float): the Mean anomaly (rad.)
+      *M* (:class:`float`): the Mean anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Eccentric anomaly in [-pi, pi] (rad.)
+      :class:`float`: the Eccentric anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
       >>> M = 1.2
       >>> ecc = 0.1
       >>> pk.m2e(M, ecc)
-      1.1929459841174401
+      1.296254963787226
 )";
 }
 
@@ -50,12 +50,12 @@ std::string e2m_doc()
     Converts from Eccentric to Mean anomaly. Requires ecc < 1.
 
     Args:
-      **E** (float): the Eccentric anomaly (rad.)
+      *E* (:class:`float`): the Eccentric anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Mean anomaly (rad.)
+      :class:`float`: the Mean anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -73,12 +73,12 @@ std::string e2f_doc()
     Converts from eccentric to true anomaly. Requires ecc < 1.
 
     Args:
-      **E** (float): the Eccentric anomaly (rad.)
+      *E* (:class:`float`): the Eccentric anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the True anomaly in [-pi, pi] (rad.)
+      :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -96,12 +96,12 @@ std::string f2e_doc()
     Converts from True to Eccentric anomaly. Requires ecc < 1.
 
     Args:
-      **f** (float): the True anomaly (rad.)
+      *f* (:class:`float`): the True anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Eccentric anomaly in [-pi, pi] (rad.)
+      :class:`float`: the Eccentric anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -119,19 +119,19 @@ std::string f2m_doc()
     Converts from True to Mean anomaly. Requires ecc < 1.
 
     Args:
-      **f** (float): the True anomaly (rad.)
+      *f* (:class:`float`): the True anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Mean anomaly in [-pi, pi] (rad.)
+      :class:`float`: the Mean anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
       >>> f = -0.34
       >>> ecc = 0.67
       >>> pk.f2m(f, ecc)
-      -0.8380280766377411
+      -0.05065883735669101
 )";
 }
 
@@ -142,12 +142,12 @@ std::string m2f_doc()
     Converts from Mean to True anomaly. Requires ecc < 1.
 
     Args:
-      **M** (float): the Mean anomaly (rad.)
+      *M* (:class:`float`): the Mean anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the True anomaly in [-pi, pi] (rad.)
+      :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -165,12 +165,12 @@ std::string h2n_doc()
     Converts from Hyperbolic to Hyperbolic Mean anomaly. Requires ecc > 1.
 
     Args:
-      **H** (float): the Hyperbolic anomaly (rad.)
+      *H* (:class:`float`): the Hyperbolic anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Hyperbolic Mean anomaly (rad.)
+      :class:`float`: the Hyperbolic Mean anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -188,12 +188,12 @@ std::string n2h_doc()
     Converts from Hyperbolic Mean to Hyperbolic anomaly. Requires ecc > 1.
 
     Args:
-      **N** (float): the Hyperbolic Mean anomaly (rad.)
+      *N* (:class:`float`): the Hyperbolic Mean anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Hyperbolic anomaly (rad.)
+      :class:`float`: the Hyperbolic anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -211,12 +211,12 @@ std::string h2f_doc()
     Converts from Hyperbolic to True anomaly. Requires ecc > 1.
 
     Args:
-      **H** (float): the Hyperbolic anomaly (rad.)
+      *H* (:class:`float`): the Hyperbolic anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the True anomaly in [-pi, pi] (rad.)
+      :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -234,19 +234,19 @@ std::string f2h_doc()
     Converts from True to Hyperbolic anomaly. Requires ecc > 1.
 
     Args:
-      **f** (float): the True anomaly (rad.)
+      *f* (:class:`float`): the True anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Hyperbolic anomaly
+      :class:`float`: the Hyperbolic anomaly
 
     Examples:
       >>> import pykep as pk
       >>> f = 1.2
-      >>> ecc = 0.1
+      >>> ecc = 1.1
       >>> pk.f2h(f, ecc)
-      1.1929459841174401
+      0.30083016696826936
 )";
 }
 
@@ -257,12 +257,12 @@ std::string f2n_doc()
     Converts from True to Hyperbolic Mean anomaly. Requires ecc > 1.
 
     Args:
-      **f** (float): the True anomaly (rad.)
+      *f* (:class:`float`): the True anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Hyperbolic Mean anomaly
+      :class:`float`: the Hyperbolic Mean anomaly
 
     Examples:
       >>> import pykep as pk
@@ -280,12 +280,12 @@ std::string n2f_doc()
     Converts from Hyperbolic Mean to True anomaly. Requires ecc > 1.
 
     Args:
-      **N** (float): the Hyperbolic Mean anomaly (rad.)
+      *N* (:class:`float`): the Hyperbolic Mean anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the True anomaly
+      :class:`float`: the True anomaly
 
     Examples:
       >>> import pykep as pk
@@ -306,12 +306,12 @@ std::string zeta2f_doc()
     definition of zeta and the treatment of the resulting equations.
 
     Args:
-      **zeta** (float): the Gudermannian (rad.)
+      *zeta* (:class:`float`): the Gudermannian (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the True anomaly
+      :class:`float`: the True anomaly
 
     Examples:
       >>> import pykep as pk
@@ -329,12 +329,12 @@ std::string f2zeta_doc()
     Converts from True anomaly to Gudermannian. Requires ecc > 1.
 
     Args:
-      **f** (float): the True anomaly (rad.)
+      *f* (:class:`float`): the True anomaly (rad.)
 
-      **ecc** (float): the eccentricity
+      *ecc* (:class:`float`): the eccentricity
 
     Returns:
-      float: the Gudermannian 
+      :class:`float`: the Gudermannian 
 
     Examples:
       >>> import pykep as pk
@@ -352,12 +352,12 @@ std::string m2e_v_doc()
     Converts from Mean to Eccentric anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **Ms** (np.array or float): the Mean anomaly (rad.)
+      *Ms* (:class:`numpy.ndarray` or :class:`float`): the Mean anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Eccentric anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -377,12 +377,12 @@ std::string e2m_v_doc()
     Converts from Eccentric to Mean anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **Es** (np.array or float): the Eccentric anomaly (rad.)
+      *Es* (:class:`numpy.ndarray` or :class:`float`): the Eccentric anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Mean anomaly (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Mean anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -402,12 +402,12 @@ std::string e2f_v_doc()
     Converts from eccentric to true anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **Es** (np.array or float): the Eccentric anomaly (rad.)
+      *Es* (:class:`numpy.ndarray` or :class:`float`): the Eccentric anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the True anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -427,12 +427,12 @@ std::string f2e_v_doc()
     Converts from True to Eccentric anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **fs** (np.array or float): the True anomaly (rad.)
+      *fs* (:class:`numpy.ndarray` or :class:`float`): the True anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Eccentric anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -452,12 +452,12 @@ std::string f2m_v_doc()
     Converts from True to Mean anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **fs** (np.array or float): the True anomaly (rad.)
+      *fs* (:class:`numpy.ndarray` or :class:`float`): the True anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Mean anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Mean anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -477,12 +477,12 @@ std::string m2f_v_doc()
     Converts from Mean to True anomaly (vectorized version). Requires ecc < 1.
 
     Args:
-      **Ms** (np.array or float): the Mean anomaly (rad.)
+      *Ms* (:class:`numpy.ndarray` or :class:`float`): the Mean anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the True anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -502,17 +502,17 @@ std::string h2n_v_doc()
     Converts from Hyperbolic to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **Hs** (np.array or float): the Hyperbolic anomaly (rad.)
+      *Hs* (:class:`numpy.ndarray` or :class:`float`): the Hyperbolic anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Hyperbolic Mean anomaly (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Hyperbolic Mean anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
       >>> import numpy as np
-      >>> =Hs = np.linspace(-np.pi/2, np.pi/2, 100)
+      >>> Hs = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 4.5
       >>> Ns = pk.h2n_v(Hs, ecc)
       >>> np.shape(Ns)
@@ -527,12 +527,12 @@ std::string n2h_v_doc()
     Converts from Hyperbolic Mean to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **Ns** (np.array or float): the Hyperbolic Mean anomaly (rad.)
+      *Ns* (:class:`numpy.ndarray` or :class:`float`): the Hyperbolic Mean anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Hyperbolic anomaly (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the Hyperbolic anomaly (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -552,12 +552,12 @@ std::string h2f_v_doc()
     Converts from Hyperbolic to True anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **Hs** (np.array or float): the Hyperbolic anomaly (rad.)
+      *Hs* (:class:`numpy.ndarray` or :class:`float`): the Hyperbolic anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the True anomaly in [-pi, pi] (rad.)
+      :class:`numpy.ndarray` or :class:`float`: the True anomaly in [-pi, pi] (rad.)
 
     Examples:
       >>> import pykep as pk
@@ -577,12 +577,12 @@ std::string f2h_v_doc()
     Converts from True to Hyperbolic anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **fs** (np.array or float): the True anomaly (rad.)
+      *fs* (:class:`numpy.ndarray` or :class:`float`): the True anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Hyperbolic anomaly
+      :class:`numpy.ndarray` or :class:`float`: the Hyperbolic anomaly
 
     Examples:
       >>> import pykep as pk
@@ -590,7 +590,7 @@ std::string f2h_v_doc()
       >>> fs = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 5.7
       >>> Hs = pk.n2h_v(fs, ecc)
-      >>> np.shape(hs)
+      >>> np.shape(Hs)
       (100,)
 )";
 }
@@ -602,12 +602,12 @@ std::string f2n_v_doc()
     Converts from True to Hyperbolic Mean anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **fs** (np.array or float): the True anomaly (rad.)
+      *fs* (:class:`numpy.ndarray` or :class:`float`): the True anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Hyperbolic Mean anomaly
+      :class:`numpy.ndarray` or :class:`float`: the Hyperbolic Mean anomaly
 
     Examples:
       >>> import pykep as pk
@@ -627,12 +627,12 @@ std::string n2f_v_doc()
     Converts from Hyperbolic Mean to True anomaly (vectorized version). Requires ecc > 1.
 
     Args:
-      **Ns** (np.array or float): the Hyperbolic Mean anomaly (rad.)
+      *Ns* (:class:`numpy.ndarray` or :class:`float`): the Hyperbolic Mean anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the True anomaly
+      :class:`numpy.ndarray` or :class:`float`: the True anomaly
 
     Examples:
       >>> import pykep as pk
@@ -655,12 +655,12 @@ std::string zeta2f_v_doc()
     definition of zeta and the treatment of the resulting equations.
 
     Args:
-      **zetas** (np.array or float): the Gudermannian (rad.)
+      *zetas* (:class:`numpy.ndarray` or :class:`float`): the Gudermannian (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the True anomaly
+      :class:`numpy.ndarray` or :class:`float`: the True anomaly
 
     Examples:
       >>> import pykep as pk
@@ -680,12 +680,12 @@ std::string f2zeta_v_doc()
     Converts from True anomaly to Gudermannian (vectorized version). Requires ecc > 1.
 
     Args:
-      **fs** (np.array or float): the True anomaly (rad.)
+      *fs* (:class:`numpy.ndarray` or :class:`float`): the True anomaly (rad.)
 
-      **eccs** (np.array or float): the eccentricity
+      *eccs* (:class:`numpy.ndarray` or :class:`float`): the eccentricity
 
     Returns:
-      np.array or float: the Gudermannian 
+      :class:`numpy.ndarray` or :class:`float`: the Gudermannian 
 
     Examples:
       >>> import pykep as pk
@@ -697,4 +697,337 @@ std::string f2zeta_v_doc()
       (100,)
 )";
 }
+
+std::string epoch_from_float_doc()
+{
+    return R"(**epoch** (when, julian_type = MJD2000)
+    
+    Constructs an epoch from a Julian Date.
+
+    Args:
+      *when* (:class:`float`): the Julian Date (days since reference)
+
+      *julian_type* (:class:`~pk.epoch.julian_type`): one of MJD2000, JD or MJD
+
+    Examples:
+      >>> import pykep as pk
+      >>> pk.epoch(12.3, pk.epoch.julian_type.MJD2000)
+      2000-01-13T07:12:00.000000
+)";
+}
+
+std::string epoch_from_datetime_doc()
+{
+    return R"(**epoch** (when)
+    
+    Constructs an epoch from a datetime object.
+
+    Args:
+      *when* (:class:`datetime.datetime`): a date
+
+    Examples:
+      >>> import pykep as pk
+      >>> from datetime import datetime
+      >>> pk.epoch(datetime(year=2000, month=1, day=13))
+      2000-01-13T00:00:00.000000
+)";
+}
+
+std::string epoch_from_string_doc()
+{
+    return R"(**epoch** (when, string_format = pk.epoch.string_format.ISO)
+    
+    Constructs an epoch from a string.
+
+    Args:
+      *when* (:class:`string`): a date
+
+    Examples:
+      >>> import pykep as pk
+      >>> pk.epoch("2000-01-14T00:00:00.000001")
+      2000-01-14T00:00:00.000001
+)";
+}
+
+std::string planet_docstring()
+{
+    return R"(__init__(udpla = null_udpla())
+
+Planet class.
+
+This type-erasing class represents a generic object moving in space. 
+Basically anything which can be defined by its position and velocity in some reference frame.
+
+In order to define a planet in pykep, the user must first define a class
+whose methods describe the properties of the planet and allow to compute
+its ephemerides (position and velocity), possibly its osculating elements, etc.. 
+In pykep, we refer to such a class as a **user-defined planet**, or UDPLA for short. 
+Once defined and instantiated, a UDPLA can then be used to construct an instance
+of this class, the :class:`~pykep.planet`.
+
+Every UDPLA must implement at least the following method:
+
+.. code-block::
+
+   def eph(self, epoch):
+     ...
+
+The ``eph()`` method is expected to return the Cartesian position and velocity at epoch
+in some chosen reference frame.
+
+The ``eph()`` method of the UDPLA will then be accessible from the corresponding
+:func:`pykep.planet.eph()` method (see its documentation for information on how the method should be implemented
+in the UDPLA and other details).
+
+The mandatory method above allow to define a simple planet, which, in a minimal case,
+could actually be also just a fixed point in space, for example if its ``eph()`` method
+returns a constant position and zero velocity. 
+
+In order to consider more complex cases, the UDPLA may implement one or more of the following methods:
+
+.. code-block::
+
+   def get_mu_central_body(self):
+     ...
+   def get_mu_self(self):
+     ...
+   def get_radius(self):
+     ...
+   def get_safe_radius(self):
+     ...
+   def period(self, epoch):
+     ...
+   def elements(self, epoch, elements_type):
+     ...
+   def get_name(self):
+     ...
+   def get_extra_info(self):
+     ...
+
+See the documentation of the corresponding methods in this class for details on how the optional
+methods in the UDPLA should be implemented and on how they are used by :class:`~pykep.planet`.
+
+
+Args:
+    *udpla*: a user-defined planet, either C++ or Python
+
+Raises:
+    *NotImplementedError*: if *udpla* does not implement the mandatory methods detailed above
+    unspecified: any exception thrown by methods of the UDP invoked during construction,
+    the deep copy of the UDP, the constructor of the underlying C++ class,
+    failures at the intersection between C++ and Python (e.g., type conversion errors, mismatched function
+    signatures, etc.)
+
+)";
+}
+
+std::string planet_get_extra_info_docstring()
+{
+    return R"(get_extra_info()
+
+PLanet's extra info.
+
+If the UDPLA provides a ``get_extra_info()`` method, then this method will return the output of its ``get_extra_info()``
+method. Otherwise, an empty string will be returned. 
+
+The string representation of a :class:`~pykep.planet` contains the output of a call to this method.
+
+Returns:
+  :class:`str`: extra info about the UDPLA
+
+Raises:
+  unspecified: any exception thrown by the ``get_extra_info()`` method of the UDPLA
+
+)";
+}
+
+std::string planet_get_name_docstring()
+{
+    return R"(get_name()
+
+Planet's name.
+
+If the UDPLA provides a ``get_name()`` method, then this method will return the output of its ``get_name()`` method.
+Otherwise, an implementation-defined name based on the type of the UDPLA will be returned.
+
+The string representation of a :class:`~pykep.planet` contains the output of a call to this method.
+
+Returns:
+    :class:`str`: the problem's name
+
+)";
+}
+
+std::string planet_get_mu_central_body_docstring()
+{
+    return R"(get_mu_central_body()
+
+The gravitational parameter in SI units (m^3/sec^2) of a main body of attraction.
+
+If the UDPLA provides a ``get_mu_central_body()`` method, then this method will return the output of its ``get_mu_central_body()`` method.
+Otherwise, -1 will be returned.
+
+
+Returns:
+    :class:`float`: the central body gravitational parameter.
+
+)";
+}
+
+std::string planet_get_mu_self_docstring()
+{
+    return R"(get_mu_self()
+
+The gravitational parameter in SI units (m^3/sec^2) of the planet.
+
+If the UDPLA provides a ``get_mu_self()`` method, then this method will return the output of its ``get_mu_self()`` method.
+Otherwise, -1 will be returned.
+
+
+Returns:
+    :class:`float`: the planet's gravitational parameter.
+
+)";
+}
+
+std::string planet_get_radius_docstring()
+{
+    return R"(get_radius()
+
+An average radius in SI units (m^3/sec^2) of the planet.
+
+If the UDPLA provides a ``get_radius()`` method, then this method will return the output of its ``get_radius()`` method.
+Otherwise, -1 will be returned.
+
+
+Returns:
+    :class:`float`: the planet's average radius.
+
+)";
+}
+
+std::string planet_get_safe_radius_docstring()
+{
+    return R"(get_safe_radius()
+
+The safe radius in SI units (m^3/sec^2) of the planet. This is mainly for use in planetary fly-manouvres as to avoid
+the planet atmosphere or circumvent its radiation environment.
+
+If the UDPLA provides a ``get_safe_radius()`` method, then this method will return the output of its ``get_safe_radius()`` method.
+Otherwise, -1 will be returned.
+
+
+Returns:
+    :class:`float`: the planet's safe radius.
+
+)";
+}
+
+std::string planet_period_docstring()
+{
+    return R"(period(ep = pk.epoch(0))
+
+The period of the planet in seconds.
+
+If the UDPLA provides a ``period()`` method, then this method will return the output of its ``period()`` method.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the period as computed by the
+equation:
+
+.. math::
+   T = 2 \pi \sqrt{\frac{a^3}{\mu}}
+
+Otherwise, -1 will be returned.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period.
+
+Returns:
+    :class:`float`: the planet's period.
+
+)";
+}
+
+std::string planet_elements_docstring()
+{
+    return R"(elements(ep = pk.epoch(0), el_ty = KEP_F)
+
+The period of the planet in seconds.
+
+If the UDPLA provides a ``elements()`` method, then this method will return the output of its ``elements()`` method.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the elements as computed by the
+:func:`pykep.ic2par`. Otherwise, -1 will be returned.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which compute the elements.
+    
+    *el_ty* (:class:`~pykep.el_type`): the elements type.
+
+Returns:
+    :class:`list`: the planet's elements at epoch.
+
+)";
+}
+
+std::string lambert_problem_docstring()
+{
+    return R"(__init__(rs = [1,0,0], rf = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
+
+      Args:
+          *r1* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
+
+          *r2* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *cw* (:class:`bool`): True for retrograde motion (clockwise). Defaults to False.
+
+          *max_revs* (:class:`float`): Maximum number of multiple revolutions to be computed. Defaults to 0.
+
+      .. note::
+
+        Units need to be consistent. The multirev Lambert's problem will be solved upon construction
+        and its solution stored in data members.
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> r0 = [1,0,0]
+        >>> r1 = [0,1,0]
+        >>> tof = np.pi/2
+        >>> mu = 1.
+        >>> lp = pk.lambert_problem(r0, r1, tof, mu)
+        >>> lp.get_vs()[0]
+        [-4.1028493158958256e-16, 1.0000000000000002, 0.0]
+)";
+}
+
+std::string propagate_lagrangian_docstring()
+{
+    return R"(propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1)
+
+    Args:
+          *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
+
+          *v0* (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+    Returns:
+          :class:`list` of :class:`list`: the final position and velocity after the propagation.
+
+    Example::
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> r0 = [1,0,0]
+        >>> v0 = [0,1,0]
+        >>> tof = pi/2
+        >>> mu = 1
+        >>> rf,vf = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
+)";
+}
+
 } // namespace pykep

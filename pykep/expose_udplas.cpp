@@ -25,10 +25,16 @@ namespace py = pybind11;
 // Split algorithm exposition functions.
 void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &planet_class) // NOLINT
 {
+    // null udpla
+    auto null_udpla = pykep::expose_one_udpla<kep3::detail::null_udpla>(
+        udpla_module, planet_class, "null_udpla", "A moot udpla used as default to construct a planet.");
+    // Constructor.
+    null_udpla.def(py::init<>());
     // keplerian udpla
-    auto keplerian_udpla = pykep::expose_one_udpla<kep3::udpla::keplerian>(udpla_module, planet_class, "keplerian", "keplerian udpla");
+    auto keplerian_udpla
+        = pykep::expose_one_udpla<kep3::udpla::keplerian>(udpla_module, planet_class, "keplerian", "keplerian udpla");
+    // Constructors.
     keplerian_udpla
-        // Constructors.
         .def(py::init<const kep3::epoch &, const std::array<double, 6> &, double, std::string, std::array<double, 3>,
                       kep3::elements_type>(),
              py::arg("ep"), py::arg("elem"), py::arg("mu_central_body"), py::arg("name") = "unknown",
