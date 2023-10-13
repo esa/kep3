@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -153,7 +152,7 @@ time_point epoch::make_tp(int y, unsigned mon, unsigned d, const std::int32_t h,
     // Normalise year and month (see https://en.cppreference.com/w/cpp/chrono/year_month_day/operator_days).
     ymd += std::chrono::months{0};
 
-    // Convert ymd to a std::chrono::time_point. This also normalises the day.
+    // Convert ymd to a std::chrono::system_clock::time_point. This also normalises the day.
     const auto chr_tp = static_cast<std::chrono::sys_days>(ymd);
 
     // Convert chr_tp to our time point.
@@ -162,7 +161,7 @@ time_point epoch::make_tp(int y, unsigned mon, unsigned d, const std::int32_t h,
     // of std::time_point and the constructor for std::duration:
     // https://en.cppreference.com/w/cpp/chrono/time_point/time_point
     // https://en.cppreference.com/w/cpp/chrono/duration/duration
-    auto tp = static_cast<time_point>(chr_tp);
+    time_point tp = chr_tp;
 
     // Add the rest.
     tp += ensure_64bit<std::chrono::hours>(h);
@@ -193,14 +192,10 @@ time_point epoch::tp_from_days(double days)
  */
 std::string epoch::as_utc_string(const time_point &tp)
 {
-    std::stringstream iss;
-    const auto tse{tp.time_since_epoch()};
-    const auto dp{std::chrono::floor<std::chrono::days>(tse)};
-    const auto hms{std::chrono::floor<std::chrono::seconds>(tse - dp)};
-    const auto us{std::chrono::floor<std::chrono::microseconds>(tse - dp - hms)};
-    iss << fmt::format("{:%F}", std::chrono::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
-        << fmt::format("{:06}", us.count());
-    return iss.str();
+    // Format it with fmt.
+    // NOTE: fmt is seemingly able to format all system_clock time points,
+    // even ours which will typically have a different duration.
+    return fmt::format("{:%FT%T}", tp);
 }
 
 std::string epoch::as_utc_string() const
@@ -233,7 +228,9 @@ time_point epoch::get_tp() const
 }
 epoch utc_now()
 {
-    auto tp = time_point{std::chrono::duration_cast<microseconds>(std::chrono::system_clock::now().time_since_epoch())};
+    // NOTE: need explicit conversion here as system_clock might have a different
+    // duration than microseconds.
+    auto tp = std::chrono::time_point_cast<microseconds>(std::chrono::system_clock::now());
 
     return epoch(tp);
 }

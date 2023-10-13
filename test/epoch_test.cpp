@@ -25,9 +25,6 @@ using namespace std::literals;
 
 TEST_CASE("construct")
 {
-    fmt::print("epoch 300000 : {}\n\n\n\n", kep3::epoch(300000, kep3::epoch::julian_type::MJD2000));
-    fmt::print("epoch 3000000: {}\n\n\n\n", kep3::epoch(3000000, kep3::epoch::julian_type::MJD2000));
-
     // test syntax
 
     // // > 2000
@@ -39,7 +36,7 @@ TEST_CASE("construct")
     REQUIRE_NOTHROW(epoch(0.0, epoch::julian_type::MJD));
     REQUIRE_NOTHROW(epoch(123.456, epoch::julian_type::MJD));
     REQUIRE_NOTHROW(epoch(2000, 10, 17, 11, 36, 21, 121, 841));
-    REQUIRE_NOTHROW(epoch(2064, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "2064-10-17T11:36:21.121841");
+    REQUIRE(epoch(2064, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "2064-10-17T11:36:21.121841");
     REQUIRE_NOTHROW(epoch("2064-10"));
     REQUIRE_NOTHROW(epoch("2064-10-17"));
     REQUIRE_NOTHROW(epoch("2064-10-17T11"));
@@ -62,13 +59,13 @@ TEST_CASE("construct")
     REQUIRE_NOTHROW(epoch(-0.0, epoch::julian_type::MJD));
     REQUIRE_NOTHROW(epoch(-123.456, epoch::julian_type::MJD));
     REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841));
-    REQUIRE_NOTHROW(epoch(1980, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "1980-10-17T11:36:21.121841");
+    REQUIRE(epoch(1980, 10, 17, 11, 36, 21, 121, 841).as_utc_string() == "1980-10-17T11:36:21.121841");
 
     // Epoch from lvalue and rvalue references
     epoch ep{2000, 1, 1};
     REQUIRE(epoch(ep) == ep);
     REQUIRE(epoch(epoch{2000, 1, 1}) == ep);
-    REQUIRE_NOTHROW(epoch("2000-01-01") == ep);
+    REQUIRE(epoch("2000-01-01") == ep);
     REQUIRE(epoch("1980-10-17T11:36:21.121841") == epoch(1980, 10, 17, 11, 36, 21, 121, 841));
 
     // test conversions
@@ -97,7 +94,6 @@ TEST_CASE("epoch_operators")
     epoch today(0.);
     auto offset{std::chrono::days(10963)};
     today += offset;
-    std::cout << "TODAY: " << today << "\n";
     REQUIRE(today == epoch(2030, 1, 6));
     today -= std::chrono::duration_cast<kep3::microseconds>(offset);
     REQUIRE(today == epoch());
