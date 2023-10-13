@@ -53,7 +53,7 @@ struct ensure_64bit_duration_impl<std::chrono::duration<Rep, Period>> {
 // if Rep is at least 64 bits long, then T is returned unchanged, otherwise
 // T is widened to use std::int64_t as Rep type.
 template <typename T>
-using ensure_64bit = detail::ensure_64bit_duration_impl<T>::type;
+using ensure_64bit = typename detail::ensure_64bit_duration_impl<T>::type;
 
 // NOTE: we provide our own definition of microseconds
 // in order to portably guarantee that we can represent a time range
