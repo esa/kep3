@@ -173,6 +173,36 @@ time_point epoch::make_tp(int y, unsigned mon, unsigned d, const std::int32_t h,
     return tp;
 }
 
+bool operator>(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp > c2.m_tp;
+}
+
+bool operator<(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp < c2.m_tp;
+}
+
+bool operator>=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp >= c2.m_tp;
+}
+
+bool operator<=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp <= c2.m_tp;
+}
+
+bool operator==(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp == c2.m_tp;
+}
+
+bool operator!=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp != c2.m_tp;
+}
+
 /**
  * @brief Creates time point from the number of days since 0 MJD2000.
  *

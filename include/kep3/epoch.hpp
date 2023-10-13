@@ -193,7 +193,12 @@ public:
         return *this;
     }
 
-    friend auto operator<=>(const epoch &, const epoch &) = default;
+    kep3_DLL_PUBLIC friend bool operator>(const epoch &, const epoch &);
+    kep3_DLL_PUBLIC friend bool operator<(const epoch &, const epoch &);
+    kep3_DLL_PUBLIC friend bool operator>=(const epoch &, const epoch &);
+    kep3_DLL_PUBLIC friend bool operator<=(const epoch &, const epoch &);
+    kep3_DLL_PUBLIC friend bool operator==(const epoch &, const epoch &);
+    kep3_DLL_PUBLIC friend bool operator!=(const epoch &, const epoch &);
 
     template <typename Rep, typename Period>
     epoch operator+(const std::chrono::duration<Rep, Period> &d)
