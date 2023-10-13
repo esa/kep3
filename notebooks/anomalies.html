@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>The various anomalies in pykep &#8212; pykep 0.0.1 documentation</title>
   
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Epochs and Julian Dates" href="epochs.html" />
-    <link rel="prev" title="Basic tutorials" href="../tutorials.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,10 +146,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Convert Anomalies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elements.html">Orbital Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../epoch.html">Epoch class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of implemented planets</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Basic tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 </ul>
@@ -384,8 +390,8 @@ document.write(`
 <h1>The various anomalies in pykep<a class="headerlink" href="#the-various-anomalies-in-pykep" title="Permalink to this heading">#</a></h1>
 <p>A number of anomalies are typically of use in space-flight mechanics and its useful to define the various symbols used to indicate them. Throughout pykep code and documentation we mostly use:</p>
 <p><span class="math notranslate nohighlight">\(f\)</span>: True, <span class="math notranslate nohighlight">\(M\)</span>: Mean,  <span class="math notranslate nohighlight">\(E\)</span>: Eccentric, <span class="math notranslate nohighlight">\(N\)</span>: Hyperbolic Mean, <span class="math notranslate nohighlight">\(H\)</span>: Hyperbolic, <span class="math notranslate nohighlight">\(\zeta\)</span>: Gudermannian, <span class="math notranslate nohighlight">\(L\)</span>: True longitude, <span class="math notranslate nohighlight">\(\lambda\)</span>: Mean longitude.</p>
-<p>To keep the various function name consistent with our naming scheme we do not use there capitalized letters so that <code class="docutils literal notranslate"><span class="pre">pykep.n2h</span></code>
-will be the name indicating a function transforming N to H. At times we also must avoid the use of single letter variables so that for example we may write, for example, <strong>mean</strong> if necessary to indicate <span class="math notranslate nohighlight">\(M\)</span>.</p>
+<p>To keep the various function name consistent with our naming scheme we do not use there capitalized letters so that, for example,  <a class="reference internal" href="../anomalies.html#pykep.n2h" title="pykep.n2h"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.n2h()</span></code></a>
+is the name indicating a function transforming N to H. At times we also must avoid the use of single letter variables so that for example we may write, for example, <strong>mean</strong> if necessary to indicate <span class="math notranslate nohighlight">\(M\)</span>.</p>
 <p>All anomalies are linked with each other through algebraic explicit and implicit equations such as the most famous Kepler’s equation:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -417,7 +423,7 @@ M = E - e \sin E
 </div>
 </div>
 </div>
-<p>We may have a <code class="docutils literal notranslate"><span class="pre">numpy.array</span></code> of True Anomalies (or eccentricities), in which case we can use the vectorized version of the same function (note the subscript):</p>
+<p>We may have a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of True Anomalies (or eccentricities), in which case we can use the vectorized version of the same function (note the subscript):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -461,7 +467,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 4446337 Kepler&#39;s Equations each second.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 3978602 Kepler&#39;s Equations each second.
 </pre></div>
 </div>
 </div>
@@ -485,7 +491,7 @@ M = E - e \sin E
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Basic tutorials</p>
+        <p class="prev-next-title">Tutorials</p>
       </div>
     </a>
     <a class="right-next"

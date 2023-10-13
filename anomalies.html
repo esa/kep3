@@ -7,9 +7,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Convert Anomalies &#8212; pykep 0.0.1 documentation</title>
+    <title>Anomalies Conversions &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -50,8 +50,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'anomalies';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Basic tutorials" href="tutorials.html" />
-    <link rel="prev" title="API" href="api.html" />
+    <link rel="next" title="Orbital Elements" href="elements.html" />
+    <link rel="prev" title="Global constants" href="constants.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,10 +146,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="api.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Convert Anomalies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of implemented planets</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Basic tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
 </ul>
@@ -337,7 +343,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Convert Anomalies</h1>
+    <h1>Anomalies Conversions</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -392,9 +398,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="convert-anomalies">
-<span id="anomalies"></span><h1>Convert Anomalies<a class="headerlink" href="#convert-anomalies" title="Permalink to this heading">#</a></h1>
-<p>In pykep we adopt the following naming for the various anomalies:
+  <section id="anomalies-conversions">
+<span id="anomalies"></span><h1>Anomalies Conversions<a class="headerlink" href="#anomalies-conversions" title="Permalink to this heading">#</a></h1>
+<p>In <cite>pykep</cite> we adopt the following naming for the various anomalies:
 <span class="math notranslate nohighlight">\(M\)</span> is the Mean Anomaly,
 <span class="math notranslate nohighlight">\(E\)</span> is the Eccentric Anomaly,
 <span class="math notranslate nohighlight">\(L\)</span> is the True Longitude,
@@ -413,16 +419,16 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">m2e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.m2e" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Mean to Eccentric anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>M</strong> (float): the Mean anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>M</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Mean anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Eccentric anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Eccentric anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="mf">1.2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">m2e</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="go">1.1929459841174401</span>
+<span class="go">1.296254963787226</span>
 </pre></div>
 </div>
 </dd>
@@ -434,10 +440,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">e2m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.e2m" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Eccentric to Mean anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>E</strong> (float): the Eccentric anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>E</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Eccentric anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Mean anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Mean anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -455,10 +461,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">m2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.m2f" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Mean to True anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>M</strong> (float): the Mean anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>M</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Mean anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="mf">0.32</span>
@@ -476,16 +482,16 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2m" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Mean anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>f</strong> (float): the True anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>f</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Mean anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Mean anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.34</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">0.67</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">f2m</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="go">-0.8380280766377411</span>
+<span class="go">-0.05065883735669101</span>
 </pre></div>
 </div>
 </dd>
@@ -497,10 +503,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">e2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.e2f" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from eccentric to true anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>E</strong> (float): the Eccentric anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>E</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Eccentric anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -518,10 +524,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2e" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Eccentric anomaly. Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>f</strong> (float): the True anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>f</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Eccentric anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Eccentric anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -539,10 +545,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">n2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.n2h" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic Mean to Hyperbolic anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>N</strong> (float): the Hyperbolic Mean anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic Mean anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Hyperbolic anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -560,10 +566,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">h2n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.h2n" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic to Hyperbolic Mean anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>H</strong> (float): the Hyperbolic anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>H</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Hyperbolic Mean anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic Mean anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -581,10 +587,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">n2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.n2f" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic Mean to True anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>N</strong> (float): the Hyperbolic Mean anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic Mean anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the True anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mf">10.32</span>
@@ -602,10 +608,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2n" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Hyperbolic Mean anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>f</strong> (float): the True anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>f</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Hyperbolic Mean anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic Mean anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="mf">1.2</span>
@@ -623,10 +629,10 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">h2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.h2f" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic to True anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>H</strong> (float): the Hyperbolic anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>H</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="mf">10.32</span>
@@ -644,16 +650,16 @@ to another, and their vectorized versions.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2h" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Hyperbolic anomaly. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>f</strong> (float): the True anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>f</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Hyperbolic anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="mf">1.2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">1.1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">f2h</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="go">1.1929459841174401</span>
+<span class="go">0.30083016696826936</span>
 </pre></div>
 </div>
 </dd>
@@ -667,10 +673,10 @@ to another, and their vectorized versions.</p>
 <p>See Battin: “An Introduction to the Mathematics and Methods of Astrodynamics” for a 
 definition of zeta and the treatment of the resulting equations.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>zeta</strong> (float): the Gudermannian (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>zeta</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Gudermannian (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the True anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zeta</span> <span class="o">=</span> <span class="mf">8.2</span>
@@ -688,10 +694,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2zeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2zeta" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True anomaly to Gudermannian. Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>f</strong> (float): the True anomaly (rad.)</p>
-<p><strong>ecc</strong> (float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>f</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>ecc</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: the Gudermannian</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Gudermannian</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -712,10 +718,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">m2e_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.m2e_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Mean to Eccentric anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Ms</strong> (np.array or float): the Mean anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Ms</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Mean anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Eccentric anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -735,10 +741,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">e2m_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Es</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.e2m_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Eccentric to Mean anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Es</strong> (np.array or float): the Eccentric anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Es</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Eccentric anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Mean anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Mean anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -758,10 +764,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">m2f_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.m2f_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Mean to True anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Ms</strong> (np.array or float): the Mean anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Ms</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Mean anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -781,10 +787,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2m_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2m_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Mean anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>fs</strong> (np.array or float): the True anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>fs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Mean anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Mean anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -804,10 +810,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">e2f_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Es</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.e2f_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from eccentric to true anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Es</strong> (np.array or float): the Eccentric anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Es</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Eccentric anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -827,10 +833,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2e_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2e_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Eccentric anomaly (vectorized version). Requires ecc &lt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>fs</strong> (np.array or float): the True anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>fs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Eccentric anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Eccentric anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -850,10 +856,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">n2h_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.n2h_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic Mean to Hyperbolic anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Ns</strong> (np.array or float): the Hyperbolic Mean anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Ns</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic Mean anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Hyperbolic anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -873,14 +879,14 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">h2n_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Hs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.h2n_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic to Hyperbolic Mean anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Hs</strong> (np.array or float): the Hyperbolic anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Hs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Hyperbolic Mean anomaly (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic Mean anomaly (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="o">=</span><span class="n">Hs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">4.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Ns</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">h2n_v</span><span class="p">(</span><span class="n">Hs</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
@@ -896,10 +902,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">n2f_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.n2f_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic Mean to True anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Ns</strong> (np.array or float): the Hyperbolic Mean anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Ns</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic Mean anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the True anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -919,10 +925,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2n_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2n_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Hyperbolic Mean anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>fs</strong> (np.array or float): the True anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>fs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Hyperbolic Mean anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic Mean anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -942,10 +948,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">h2f_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Hs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.h2f_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from Hyperbolic to True anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>Hs</strong> (np.array or float): the Hyperbolic anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>Hs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Hyperbolic anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the True anomaly in [-pi, pi] (rad.)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly in [-pi, pi] (rad.)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -965,17 +971,17 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2h_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2h_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True to Hyperbolic anomaly (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>fs</strong> (np.array or float): the True anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>fs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Hyperbolic anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Hyperbolic anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">5.7</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Hs</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">n2h_v</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">hs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Hs</span><span class="p">)</span>
 <span class="go">(100,)</span>
 </pre></div>
 </div>
@@ -990,10 +996,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <p>See Battin: “An Introduction to the Mathematics and Methods of Astrodynamics” for a 
 definition of zeta and the treatment of the resulting equations.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>zetas</strong> (np.array or float): the Gudermannian (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>zetas</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the Gudermannian (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the True anomaly</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the True anomaly</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1013,10 +1019,10 @@ definition of zeta and the treatment of the resulting equations.</p>
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">f2zeta_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eccs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.f2zeta_v" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts from True anomaly to Gudermannian (vectorized version). Requires ecc &gt; 1.</p>
 <dl>
-<dt>Args:</dt><dd><p><strong>fs</strong> (np.array or float): the True anomaly (rad.)</p>
-<p><strong>eccs</strong> (np.array or float): the eccentricity</p>
+<dt>Args:</dt><dd><p><em>fs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the True anomaly (rad.)</p>
+<p><em>eccs</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the eccentricity</p>
 </dd>
-<dt>Returns:</dt><dd><p>np.array or float: the Gudermannian</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the Gudermannian</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1046,20 +1052,20 @@ definition of zeta and the treatment of the resulting equations.</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="api.html"
+       href="constants.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">API</p>
+        <p class="prev-next-title">Global constants</p>
       </div>
     </a>
     <a class="right-next"
-       href="tutorials.html"
+       href="elements.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Basic tutorials</p>
+        <p class="prev-next-title">Orbital Elements</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

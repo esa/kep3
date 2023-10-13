@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Welcome to pykep’s documentation! &#8212; pykep 0.0.1 documentation</title>
+    <title>Global constants &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -45,10 +45,13 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'constants';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API" href="api.html" />
+    <link rel="next" title="Anomalies Conversions" href="anomalies.html" />
+    <link rel="prev" title="API" href="api.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -123,7 +126,7 @@
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="index.html">
   
   
   
@@ -141,9 +144,9 @@
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="api.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
@@ -228,7 +231,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Findex.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fconstants.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -258,7 +261,7 @@
       
       
       
-      <li><a href="_sources/index.md" target="_blank"
+      <li><a href="_sources/constants.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -268,7 +271,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.rst</span>
 </a>
 </li>
       
@@ -338,7 +341,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome to pykep’s documentation!</h1>
+    <h1>Global constants</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -352,39 +355,74 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="welcome-to-pykep-s-documentation">
-<h1>Welcome to pykep’s documentation!<a class="headerlink" href="#welcome-to-pykep-s-documentation" title="Permalink to this heading">#</a></h1>
-<p><strong>pykep</strong> is a coolbox developed at the <a class="reference external" href="https://www.esa.int">European Space Agency</a>
-by its <a class="reference external" href="https://www.esa.int/gsp/ACT/index.html">Advanced Concepts Team</a>.
-Its main purpose is to allow for fast prototyping of research ideas on interplanetary trajectory design.
-At the library core is the implementation of efficient algorithms allowing to solve the multiple revolutions
-Lambert’s problem, low-thrust problems, multiple asteroid randezvous problems and more. Support for
-<a class="reference external" href="https://naif.jpl.nasa.gov/naif/toolkit.html">JPL SPICE</a>, SGP4 propagation and the
-<a class="reference external" href="https://bluescarni.github.io/heyoka.py/index.html">Heyoka</a> Taylor integration suite is provided.</p>
-<p><strong>pykep</strong> has been used by the European Space Agency’s <a class="reference external" href="https://www.esa.int/gsp/ACT/index.html">Advanced Concepts Team</a>
-during different Global Trajectory Optimization Competitions <a class="reference external" href="http://sophia.estec.esa.int/gtoc_portal">GTOC</a>,
-several research papers as well as for the optimization of preliminary mission scenarios such as in
-the M-ARGO interplanetary cubesat concept, the phase 0 study for the the Titan and Enceladus Mission (TandEM)
-and for preliminary mission analysis of the HERA mission.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of implemented planets</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials.html#basic">Basic</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <section id="global-constants">
+<span id="constants"></span><h1>Global constants<a class="headerlink" href="#global-constants" title="Permalink to this heading">#</a></h1>
+<p>In <cite>pykep</cite> the access a number of common constants are provided for convenience. The user can overwrite their values if needed.
+These constants are not used in the <cite>pykep</cite> internals, they are only provided for convenience for the user to instantiate / use
+the various <cite>pykep</cite> objects and functionalities.</p>
+<table class="colwidths-given table" id="id1">
+<caption><span class="caption-text">Pykep global constants</span><a class="headerlink" href="#id1" title="Permalink to this table">#</a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant’s Name</p></th>
+<th class="head"><p>Symbol in pykep</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Astronomical Unit</p></td>
+<td><p>pykep.AU</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p>149597870700.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cavendish constant</p></td>
+<td><p>pykep.CAVENDISH</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{N m^2}{kg^2}\)</span></p></td>
+<td><p>7.36687e-10</p></td>
+</tr>
+<tr class="row-even"><td><p>Sun’s gravitational parameter</p></td>
+<td><p>pykep.MU_SUN</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m^3}{sec^2}\)</span></p></td>
+<td><p>1.32712440018e+20</p></td>
+</tr>
+<tr class="row-odd"><td><p>Earth’s gravitational parameter</p></td>
+<td><p>pykep.MU_EARTH</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m^3}{sec^2}\)</span></p></td>
+<td><p>398600441800000.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Earth’s velocity</p></td>
+<td><p>pykep.EARTH_VELOCITY</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{sec}\)</span></p></td>
+<td><p>29784.691831696804</p></td>
+</tr>
+<tr class="row-odd"><td><p>Earth’s radius</p></td>
+<td><p>pykep.EARTH_RADIUS</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{sec}\)</span></p></td>
+<td><p>6378137.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Earth’s <span class="math notranslate nohighlight">\(J_2\)</span></p></td>
+<td><p>pykep.EARTH_J2</p></td>
+<td><p>–</p></td>
+<td><p>0.00108262668</p></td>
+</tr>
+<tr class="row-odd"><td><p>Seconds in one day</p></td>
+<td><p>pykep.DAY2SEC</p></td>
+<td><p>–</p></td>
+<td><p>86400.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Degrees in one radians</p></td>
+<td><p>pykep.RAD2DEG</p></td>
+<td><p>–</p></td>
+<td><p>57.29577951308232</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
@@ -398,12 +436,21 @@ and for preliminary mission analysis of the HERA mission.</p>
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="right-next"
+    <a class="left-prev"
        href="api.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="anomalies.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API</p>
+        <p class="prev-next-title">Anomalies Conversions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

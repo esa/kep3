@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>API &#8212; pykep 0.0.1 documentation</title>
   
@@ -48,7 +48,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Convert Anomalies" href="anomalies.html" />
+    <link rel="next" title="Global constants" href="constants.html" />
     <link rel="prev" title="Welcome to pykep’s documentation!" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -144,10 +144,16 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="anomalies.html">Convert Anomalies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of implemented planets</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Basic tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
 </ul>
@@ -353,9 +359,38 @@ document.write(`
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="anomalies.html">Convert Anomalies</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Global constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html#normal">Normal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html#vectorized">Vectorized</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="elements.html">Orbital Elements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.el_type"><code class="docutils literal notranslate"><span class="pre">el_type</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.ic2par"><code class="docutils literal notranslate"><span class="pre">ic2par()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.par2ic"><code class="docutils literal notranslate"><span class="pre">par2ic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.ic2eq"><code class="docutils literal notranslate"><span class="pre">ic2eq()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.eq2ic"><code class="docutils literal notranslate"><span class="pre">eq2ic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.eq2par"><code class="docutils literal notranslate"><span class="pre">eq2par()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.par2eq"><code class="docutils literal notranslate"><span class="pre">par2eq()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="epoch.html">Epoch class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="epoch.html#pykep.epoch"><code class="docutils literal notranslate"><span class="pre">epoch</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="epoch.html#pykep.utc_now"><code class="docutils literal notranslate"><span class="pre">utc_now()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lambert.html">Lambert class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="planet.html">Planet class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planet.html#pykep.planet"><code class="docutils literal notranslate"><span class="pre">planet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="udplas.html">List of implemented planets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -383,11 +418,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="anomalies.html"
+       href="constants.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Convert Anomalies</p>
+        <p class="prev-next-title">Global constants</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
