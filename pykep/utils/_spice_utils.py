@@ -76,7 +76,7 @@ def rotation_matrix(origin, destination, ep = pk.epoch(0)):
     Returns:
         :class:`npumpy.ndarray`: The rotation matrix.
     """
-    return pyspice.pxform(origin, destination, (ep-0.5).mjd2000()*pk.DAY2SEC)
+    return pyspice.pxform(origin, destination, (ep-0.5).mjd2000*pk.DAY2SEC)
 
 
 # These are taken from:

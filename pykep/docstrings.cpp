@@ -667,7 +667,7 @@ std::string zeta2f_v_doc()
       >>> import numpy as np
       >>> zetas = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 2.2
-      >>> fs = pk.zeta2f_v(zeta, ecc)
+      >>> fs = pk.zeta2f_v(zetas, ecc)
       >>> np.shape(fs)
       (100,)
 )";
@@ -998,7 +998,7 @@ std::string lambert_problem_docstring()
         >>> tof = np.pi/2
         >>> mu = 1.
         >>> lp = pk.lambert_problem(r0, r1, tof, mu)
-        >>> lp.get_vs()[0]
+        >>> lp.v0[0]
         [-4.1028493158958256e-16, 1.0000000000000002, 0.0]
 )";
 }

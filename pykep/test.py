@@ -57,13 +57,13 @@ class epoch_test(_ut.TestCase):
         ep1 = pk.epoch(0., pk.epoch.julian_type.MJD2000)
         ep2 = pk.epoch(0., pk.epoch.julian_type.MJD)
         ep3 = pk.epoch(0., pk.epoch.julian_type.JD)
-        self.assertTrue(ep1.mjd2000() == 0.0)
-        self.assertTrue(ep2.mjd() == 0.0)
-        self.assertTrue(ep3.jd() == 0.0)
+        self.assertTrue(ep1.mjd2000 == 0.0)
+        self.assertTrue(ep2.mjd == 0.0)
+        self.assertTrue(ep3.jd == 0.0)
 
         ep_py = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
         ep4 = pk.epoch(ep_py)
-        self.assertTrue(ep4.mjd2000() == 0.0)
+        self.assertTrue(ep4.mjd2000 == 0.0)
         self.assertRaises(TypeError, pk.epoch, datetime.timedelta(1.2))
 
         self.assertTrue(pk.epoch("2000-01") == ep1)

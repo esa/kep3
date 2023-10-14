@@ -50,7 +50,7 @@ class spice:
         Returns:
             :class:`list` [:class:`list`, :class:`list`]: the planet ephemerides.
         """
-        spice_epoch = (ep-0.5).mjd2000()*pk.DAY2SEC
+        spice_epoch = (ep-0.5).mjd2000*pk.DAY2SEC
         rv, _ = pyspice.spkezr(self.body, spice_epoch, self.ref_frame, "NONE", self.obs)
         return [rv[:3] * 1000, rv[3:] * 1000]
     

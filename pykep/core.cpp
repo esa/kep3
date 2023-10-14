@@ -153,9 +153,9 @@ PYBIND11_MODULE(core, m)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::epoch>, &pykep::pickle_setstate_wrapper<kep3::epoch>))
         // julian dates
-        .def("mjd2000", &kep3::epoch::mjd2000, "Returns the Modified Julian Date 2000")
-        .def("mjd", &kep3::epoch::mjd, "Returns the Modified Julian Date")
-        .def("jd", &kep3::epoch::jd, "Returns the Julian Date")
+        .def_property_readonly("mjd2000", &kep3::epoch::mjd2000, "The Modified Julian Date 2000")
+        .def_property_readonly("mjd", &kep3::epoch::mjd, "The Modified Julian Date")
+        .def_property_readonly("jd", &kep3::epoch::jd, "The Julian Date")
         // comparison operators
         .def("__lt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 < ep2; })
         .def("__gt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 > ep2; })
@@ -237,15 +237,15 @@ PYBIND11_MODULE(core, m)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::lambert_problem>,
                         &pykep::pickle_setstate_wrapper<kep3::lambert_problem>))
-        .def("get_vs", &kep3::lambert_problem::get_v0, "Returns the velocity at the first point.")
-        .def("get_vf", &kep3::lambert_problem::get_v1, "Returns the velocity at the second point.")
-        .def("get_rs", &kep3::lambert_problem::get_r0, "Returns the first point.")
-        .def("get_rf", &kep3::lambert_problem::get_r1, "Returns the second point.")
-        .def("get_tof", &kep3::lambert_problem::get_tof, "Returns the time of flight between the two points.")
-        .def("get_mu", &kep3::lambert_problem::get_mu, "Returns the gravitational parameter of the attracting body.")
-        .def("get_x", &kep3::lambert_problem::get_x, "Returns the Battin variable x along the time of flight curves.")
-        .def("get_iters", &kep3::lambert_problem::get_iters, "Returns the number of iterations made.")
-        .def("get_Nmax", &kep3::lambert_problem::get_Nmax, "Returns the maximum number of iterations allowed.");
+        .def_property_readonly("v0", &kep3::lambert_problem::get_v0, "The velocity at the first point.")
+        .def_property_readonly("v1", &kep3::lambert_problem::get_v1, "The velocity at the second point.")
+        .def_property_readonly("r0", &kep3::lambert_problem::get_r0, "The first point.")
+        .def_property_readonly("r1", &kep3::lambert_problem::get_r1, "The second point.")
+        .def_property_readonly("tof", &kep3::lambert_problem::get_tof, "The time of flight between the two points.")
+        .def_property_readonly("mu", &kep3::lambert_problem::get_mu, "The gravitational parameter of the attracting body.")
+        .def_property_readonly("x", &kep3::lambert_problem::get_x, "The Battin variable x along the time of flight curves.")
+        .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
+        .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing propagators
     m.def(
