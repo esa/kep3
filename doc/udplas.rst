@@ -14,6 +14,12 @@ List of user implemented planets (UDPLAs)
 .. autoclass:: jpl_lp
    :members:
 
-.. autoclass:: tle_satellite
+.. autoclass:: tle
+   :members:
+
+.. autoclass:: spice
+   :members:
+
+.. autoclass:: de440s
    :members:
 

@@ -52,6 +52,8 @@ install(TARGETS core
 # Install the Python files.
 install(FILES ${PYKEP_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR})
 ADD_SUBDIRECTORY(udpla)
+ADD_SUBDIRECTORY(utils)
+ADD_SUBDIRECTORY(data)
 
 
 unset(_PYKEP_INSTALL_DIR)

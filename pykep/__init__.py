@@ -15,8 +15,7 @@ del _version
 from .core import *
 
 # Importing python udplas
-from .udpla import tle_satellite
-
+from . import udpla
 # Importing cpp udplas (we need to create an alias first and then 
 # to fool sphinx into thinking these are not aliases, else the sphinx built docs
 # would report them as aliases and fail to document these classes)
@@ -30,6 +29,8 @@ udpla.jpl_lp = core._jpl_lp
 udpla.jpl_lp.__name__ = "jpl_lp"
 udpla.jpl_lp.__module__ = "udpla"
 
+# Importing the python utils
+from .utils import *
 
 # Patch the problem class.
 from . import _patch_planet

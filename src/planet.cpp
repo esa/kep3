@@ -78,7 +78,7 @@ std::ostream &operator<<(std::ostream &os, const planet &p)
 {
     os << "Planet name: " << p.get_name();
     os << "\nC++ class name: " << boost::core::demangle(value_type_index(p).name()) << '\n';
-    os << fmt::format("mu central body (-1 if not defined): {}\n", p.get_mu_central_body());
+    os << fmt::format("\nmu central body (-1 if not defined): {}\n", p.get_mu_central_body());
     os << fmt::format("mu body (-1 if not defined): {}\n", p.get_mu_self());
     os << fmt::format("radius body (-1 if not defined): {}\n", p.get_radius());
     os << fmt::format("safe body radius (-1 if not defined): {}\n", p.get_safe_radius());
