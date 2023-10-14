@@ -1,4 +1,5 @@
-import spiceypy as spice
+import spiceypy as pyspice
+import pykep as pk
 
 def spice_version():
     """Retrieves the installed version of the NAIF spice toolkit.
@@ -6,7 +7,7 @@ def spice_version():
     Returns:
         :class:`string`: SPICE toolbox version installed in the system.
     """
-    return spice.tkvrsn("TOOLKIT")
+    return pyspice.tkvrsn("TOOLKIT")
 
 def load_spice_kernels(paths):
     """Loads one or more kernels for use with the NAIF spice toolkit.
@@ -14,7 +15,7 @@ def load_spice_kernels(paths):
     Args:
         paths (:class:`string` or :class:`list`): The path (or paths) of the kernels to load
     """
-    spice.furnsh(paths)
+    pyspice.furnsh(paths)
 
 def unload_spice_kernels(paths):
     """Unloads from memory one or more kernels for use with the NAIF spice toolkit.
@@ -22,7 +23,7 @@ def unload_spice_kernels(paths):
     Args:
         paths (:class:`string` or :class:`list`): The path (or paths) of the kernels to load
     """
-    spice.unload(paths)
+    pyspice.unload(paths)
 
 def inspect_spice_kernel(path):
     """Detects the objects contained in a specific kernel.
@@ -34,7 +35,7 @@ def inspect_spice_kernel(path):
     Returns:
         :class:`list`: the NAIF ids of the objects found in the kernels.
     """
-    return list(spice.spkobj(path))
+    return list(pyspice.spkobj(path))
 
 def name2naifid(name):
     """Retreives the NAIF id of some planet/comet/spacecraft 
@@ -45,7 +46,7 @@ def name2naifid(name):
     Returns:
         :class:`int` the NAIF id of the the planet/comet/spacecraft
     """
-    retval = spice.bodn2c(name)
+    retval = pyspice.bodn2c(name)
     return retval
 
 def framename2naifid(name):
@@ -57,10 +58,26 @@ def framename2naifid(name):
     Returns:
         :class:`int` the NAIF id of the reference frame
     """
-    retval = spice.irfnum(name)
+    retval = pyspice.irfnum(name)
     if retval == 0:
         raise NameError(name + " not found in the NAIF frames")
     return retval
+
+def rotation_matrix(origin, destination, ep = pk.epoch(0)):
+    """Rotation matrix between frames at epoch.
+
+    Args:
+        origin (:class:`string`): The name of the origin reference frame.
+
+        destination (:class:`string`): The name of the destination reference frame.
+
+        ep (:class:`~pykep.epoch`): Epoch. Defaults to pk.epoch(0).
+
+    Returns:
+        :class:`npumpy.ndarray`: The rotation matrix.
+    """
+    return pyspice.pxform(origin, destination, (ep-0.5).mjd2000()*pk.DAY2SEC)
+
 
 # These are taken from:
 # https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/naif_ids.html#NAIF%20Integer%20ID%20codes (13/10/2023)

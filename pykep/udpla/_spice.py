@@ -100,7 +100,7 @@ class de440s(spice):
         path = pk.__path__[0]
         self.kernel = path+"/data/de440s.bsp"
         pk.utils.load_spice_kernels(self.kernel)
-        spice.__init__(self, body, ref_frame = "ECLIPJ2000", obs = "SSB")
+        spice.__init__(self, body, ref_frame = ref_frame, obs = obs)
 
     def __del__(self):
         """Destructor.
