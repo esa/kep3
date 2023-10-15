@@ -192,6 +192,8 @@ PYBIND11_MODULE(core, m)
     // Planet methods.
     planet_class.def(
         "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+    planet_class.def(
+        "eph_v", [](const kep3::planet &pl, const std::vector<kep3::epoch> &eps) { return pl.eph_v(eps); }, py::arg("eps"));
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
     planet_class.def(                                                                                                  \

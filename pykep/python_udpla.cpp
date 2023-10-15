@@ -7,7 +7,9 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <array>
 #include <string>
+#include <vector>
 
 #include <fmt/core.h>
 #include <fmt/std.h>
@@ -41,8 +43,8 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 // Mandatory methods
 [[nodiscard]] std::array<std::array<double, 3>, 2> python_udpla::eph(const kep3::epoch &ep) const
 {
-    auto bf = pykep::callable_attribute(m_obj, "eph");
-    if (bf.is_none()) {
+    auto isthere = pykep::callable_attribute(m_obj, "eph");
+    if (isthere.is_none()) {
         pykep::py_throw(PyExc_NotImplementedError, ("the eph() method has been invoked, but it is not implemented "
                                                     "in the user-defined Python planet '"
                                                     + pykep::str(m_obj) + "' of type '" + pykep::str(pykep::type(m_obj))
@@ -53,6 +55,22 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 }
 
 // Optional methods
+[[nodiscard]] std::vector<std::array<std::array<double, 3>, 2>>
+python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
+{
+    auto isthere = pykep::callable_attribute(m_obj, "eph_v");
+    if (isthere.is_none()) {
+        // We simply call a for loop.
+        auto size = eps.size();
+        std::vector<std::array<std::array<double, 3>, 2>> retval(size);
+        for (size_t i = 0u; i < retval.size(); ++i) {
+            retval[i] = this->eph(eps[i]);
+        }
+        return retval;
+    } else {
+        return py::cast<std::vector<std::array<std::array<double, 3>, 2>>>(m_obj.attr("eph")(eps));
+    }
+}
 [[nodiscard]] std::string python_udpla::get_name() const
 {
     return getter_wrapper<std::string>(m_obj, "get_name", pykep::str(pykep::type(m_obj)));
@@ -110,6 +128,29 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
         }
     }
     return py::cast<double>(m_obj.attr("period")());
+}
+
+[[nodiscard]] std::array<double, 6> python_udpla::elements(const kep3::epoch &ep, kep3::elements_type el_type) const
+{
+    auto udpla_has_elements = !pykep::callable_attribute(m_obj, "elements").is_none();
+    auto udpla_has_mu = !pykep::callable_attribute(m_obj, "get_mu_central_body").is_none();
+    // If the user provides an efficient way to compute the orbital elements, then use it.
+    if (udpla_has_elements) {
+        return py::cast<std::array<double, 6>>(m_obj.attr("elements")());
+    } else if (udpla_has_mu) {
+        // If the user provides the central body parameter, then compute the
+        // elements using posvel computed at ep and converted.
+        auto pos_vel = eph(ep);
+        double mu = get_mu_central_body();
+        return kep3::detail::elements_from_posvel(pos_vel, mu, el_type);
+    } else {
+        pykep::py_throw(PyExc_NotImplementedError,
+                        ("the elements() method has been invoked, but "
+                         "in the user-defined Python planet '"
+                         + pykep::str(m_obj) + "' of type '" + pykep::str(pykep::type(m_obj))
+                         + "': the methods elements() or get_mu_central_body() are either not present or not callable")
+                            .c_str());
+    }
 }
 
 } // namespace pykep
