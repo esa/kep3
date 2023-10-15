@@ -78,7 +78,7 @@ public:
 
     // Other methods
     [[nodiscard]] kep3::epoch get_ref_epoch() const;
-    [[nodiscard]] std::array<double, 6> elements(kep3::elements_type = kep3::elements_type::KEP_F) const;
+    [[nodiscard]] std::array<double, 6> elements(kep3::epoch = kep3::epoch{}, kep3::elements_type = kep3::elements_type::KEP_F) const;
 };
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::keplerian &);
 } // namespace kep3::udpla

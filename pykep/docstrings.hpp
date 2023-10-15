@@ -10,6 +10,7 @@
 #ifndef PYKEP_DOCSTRINGS_HPP
 #define PYKEP_DOCSTRINGS_HPP
 
+#include "kep3/lambert_problem.hpp"
 #include <string>
 
 namespace pykep
@@ -52,6 +53,28 @@ std::string f2h_v_doc();
 
 std::string zeta2f_v_doc();
 std::string f2zeta_v_doc();
+
+// Epoch
+std::string epoch_from_float_doc();
+std::string epoch_from_datetime_doc();
+std::string epoch_from_string_doc();
+
+// Planet
+std::string planet_docstring();
+std::string planet_get_name_docstring();
+std::string planet_get_extra_info_docstring();
+std::string planet_get_mu_central_body_docstring();
+std::string planet_get_mu_self_docstring();
+std::string planet_get_radius_docstring();
+std::string planet_get_safe_radius_docstring();
+std::string planet_period_docstring();
+std::string planet_elements_docstring();
+
+// Lambert Problem
+std::string lambert_problem_docstring();
+
+// Propagators
+std::string propagate_lagrangian_docstring();
 
 } // namespace pykep
 

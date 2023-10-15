@@ -49,17 +49,17 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &
 
 class kep3_DLL_PUBLIC lambert_problem
 {
+    static const std::array<double, 3> default_r0;
     static const std::array<double, 3> default_r1;
-    static const std::array<double, 3> default_r2;
 
 public:
     friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
-    explicit lambert_problem(const std::array<double, 3> &r1 = default_r1, const std::array<double, 3> &r2 = default_r2,
-                             double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 5);
+    explicit lambert_problem(const std::array<double, 3> &r0  = default_r0, const std::array<double, 3> &r1 = default_r1,
+                             double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 1);
+    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v0() const;
     [[nodiscard]] const std::vector<std::array<double, 3>> &get_v1() const;
-    [[nodiscard]] const std::vector<std::array<double, 3>> &get_v2() const;
+    [[nodiscard]] const std::array<double, 3> &get_r0() const;
     [[nodiscard]] const std::array<double, 3> &get_r1() const;
-    [[nodiscard]] const std::array<double, 3> &get_r2() const;
     [[nodiscard]] const double &get_tof() const;
     [[nodiscard]] const double &get_mu() const;
     [[nodiscard]] const std::vector<double> &get_x() const;
@@ -76,12 +76,12 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
     {
+        ar & m_r0;
         ar & m_r1;
-        ar & m_r2;
         ar & m_tof;
         ar & m_mu;
+        ar & m_v0;
         ar & m_v1;
-        ar & m_v2;
         ar & m_iters;
         ar & m_x;
         ar & m_s;
@@ -93,11 +93,11 @@ private:
         ar & m_multi_revs;
     }
 
-    std::array<double, 3> m_r1, m_r2;
+    std::array<double, 3> m_r0, m_r1;
     double m_tof;
     double m_mu;
+    std::vector<std::array<double, 3>> m_v0;
     std::vector<std::array<double, 3>> m_v1;
-    std::vector<std::array<double, 3>> m_v2;
     std::vector<unsigned> m_iters;
     std::vector<double> m_x;
     double m_s, m_c, m_lambda;

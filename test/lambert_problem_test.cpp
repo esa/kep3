@@ -37,7 +37,7 @@ TEST_CASE("delta_guidance")
     // The boundary data must satisfy the Delta Guidance law
 
     // Preamble
-    std::array<double, 3> r1{{0, 0, 0}}, r2{{0, 0, 0}};
+    std::array<double, 3> r0{{0, 0, 0}}, r1{{0, 0, 0}};
     double tof = 0.;
 
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
@@ -52,24 +52,24 @@ TEST_CASE("delta_guidance")
 
     for (auto i = 0u; i < trials; ++i) {
         // 1 - generate a random problem geometry
+        r0[0] = r_d(rng_engine);
+        r0[1] = r_d(rng_engine);
+        r0[2] = r_d(rng_engine);
         r1[0] = r_d(rng_engine);
         r1[1] = r_d(rng_engine);
         r1[2] = r_d(rng_engine);
-        r2[0] = r_d(rng_engine);
-        r2[1] = r_d(rng_engine);
-        r2[2] = r_d(rng_engine);
         tof = tof_d(rng_engine);
         bool cw = static_cast<bool>(cw_d(rng_engine));
         double mu = mu_d(rng_engine);
         // 2 - Solve the lambert problem
-        kep3::lambert_problem lp(r1, r2, tof, mu, cw, revs_max);
+        kep3::lambert_problem lp(r0, r1, tof, mu, cw, revs_max);
 
         // 3 - Check the Delta guidance error
-        for (const auto &v1 : lp.get_v1()) {
-            double dg_err = kep3_tests::delta_guidance_error(r1, r2, v1, mu);
+        for (const auto &v1 : lp.get_v0()) {
+            double dg_err = kep3_tests::delta_guidance_error(r0, r1, v1, mu);
             if (!(dg_err < 1e-12)) {
                 std::cout << lp << std::endl;
-                fmt::print("\nr1= {}\nr2= {}\ntof= {}\nmu= {}\ncw= {}\nrevs_max= {}", r1, r2, tof, mu, cw, revs_max);
+                fmt::print("\nr1= {}\nr2= {}\ntof= {}\nmu= {}\ncw= {}\nrevs_max= {}", r0, r1, tof, mu, cw, revs_max);
             }
             REQUIRE(dg_err < 1e-12);
         }
@@ -80,12 +80,12 @@ TEST_CASE("methods")
 {
     // Here we test construction for a simple geometry
     kep3::lambert_problem lp{{1., 0., 0.}, {0., 1., 0.}, 3. * kep3::pi / 2., 1., true, 5};
-    auto v1 = lp.get_v1()[0];
-    auto v2 = lp.get_v2()[0];
+    auto v1 = lp.get_v0()[0];
+    auto v2 = lp.get_v1()[0];
     REQUIRE(kep3_tests::floating_point_error_vector(v1, {0, -1, 0}) < 1e-13);
     REQUIRE(kep3_tests::floating_point_error_vector(v2, {1, 0, 0}) < 1e-13);
-    auto r1 = lp.get_r1();
-    auto r2 = lp.get_r2();
+    auto r1 = lp.get_r0();
+    auto r2 = lp.get_r1();
     REQUIRE(r1 == std::array<double, 3>{1, 0, 0});
     REQUIRE(r2 == std::array<double, 3>{0, 1, 0});
     REQUIRE(lp.get_tof() == 3 * kep3::pi / 2);
