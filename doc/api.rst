@@ -10,3 +10,4 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    :caption: Contents
 
    anomalies
+   epoch
