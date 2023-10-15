@@ -226,6 +226,8 @@ public:
 
     [[nodiscard]] time_point get_tp() const;
 
+    [[nodiscard]] static epoch now();
+
 private:
     // Serialization code
     friend class boost::serialization::access;
@@ -252,8 +254,6 @@ private:
 
     time_point m_tp = y2k;
 };
-
-kep3_DLL_PUBLIC epoch utc_now();
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &s, const epoch &epoch_in);
 

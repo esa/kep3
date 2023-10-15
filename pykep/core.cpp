@@ -143,6 +143,8 @@ PYBIND11_MODULE(core, m)
         .def("mjd2000", &kep3::epoch::mjd2000)
         .def("mjd", &kep3::epoch::mjd)
         .def("jd", &kep3::epoch::jd)
+        // now().
+        .def_static("now", &kep3::epoch::now)
         // comparison operators
         .def("__lt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 < ep2; })
         .def("__gt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 > ep2; })
@@ -157,9 +159,6 @@ PYBIND11_MODULE(core, m)
         .def("__sub__",
              [](kep3::epoch ep, double dt) { return ep - std::chrono::duration<double, std::ratio<86400>>(dt); })
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
-
-    // Epoch related utils
-    m.def("utc_now", &kep3::utc_now);
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{});

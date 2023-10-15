@@ -112,7 +112,7 @@ TEST_CASE("epoch_operators")
 
 TEST_CASE("epoch_now")
 {
-    REQUIRE_NOTHROW(kep3::utc_now());
+    REQUIRE_NOTHROW(kep3::epoch::now());
 }
 
 TEST_CASE("serialization_test")

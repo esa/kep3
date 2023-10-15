@@ -256,7 +256,8 @@ time_point epoch::get_tp() const
 {
     return m_tp;
 }
-epoch utc_now()
+
+epoch epoch::now()
 {
     // NOTE: need explicit conversion here as system_clock might have a different
     // duration than microseconds.
