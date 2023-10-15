@@ -59,6 +59,13 @@ concept udpla_has_eph = requires(const T &p, const epoch &e) {
 };
 
 template <typename T>
+concept udpla_has_eph_v = requires(const T &p, const std::vector<epoch> &e) {
+    {
+        p.eph_v(e)
+    } -> std::same_as<std::vector<std::array<std::array<double, 3>, 2>>>;
+};
+
+template <typename T>
 concept udpla_has_period = requires(const T &p, const epoch &e) {
     {
         p.period(e)
@@ -88,6 +95,8 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual std::string get_name() const = 0;
     [[nodiscard]] virtual std::string get_extra_info() const = 0;
     [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
+    [[nodiscard]] virtual std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<epoch> &) const = 0;
+
     // NOLINTNEXTLINE(google-default-arguments)
     [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
@@ -126,6 +135,21 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const final
     {
         return this->value().eph(ep);
+    }
+
+    [[nodiscard]] std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<epoch> &eps) const final
+    {
+        if constexpr (udpla_has_eph_v<T>) {
+            return this->value().eph_v(eps);
+        } else {
+            // We simply call a for loop.
+            auto size = eps.size();
+            std::vector<std::array<std::array<double, 3>, 2>> retval(size);
+            for (size_t i = 0u; i < retval.size(); ++i) {
+                retval[i] = this->eph(eps[i]);
+            }
+            return retval;
+        }
     }
 
     // NOLINTNEXTLINE(google-default-arguments)
@@ -211,6 +235,7 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     TANUKI_REF_IFACE_MEMFUN(get_name)
     TANUKI_REF_IFACE_MEMFUN(get_extra_info)
     TANUKI_REF_IFACE_MEMFUN(eph)
+    TANUKI_REF_IFACE_MEMFUN(eph_v)
     TANUKI_REF_IFACE_MEMFUN(period)
     TANUKI_REF_IFACE_MEMFUN(elements)
 
