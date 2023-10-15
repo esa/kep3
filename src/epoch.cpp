@@ -31,21 +31,21 @@ epoch::epoch() = default;
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
  *
- * @param[in] epoch_in A double indicating the number of days
-                        since day 0 in the specified calendar.
+ * @param[in] julian_epoch_in A double indicating the number of days
+                              since day 0 in the specified calendar.
  * @param[in] epoch_type epoch::julian_type
  */
-epoch::epoch(double epoch_in, julian_type epoch_type)
+epoch::epoch(double julian_epoch_in, julian_type epoch_type)
 {
     switch (epoch_type) {
         case julian_type::MJD2000:
-            m_tp = epoch::tp_from_days(epoch_in);
+            m_tp = epoch::tp_from_days(julian_epoch_in);
             break;
         case julian_type::MJD:
-            m_tp = epoch::tp_from_days(epoch_in) - mjd_offset;
+            m_tp = epoch::tp_from_days(julian_epoch_in) - mjd_offset;
             break;
         case julian_type::JD:
-            m_tp = epoch::tp_from_days(epoch_in) - jd_offset;
+            m_tp = epoch::tp_from_days(julian_epoch_in) - jd_offset;
             break;
         default:
             throw std::invalid_argument(
