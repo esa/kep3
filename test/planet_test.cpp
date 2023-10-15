@@ -128,10 +128,18 @@ struct complete_udpla {
         return {pos, vel};
     };
 
+    static std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<epoch> &)
+    {
+        std::array<double, 3> pos = {1., 0., 0.};
+        std::array<double, 3> vel = {0., 1., 0.};
+        return {{pos, vel}, {vel, {pos}}};
+    };
+
     [[nodiscard]] std::string get_name() const
     {
         return m_name;
     }
+
     [[nodiscard]] double get_mu_central_body() const
     {
         return m_mu_central_body;
@@ -206,6 +214,8 @@ TEST_CASE("construction")
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
         REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
+        REQUIRE(pla.eph_v(std::vector<epoch>{epoch(0.), epoch(2.)})
+                == std::vector<std::array<std::array<double, 3>, 2>>{{pla.eph(epoch(0.))}, {pla.eph(epoch(2.))}});
         REQUIRE(value_isa<null_udpla>(pla));
     }
     {
@@ -224,7 +234,8 @@ TEST_CASE("construction")
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
         REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
-
+        REQUIRE(pla.eph_v(std::vector<epoch>{epoch(0.), epoch(2.)})
+                == std::vector<std::array<std::array<double, 3>, 2>>{{pla.eph(epoch(0.))}, {pla.eph(epoch(2.))}});
     }
     {
         // Constructor from a more complete udpla
@@ -240,8 +251,11 @@ TEST_CASE("construction")
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == 4.);
         REQUIRE(std::isfinite(pla.period()));
-        REQUIRE(pla.elements() == std::array<double, 6>{-1,-1,-1,-1,-1,-1});
-
+        REQUIRE(pla.elements() == std::array<double, 6>{-1, -1, -1, -1, -1, -1});
+        std::array<double, 3> pos = {1., 0., 0.};
+        std::array<double, 3> vel = {0., 1., 0.};
+        REQUIRE((pla.eph_v(std::vector<epoch>{epoch(0.), epoch(0.)}))
+                == std::vector<std::array<std::array<double, 3>, 2>>({{pos, vel}, {vel, pos}}));
     }
     {
         // Constructor from a simple udpla with mu and hyperbolic orbit
@@ -254,7 +268,6 @@ TEST_CASE("construction")
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] < 0);
-
     }
     {
         // Constructor from a simple udpla with mu and elliptical orbit
