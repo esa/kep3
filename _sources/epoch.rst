@@ -29,8 +29,4 @@ library and to the python `datetime <https://docs.python.org/3/library/datetime.
 
    .. automethod:: pykep.epoch.string_format
 
-----------------------------------
-
-.. autofunction:: pykep.utc_now
-
-
+   .. automethod:: pykep.epoch.now

@@ -354,13 +354,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch"><code class="docutils literal notranslate"><span class="pre">epoch</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.julian_type"><code class="docutils literal notranslate"><span class="pre">epoch.julian_type()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.string_format"><code class="docutils literal notranslate"><span class="pre">epoch.string_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.now"><code class="docutils literal notranslate"><span class="pre">epoch.now()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.__init__"><code class="docutils literal notranslate"><span class="pre">epoch.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.jd"><code class="docutils literal notranslate"><span class="pre">epoch.jd()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd"><code class="docutils literal notranslate"><span class="pre">epoch.mjd()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd2000"><code class="docutils literal notranslate"><span class="pre">epoch.mjd2000()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utc_now"><code class="docutils literal notranslate"><span class="pre">utc_now()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -454,6 +454,12 @@ also including leap seconds, he will have to account for the offset himself. As 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pykep.epoch.now">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.now" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a pykep.epoch with the current UTC date.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pykep.epoch.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>epoch</strong> (when, julian_type = MJD2000)</p>
@@ -522,13 +528,6 @@ also including leap seconds, he will have to account for the offset himself. As 
 
 </dd></dl>
 
-<hr class="docutils" />
-<dl class="py function">
-<dt class="sig sig-object py" id="pykep.utc_now">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">utc_now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utc_now" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a pykep.epoch with the current UTC date.</p>
-</dd></dl>
-
 </section>
 
 
@@ -578,13 +577,13 @@ also including leap seconds, he will have to account for the offset himself. As 
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch"><code class="docutils literal notranslate"><span class="pre">epoch</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.julian_type"><code class="docutils literal notranslate"><span class="pre">epoch.julian_type()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.string_format"><code class="docutils literal notranslate"><span class="pre">epoch.string_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.now"><code class="docutils literal notranslate"><span class="pre">epoch.now()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.__init__"><code class="docutils literal notranslate"><span class="pre">epoch.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.jd"><code class="docutils literal notranslate"><span class="pre">epoch.jd()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd"><code class="docutils literal notranslate"><span class="pre">epoch.mjd()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd2000"><code class="docutils literal notranslate"><span class="pre">epoch.mjd2000()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utc_now"><code class="docutils literal notranslate"><span class="pre">utc_now()</span></code></a></li>
 </ul>
   </nav></div>
 
