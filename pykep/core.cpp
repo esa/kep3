@@ -192,8 +192,11 @@ PYBIND11_MODULE(core, m)
     // Planet methods.
     planet_class.def(
         "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
-    planet_class.def(
-        "eph_v", [](const kep3::planet &pl, const std::vector<kep3::epoch> &eps) { return pl.eph_v(eps); }, py::arg("eps"));
+    planet_class.def("eph_v", [](const kep3::planet &pl, const std::vector<kep3::epoch> &eps) {
+        std::vector<double> res = pl.eph_v(eps);
+        py::array_t<double> ret = ... // convert res to py::array, this can be done without copies
+        return ret;
+    });
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
     planet_class.def(                                                                                                  \
@@ -244,8 +247,10 @@ PYBIND11_MODULE(core, m)
         .def_property_readonly("r0", &kep3::lambert_problem::get_r0, "The first point.")
         .def_property_readonly("r1", &kep3::lambert_problem::get_r1, "The second point.")
         .def_property_readonly("tof", &kep3::lambert_problem::get_tof, "The time of flight between the two points.")
-        .def_property_readonly("mu", &kep3::lambert_problem::get_mu, "The gravitational parameter of the attracting body.")
-        .def_property_readonly("x", &kep3::lambert_problem::get_x, "The Battin variable x along the time of flight curves.")
+        .def_property_readonly("mu", &kep3::lambert_problem::get_mu,
+                               "The gravitational parameter of the attracting body.")
+        .def_property_readonly("x", &kep3::lambert_problem::get_x,
+                               "The Battin variable x along the time of flight curves.")
         .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
