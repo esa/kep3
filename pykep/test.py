@@ -99,6 +99,15 @@ class my_udpla_malformed1:
     def ephs(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
     
+class my_dpla_with_optionals:
+    def eph(self, ep):
+        # Some weird return value just to make it not constant
+        return [[ep.mjd2000,0.,0.],[0.,1.,0.]]
+    def eph_v(self, eps):
+        return [self.eph(ep) for ep in eps]
+    def elements(self, ep, el_type ):
+        return [1.,2.,3.,4.,5.,6.]
+    
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
         import pykep as pk
@@ -146,6 +155,14 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla2.get_radius() == -1)
         self.assertTrue(pla2.get_safe_radius() == -1)
 
+    def test_udpla_optional_methods(self):
+        import pykep as pk
+        udpla = my_dpla_with_optionals()
+        pla = pk.planet(udpla)
+        self.assertTrue(pla.elements(pk.epoch(0)) == [1.,2.,3.,4.,5.,6.])
+        self.assertTrue(pla.eph_v([pk.epoch(0), pk.epoch(1)]) == [pla.eph(pk.epoch(0)), pla.eph(pk.epoch(1))])
+
+
 def run_test_suite():
     suite = _ut.TestSuite()
     suite.addTest(anomaly_conversions_tests("test_m2e"))
@@ -158,6 +175,7 @@ def run_test_suite():
     suite.addTest(planet_test("test_planet_construction"))
     suite.addTest(planet_test("test_udpla_extraction"))
     suite.addTest(planet_test("test_udpla_getters"))
+    suite.addTest(planet_test("test_udpla_optional_methods"))
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
 

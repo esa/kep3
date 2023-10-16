@@ -68,7 +68,7 @@ python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
         }
         return retval;
     } else {
-        return py::cast<std::vector<std::array<std::array<double, 3>, 2>>>(m_obj.attr("eph")(eps));
+        return py::cast<std::vector<std::array<std::array<double, 3>, 2>>>(m_obj.attr("eph_v")(eps));
     }
 }
 [[nodiscard]] std::string python_udpla::get_name() const
@@ -136,7 +136,7 @@ python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
     auto udpla_has_mu = !pykep::callable_attribute(m_obj, "get_mu_central_body").is_none();
     // If the user provides an efficient way to compute the orbital elements, then use it.
     if (udpla_has_elements) {
-        return py::cast<std::array<double, 6>>(m_obj.attr("elements")());
+        return py::cast<std::array<double, 6>>(m_obj.attr("elements")(ep, el_type));
     } else if (udpla_has_mu) {
         // If the user provides the central body parameter, then compute the
         // elements using posvel computed at ep and converted.
