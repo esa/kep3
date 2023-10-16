@@ -55,22 +55,29 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 }
 
 // Optional methods
-[[nodiscard]] std::vector<std::array<std::array<double, 3>, 2>>
-python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
+[[nodiscard]] std::vector<double> python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
 {
-    auto isthere = pykep::callable_attribute(m_obj, "eph_v");
-    if (isthere.is_none()) {
+    auto has_eph_v = !pykep::callable_attribute(m_obj, "eph_v").is_none();
+    if (has_eph_v) {
+        auto ret = py::cast<py::array_t<double>>(m_obj.attr("eph_v")(eps));
+        return py::cast<std::vector<double>>(ret.attr("flatten")());
+    } else {
         // We simply call a for loop.
         auto size = eps.size();
-        std::vector<std::array<std::array<double, 3>, 2>> retval(size);
+        std::vector<double> retval(size * 6u);
         for (size_t i = 0u; i < retval.size(); ++i) {
-            retval[i] = this->eph(eps[i]);
+            auto values = this->eph(eps[i]);
+            retval[6 * i] = values[0][0];
+            retval[6 * i + 1] = values[0][1];
+            retval[6 * i + 2] = values[0][2];
+            retval[6 * i + 3] = values[1][0];
+            retval[6 * i + 4] = values[1][1];
+            retval[6 * i + 5] = values[1][2];
         }
         return retval;
-    } else {
-        return py::cast<std::vector<std::array<std::array<double, 3>, 2>>>(m_obj.attr("eph_v")(eps));
     }
 }
+
 [[nodiscard]] std::string python_udpla::get_name() const
 {
     return getter_wrapper<std::string>(m_obj, "get_name", pykep::str(pykep::type(m_obj)));

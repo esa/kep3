@@ -162,7 +162,6 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla.elements(pk.epoch(0)) == [1.,2.,3.,4.,5.,6.])
         self.assertTrue(pla.eph_v([pk.epoch(0), pk.epoch(1)]) == [pla.eph(pk.epoch(0)), pla.eph(pk.epoch(1))])
 
-
 def run_test_suite():
     suite = _ut.TestSuite()
     suite.addTest(anomaly_conversions_tests("test_m2e"))

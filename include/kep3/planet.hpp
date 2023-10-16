@@ -95,7 +95,7 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual std::string get_name() const = 0;
     [[nodiscard]] virtual std::string get_extra_info() const = 0;
     [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
-    [[nodiscard]] virtual std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<epoch> &) const = 0;
+    [[nodiscard]] virtual std::vector<double> eph_v(const std::vector<epoch> &) const = 0;
 
     // NOLINTNEXTLINE(google-default-arguments)
     [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
@@ -137,16 +137,22 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
         return this->value().eph(ep);
     }
 
-    [[nodiscard]] std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<epoch> &eps) const final
+    [[nodiscard]] std::vector<double> eph_v(const std::vector<epoch> &eps) const final
     {
         if constexpr (udpla_has_eph_v<T>) {
             return this->value().eph_v(eps);
         } else {
             // We simply call a for loop.
             auto size = eps.size();
-            std::vector<std::array<std::array<double, 3>, 2>> retval(size);
+            std::vector<double> retval(size * 6u);
             for (size_t i = 0u; i < retval.size(); ++i) {
-                retval[i] = this->eph(eps[i]);
+                auto values = this->eph(eps[i]);
+                retval[6*i] = values[0][0];
+                retval[6*i+1] = values[0][1];
+                retval[6*i+2] = values[0][2];
+                retval[6*i+3] = values[1][0];
+                retval[6*i+4] = values[1][1];
+                retval[6*i+5] = values[1][2];
             }
             return retval;
         }

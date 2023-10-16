@@ -31,7 +31,7 @@ struct python_udpla {
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const kep3::epoch &ep) const;
 
     // Optional methods
-    [[nodiscard]] std::vector<std::array<std::array<double, 3>, 2>> eph_v(const std::vector<kep3::epoch> &ep) const;
+    [[nodiscard]] std::vector<double> eph_v(const std::vector<kep3::epoch> &ep) const;
     [[nodiscard]] std::string get_name() const;
     [[nodiscard]] std::string get_extra_info() const;
     [[nodiscard]] double get_mu_central_body() const;
