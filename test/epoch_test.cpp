@@ -16,6 +16,7 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/epoch.hpp>
 
 #include "catch.hpp"
@@ -113,6 +114,32 @@ TEST_CASE("epoch_operators")
 TEST_CASE("epoch_now")
 {
     REQUIRE_NOTHROW(kep3::epoch::now());
+}
+
+TEST_CASE("leap_seconds_tests")
+{
+    {
+        kep3::epoch ep1{2005, 12, 31, 23, 59, 59};
+        kep3::epoch ep2{2006, 1, 1, 00, 00, 00};
+        {
+            // Here we check that a leap second is accounted for at the beginning of 2005 when subtracting epochs.
+            REQUIRE(((ep2 - ep1).count() / 1000000lu) == 2lu);
+        }
+        {
+            // Here we check that epochs are correctly transformed into julian dates.
+            REQUIRE((ep2.jd() - ep1.jd()) * kep3::DAY2SEC == 2);
+            REQUIRE((ep2.mjd() - ep1.mjd()) * kep3::DAY2SEC == 2);
+            REQUIRE((ep2.mjd2000() - ep1.mjd2000()) * kep3::DAY2SEC == 2);
+        }
+        {
+            // Here we check the as_sec()
+            REQUIRE(kep3::epoch::as_sec(ep2 - ep1) == 2);
+        }
+        {
+            // Here we check the date changes correctly by 1 second when adding 2 seconds (one being the leap).
+            REQUIRE(ep1 + std::chrono::duration<double, std::ratio<86400>>(2) * kep3::SEC2DAY == ep2);
+        }
+    }
 }
 
 TEST_CASE("serialization_test")
