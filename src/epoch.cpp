@@ -7,45 +7,52 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 #include <chrono>
-#include <cmath>
-#include <ctime>
-#include <fmt/chrono.h>
-#include <fmt/core.h>
-#include <iomanip>
 #include <iostream>
-#include <ratio>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
-#include <utility>
 
-#include "kep3/core_astro/convert_julian_dates.hpp"
+#include <boost/numeric/conversion/cast.hpp>
+
+#include <fmt/chrono.h>
+#include <fmt/core.h>
+
 #include "kep3/epoch.hpp"
 
 namespace kep3
 {
 
-kep_clock::time_point kep_clock::utc_now() noexcept
-{
-    return kep_clock::time_point{chr::duration_cast<chr::microseconds>(std::chrono::system_clock::now().time_since_epoch())};
-}
-
 /**
  * @brief Constructs a default epoch .
  */
-epoch::epoch() : m_tp{kep_clock::y2k} {}
+epoch::epoch() = default;
 
 /**
  * @brief Constructs an epoch from a non-Gregorian date.
  *
- * @param[in] epoch_in A double indicating the number of days
-                        since day 0 in the specified calendar.
+ * @param[in] julian_epoch_in A double indicating the number of days
+                              since day 0 in the specified calendar.
  * @param[in] epoch_type epoch::julian_type
  */
-epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp(epoch_in, epoch_type)} {}
+epoch::epoch(double julian_epoch_in, julian_type epoch_type)
+{
+    switch (epoch_type) {
+        case julian_type::MJD2000:
+            m_tp = epoch::tp_from_days(julian_epoch_in);
+            break;
+        case julian_type::MJD:
+            m_tp = epoch::tp_from_days(julian_epoch_in) - mjd_offset;
+            break;
+        case julian_type::JD:
+            m_tp = epoch::tp_from_days(julian_epoch_in) - jd_offset;
+            break;
+        default:
+            throw std::invalid_argument(
+                fmt::format("An unsupported julian_type enumerator with value {} was used in the epoch constructor",
+                            static_cast<std::underlying_type_t<julian_type>>(epoch_type)));
+    }
+}
 
 /**
  * @brief Constructs an epoch from offsets relative to 0 MJD2000.
@@ -58,41 +65,46 @@ epoch::epoch(const double epoch_in, const julian_type epoch_type) : m_tp{make_tp
  * @param[in] ms The number of milliseconds.
  * @param[in] us The number of microseconds.
  */
-epoch::epoch(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h, //NOLINT
-             const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
+epoch::epoch(int y, unsigned mon, unsigned d, const std::int32_t h, const std::int32_t min, const std::int32_t s,
+             const std::int32_t ms, const std::int32_t us)
     : m_tp{make_tp(y, mon, d, h, min, s, ms, us)}
 {
 }
 
 // Epoch constructor from string
-epoch::epoch(const std::string &in, epoch::string_format)
+epoch::epoch(const std::string &in, string_format sf)
 {
-    // Right now the ISO format is the only one implemented so we ignore
-    // the second argument. We thus assume: 1980-10-17T11:36:21.121841
-    // and allow crops such as 1980-10.
-    std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
-    auto len = in.size();
-    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); //NOLINT
+    // NOTE: only ISO format supported so far.
+    if (sf != string_format::ISO) {
+        throw std::invalid_argument(
+            fmt::format("An unsupported string_format enumerator with value {} was used in the epoch constructor",
+                        static_cast<std::underlying_type_t<string_format>>(sf)));
+    }
+
+    // We assume: 1980-10-17T11:36:21.121841 and allow crops such as 1980-10.
+    constexpr std::array<decltype(in.size()), 11> allowed_lenghts{7, 10, 13, 16, 19, 21, 22, 23, 24, 25, 26};
+    const auto len = in.size();
+    auto foo = std::find(std::begin(allowed_lenghts), std::end(allowed_lenghts), len); // NOLINT
     if (foo == std::end(allowed_lenghts)) {
         throw std::logic_error(
             "Malformed input string when constructing an epoch. Must be 'YYYY-MM-DD HH:MM:SS:XXXXXX'. "
             "D,H,M,S and X can be missing incrementally.");
     }
-    unsigned d = 1u;
-    int h = 0, min = 0, s = 0, us = 0;
+    unsigned d = 1;
+    std::int32_t h = 0, min = 0, s = 0, us = 0;
     int y = std::stoi(in.substr(0, 4));
-    auto mon = static_cast<unsigned>(std::stoi(in.substr(5, 2)));
+    auto mon = boost::numeric_cast<unsigned>(std::stoi(in.substr(5, 2)));
     if (len >= 10) {
-        d = static_cast<unsigned>(std::stoi(in.substr(8, 2)));
+        d = boost::numeric_cast<unsigned>(std::stoi(in.substr(8, 2)));
         if (len >= 13) {
-            h = std::stoi(in.substr(11, 2));
+            h = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(11, 2)));
             if (len >= 16) {
-                min = std::stoi(in.substr(14, 2));
+                min = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(14, 2)));
                 if (len >= 19) {
-                    s = std::stoi(in.substr(17, 2));
+                    s = boost::numeric_cast<std::int32_t>(std::stoi(in.substr(17, 2)));
                     if (len >= 21) {
                         std::string rest = in.substr(20);
-                        us = std::stoi(rest);
+                        us = boost::numeric_cast<std::int32_t>(std::stoi(rest));
                         for (decltype(rest.size()) i = 0; i < 6u - rest.size(); ++i) {
                             us *= 10;
                         }
@@ -105,41 +117,90 @@ epoch::epoch(const std::string &in, epoch::string_format)
 }
 
 /**
- * @brief Constructs an epoch from a const reference to a time point.
+ * @brief Constructs an epoch from a time point.
  *
  * @param[in] time_point Self-explanatory.
  */
-epoch::epoch(const kep_clock::time_point &time_point) : m_tp{time_point} {}
+epoch::epoch(time_point tp) : m_tp{tp} {}
 
-/**
- * @brief Constructs an epoch from an rvalue reference to a time point.
- *
- * @param[in] time_point Self-explanatory.
- */
-epoch::epoch(kep_clock::time_point &&time_point) : m_tp{time_point} {}
-
-kep_clock::time_point epoch::make_tp(const std::int32_t y, const std::uint32_t mon, const std::uint32_t d, const std::int32_t h,
-                                     const std::int32_t min, const std::int32_t s, const std::int32_t ms, const std::int32_t us)
-
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+time_point epoch::make_tp(int y, unsigned mon, unsigned d, const std::int32_t h, const std::int32_t min,
+                          const std::int32_t s, const std::int32_t ms, const std::int32_t us)
 {
-    return kep_clock::time_point{}
-           + chr::sys_days(chr::year_month_day{chr::year(y) / chr::month(mon) / chr::day(d)} + chr::months{0})
-                 .time_since_epoch()
-           + chr::hours(h) + chr::minutes(min) + chr::seconds(s) + chr::milliseconds(ms) + chr::microseconds(us);
+    // Construct and validate year, month and day.
+    const std::chrono::year chr_y(y);
+    if (!chr_y.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid year value of {} was specified in the construction of a time point", y));
+    }
+
+    const std::chrono::month chr_mon(mon);
+    if (!chr_mon.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid month value of {} was specified in the construction of a time point", mon));
+    }
+
+    const std::chrono::day chr_d(d);
+    if (!chr_d.ok()) {
+        throw std::invalid_argument(
+            fmt::format("An invalid day value of {} was specified in the construction of a time point", d));
+    }
+
+    // Build the year_month_day object.
+    auto ymd = std::chrono::year_month_day(chr_y, chr_mon, chr_d);
+
+    // Normalise year and month (see https://en.cppreference.com/w/cpp/chrono/year_month_day/operator_days).
+    ymd += std::chrono::months{0};
+
+    // Convert ymd to a std::chrono::system_clock::time_point. This also normalises the day.
+    const auto chr_tp = static_cast<std::chrono::sys_days>(ymd);
+
+    // Convert chr_tp to our time point.
+    // NOTE: this is guaranteed to work because the conversion factor is 86400 * 10**6,
+    // which is always representable by std::int_max_t. See the docs for the constructor
+    // of std::time_point and the constructor for std::duration:
+    // https://en.cppreference.com/w/cpp/chrono/time_point/time_point
+    // https://en.cppreference.com/w/cpp/chrono/duration/duration
+    time_point tp = chr_tp;
+
+    // Add the rest.
+    tp += ensure_64bit<std::chrono::hours>(h);
+    tp += ensure_64bit<std::chrono::minutes>(min);
+    tp += ensure_64bit<std::chrono::seconds>(s);
+    tp += ensure_64bit<std::chrono::milliseconds>(ms);
+    tp += ensure_64bit<std::chrono::microseconds>(us);
+
+    return tp;
 }
 
-kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type epoch_type)
+bool operator>(const epoch &c1, const epoch &c2)
 {
-    switch (epoch_type) {
-        case julian_type::MJD2000:
-            return epoch::tp_from_days(epoch_in);
-        case julian_type::MJD:
-            return epoch::tp_from_days(epoch_in) - chr::seconds{4453401600};
-        case julian_type::JD:
-            return epoch::tp_from_days(epoch_in) - chr::seconds{211813444800};
-        default:
-            throw;
-    }
+    return c1.m_tp > c2.m_tp;
+}
+
+bool operator<(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp < c2.m_tp;
+}
+
+bool operator>=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp >= c2.m_tp;
+}
+
+bool operator<=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp <= c2.m_tp;
+}
+
+bool operator==(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp == c2.m_tp;
+}
+
+bool operator!=(const epoch &c1, const epoch &c2)
+{
+    return c1.m_tp != c2.m_tp;
 }
 
 /**
@@ -147,9 +208,9 @@ kep_clock::time_point epoch::make_tp(const double epoch_in, const julian_type ep
  *
  * @return A time point
  */
-constexpr kep_clock::time_point epoch::tp_from_days(const double days)
+time_point epoch::tp_from_days(double days)
 {
-    return kep_clock::y2k + chr::duration_cast<kep_clock::duration>(chr::duration<double, std::ratio<86400>>(days));
+    return y2k + std::chrono::duration_cast<microseconds>(std::chrono::duration<double, seconds_day_ratio>(days));
 }
 
 /**
@@ -159,16 +220,12 @@ constexpr kep_clock::time_point epoch::tp_from_days(const double days)
  * @param tp The time point.
  * @return A formatted date/time string.
  */
-std::string epoch::as_utc_string(const kep_clock::time_point &tp)
+std::string epoch::as_utc_string(const time_point &tp)
 {
-    std::stringstream iss;
-    const auto tse{tp.time_since_epoch()};
-    const auto dp{std::chrono::floor<std::chrono::days>(tse)};
-    const auto hms{std::chrono::floor<std::chrono::seconds>(tse - dp)};
-    const auto us{std::chrono::floor<std::chrono::microseconds>(tse - dp - hms)};
-    iss << fmt::format("{:%F}", chr::sys_days(dp)) << "T" << fmt::format("{:%T}", hms) << "."
-        << fmt::format("{:06}", us.count());
-    return iss.str();
+    // Format it with fmt.
+    // NOTE: fmt is seemingly able to format all system_clock time points,
+    // even ours which will typically have a different duration.
+    return fmt::format("{:%FT%T}", tp);
 }
 
 std::string epoch::as_utc_string() const
@@ -190,42 +247,23 @@ std::ostream &operator<<(std::ostream &s, const epoch &ep)
     return s;
 }
 
-bool operator>(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp > c2.m_tp;
-}
-bool operator<(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp < c2.m_tp;
-}
-bool operator>=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp >= c2.m_tp;
-}
-bool operator<=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp <= c2.m_tp;
-}
-bool operator==(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp == c2.m_tp;
-}
-bool operator!=(const epoch &c1, const epoch &c2)
-{
-    return c1.m_tp != c2.m_tp;
-}
-
-kep_clock::duration operator-(const epoch &lhs, const epoch &rhs)
+microseconds operator-(const epoch &lhs, const epoch &rhs)
 {
     return lhs.m_tp - rhs.m_tp;
 }
 
-kep_clock::time_point epoch::get_tp() const
+time_point epoch::get_tp() const
 {
     return m_tp;
 }
-epoch utc_now() {
-    return epoch(kep_clock::utc_now());
+
+epoch epoch::now()
+{
+    // NOTE: need explicit conversion here as system_clock might have a different
+    // duration than microseconds.
+    auto tp = std::chrono::time_point_cast<microseconds>(std::chrono::system_clock::now());
+
+    return epoch(tp);
 }
 
 } // namespace kep3
