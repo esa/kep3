@@ -60,7 +60,8 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
     auto has_eph_v = !pykep::callable_attribute(m_obj, "eph_v").is_none();
     if (has_eph_v) {
         auto ret = py::cast<py::array_t<double>>(m_obj.attr("eph_v")(eps));
-        return py::cast<std::vector<double>>(ret.attr("flatten")());
+        auto retval = py::cast<std::vector<double>>(ret.attr("flatten")());
+        return retval;
     } else {
         // We simply call a for loop.
         auto size = eps.size();

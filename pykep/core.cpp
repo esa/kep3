@@ -192,10 +192,26 @@ PYBIND11_MODULE(core, m)
     // Planet methods.
     planet_class.def(
         "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+    // Vectorized version. Note that the udpla method flattens everything but planet returns a non flat array.
     planet_class.def("eph_v", [](const kep3::planet &pl, const std::vector<kep3::epoch> &eps) {
         std::vector<double> res = pl.eph_v(eps);
-        py::array_t<double> ret = ... // convert res to py::array, this can be done without copies
-        return ret;
+        // We create a capsule for the py::array_t to manage ownership change.
+        auto vec_ptr = std::make_unique<std::vector<double>>(std::move(res));
+
+        py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+            std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+        });
+
+
+        // NOTE: at this point, the capsule has been created successfully (including
+        // the registration of the destructor). We can thus release ownership from vec_ptr,
+        // as now the capsule is responsible for destroying its contents. If the capsule constructor
+        // throws, the destructor function is not registered/invoked, and the destructor
+        // of vec_ptr will take care of cleaning up.
+        auto *ptr = vec_ptr.release();
+
+        return py::array_t<double>({eps.size(), 6lu}, // shape
+                                   ptr->data(), std::move(vec_caps));
     });
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \

@@ -62,7 +62,7 @@ template <typename T>
 concept udpla_has_eph_v = requires(const T &p, const std::vector<epoch> &e) {
     {
         p.eph_v(e)
-    } -> std::same_as<std::vector<std::array<std::array<double, 3>, 2>>>;
+    } -> std::same_as<std::vector<double>>;
 };
 
 template <typename T>
@@ -145,7 +145,7 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
             // We simply call a for loop.
             auto size = eps.size();
             std::vector<double> retval(size * 6u);
-            for (size_t i = 0u; i < retval.size(); ++i) {
+            for (size_t i = 0u; i < eps.size(); ++i) {
                 auto values = this->eph(eps[i]);
                 retval[6*i] = values[0][0];
                 retval[6*i+1] = values[0][1];
