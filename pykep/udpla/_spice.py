@@ -1,5 +1,6 @@
 import spiceypy as pyspice
 import pykep as pk
+import numpy as np
 
 
 class spice:
@@ -41,19 +42,24 @@ class spice:
         self.radius = -1
         self.safe_radius = -1
 
-    def eph(self, ep):
+    def eph(self, mjd2000):
         """Mandatory method of the :class:`~pykep.planet` interface.
 
         Args:
-            *ep* (:class:`~pykep.epoch`): epoch
+            *mjd2000* (:class:`float`): Modified Julian Date 2000
 
         Returns:
             :class:`list` [:class:`list`, :class:`list`]: the planet ephemerides.
         """
-        spice_epoch = (ep-0.5).mjd2000*pk.DAY2SEC
+        spice_epoch = (mjd2000-0.5)*pk.DAY2SEC
         rv, _ = pyspice.spkezr(self.body, spice_epoch, self.ref_frame, "NONE", self.obs)
         return [rv[:3] * 1000, rv[3:] * 1000]
     
+    def eph_v(self, mjd2000s):
+        spice_epochs = (np.array(mjd2000s) - 0.5)*pk.DAY2SEC
+        rvs, _ = pyspice.spkezr(self.body, spice_epochs, self.ref_frame, "NONE", self.obs)
+        return np.array(rvs)
+
     def get_name(self):
         """Optional method of the :class:`~pykep.planet` interface.
 
