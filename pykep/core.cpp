@@ -190,9 +190,9 @@ PYBIND11_MODULE(core, m)
         py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>));
     // Planet methods.
     planet_class.def(
-        "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+        "eph", [](const kep3::planet &pl, double ep) { return pl.eph(ep); }, py::arg("ep"));
     // Vectorized version. Note that the udpla method flattens everything but planet returns a non flat array.
-    planet_class.def("eph_v", [](const kep3::planet &pl, const std::vector<kep3::epoch> &eps) {
+    planet_class.def("eph_v", [](const kep3::planet &pl, const std::vector<double> &eps) {
         std::vector<double> res = pl.eph_v(eps);
         // We create a capsule for the py::array_t to manage ownership change.
         auto vec_ptr = std::make_unique<std::vector<double>>(std::move(res));
@@ -228,11 +228,11 @@ PYBIND11_MODULE(core, m)
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
     planet_class.def(
-        "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
+        "period", [](const kep3::planet &pl, double mjd2000) { return pl.period(mjd2000); },
         py::arg("ep") = kep3::epoch{}, pykep::planet_period_docstring().c_str());
     planet_class.def(
         "elements",
-        [](const kep3::planet &pl, const kep3::epoch &ep, kep3::elements_type el_ty) { return pl.elements(ep, el_ty); },
+        [](const kep3::planet &pl, double mjd2000, kep3::elements_type el_ty) { return pl.elements(mjd2000, el_ty); },
         py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F,
         pykep::planet_elements_docstring().c_str());
 

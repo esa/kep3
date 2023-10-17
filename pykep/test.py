@@ -99,12 +99,14 @@ class my_udpla_malformed1:
     def ephs(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
     
-class my_dpla_with_optionals:
+class my_udpla_with_optionals:
     def eph(self, ep):
         # Some weird return value just to make it not constant
-        return [[ep.mjd2000,0.,0.],[0.,1.,0.]]
+        return [[ep,0.,0.],[0.,1.,0.]]
     def eph_v(self, eps):
-        return [self.eph(ep) for ep in eps]
+        retval = []
+        [retval.extend([item,0.,0,.0,1.,.0]) for item in eps]
+        return retval
     def elements(self, ep, el_type ):
         return [1.,2.,3.,4.,5.,6.]
     
@@ -157,10 +159,13 @@ class planet_test(_ut.TestCase):
 
     def test_udpla_optional_methods(self):
         import pykep as pk
-        udpla = my_dpla_with_optionals()
+        import numpy as np
+        udpla = my_udpla_with_optionals()
         pla = pk.planet(udpla)
-        self.assertTrue(pla.elements(pk.epoch(0)) == [1.,2.,3.,4.,5.,6.])
-        self.assertTrue(pla.eph_v([pk.epoch(0), pk.epoch(1)]) == [pla.eph(pk.epoch(0)), pla.eph(pk.epoch(1))])
+        self.assertTrue(pla.elements(0.) == [1.,2.,3.,4.,5.,6.])
+        r0, v0 = pla.eph(0.)
+        r1, v1 = pla.eph(1.)
+        self.assertTrue(np.all(pla.eph_v([0., 1]) == [r0+v0,r1+v1]))
 
 def run_test_suite():
     suite = _ut.TestSuite()

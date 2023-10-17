@@ -41,7 +41,7 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 };
 
 // Mandatory methods
-[[nodiscard]] std::array<std::array<double, 3>, 2> python_udpla::eph(const kep3::epoch &ep) const
+[[nodiscard]] std::array<std::array<double, 3>, 2> python_udpla::eph(double mjd2000) const
 {
     auto isthere = pykep::callable_attribute(m_obj, "eph");
     if (isthere.is_none()) {
@@ -51,23 +51,23 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
                                                     + "': the method is either not present or not callable")
                                                        .c_str());
     }
-    return py::cast<std::array<std::array<double, 3>, 2>>(m_obj.attr("eph")(ep));
+    return py::cast<std::array<std::array<double, 3>, 2>>(m_obj.attr("eph")(mjd2000));
 }
 
 // Optional methods
-[[nodiscard]] std::vector<double> python_udpla::eph_v(const std::vector<kep3::epoch> &eps) const
+[[nodiscard]] std::vector<double> python_udpla::eph_v(const std::vector<double> &mjd2000s) const
 {
     auto has_eph_v = !pykep::callable_attribute(m_obj, "eph_v").is_none();
     if (has_eph_v) {
-        auto ret = py::cast<py::array_t<double>>(m_obj.attr("eph_v")(eps));
+        auto ret = py::cast<py::array_t<double>>(m_obj.attr("eph_v")(mjd2000s));
         auto retval = py::cast<std::vector<double>>(ret.attr("flatten")());
         return retval;
     } else {
         // We simply call a for loop.
-        auto size = eps.size();
+        auto size = mjd2000s.size();
         std::vector<double> retval(size * 6u);
         for (size_t i = 0u; i < retval.size(); ++i) {
-            auto values = this->eph(eps[i]);
+            auto values = this->eph(mjd2000s[i]);
             retval[6 * i] = values[0][0];
             retval[6 * i + 1] = values[0][1];
             retval[6 * i + 2] = values[0][2];
@@ -103,7 +103,7 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 {
     return getter_wrapper<double>(m_obj, "get_safe_radius", -1);
 }
-[[nodiscard]] double python_udpla::period(const kep3::epoch &ep) const
+[[nodiscard]] double python_udpla::period(double mjd2000) const
 {
     auto method_period = pykep::callable_attribute(m_obj, "period");
     auto method_mu = pykep::callable_attribute(m_obj, "get_mu_central_body");
@@ -120,7 +120,7 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
         } else {
             // If the user provides the central body parameter, then compute the
             // period from the energy at epoch
-            auto [r, v] = eph(ep);
+            auto [r, v] = eph(mjd2000);
             double mu = get_mu_central_body();
             double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
             double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
@@ -138,17 +138,17 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
     return py::cast<double>(m_obj.attr("period")());
 }
 
-[[nodiscard]] std::array<double, 6> python_udpla::elements(const kep3::epoch &ep, kep3::elements_type el_type) const
+[[nodiscard]] std::array<double, 6> python_udpla::elements(double mjd2000, kep3::elements_type el_type) const
 {
     auto udpla_has_elements = !pykep::callable_attribute(m_obj, "elements").is_none();
     auto udpla_has_mu = !pykep::callable_attribute(m_obj, "get_mu_central_body").is_none();
     // If the user provides an efficient way to compute the orbital elements, then use it.
     if (udpla_has_elements) {
-        return py::cast<std::array<double, 6>>(m_obj.attr("elements")(ep, el_type));
+        return py::cast<std::array<double, 6>>(m_obj.attr("elements")(mjd2000, el_type));
     } else if (udpla_has_mu) {
         // If the user provides the central body parameter, then compute the
         // elements using posvel computed at ep and converted.
-        auto pos_vel = eph(ep);
+        auto pos_vel = eph(mjd2000);
         double mu = get_mu_central_body();
         return kep3::detail::elements_from_posvel(pos_vel, mu, el_type);
     } else {
