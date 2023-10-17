@@ -10,7 +10,6 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
-#include "kep3/core_astro/constants.hpp"
 #include <concepts>
 #include <string>
 #include <typeinfo>
@@ -19,6 +18,7 @@
 
 #include <fmt/core.h>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
@@ -79,8 +79,14 @@ concept udpla_has_elements = requires(const T &p, double mjd2000, kep3::elements
                                      } -> std::same_as<std::array<double, 6>>;
                              };
 
+// Concept detecting if the type T can be used as a udpla.
+template <typename T>
+concept any_udpla = std::default_initializable<T> && std::copy_constructible<T> && std::move_constructible<T>
+                    && std::destructible<T> && udpla_has_eph<T>;
+
 template <typename, typename>
-struct planet_iface;
+struct planet_iface {
+};
 
 // Planet interface.
 template <>
@@ -141,7 +147,8 @@ kep3_DLL_PUBLIC std::array<double, 6> elements_from_posvel(const std::array<std:
 
 // Planet interface implementation.
 template <typename Holder, typename T>
-struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder, T> {
+    requires any_udpla<T>
+struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_helper<Holder, T, planet_iface> {
     KEP3_UDPLA_IMPLEMENT_GET(mu_central_body, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(mu_self, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(radius, double, -1)
@@ -220,11 +227,6 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
 
 #undef KEP3_UDPLA_IMPLEMENT_GET
 
-// Concept detecting if the type T can be used as a udpla.
-template <typename T>
-concept any_udpla = std::default_initializable<T> && std::copy_constructible<T> && std::move_constructible<T>
-                    && std::destructible<T> && udpla_has_eph<T>;
-
 // The udpla used in the default constructor of planet.
 struct kep3_DLL_PUBLIC null_udpla {
     null_udpla() = default;
@@ -243,10 +245,6 @@ TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface
 
 namespace tanuki
 {
-
-// Make T wrappable in a planet only if it satisfies the any_udpla concept.
-template <typename T>
-inline constexpr bool is_wrappable<T, kep3::detail::planet_iface> = kep3::detail::any_udpla<T>;
 
 // Implement the reference interface for the planet class.
 template <typename Wrap>

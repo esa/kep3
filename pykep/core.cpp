@@ -152,6 +152,8 @@ PYBIND11_MODULE(core, m)
         .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::epoch>)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::epoch>, &pykep::pickle_setstate_wrapper<kep3::epoch>))
+        // now().
+        .def_static("now", &kep3::epoch::now, "Returns a pykep.epoch with the current UTC date.")
         // julian dates
         .def_property_readonly("mjd2000", &kep3::epoch::mjd2000, "The Modified Julian Date 2000")
         .def_property_readonly("mjd", &kep3::epoch::mjd, "The Modified Julian Date")
@@ -170,9 +172,6 @@ PYBIND11_MODULE(core, m)
         .def("__sub__",
              [](kep3::epoch ep, double dt) { return ep - std::chrono::duration<double, std::ratio<86400>>(dt); })
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
-
-    // Epoch related utils
-    m.def("utc_now", &kep3::utc_now, "Returns a pykep.epoch with the current UTC date.");
 
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{}, pykep::planet_docstring().c_str());

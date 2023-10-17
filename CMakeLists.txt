@@ -175,6 +175,14 @@ target_compile_definitions(kep3 PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC fmt::fmt)
 
+# NOTE: we require fmt>=10 because we rely on
+# system time points to be formatted in UTC time,
+# rather than local time.
+message(STATUS "fmt major version: ${fmt_VERSION_MAJOR}")
+if(${fmt_VERSION_MAJOR} LESS 10)
+    message(FATAL_ERROR "At least fmt version 10 is required, but version ${fmt_VERSION_MAJOR} was detected instead")
+endif()
+
 # heyoka.
 find_package(heyoka 3.0.0 REQUIRED CONFIG)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
