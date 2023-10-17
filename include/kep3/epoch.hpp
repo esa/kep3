@@ -100,6 +100,8 @@ class kep3_DLL_PUBLIC epoch
     static time_point make_tp(int y, unsigned mon, unsigned d, std::int32_t h = 0, std::int32_t min = 0,
                               std::int32_t s = 0, std::int32_t ms = 0, std::int32_t us = 0);
 
+    static time_point tp_from_days(double days);
+
 public:
     enum class julian_type { MJD2000, MJD, JD };
     enum class string_format { ISO };
@@ -116,17 +118,6 @@ public:
 
     // Constructor from time point.
     explicit epoch(time_point);
-
-    /**
-     * Constructs an epoch from a std::chrono::duration.
-     * The reference point is assumed to be MJD2000.
-     * \param[in] time The time as a duration.
-     */
-    template <typename Rep, typename Period>
-    explicit epoch(std::chrono::duration<Rep, Period> duration)
-        : m_tp{std::chrono::duration_cast<microseconds>(duration)}
-    {
-    }
 
     // Constructor for datetime broken down into its constituents.
     explicit epoch(int y, unsigned mon, unsigned d, std::int32_t h = 0, std::int32_t min = 0, std::int32_t s = 0,
@@ -159,9 +150,6 @@ public:
     {
         return std::chrono::duration<double, seconds_day_ratio>(m_tp.time_since_epoch() - y2k_offset).count();
     }
-
-    // Conversions
-    static time_point tp_from_days(double days);
 
     // Duration conversions
     static constexpr double as_sec(const microseconds &d)

@@ -77,8 +77,6 @@ TEST_CASE("construct")
 
 TEST_CASE("epoch_operators")
 {
-    epoch(std::chrono::nanoseconds(10));
-
     REQUIRE(epoch(2034, 10, 17) == epoch(2034, 10, 17));
     REQUIRE(epoch(2034, 10, 17) != epoch(2034, 11, 17));
     // Testing us precision
