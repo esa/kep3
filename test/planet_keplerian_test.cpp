@@ -96,9 +96,10 @@ TEST_CASE("eph")
     // This is a circular orbit at 1 AU.
     std::array<std::array<double, 3>, 2> pos_vel_0{{{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}};
     // A keplerian planet orbiting the Sun on such a perfectly circular orbit.
-    keplerian udpla1{kep3::epoch(ref_epoch), pos_vel_0, kep3::MU_SUN};
+    keplerian udpla{kep3::epoch(ref_epoch), pos_vel_0, kep3::MU_SUN};
     double period_in_days = (2. * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
-    auto [r, v] = udpla1.eph(period_in_days);
+    auto [r, v] = udpla.eph(period_in_days);
+
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
 }
