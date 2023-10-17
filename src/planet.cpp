@@ -63,7 +63,7 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
     return retval;
 }
 
-std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)
+std::array<std::array<double, 3>, 2> null_udpla::eph(double)
 {
     std::array<double, 3> pos = {1., 0., 0.};
     std::array<double, 3> vel = {0., 1., 0.};

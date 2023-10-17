@@ -17,7 +17,6 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
-#include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 
 namespace kep3::udpla
@@ -60,7 +59,7 @@ public:
     // Constructor
     explicit jpl_lp(std::string = "earth");
     // Mandatory UDPLA methods
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double) const;
 
     // Optional UDPLA methods
     [[nodiscard]] std::string get_name() const;
@@ -69,11 +68,11 @@ public:
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
     [[nodiscard]] std::string get_extra_info() const;
-    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
+    [[nodiscard]] std::array<double, 6> elements(double = 0.,
                                                  kep3::elements_type = kep3::elements_type::KEP_F) const;
 
 private:
-    [[nodiscard]] std::array<double, 6> _f_elements(const kep3::epoch & = kep3::epoch()) const;
+    [[nodiscard]] std::array<double, 6> _f_elements(double = 0.) const;
 };
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::jpl_lp &);
 } // namespace kep3::udpla

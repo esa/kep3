@@ -93,10 +93,10 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &elem, 
     }
 }
 
-std::array<std::array<double, 3>, 2> keplerian::eph(const kep3::epoch &ep) const
+std::array<std::array<double, 3>, 2> keplerian::eph(double mjd2000) const
 {
     // 1 - We compute the dt
-    auto dt = epoch::as_sec(ep - m_ref_epoch);
+    auto dt = mjd2000 - m_ref_epoch.mjd2000();
     // 2 - We propagate (make a copy as we do not want to change m_pos_vel_0)
     auto retval(m_pos_vel_0);
     kep3::propagate_lagrangian(retval, dt, m_mu_central_body);
@@ -128,7 +128,7 @@ double keplerian::get_safe_radius() const
     return m_safe_radius;
 }
 
-double keplerian::period(const kep3::epoch &) const
+double keplerian::period(double) const
 {
     return m_period;
 }
@@ -138,7 +138,7 @@ kep3::epoch keplerian::get_ref_epoch() const
     return m_ref_epoch;
 }
 
-std::array<double, 6> keplerian::elements(kep3::epoch, kep3::elements_type el_type) const
+std::array<double, 6> keplerian::elements(double, kep3::elements_type el_type) const
 {
     std::array<double, 6> retval{};
     switch (el_type) {

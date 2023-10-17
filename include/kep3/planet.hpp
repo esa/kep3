@@ -37,10 +37,10 @@ namespace kep3::detail
 #define KEP3_UDPLA_CONCEPT_HAS_GET(name, type)                                                                         \
     template <typename T>                                                                                              \
     concept udpla_has_get_##name = requires(const T &p) {                                                              \
-        {                                                                                                              \
-            p.get_##name()                                                                                             \
-        } -> std::same_as<type>;                                                                                       \
-    }
+                                       {                                                                               \
+                                           p.get_##name()                                                              \
+                                           } -> std::same_as<type>;                                                    \
+                                   }
 
 KEP3_UDPLA_CONCEPT_HAS_GET(mu_central_body, double);
 KEP3_UDPLA_CONCEPT_HAS_GET(mu_self, double);
@@ -52,32 +52,32 @@ KEP3_UDPLA_CONCEPT_HAS_GET(extra_info, std::string);
 #undef KEP3_UDPLA_CONCEPT_HAS_GET
 
 template <typename T>
-concept udpla_has_eph = requires(const T &p, const epoch &e) {
-    {
-        p.eph(e)
-    } -> std::same_as<std::array<std::array<double, 3>, 2>>;
-};
+concept udpla_has_eph = requires(const T &p, double mjd2000) {
+                            {
+                                p.eph(mjd2000)
+                                } -> std::same_as<std::array<std::array<double, 3>, 2>>;
+                        };
 
 template <typename T>
-concept udpla_has_eph_v = requires(const T &p, const std::vector<epoch> &e) {
-    {
-        p.eph_v(e)
-    } -> std::same_as<std::vector<double>>;
-};
+concept udpla_has_eph_v = requires(const T &p, const std::vector<double> &mjd2000) {
+                              {
+                                  p.eph_v(mjd2000)
+                                  } -> std::same_as<std::vector<double>>;
+                          };
 
 template <typename T>
-concept udpla_has_period = requires(const T &p, const epoch &e) {
-    {
-        p.period(e)
-    } -> std::same_as<double>;
-};
+concept udpla_has_period = requires(const T &p, double mjd2000) {
+                               {
+                                   p.period(mjd2000)
+                                   } -> std::same_as<double>;
+                           };
 
 template <typename T>
-concept udpla_has_elements = requires(const T &p, const epoch &e, kep3::elements_type el_t) {
-    {
-        p.elements(e, el_t)
-    } -> std::same_as<std::array<double, 6>>;
-};
+concept udpla_has_elements = requires(const T &p, double mjd2000, kep3::elements_type el_t) {
+                                 {
+                                     p.elements(mjd2000, el_t)
+                                     } -> std::same_as<std::array<double, 6>>;
+                             };
 
 template <typename, typename>
 struct planet_iface;
@@ -94,15 +94,32 @@ struct planet_iface<void, void> {
     [[nodiscard]] virtual double get_safe_radius() const = 0;
     [[nodiscard]] virtual std::string get_name() const = 0;
     [[nodiscard]] virtual std::string get_extra_info() const = 0;
-    [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(const epoch &) const = 0;
-    [[nodiscard]] virtual std::vector<double> eph_v(const std::vector<epoch> &) const = 0;
 
+    [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(double) const = 0;
+    [[nodiscard]] virtual std::vector<double> eph_v(const std::vector<double> &) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
-    [[nodiscard]] virtual double period(const epoch & = kep3::epoch()) const = 0;
+    [[nodiscard]] virtual double period(double = 0.) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
-    [[nodiscard]] virtual std::array<double, 6> elements(const kep3::epoch & = kep3::epoch(),
+    [[nodiscard]] virtual std::array<double, 6> elements(double = 0.,
                                                          kep3::elements_type = kep3::elements_type::KEP_F) const
         = 0;
+
+    // Methods that are non virtual, not implementable by the user in udplas, but visible in kep3::planet
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const
+    {
+        return eph(ep.mjd2000());
+    }
+
+    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep,
+                                                 kep3::elements_type el_type = kep3::elements_type::KEP_F) const
+    {
+        return elements(ep.mjd2000(), el_type);
+    }
+
+    [[nodiscard]] double period(const epoch &ep) const
+    {
+        return period(ep.mjd2000());
+    }
 };
 
 // Helper macro to implement getters in the planet interface implementation.
@@ -132,42 +149,42 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
     KEP3_UDPLA_IMPLEMENT_GET(name, std::string, boost::core::demangle(typeid(T).name()))
     KEP3_UDPLA_IMPLEMENT_GET(extra_info, std::string, "")
 
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const final
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double mjd2000) const final
     {
-        return this->value().eph(ep);
+        return this->value().eph(mjd2000);
     }
 
-    [[nodiscard]] std::vector<double> eph_v(const std::vector<epoch> &eps) const final
+    [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &mjd2000s) const final
     {
         if constexpr (udpla_has_eph_v<T>) {
-            return this->value().eph_v(eps);
+            return this->value().eph_v(mjd2000s);
         } else {
             // We simply call a for loop.
-            auto size = eps.size();
+            auto size = mjd2000s.size();
             std::vector<double> retval(size * 6u);
-            for (size_t i = 0u; i < eps.size(); ++i) {
-                auto values = this->eph(eps[i]);
-                retval[6*i] = values[0][0];
-                retval[6*i+1] = values[0][1];
-                retval[6*i+2] = values[0][2];
-                retval[6*i+3] = values[1][0];
-                retval[6*i+4] = values[1][1];
-                retval[6*i+5] = values[1][2];
+            for (size_t i = 0u; i < mjd2000s.size(); ++i) {
+                auto values = this->eph(mjd2000s[i]);
+                retval[6 * i] = values[0][0];
+                retval[6 * i + 1] = values[0][1];
+                retval[6 * i + 2] = values[0][2];
+                retval[6 * i + 3] = values[1][0];
+                retval[6 * i + 4] = values[1][1];
+                retval[6 * i + 5] = values[1][2];
             }
             return retval;
         }
     }
 
     // NOLINTNEXTLINE(google-default-arguments)
-    [[nodiscard]] double period(const epoch &ep = kep3::epoch()) const final
+    [[nodiscard]] double period(double mjd2000 = 0.) const final
     {
         // If the user provides an efficient way to compute the period, then use it
         if constexpr (udpla_has_period<T>) {
-            return this->value().period(ep);
+            return this->value().period(mjd2000);
         } else if constexpr (udpla_has_get_mu_central_body<T>) {
             // If the user provides the central body parameter, then compute the
             // period from the energy at epoch
-            auto [r, v] = eph(ep);
+            auto [r, v] = eph(mjd2000);
             double mu = get_mu_central_body();
             return period_from_energy(r, v, mu);
         } else {
@@ -179,16 +196,16 @@ struct planet_iface : planet_iface<void, void>, tanuki::iface_impl_helper<Holder
     }
 
     // NOLINTNEXTLINE(google-default-arguments)
-    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep = kep3::epoch(),
+    [[nodiscard]] std::array<double, 6> elements(double mjd2000 = 0.,
                                                  kep3::elements_type el_type = kep3::elements_type::KEP_F) const final
     {
         // If the user provides an efficient way to compute the orbital elements, then use it.
         if constexpr (udpla_has_elements<T>) {
-            return this->value().elements(ep, el_type);
+            return this->value().elements(mjd2000, el_type);
         } else if constexpr (udpla_has_get_mu_central_body<T>) {
             // If the user provides the central body parameter, then compute the
             // elements using posvel computed at ep and converted.
-            auto pos_vel = eph(ep);
+            auto pos_vel = eph(mjd2000);
             double mu = get_mu_central_body();
             return elements_from_posvel(pos_vel, mu, el_type);
         } else {
@@ -211,7 +228,7 @@ concept any_udpla = std::default_initializable<T> && std::copy_constructible<T> 
 // The udpla used in the default constructor of planet.
 struct kep3_DLL_PUBLIC null_udpla {
     null_udpla() = default;
-    static std::array<std::array<double, 3>, 2> eph(const epoch &);
+    static std::array<std::array<double, 3>, 2> eph(double);
 
 private:
     friend class boost::serialization::access;
