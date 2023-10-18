@@ -65,7 +65,7 @@ class spice:
     def eph_v(self, mjd2000s):
         spice_epochs = (np.array(mjd2000s) - 0.5)*pk.DAY2SEC
         rvs, _ = pyspice.spkezr(self.body, spice_epochs, self.ref_frame, "NONE", self.obs)
-        return np.array(rvs)
+        return np.array(rvs) * 1000
 
     def get_name(self):
         """Optional method of the :class:`~pykep.planet` interface.

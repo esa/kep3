@@ -70,7 +70,7 @@ class tle:
         jd_frs = [a-b for a,b in zip(jds,jd_is)]
         self.e, r, v = self.satellite.sgp4_array(np.array(jd_is), np.array(jd_frs))
         rv = np.hstack((r,v))
-        return rv.reshape((-1, 6)) 
+        return rv.reshape((-1, 6)) * 1000
     
     def get_name(self):
         """Optional method of the :class:`~pykep.planet` interface.

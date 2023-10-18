@@ -185,6 +185,8 @@ class py_udplas_test(_ut.TestCase):
         from sgp4 import exporter
         import numpy as np
         data_file = pk.__path__[0] + "/data/tle.txt"
+
+        ## Test eph
         file = open(data_file, "r")
         while(True):
             header = file.readline()
@@ -203,6 +205,52 @@ class py_udplas_test(_ut.TestCase):
             e, r, v = satellite.sgp4(jd_i, jd_fr)
             self.assertTrue(np.allclose(np.array(r) * 1000, rpk, equal_nan=True, atol=1e-13))
             self.assertTrue(np.allclose(np.array(v) * 1000, vpk, equal_nan=True, atol=1e-13))
+        file.close()
+
+        ## Test eph_v
+        file = open(data_file, "r")
+        while(True):
+            header = file.readline()
+            if header == "":
+                break
+            line1 = file.readline()
+            line2 = file.readline()
+            udpla = pk.udpla.tle(line1 = line1, line2 = line2)
+            pla = pk.planet(udpla)
+            ref_epoch = pk.epoch("2023-10")
+            mjd2000s = np.linspace(ref_epoch.mjd2000, ref_epoch.mjd2000 + 10, 10)
+            respk = pla.eph_v(mjd2000s)
+            satellite = Satrec.twoline2rv(line1, line2)
+            jds = [mjd2000 + 2451544.5 for mjd2000 in mjd2000s]
+            jd_is = [int(item) for item in jds]
+            jd_frs = [a-b for a,b in zip(jds, jd_is)]
+            e, r, v = satellite.sgp4_array(np.array(jd_is), np.array(jd_frs))
+            rv = np.hstack((r,v))
+            rv = rv.reshape((-1,6))*1000
+            self.assertTrue(np.allclose(rv, respk, equal_nan=True, atol=1e-13))
+
+    def test_spice(self):
+        import pykep as pk
+        import spiceypy as pyspice
+        import numpy as np
+        kernel_file = pk.__path__[0] + "/data/de440s.bsp"
+        pk.utils.load_spice_kernels(kernel_file)
+
+        # We test eph
+        udpla = pk.udpla.spice("JUPITER BARYCENTER", "ECLIPJ2000", "SSB")
+        pla = pk.planet(udpla)
+        rvpk = udpla.eph(0.12345)
+        rv, _ = pyspice.spkezr("JUPITER BARYCENTER", (0.12345-0.5)*pk.DAY2SEC, "ECLIPJ2000", "NONE", "SSB")
+        self.assertTrue(np.allclose(rvpk[0], rv[0:3]*1000, atol=1e-13))
+        self.assertTrue(np.allclose(rvpk[1], rv[3:]*1000, atol=1e-13))
+
+        # We test eph_v
+        mjd2000s = np.linspace(0.12345, 30, 100)
+        rvpk = udpla.eph_v(mjd2000s)
+        rv, _ = pyspice.spkezr("JUPITER BARYCENTER", (mjd2000s-0.5)*pk.DAY2SEC, "ECLIPJ2000", "NONE", "SSB")
+        self.assertTrue(np.allclose(rvpk, np.array(rv)*1000, atol=1e-13))
+
+
 
 
 
@@ -226,6 +274,8 @@ def run_test_suite():
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
     suite.addTest(py_udplas_test("test_tle"))
+    suite.addTest(py_udplas_test("test_spice"))
+
 
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
