@@ -184,7 +184,10 @@ class py_udplas_test(_ut.TestCase):
         from sgp4.api import Satrec
         from sgp4 import exporter
         import numpy as np
-        data_file = pk.__path__[0] + "/data/tle.txt"
+        from pathlib import Path
+
+        pk_path = Path(pk.__path__[0])
+        data_file = str(pk_path / "data" / "tle.txt")
 
         ## Test eph
         file = open(data_file, "r")
@@ -233,7 +236,11 @@ class py_udplas_test(_ut.TestCase):
         import pykep as pk
         import spiceypy as pyspice
         import numpy as np
-        kernel_file = pk.__path__[0] + "/data/de440s.bsp"
+        from pathlib import Path
+
+
+        pk_path = Path(pk.__path__[0])
+        kernel_file = str(pk_path / "data" / "de440s.bsp")
         pk.utils.load_spice_kernels(kernel_file)
 
         # We test eph
@@ -249,13 +256,6 @@ class py_udplas_test(_ut.TestCase):
         rvpk = udpla.eph_v(mjd2000s)
         rv, _ = pyspice.spkezr("JUPITER BARYCENTER", (mjd2000s-0.5)*pk.DAY2SEC, "ECLIPJ2000", "NONE", "SSB")
         self.assertTrue(np.allclose(rvpk, np.array(rv)*1000, atol=1e-13))
-
-
-
-
-
-
-
 
 
 def run_test_suite():

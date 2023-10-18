@@ -63,19 +63,7 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
         auto retval = py::cast<std::vector<double>>(ret.attr("flatten")());
         return retval;
     } else {
-        // We simply call a for loop.
-        auto size = mjd2000s.size();
-        std::vector<double> retval(size * 6u);
-        for (size_t i = 0u; i < retval.size(); ++i) {
-            auto values = this->eph(mjd2000s[i]);
-            retval[6 * i] = values[0][0];
-            retval[6 * i + 1] = values[0][1];
-            retval[6 * i + 2] = values[0][2];
-            retval[6 * i + 3] = values[1][0];
-            retval[6 * i + 4] = values[1][1];
-            retval[6 * i + 5] = values[1][2];
-        }
-        return retval;
+        return kep3::detail::default_eph_vectorization(this, mjd2000s);
     }
 }
 

@@ -8,6 +8,7 @@
 import spiceypy as pyspice
 import pykep as pk
 import numpy as np
+from pathlib import Path
 
 
 class spice:
@@ -110,8 +111,8 @@ class de440s(spice):
         *obs* (:class:`str`): NAIF name of the observer. For example: "SSB" (solar system barycenter).
     """
     def __init__(self, body = "EARTH BARYCENTER", ref_frame = "ECLIPJ2000", obs = "SSB"):
-        path = pk.__path__[0]
-        self.kernel = path+"/data/de440s.bsp"
+        pk_path = Path(pk.__path__[0])
+        self.kernel = str(pk_path / "data" / "de440s.bsp")
         pk.utils.load_spice_kernels(self.kernel)
         spice.__init__(self, body, ref_frame = ref_frame, obs = obs)
 
@@ -135,7 +136,8 @@ class de440s(spice):
         Returns:
             :class:`str`: The full file name.
         """
-        path = pk.__path__[0] + "/data/de440s.bsp"
+        pk_path = Path(pk.__path__[0])
+        path = str(pk_path / "data" /"de440s.bsp")
         return path
     
     def body_list():

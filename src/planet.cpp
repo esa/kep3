@@ -65,6 +65,24 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
     return retval;
 }
 
+std::vector<double> default_eph_vectorization(planet_iface<void, void>* self, std::vector<double> mjd2000s) {
+    // We simply call a for loop.
+            const auto size = mjd2000s.size();
+            using size_type = std::vector<double>::size_type;
+            std::vector<double> retval;
+            retval.resize(boost::safe_numerics::safe<size_type>(size) * 6);
+            for (decltype(mjd2000s.size()) i = 0u; i < size; ++i) {
+                auto values = self->eph(mjd2000s[i]);
+                retval[6 * i] = values[0][0];
+                retval[6 * i + 1] = values[0][1];
+                retval[6 * i + 2] = values[0][2];
+                retval[6 * i + 3] = values[1][0];
+                retval[6 * i + 4] = values[1][1];
+                retval[6 * i + 5] = values[1][2];
+            }
+            return retval;
+}
+
 std::array<std::array<double, 3>, 2> null_udpla::eph(double)
 {
     std::array<double, 3> pos = {1., 0., 0.};
