@@ -15,6 +15,8 @@
 #include <typeinfo>
 
 #include <boost/core/demangle.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
+
 
 #include <fmt/core.h>
 
@@ -169,7 +171,9 @@ struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_he
         } else {
             // We simply call a for loop.
             const auto size = mjd2000s.size();
-            std::vector<double> retval(size * 6u);
+            using size_type = std::vector<double>::size_type;
+            std::vector<double> retval;
+            retval.resize(boost::safe_numerics::safe<size_type>(size) * 6);
             for (decltype(mjd2000s.size()) i = 0u; i < size; ++i) {
                 auto values = this->eph(mjd2000s[i]);
                 retval[6 * i] = values[0][0];
