@@ -75,7 +75,7 @@ std::string planet_elements_docstring();
 // UDPLAS
 std::string udpla_keplerian_from_elem_docstring();
 std::string udpla_keplerian_from_posvel_docstring();
-
+std::string udpla_jpl_lp_docstring();
 
 
 // Lambert Problem

@@ -106,7 +106,7 @@ PYBIND11_MODULE(core, m)
     m.def("eq2par", &kep3::eq2par);
 
     // Class epoch
-    py::class_<kep3::epoch> epoch_class(m, "epoch");
+    py::class_<kep3::epoch> epoch_class(m, "epoch", "Represents a specific point in time.");
 
     py::enum_<kep3::epoch::julian_type>(epoch_class, "julian_type")
         .value("MJD2000", kep3::epoch::julian_type::MJD2000, "Modified Julian Date 2000.")

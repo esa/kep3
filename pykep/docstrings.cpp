@@ -700,7 +700,7 @@ std::string f2zeta_v_doc()
 
 std::string epoch_from_float_doc()
 {
-    return R"(**epoch** (when, julian_type = MJD2000)
+    return R"(__init__(when: float, julian_type = MJD2000)
     
     Constructs an epoch from a Julian Date.
 
@@ -718,7 +718,8 @@ std::string epoch_from_float_doc()
 
 std::string epoch_from_datetime_doc()
 {
-    return R"(**epoch** (when)
+    return R"(**Alternative Constructor:**
+    **__init__(** *when: datetime.datetime* **)**
     
     Constructs an epoch from a datetime object.
 
@@ -735,12 +736,15 @@ std::string epoch_from_datetime_doc()
 
 std::string epoch_from_string_doc()
 {
-    return R"(**epoch** (when, string_format = pk.epoch.string_format.ISO)
+    return R"(**Alternative Constructor:**
+    **__init__(** *when: str*, *string_format = pk.epoch.string_format.ISO* **)**
     
     Constructs an epoch from a string.
 
     Args:
-      *when* (:class:`string`): a date
+      *when* (:class:`str`): a date
+
+      *string_format* (:class`~pykep.epoch.string_format`): string format.
 
     Examples:
       >>> import pykep as pk
@@ -1029,7 +1033,7 @@ Returns:
 std::string udpla_keplerian_from_posvel_docstring()
 {
     return R"(**Alternative Constructor:**
-    **__init__(ep, posvel, mu_central_body, name = "unkown", added_params = [-1,-1,-1])**
+    **__init__(** *ep*, *posvel*, *mu_central_body*, *name* = "unkown", *added_params* = [-1,-1,-1]**)**
 
 Constructs a Keplerian udpla from its position and velocity at epoch.
 
@@ -1082,8 +1086,22 @@ Examples:
 )";
 }
 
+std::string udpla_jpl_lp_docstring()
+{
+    return R"(__init__(name = "earth")
 
+Constructs a solar system planet with ephemerides computed using a low-precision (non Keplerian)
+model from JPL (https://ssd.jpl.nasa.gov/planets/approx_pos.html).
 
+Args:
+    *name* (:class:`str`): the name of the solar system planet.
+
+Examples:
+    >>> import pykep as pk
+    >>> udpla = pk.udpla.jpl_lp(name="mercury")
+    >>> pla = pk.planet(udpla)
+)";
+}
 
 std::string lambert_problem_docstring()
 {
