@@ -130,8 +130,6 @@ struct complete_udpla {
 
     static std::vector<double> eph_v(const std::vector<double> &)
     {
-        std::array<double, 3> pos = {1., 0., 0.};
-        std::array<double, 3> vel = {0., 1., 0.};
         return {1.,0.,0.,0.,1.,0.,1.,0.,0.,0.,1.,0.};
     };
 

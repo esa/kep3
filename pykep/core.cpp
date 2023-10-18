@@ -190,9 +190,11 @@ PYBIND11_MODULE(core, m)
         py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>));
     // Planet methods.
     planet_class.def(
-        "eph", [](const kep3::planet &pl, double mjd2000) { return pl.eph(mjd2000); }, py::arg("mjd2000"));
-    planet_class.def(
-        "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+        "eph",
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
+            return std::visit([&](const auto &v) { return pl.eph(v); }, when);
+        },
+        py::arg("when"));
     // Vectorized version. Note that the udpla method flattens everything but planet returns a non flat array.
     planet_class.def("eph_v", [](const kep3::planet &pl, const std::vector<double> &eps) {
         std::vector<double> res = pl.eph_v(eps);
@@ -229,20 +231,18 @@ PYBIND11_MODULE(core, m)
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
     planet_class.def(
-        "period", [](const kep3::planet &pl, double mjd2000) { return pl.period(mjd2000); },
-        py::arg("mjd2000") = 0., pykep::planet_period_docstring().c_str());
-    planet_class.def(
-        "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
-        py::arg("ep") = kep3::epoch{});
-    planet_class.def(
-        "elements",
-        [](const kep3::planet &pl, double mjd2000, kep3::elements_type el_ty) { return pl.elements(mjd2000, el_ty); },
-        py::arg("mjd2000") = 0., py::arg("el_type") = kep3::elements_type::KEP_F,
-        pykep::planet_elements_docstring().c_str());
+        "period",
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
+            return std::visit([&](const auto &v) { return pl.period(v); }, when);
+        },
+        py::arg("when") = 0., pykep::planet_period_docstring().c_str());
+
     planet_class.def(
         "elements",
-        [](const kep3::planet &pl, const kep3::epoch &ep, kep3::elements_type el_ty) { return pl.elements(ep, el_ty); },
-        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F);
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when, kep3::elements_type el_ty) {
+            return std::visit([&](const auto &v) { return pl.elements(v, el_ty); }, when);
+        },
+        py::arg("when") = 0., py::arg("el_type") = kep3::elements_type::KEP_F, pykep::planet_elements_docstring().c_str());
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module
