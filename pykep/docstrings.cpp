@@ -1026,14 +1026,73 @@ Returns:
 )";
 }
 
+std::string udpla_keplerian_from_posvel_docstring()
+{
+    return R"(**Alternative Constructor:**
+    **__init__(ep, posvel, mu_central_body, name = "unkown", added_params = [-1,-1,-1])**
+
+Constructs a Keplerian udpla from its position and velocity at epoch.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
+
+    *posvel* (:class:`list` [:class:`list`, :class:`list`]): the body position and velocty.
+
+    *mu_central_body* (:class:`float`): the gravitational parameter of the main attracting body.
+
+    *name* (:class:`str`): the name of the orbiting body.
+
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+
+Examples:
+    >>> import pykep as pk
+    >>> r = [1, 0, 0]
+    >>> v = [0, 1, 0]
+    >>> ep = pk.epoch("2025-03-22")
+    >>> udpla = pk.udpla.keplerian(ep = ep, posvel = [r, v], mu_central_body =1, name = "my_pla")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
+std::string udpla_keplerian_from_elem_docstring()
+{
+    return R"(__init__(ep, elem, mu_central_body, name = "unkown", added_params = [-1,-1,-1], elem_type = KEP_F)
+
+Constructs a Keplerian udpla from its orbital elements at epoch.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
+
+    *elem* (:class:`list` or :class:ndarray`): the orbital elements. by default.
+
+    *mu_central_body* (:class:`float`): the gravitational parameter of the main attracting body.
+
+    *name* (:class:`str`): the name of the orbiting body.
+
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+
+    *el_type* (:class:`~pykep.el_type`): the elements type. Deafulets to osculating Keplrian (a ,e ,i, W, w, f) with true anomaly.
+
+Examples:
+    >>> import pykep as pk
+    >>> elem = [1, 0, 0, 0, 0, 0]
+    >>> ep = pk.epoch("2025-03-22")
+    >>> udpla = pk.udpla.keplerian(ep = ep, elem = elem, mu_central_body =1, name = "my_pla")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
+
+
+
 std::string lambert_problem_docstring()
 {
-    return R"(__init__(rs = [1,0,0], rf = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
+    return R"(__init__(r0 = [1,0,0], r1 = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
 
       Args:
-          *r1* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
+          *r0* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
 
-          *r2* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
+          *r1* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
 
           *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
 
@@ -1075,7 +1134,7 @@ std::string propagate_lagrangian_docstring()
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
     Returns:
-          :class:`list`[:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+          :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
 
     Example::
         >>> import pykep as pk

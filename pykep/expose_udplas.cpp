@@ -41,11 +41,12 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
                       kep3::elements_type>(),
              py::arg("ep"), py::arg("elem"), py::arg("mu_central_body"), py::arg("name") = "unknown",
              py::arg("added_params") = std::array<double, 3>({-1, -1, -1}),
-             py::arg("elem_type") = kep3::elements_type::KEP_F)
+             py::arg("el_type") = kep3::elements_type::KEP_F, pykep::udpla_keplerian_from_elem_docstring().c_str())
         .def(py::init<const kep3::epoch &, const std::array<std::array<double, 3>, 2> &, double, std::string,
                       std::array<double, 3>>(),
              py::arg("ep"), py::arg("posvel"), py::arg("mu_central_body"), py::arg("name") = "unknown",
-             py::arg("added_params") = std::array<double, 3>({-1, -1, -1}))
+             py::arg("added_params") = std::array<double, 3>({-1, -1, -1}),
+             pykep::udpla_keplerian_from_posvel_docstring().c_str())
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::udpla::keplerian>)
         // other methods
