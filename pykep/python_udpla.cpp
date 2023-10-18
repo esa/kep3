@@ -43,23 +43,23 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 // Mandatory methods
 [[nodiscard]] std::array<std::array<double, 3>, 2> python_udpla::eph(double mjd2000) const
 {
-    auto isthere = pykep::callable_attribute(m_obj, "eph");
-    if (isthere.is_none()) {
+    auto udpla_eph = pykep::callable_attribute(m_obj, "eph");
+    if (udpla_eph.is_none()) {
         pykep::py_throw(PyExc_NotImplementedError, ("the eph() method has been invoked, but it is not implemented "
                                                     "in the user-defined Python planet '"
                                                     + pykep::str(m_obj) + "' of type '" + pykep::str(pykep::type(m_obj))
                                                     + "': the method is either not present or not callable")
                                                        .c_str());
     }
-    return py::cast<std::array<std::array<double, 3>, 2>>(m_obj.attr("eph")(mjd2000));
+    return py::cast<std::array<std::array<double, 3>, 2>>(udpla_eph(mjd2000));
 }
 
 // Optional methods
 [[nodiscard]] std::vector<double> python_udpla::eph_v(const std::vector<double> &mjd2000s) const
 {
-    auto has_eph_v = !pykep::callable_attribute(m_obj, "eph_v").is_none();
-    if (has_eph_v) {
-        auto ret = py::cast<py::array_t<double>>(m_obj.attr("eph_v")(mjd2000s));
+    auto udpla_eph_v = pykep::callable_attribute(m_obj, "eph_v");
+    if (!udpla_eph_v.is_none()) {
+        auto ret = py::cast<py::array_t<double>>(udpla_eph_v(mjd2000s));
         auto retval = py::cast<std::vector<double>>(ret.attr("flatten")());
         return retval;
     } else {
@@ -105,11 +105,11 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
 }
 [[nodiscard]] double python_udpla::period(double mjd2000) const
 {
-    auto method_period = pykep::callable_attribute(m_obj, "period");
-    auto method_mu = pykep::callable_attribute(m_obj, "get_mu_central_body");
+    auto udpla_period = pykep::callable_attribute(m_obj, "period");
+    auto udpla_get_mu_central_body = pykep::callable_attribute(m_obj, "get_mu_central_body");
 
-    if (method_period.is_none()) {
-        if (method_mu.is_none()) {
+    if (udpla_period.is_none()) {
+        if (udpla_get_mu_central_body.is_none()) {
             pykep::py_throw(
                 PyExc_NotImplementedError,
                 ("the period() method has been invoked, but "
@@ -135,17 +135,17 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
             }
         }
     }
-    return py::cast<double>(m_obj.attr("period")());
+    return py::cast<double>(udpla_period(mjd2000));
 }
 
 [[nodiscard]] std::array<double, 6> python_udpla::elements(double mjd2000, kep3::elements_type el_type) const
 {
-    auto udpla_has_elements = !pykep::callable_attribute(m_obj, "elements").is_none();
-    auto udpla_has_mu = !pykep::callable_attribute(m_obj, "get_mu_central_body").is_none();
+    auto udpla_elements = pykep::callable_attribute(m_obj, "elements");
+    auto udpla_get_mu_central_body = pykep::callable_attribute(m_obj, "get_mu_central_body");
     // If the user provides an efficient way to compute the orbital elements, then use it.
-    if (udpla_has_elements) {
-        return py::cast<std::array<double, 6>>(m_obj.attr("elements")(mjd2000, el_type));
-    } else if (udpla_has_mu) {
+    if (!udpla_elements.is_none()) {
+        return py::cast<std::array<double, 6>>(udpla_elements(mjd2000, el_type));
+    } else if (!udpla_get_mu_central_body.is_none()) {
         // If the user provides the central body parameter, then compute the
         // elements using posvel computed at ep and converted.
         auto pos_vel = eph(mjd2000);

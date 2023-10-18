@@ -141,8 +141,10 @@ TEST_CASE("elements")
     }
     // We test on hyperbolas
     std::array<std::array<double, 3>, 2> pos_vel_h{{{1., 0.1, 0.1}, {0.1, 3., 0.1}}};
+    keplerian udpla_h{kep3::epoch(ref_epoch), pos_vel_h, kep3::MU_SUN};
+
     {
-        REQUIRE_THROWS_AS(udpla.elements(0., kep3::elements_type::POSVEL), std::logic_error);
+        REQUIRE_THROWS_AS(udpla_h.elements(0., kep3::elements_type::POSVEL), std::logic_error);
     }
 }
 

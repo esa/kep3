@@ -167,9 +167,9 @@ struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_he
             return this->value().eph_v(mjd2000s);
         } else {
             // We simply call a for loop.
-            auto size = mjd2000s.size();
+            const auto size = mjd2000s.size();
             std::vector<double> retval(size * 6u);
-            for (size_t i = 0u; i < mjd2000s.size(); ++i) {
+            for (decltype(mjd2000s.size()) i = 0u; i < size; ++i) {
                 auto values = this->eph(mjd2000s[i]);
                 retval[6 * i] = values[0][0];
                 retval[6 * i + 1] = values[0][1];
