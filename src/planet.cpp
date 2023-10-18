@@ -57,8 +57,10 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
         case kep3::elements_type::MEQ_R:
             retval = kep3::par2eq(retval, true);
             break;
+        // LCOV_EXCL_START
         default:
             throw std::logic_error("You should not go here!");
+        // LCOV_EXCL_END
     }
     return retval;
 }

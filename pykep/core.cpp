@@ -230,14 +230,14 @@ PYBIND11_MODULE(core, m)
 
     planet_class.def(
         "period", [](const kep3::planet &pl, double mjd2000) { return pl.period(mjd2000); },
-        py::arg("mjd2000") = kep3::epoch{}, pykep::planet_period_docstring().c_str());
+        py::arg("mjd2000") = 0., pykep::planet_period_docstring().c_str());
     planet_class.def(
         "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
         py::arg("ep") = kep3::epoch{});
     planet_class.def(
         "elements",
         [](const kep3::planet &pl, double mjd2000, kep3::elements_type el_ty) { return pl.elements(mjd2000, el_ty); },
-        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F,
+        py::arg("mjd2000") = 0., py::arg("el_type") = kep3::elements_type::KEP_F,
         pykep::planet_elements_docstring().c_str());
     planet_class.def(
         "elements",

@@ -145,6 +145,7 @@ kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const s
 kep3_DLL_PUBLIC std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &, double,
                                                            kep3::elements_type);
 
+
 // Planet interface implementation.
 template <typename Holder, typename T>
     requires any_udpla<T>
