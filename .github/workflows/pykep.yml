@@ -20,3 +20,26 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: doc/_build/html # The folder the action should deploy.
+  windows_pykep:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: kep3_devel
+          environment-file: kep3_devel.yml
+          auto-update-conda: true
+          channels: conda-forge
+          channel-priority: strict
+          auto-activate-base: false
+      - name: Build
+        shell: pwsh
+        run: |
+          conda install numpy matplotlib pybind11 -y
+          mkdir build
+          cd build
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\kep3_devel\Library -Dkep3_BUILD_PYTHON_BINDINGS=yes -DBoost_NO_BOOST_CMAKE=ON
+          cmake --build . -j4 --config Release --target install
+          python -c "import pykep; pykep.test.run_test_suite()"
