@@ -22,6 +22,7 @@ class tle:
 
     Args:
         *line1* (:class:`str`): The first line of a TLE
+        
         *line2* (:class:`str`): The second line of a TLE
 
     .. note::

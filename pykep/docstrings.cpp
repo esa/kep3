@@ -925,14 +925,70 @@ Returns:
 )";
 }
 
+std::string planet_eph_docstring()
+{
+    return R"(eph(when = 0.)
+
+The planet ephemerides, i.e. its position and velocity.
+
+In order to be able to construct a :class:`~pykep.planet` object, the user must provide his own UDPLA (User-Defined-Planet).
+This is a class that must implement the method: 
+
+.. code-block::
+
+   def eph(self, mjd2000: float):
+      ...
+      return [[float, float, float], [float, float, float]]
+
+.. note::
+   In the udpla, the signature for eph demands a float as epoch (mjd2000). The planet, instead, constructed from the same udpla, will also allow :class:`~pykep.epoch`.
+   
+
+Args:
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
+
+Returns:
+    :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+
+)";
+}
+
+std::string planet_eph_v_docstring()
+{
+    return R"(eph_v(mjd2000s)
+
+The planet ephemerides, i.e. position and velocity (vectorized version over many epochs).
+
+This method is the vectorized version of its companion :func:`~pykep.planet.eph` and, in its default implementation, it just
+calls it in a loop. This behaviour can be changed by the user (for efficiency purposes) who can provide a more efficient version
+in his UDPLA by coding a method having the signature: 
+
+
+.. code-block::
+
+   def eph_v(self, mjd2000s):
+      ...
+      return np.array((len(mjd2000s), 6))
+
+see, for example, the python implementation of the UDPLAS :class:`~pykep.udpla.tle` and :class:`~pykep.udpla.spice`.
+
+Args:
+    *mjd2000s* (:class:`ndarray` or :class:`list`): the Modified Julian Dates at which to compute the ephemerides.
+
+Returns:
+    :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+
+)";
+}
+
 std::string planet_period_docstring()
 {
-    return R"(period(ep), period(mjd2000 = 0)
+    return R"(period(when = 0.)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``period(mjd2000)`` method, then ``planet.period(mjd2000)`` will call it.
-Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the period as computed by the
+If the UDPLA provides a ``period(float)`` method, ``planet.period`` will call it.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.period`` will return the period as computed by the
 equation:
 
 .. math::
@@ -941,10 +997,7 @@ equation:
 Else, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period. (This calls the other overload internally).
-
-    *mjd2000* (:class:`float`): the mjd2000 at which compute the period.
-
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
 
 Returns:
     :class:`float`: the planet's period.
@@ -954,20 +1007,18 @@ Returns:
 
 std::string planet_elements_docstring()
 {
-    return R"(elements(ep = pk.epoch(0), el_ty = KEP_F), elements(mjd2000, el_ty = KEP_F)
+    return R"(elements(when = 0., el_type = KEP_F)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``elements()`` method, then then ``planet.elements(mjd2000)`` will call it.
-Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the elements as computed by the
+If the UDPLA provides a ``elements(float, pk.el_type)`` method, then ``planet.elements`` will call it.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.elements`` will return the elements as computed by the
 :func:`pykep.ic2par`. Otherwise, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period. (This calls the other overload internally).
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
 
-    *mjd2000* (:class:`float`): the mjd2000 at which compute the period.    
-
-    *el_ty* (:class:`~pykep.el_type`): the elements type.
+    *el_type* (:class:`~pykep.el_type`): the elements type.
 
 Returns:
     :class:`list`: the planet's elements at epoch.
@@ -1024,7 +1075,7 @@ std::string propagate_lagrangian_docstring()
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
     Returns:
-          :class:`list` of :class:`list`: the final position and velocity after the propagation.
+          :class:`list`[:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
 
     Example::
         >>> import pykep as pk
