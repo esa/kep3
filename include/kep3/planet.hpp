@@ -147,7 +147,7 @@ kep3_DLL_PUBLIC double period_from_energy(const std::array<double, 3> &, const s
 kep3_DLL_PUBLIC std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &, double,
                                                            kep3::elements_type);
 template <typename T>                                                        
-kep3_DLL_PUBLIC std::vector<double> default_eph_vectorization(T *self, const std::vector<double> &mjd2000s) {
+std::vector<double> default_eph_vectorization(T *self, const std::vector<double> &mjd2000s) {
      // We simply call a for loop.
         const auto size = mjd2000s.size();
         using size_type = std::vector<double>::size_type;
