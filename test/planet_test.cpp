@@ -256,8 +256,6 @@ TEST_CASE("construction")
         REQUIRE(pla.get_safe_radius() == 4.);
         REQUIRE(std::isfinite(pla.period()));
         REQUIRE(pla.elements() == std::array<double, 6>{-1, -1, -1, -1, -1, -1});
-        std::array<double, 3> pos = {1., 0., 0.};
-        std::array<double, 3> vel = {0., 1., 0.};
         auto eph1 = pla.eph(0.);
         auto eph2 = pla.eph(2.);
         REQUIRE(pla.eph_v(std::vector<double>{1., 2.})

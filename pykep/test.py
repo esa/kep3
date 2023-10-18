@@ -109,6 +109,8 @@ class my_udpla_with_optionals:
         return retval
     def elements(self, ep, el_type ):
         return [1.,2.,3.,4.,5.,6.]
+    def period(self, mjd2000):
+        return 3.14
     
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
@@ -160,12 +162,19 @@ class planet_test(_ut.TestCase):
     def test_udpla_optional_methods(self):
         import pykep as pk
         import numpy as np
+        # Testing eph_v
         udpla = my_udpla_with_optionals()
         pla = pk.planet(udpla)
         self.assertTrue(pla.elements(0.) == [1.,2.,3.,4.,5.,6.])
         r0, v0 = pla.eph(0.)
         r1, v1 = pla.eph(1.)
         self.assertTrue(np.all(pla.eph_v([0., 1]) == [r0+v0,r1+v1]))
+        # Testing period
+        self.assertTrue(pla.period() == 3.14)
+        self.assertTrue(pla.period(when = 0.) == 3.14)
+        self.assertTrue(pla.period(when = pk.epoch(0.)) == 3.14)
+
+
 
 def run_test_suite():
     suite = _ut.TestSuite()
