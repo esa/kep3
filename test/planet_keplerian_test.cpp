@@ -139,6 +139,11 @@ TEST_CASE("elements")
     {
         REQUIRE_THROWS_AS(udpla.elements(0., kep3::elements_type::POSVEL), std::logic_error);
     }
+    // We test on hyperbolas
+    std::array<std::array<double, 3>, 2> pos_vel_h{{{1., 0.1, 0.1}, {0.1, 3., 0.1}}};
+    {
+        REQUIRE_THROWS_AS(udpla.elements(0., kep3::elements_type::POSVEL), std::logic_error);
+    }
 }
 
 TEST_CASE("stream_operator")

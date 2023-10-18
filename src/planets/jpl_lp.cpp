@@ -114,8 +114,10 @@ jpl_lp::jpl_lp(std::string name)
             m_safe_radius = 1.1 * m_radius;
             m_mu_self = 6836529e9;
         } break;
+            // LCOV_EXCL_START
         default: {
-            throw std::logic_error("unknown planet name: "); // LCOV_EXCL_LINE
+            throw std::logic_error("unknown planet name: ");
+            // LCOV_EXCL_END
         }
     }
 }
@@ -210,8 +212,8 @@ std::string jpl_lp::get_extra_info() const
                          + fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
     retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
     retval += fmt::format("Elements reference epoch (MJD2000): {}\n", 0.)
-              + fmt::format("Elements reference epoch (date): {}\n", kep3::epoch(0.)) + fmt::format("r at ref. = {}\n", pos_vel[0])
-              + fmt::format("v at ref. = {}\n", pos_vel[1]);
+              + fmt::format("Elements reference epoch (date): {}\n", kep3::epoch(0.))
+              + fmt::format("r at ref. = {}\n", pos_vel[0]) + fmt::format("v at ref. = {}\n", pos_vel[1]);
     return retval;
 }
 

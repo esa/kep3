@@ -4,7 +4,7 @@
  Some important conventions followed:
  1 - All units expected are S.I. (m,sec,kg,N) unless explicitly stated.
  2 - The default set of osculating orbital parameters is, in this order: [sma, ecc, incl, W, w, f], where f is the true anomaly
- 3 - The default option to represent epochs as floats is the modified julian date 2000 (MJD2000)."""
+ 3 - The default option to represent epochs as floats is the modified julian date 2000 (MJD2000). By default, time durations are in days."""
 
 # Version setup.
 from ._version import __version__

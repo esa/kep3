@@ -1,3 +1,10 @@
+## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+## (bluescarni@gmail.com)## 
+## This file is part of the kep3 library.## 
+## This Source Code Form is subject to the terms of the Mozilla
+## Public License v. 2.0. If a copy of the MPL was not distributed
+## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 from sgp4.api import Satrec
 from sgp4 import exporter
 import pykep as pk
@@ -58,7 +65,7 @@ class tle:
         Returns:
             :class:`ndarray`: the planet ephemerides as an array of dimension (-1,6)
         """
-        jds = [mjd2000 + 51544 + 2451544.5 for mjd2000 in mjd2000s]
+        jds = [mjd2000 + 2451544.5 for mjd2000 in mjd2000s]
         jd_is = [int(item) for item in jds]
         jd_frs = [a-b for a,b in zip(jds,jd_is)]
         self.e, r, v = self.satellite.sgp4_array(np.array(jd_is), np.array(jd_frs))
@@ -72,6 +79,7 @@ class tle:
             :class:`str`: The body name
         """
         return self.satellite.satnum_str + " - SGP4"
+    
     def get_extra_info(self):
         """Optional method of the :class:`~pykep.planet` interface.
 

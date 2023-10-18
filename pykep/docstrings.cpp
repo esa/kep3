@@ -751,7 +751,7 @@ std::string epoch_from_string_doc()
 
 std::string planet_docstring()
 {
-    return R"(__init__(udpla = null_udpla())
+    return R"(__init__(udpla)
 
 Planet class.
 
@@ -787,6 +787,8 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
 
 .. code-block::
 
+   def eph_v(self, mjd2000s):
+     ...
    def get_mu_central_body(self):
      ...
    def get_mu_self(self):
@@ -795,9 +797,9 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
      ...
    def get_safe_radius(self):
      ...
-   def period(self, epoch):
+   def period(self, mjd2000):
      ...
-   def elements(self, epoch, elements_type):
+   def elements(self, mjd2000, elements_type):
      ...
    def get_name(self):
      ...
@@ -925,21 +927,24 @@ Returns:
 
 std::string planet_period_docstring()
 {
-    return R"(period(ep = pk.epoch(0))
+    return R"(period(ep), period(mjd2000 = 0)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``period()`` method, then this method will return the output of its ``period()`` method.
+If the UDPLA provides a ``period(mjd2000)`` method, then ``planet.period(mjd2000)`` will call it.
 Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the period as computed by the
 equation:
 
 .. math::
    T = 2 \pi \sqrt{\frac{a^3}{\mu}}
 
-Otherwise, -1 will be returned.
+Else, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period.
+    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period. (This calls the other overload internally).
+
+    *mjd2000* (:class:`float`): the mjd2000 at which compute the period.
+
 
 Returns:
     :class:`float`: the planet's period.
@@ -949,17 +954,19 @@ Returns:
 
 std::string planet_elements_docstring()
 {
-    return R"(elements(ep = pk.epoch(0), el_ty = KEP_F)
+    return R"(elements(ep = pk.epoch(0), el_ty = KEP_F), elements(mjd2000, el_ty = KEP_F)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``elements()`` method, then this method will return the output of its ``elements()`` method.
+If the UDPLA provides a ``elements()`` method, then then ``planet.elements(mjd2000)`` will call it.
 Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the elements as computed by the
 :func:`pykep.ic2par`. Otherwise, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the elements.
-    
+    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period. (This calls the other overload internally).
+
+    *mjd2000* (:class:`float`): the mjd2000 at which compute the period.    
+
     *el_ty* (:class:`~pykep.el_type`): the elements type.
 
 Returns:
@@ -1026,7 +1033,7 @@ std::string propagate_lagrangian_docstring()
         >>> v0 = [0,1,0]
         >>> tof = pi/2
         >>> mu = 1
-        >>> rf,vf = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
+        >>> r1,v1 = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
 )";
 }
 
