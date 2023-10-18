@@ -169,14 +169,17 @@ std::array<double, 6> keplerian::elements(double, kep3::elements_type el_type) c
 
 std::string keplerian::get_extra_info() const
 {
-    std::string retval
-        = fmt::format("Keplerian planet elements: \n") + fmt::format("Semi major axis (AU): {}\n", m_kep_f_elements[0] / kep3::AU)
-          + fmt::format("Eccentricity: {}\n", m_kep_f_elements[1]) + fmt::format("Inclination (deg.): {}\n", m_kep_f_elements[2] * kep3::RAD2DEG)
-          + fmt::format("Big Omega (deg.): {}\n", m_kep_f_elements[3] * kep3::RAD2DEG)
-          + fmt::format("Small omega (deg.): {}\n", m_kep_f_elements[4] * kep3::RAD2DEG)
-          + fmt::format("True anomly (deg.): {}\n", m_kep_f_elements[5] * kep3::RAD2DEG);
+    std::string retval = fmt::format("Keplerian planet elements: \n")
+                         + fmt::format("Semi major axis: {}\n", m_kep_f_elements[0])
+                         + fmt::format("Semi major axis (AU): {}\n", m_kep_f_elements[0] / kep3::AU)
+                         + fmt::format("Eccentricity: {}\n", m_kep_f_elements[1])
+                         + fmt::format("Inclination (deg.): {}\n", m_kep_f_elements[2] * kep3::RAD2DEG)
+                         + fmt::format("Big Omega (deg.): {}\n", m_kep_f_elements[3] * kep3::RAD2DEG)
+                         + fmt::format("Small omega (deg.): {}\n", m_kep_f_elements[4] * kep3::RAD2DEG)
+                         + fmt::format("True anomly (deg.): {}\n", m_kep_f_elements[5] * kep3::RAD2DEG);
     if (m_ellipse) {
-        retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(m_kep_f_elements[5], m_kep_f_elements[1]) * kep3::RAD2DEG);
+        retval += fmt::format("Mean anomly (deg.): {}\n",
+                              kep3::f2m(m_kep_f_elements[5], m_kep_f_elements[1]) * kep3::RAD2DEG);
     }
     retval += fmt::format("Elements reference epoch (MJD2000): {}\n", m_ref_epoch.mjd2000())
               + fmt::format("Elements reference epoch (UTC): {}\n", m_ref_epoch)
