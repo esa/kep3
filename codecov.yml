@@ -1,6 +1,7 @@
 coverage:
   ignore:
   - "test/.*"
+  - "include/detail/tanuki.hpp"
 codecov: 
  token: 60883dbc-866d-4da4-9306-8df7ac9b1360
 

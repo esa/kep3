@@ -173,6 +173,40 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla.period() == 3.14)
         self.assertTrue(pla.period(when = 0.) == 3.14)
         self.assertTrue(pla.period(when = pk.epoch(0.)) == 3.14)
+        # Testing elements
+        self.assertTrue(pla.elements() == [1.,2.,3.,4.,5.,6.])
+        self.assertTrue(pla.elements(when = 0.) == [1.,2.,3.,4.,5.,6.])
+        self.assertTrue(pla.elements(when = pk.epoch(0.)) == [1.,2.,3.,4.,5.,6.])
+
+class py_udplas_test(_ut.TestCase):
+    def test_tle(self):
+        import pykep as pk
+        from sgp4.api import Satrec
+        from sgp4 import exporter
+        import numpy as np
+        data_file = pk.__path__[0] + "/data/tle.txt"
+        file = open(data_file, "r")
+        while(True):
+            header = file.readline()
+            if header == "":
+                break
+            line1 = file.readline()
+            line2 = file.readline()
+            udpla = pk.udpla.tle(line1 = line1, line2 = line2)
+            pla = pk.planet(udpla)
+            ref_epoch = pk.epoch("2023-10")
+            rpk,vpk = pla.eph(ref_epoch)
+            satellite = Satrec.twoline2rv(line1, line2)
+            jd = ref_epoch.mjd2000 + 2451544.5
+            jd_i = int(jd)
+            jd_fr = jd-jd_i
+            e, r, v = satellite.sgp4(jd_i, jd_fr)
+            self.assertTrue(np.allclose(np.array(r) * 1000, rpk, equal_nan=True, atol=1e-13))
+            self.assertTrue(np.allclose(np.array(v) * 1000, vpk, equal_nan=True, atol=1e-13))
+
+
+
+
 
 
 
@@ -191,5 +225,7 @@ def run_test_suite():
     suite.addTest(planet_test("test_udpla_optional_methods"))
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
+    suite.addTest(py_udplas_test("test_tle"))
+
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
