@@ -65,7 +65,7 @@ public:
                        double mu_central_body = 1., std::string name = "Unknown",
                        std::array<double, 3> added_params = {-1., -1., -1.});
     // Mandatory UDPLA methods
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double) const;
 
     // Optional UDPLA methods
     [[nodiscard]] std::string get_name() const;
@@ -74,11 +74,11 @@ public:
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
     [[nodiscard]] std::string get_extra_info() const;
-    [[nodiscard]] double period(const kep3::epoch & = kep3::epoch()) const;
+    [[nodiscard]] double period(double =0.) const;
 
     // Other methods
     [[nodiscard]] kep3::epoch get_ref_epoch() const;
-    [[nodiscard]] std::array<double, 6> elements(kep3::epoch = kep3::epoch{}, kep3::elements_type = kep3::elements_type::KEP_F) const;
+    [[nodiscard]] std::array<double, 6> elements(double = 0., kep3::elements_type = kep3::elements_type::KEP_F) const;
 };
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::udpla::keplerian &);
 } // namespace kep3::udpla

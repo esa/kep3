@@ -13,10 +13,10 @@
 #include <array>
 #include <string>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/epoch.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-
 
 namespace pykep
 {
@@ -28,16 +28,18 @@ struct python_udpla {
     explicit python_udpla(py::object obj);
 
     // Mandatory methods
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const kep3::epoch &ep) const;
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double) const;
 
     // Optional methods
+    [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &) const;
     [[nodiscard]] std::string get_name() const;
     [[nodiscard]] std::string get_extra_info() const;
     [[nodiscard]] double get_mu_central_body() const;
     [[nodiscard]] double get_mu_self() const;
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
-    [[nodiscard]] double period(const kep3::epoch &) const;
+    [[nodiscard]] double period(double) const;
+    [[nodiscard]] std::array<double, 6> elements(double, kep3::elements_type el_type = kep3::elements_type::KEP_F) const;
 };
 } // namespace pykep
 

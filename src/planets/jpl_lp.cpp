@@ -114,16 +114,17 @@ jpl_lp::jpl_lp(std::string name)
             m_safe_radius = 1.1 * m_radius;
             m_mu_self = 6836529e9;
         } break;
+            // LCOV_EXCL_START
         default: {
-            throw std::logic_error("unknown planet name: "); // LCOV_EXCL_LINE
+            throw std::logic_error("unknown planet name: ");
+            // LCOV_EXCL_END
         }
     }
 }
 
 // Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.
-std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const
+std::array<double, 6> jpl_lp::_f_elements(double mjd2000) const
 {
-    double mjd2000 = ep.mjd2000();
     if (mjd2000 <= -73048.0 || mjd2000 >= 18263.0) {
         throw std::domain_error("Low precision Ephemeris are only valid in the "
                                 "range range [1800-2050]");
@@ -145,15 +146,15 @@ std::array<double, 6> jpl_lp::_f_elements(const kep3::epoch &ep) const
     return elements_f;
 }
 
-std::array<std::array<double, 3>, 2> jpl_lp::eph(const epoch &ep) const
+std::array<std::array<double, 3>, 2> jpl_lp::eph(double mjd2000) const
 {
-    auto elements_f = _f_elements(ep);
+    auto elements_f = _f_elements(mjd2000);
     return par2ic(elements_f, get_mu_central_body());
 }
 
-std::array<double, 6> jpl_lp::elements(const kep3::epoch &ep, kep3::elements_type el_type) const
+std::array<double, 6> jpl_lp::elements(double mjd2000, kep3::elements_type el_type) const
 {
-    auto elements = _f_elements(ep);
+    auto elements = _f_elements(mjd2000);
     switch (el_type) {
         case kep3::elements_type::KEP_F:
             break;
@@ -199,9 +200,8 @@ double jpl_lp::get_safe_radius() const
 
 std::string jpl_lp::get_extra_info() const
 {
-    kep3::epoch ep{0., kep3::epoch::julian_type::MJD2000};
-    auto par = elements(ep);
-    auto pos_vel = eph(ep);
+    auto par = elements(0.);
+    auto pos_vel = eph(0.);
 
     std::string retval = fmt::format("\nLow-precision planet elements: \n")
                          + fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU)
@@ -211,9 +211,9 @@ std::string jpl_lp::get_extra_info() const
                          + fmt::format("Small omega (deg.): {}\n", par[4] * kep3::RAD2DEG)
                          + fmt::format("True anomly (deg.): {}\n", par[5] * kep3::RAD2DEG);
     retval += fmt::format("Mean anomly (deg.): {}\n", kep3::f2m(par[5], par[1]) * kep3::RAD2DEG);
-    retval += fmt::format("Elements reference epoch (MJD2000): {}\n", ep.mjd2000())
-              + fmt::format("Elements reference epoch (date): {}\n", ep) + fmt::format("r at ref. = {}\n", pos_vel[0])
-              + fmt::format("v at ref. = {}\n", pos_vel[1]);
+    retval += fmt::format("Elements reference epoch (MJD2000): {}\n", 0.)
+              + fmt::format("Elements reference epoch (date): {}\n", kep3::epoch(0.))
+              + fmt::format("r at ref. = {}\n", pos_vel[0]) + fmt::format("v at ref. = {}\n", pos_vel[1]);
     return retval;
 }
 

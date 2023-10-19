@@ -34,8 +34,8 @@ def _planet_extract(self, t):
         >>> udpla = pk.udpla.keplerian(pk.epoch(0), [1,0,0,0,0,0], 1)
         >>> pla = pk.planet(udpla)
         >>> type(pla.extract(pk.udpla.keplerian)) 
-        <class 'pykep.core.udpla.keplerian'>
-        >>> pla.extract(pk.jpl_lp) is None
+        <class 'udpla._keplerian'>
+        >>> pla.extract(pk.udpla.jpl_lp) is None
         True
         >>> class my_udpla:
         ...     def eph(self, ep):

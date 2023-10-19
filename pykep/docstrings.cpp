@@ -667,7 +667,7 @@ std::string zeta2f_v_doc()
       >>> import numpy as np
       >>> zetas = np.linspace(-np.pi/2, np.pi/2, 100)
       >>> ecc = 2.2
-      >>> fs = pk.zeta2f_v(zeta, ecc)
+      >>> fs = pk.zeta2f_v(zetas, ecc)
       >>> np.shape(fs)
       (100,)
 )";
@@ -700,7 +700,7 @@ std::string f2zeta_v_doc()
 
 std::string epoch_from_float_doc()
 {
-    return R"(**epoch** (when, julian_type = MJD2000)
+    return R"(__init__(when: float, julian_type = MJD2000)
     
     Constructs an epoch from a Julian Date.
 
@@ -718,7 +718,8 @@ std::string epoch_from_float_doc()
 
 std::string epoch_from_datetime_doc()
 {
-    return R"(**epoch** (when)
+    return R"(**Alternative Constructor:**
+    **__init__(** *when: datetime.datetime* **)**
     
     Constructs an epoch from a datetime object.
 
@@ -735,12 +736,15 @@ std::string epoch_from_datetime_doc()
 
 std::string epoch_from_string_doc()
 {
-    return R"(**epoch** (when, string_format = pk.epoch.string_format.ISO)
+    return R"(**Alternative Constructor:**
+    **__init__(** *when: str*, *string_format = pk.epoch.string_format.ISO* **)**
     
     Constructs an epoch from a string.
 
     Args:
-      *when* (:class:`string`): a date
+      *when* (:class:`str`): a date
+
+      *string_format* (:class`~pykep.epoch.string_format`): string format.
 
     Examples:
       >>> import pykep as pk
@@ -751,7 +755,7 @@ std::string epoch_from_string_doc()
 
 std::string planet_docstring()
 {
-    return R"(__init__(udpla = null_udpla())
+    return R"(__init__(udpla)
 
 Planet class.
 
@@ -787,6 +791,8 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
 
 .. code-block::
 
+   def eph_v(self, mjd2000s):
+     ...
    def get_mu_central_body(self):
      ...
    def get_mu_self(self):
@@ -795,9 +801,9 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
      ...
    def get_safe_radius(self):
      ...
-   def period(self, epoch):
+   def period(self, mjd2000):
      ...
-   def elements(self, epoch, elements_type):
+   def elements(self, mjd2000, elements_type):
      ...
    def get_name(self):
      ...
@@ -923,23 +929,79 @@ Returns:
 )";
 }
 
+std::string planet_eph_docstring()
+{
+    return R"(eph(when = 0.)
+
+The planet ephemerides, i.e. its position and velocity.
+
+In order to be able to construct a :class:`~pykep.planet` object, the user must provide his own UDPLA (User-Defined-Planet).
+This is a class that must implement the method: 
+
+.. code-block::
+
+   def eph(self, mjd2000: float):
+      ...
+      return [[float, float, float], [float, float, float]]
+
+.. note::
+   In the udpla, the signature for eph demands a float as epoch (mjd2000). The planet, instead, constructed from the same udpla, will also allow :class:`~pykep.epoch`.
+   
+
+Args:
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
+
+Returns:
+    :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+
+)";
+}
+
+std::string planet_eph_v_docstring()
+{
+    return R"(eph_v(mjd2000s)
+
+The planet ephemerides, i.e. position and velocity (vectorized version over many epochs).
+
+This method is the vectorized version of its companion :func:`~pykep.planet.eph` and, in its default implementation, it just
+calls it in a loop. This behaviour can be changed by the user (for efficiency purposes) who can provide a more efficient version
+in his UDPLA by coding a method having the signature: 
+
+
+.. code-block::
+
+   def eph_v(self, mjd2000s):
+      ...
+      return np.array((len(mjd2000s), 6))
+
+see, for example, the python implementation of the UDPLAS :class:`~pykep.udpla.tle` and :class:`~pykep.udpla.spice`.
+
+Args:
+    *mjd2000s* (:class:`ndarray` or :class:`list`): the Modified Julian Dates at which to compute the ephemerides.
+
+Returns:
+    :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+
+)";
+}
+
 std::string planet_period_docstring()
 {
-    return R"(period(ep = pk.epoch(0))
+    return R"(period(when = 0.)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``period()`` method, then this method will return the output of its ``period()`` method.
-Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the period as computed by the
+If the UDPLA provides a ``period(float)`` method, ``planet.period`` will call it.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.period`` will return the period as computed by the
 equation:
 
 .. math::
    T = 2 \pi \sqrt{\frac{a^3}{\mu}}
 
-Otherwise, -1 will be returned.
+Else, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the period.
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
 
 Returns:
     :class:`float`: the planet's period.
@@ -949,18 +1011,18 @@ Returns:
 
 std::string planet_elements_docstring()
 {
-    return R"(elements(ep = pk.epoch(0), el_ty = KEP_F)
+    return R"(elements(when = 0., el_type = KEP_F)
 
 The period of the planet in seconds.
 
-If the UDPLA provides a ``elements()`` method, then this method will return the output of its ``elements()`` method.
-Otherwise, if the UDPLA provides a ``get_mu_self()`` method it will return the elements as computed by the
+If the UDPLA provides a ``elements(float, pk.el_type)`` method, then ``planet.elements`` will call it.
+Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.elements`` will return the elements as computed by the
 :func:`pykep.ic2par`. Otherwise, -1 will be returned.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which compute the elements.
-    
-    *el_ty* (:class:`~pykep.el_type`): the elements type.
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the period. When a :class:`float` is passed mjd2000 is assumed.
+
+    *el_type* (:class:`~pykep.el_type`): the elements type.
 
 Returns:
     :class:`list`: the planet's elements at epoch.
@@ -968,14 +1030,87 @@ Returns:
 )";
 }
 
+std::string udpla_keplerian_from_posvel_docstring()
+{
+    return R"(**Alternative Constructor:**
+    **__init__(** *ep*, *posvel*, *mu_central_body*, *name* = "unkown", *added_params* = [-1,-1,-1]**)**
+
+Constructs a Keplerian udpla from its position and velocity at epoch.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
+
+    *posvel* (:class:`list` [:class:`list`, :class:`list`]): the body position and velocty.
+
+    *mu_central_body* (:class:`float`): the gravitational parameter of the main attracting body.
+
+    *name* (:class:`str`): the name of the orbiting body.
+
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+
+Examples:
+    >>> import pykep as pk
+    >>> r = [1, 0, 0]
+    >>> v = [0, 1, 0]
+    >>> ep = pk.epoch("2025-03-22")
+    >>> udpla = pk.udpla.keplerian(ep = ep, posvel = [r, v], mu_central_body =1, name = "my_pla")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
+std::string udpla_keplerian_from_elem_docstring()
+{
+    return R"(__init__(ep, elem, mu_central_body, name = "unkown", added_params = [-1,-1,-1], elem_type = KEP_F)
+
+Constructs a Keplerian udpla from its orbital elements at epoch.
+
+Args:
+    *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
+
+    *elem* (:class:`list` or :class:ndarray`): the orbital elements. by default.
+
+    *mu_central_body* (:class:`float`): the gravitational parameter of the main attracting body.
+
+    *name* (:class:`str`): the name of the orbiting body.
+
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+
+    *el_type* (:class:`~pykep.el_type`): the elements type. Deafulets to osculating Keplrian (a ,e ,i, W, w, f) with true anomaly.
+
+Examples:
+    >>> import pykep as pk
+    >>> elem = [1, 0, 0, 0, 0, 0]
+    >>> ep = pk.epoch("2025-03-22")
+    >>> udpla = pk.udpla.keplerian(ep = ep, elem = elem, mu_central_body =1, name = "my_pla")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
+std::string udpla_jpl_lp_docstring()
+{
+    return R"(__init__(name = "earth")
+
+Constructs a solar system planet with ephemerides computed using a low-precision (non Keplerian)
+model from JPL (https://ssd.jpl.nasa.gov/planets/approx_pos.html).
+
+Args:
+    *name* (:class:`str`): the name of the solar system planet.
+
+Examples:
+    >>> import pykep as pk
+    >>> udpla = pk.udpla.jpl_lp(name="mercury")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
 std::string lambert_problem_docstring()
 {
-    return R"(__init__(rs = [1,0,0], rf = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
+    return R"(__init__(r0 = [1,0,0], r1 = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
 
       Args:
-          *r1* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
+          *r0* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
 
-          *r2* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
+          *r1* (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].
 
           *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
 
@@ -998,7 +1133,7 @@ std::string lambert_problem_docstring()
         >>> tof = np.pi/2
         >>> mu = 1.
         >>> lp = pk.lambert_problem(r0, r1, tof, mu)
-        >>> lp.get_vs()[0]
+        >>> lp.v0[0]
         [-4.1028493158958256e-16, 1.0000000000000002, 0.0]
 )";
 }
@@ -1017,7 +1152,7 @@ std::string propagate_lagrangian_docstring()
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
     Returns:
-          :class:`list` of :class:`list`: the final position and velocity after the propagation.
+          :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
 
     Example::
         >>> import pykep as pk
@@ -1026,7 +1161,7 @@ std::string propagate_lagrangian_docstring()
         >>> v0 = [0,1,0]
         >>> tof = pi/2
         >>> mu = 1
-        >>> rf,vf = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
+        >>> r1,v1 = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
 )";
 }
 

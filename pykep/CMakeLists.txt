@@ -1,7 +1,7 @@
 # Configure the version file.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/_version.py" @ONLY)   
 
-# The list of pydsyre's Python files.
+# The list of pykep's Python files.
 set(PYKEP_PYTHON_FILES __init__.py _patch_planet.py _version.py test.py)
 
 # Core module.
@@ -51,5 +51,9 @@ install(TARGETS core
 
 # Install the Python files.
 install(FILES ${PYKEP_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR})
+ADD_SUBDIRECTORY(udpla)
+ADD_SUBDIRECTORY(utils)
+ADD_SUBDIRECTORY(data)
+
 
 unset(_PYKEP_INSTALL_DIR)

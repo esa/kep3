@@ -67,8 +67,16 @@ std::string planet_get_mu_central_body_docstring();
 std::string planet_get_mu_self_docstring();
 std::string planet_get_radius_docstring();
 std::string planet_get_safe_radius_docstring();
+std::string planet_eph_docstring();
+std::string planet_eph_v_docstring();
 std::string planet_period_docstring();
 std::string planet_elements_docstring();
+
+// UDPLAS
+std::string udpla_keplerian_from_elem_docstring();
+std::string udpla_keplerian_from_posvel_docstring();
+std::string udpla_jpl_lp_docstring();
+
 
 // Lambert Problem
 std::string lambert_problem_docstring();

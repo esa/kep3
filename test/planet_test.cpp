@@ -30,7 +30,7 @@ using kep3::detail::null_udpla;
 
 struct simple_udpla {
     simple_udpla() = default;
-    static std::array<std::array<double, 3>, 2> eph(const epoch &)
+    static std::array<std::array<double, 3>, 2> eph(double)
     {
         std::array<double, 3> pos = {1., 0., 0.};
         std::array<double, 3> vel = {0., 1., 0.};
@@ -57,7 +57,7 @@ TANUKI_S11N_WRAP_EXPORT(simple_udpla, kep3::detail::planet_iface)
 
 struct simple_udpla_mu {
     simple_udpla_mu() = default;
-    static std::array<std::array<double, 3>, 2> eph(const epoch &)
+    static std::array<std::array<double, 3>, 2> eph(double)
     {
         std::array<double, 3> pos = {1., 0., 0.};
         std::array<double, 3> vel = {0., 1., 0.};
@@ -88,7 +88,7 @@ TANUKI_S11N_WRAP_EXPORT(simple_udpla_mu, kep3::detail::planet_iface)
 
 struct simple_udpla_mu_h {
     simple_udpla_mu_h() = default;
-    static std::array<std::array<double, 3>, 2> eph(const epoch &)
+    static std::array<std::array<double, 3>, 2> eph(double)
     {
         std::array<double, 3> pos = {1., 0., 0.};
         std::array<double, 3> vel = {0., 10., 0.};
@@ -121,17 +121,23 @@ struct complete_udpla {
     explicit complete_udpla(std::array<double, 4> physical_properties = {-1., -1., -1., -1.})
         : m_name("A complete, albeit simple Planet"), m_mu_central_body(physical_properties[0]),
           m_mu_self(physical_properties[1]), m_radius(physical_properties[2]), m_safe_radius(physical_properties[3]){};
-    static std::array<std::array<double, 3>, 2> eph(const epoch &)
+    static std::array<std::array<double, 3>, 2> eph(double)
     {
         std::array<double, 3> pos = {1., 0., 0.};
         std::array<double, 3> vel = {0., 1., 0.};
         return {pos, vel};
     };
 
+    static std::vector<double> eph_v(const std::vector<double> &)
+    {
+        return {1.,0.,0.,0.,1.,0.,1.,0.,0.,0.,1.,0.};
+    };
+
     [[nodiscard]] std::string get_name() const
     {
         return m_name;
     }
+
     [[nodiscard]] double get_mu_central_body() const
     {
         return m_mu_central_body;
@@ -148,12 +154,12 @@ struct complete_udpla {
     {
         return m_safe_radius;
     }
-    [[nodiscard]] double period(const epoch &) const
+    [[nodiscard]] double period(double) const
     {
         return m_radius - m_radius;
     }
 
-    [[nodiscard]] std::array<double, 6> elements(kep3::epoch, kep3::elements_type) const
+    [[nodiscard]] std::array<double, 6> elements(double, kep3::elements_type) const
     {
         return {m_radius, m_radius, m_radius, m_radius, m_radius, m_radius};
     }
@@ -190,12 +196,12 @@ TEST_CASE("construction")
 {
     {
         kep3::detail::null_udpla udpla{};
-        udpla.eph(epoch(0.));
+        udpla.eph(0.);
         // Default constructor (a null planet)
         REQUIRE_NOTHROW(planet());
         auto pla = planet();
-        REQUIRE_NOTHROW(pla.eph(epoch(0.)));
-        auto pos_vel = pla.eph(epoch(0.));
+        REQUIRE_NOTHROW(pla.eph(0.));
+        auto pos_vel = pla.eph(0.);
         REQUIRE(pos_vel[0] == std::array<double, 3>{1., 0., 0.});
         REQUIRE(pos_vel[1] == std::array<double, 3>{0., 1., 0.});
         REQUIRE(pla.get_name() == boost::core::demangle(typeid(null_udpla).name()));
@@ -206,6 +212,11 @@ TEST_CASE("construction")
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
         REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
+        auto eph1 = pla.eph(0.);
+        auto eph2 = pla.eph(2.);
+        REQUIRE(pla.eph_v(std::vector<double>{1., 2.})
+                == std::vector<double>{eph1[0][0], eph1[0][1], eph1[0][2], eph1[1][0], eph1[1][1], eph1[1][2],
+                                       eph2[0][0], eph2[0][1], eph2[0][2], eph2[1][0], eph2[1][1], eph2[1][2]});
         REQUIRE(value_isa<null_udpla>(pla));
     }
     {
@@ -224,7 +235,11 @@ TEST_CASE("construction")
         REQUIRE(pla.get_safe_radius() == -1);
         REQUIRE_THROWS_AS((pla.period()), kep3::not_implemented_error);
         REQUIRE_THROWS_AS((pla.elements()), kep3::not_implemented_error);
-
+        auto eph1 = pla.eph(0.);
+        auto eph2 = pla.eph(2.);
+        REQUIRE(pla.eph_v(std::vector<double>{1., 2.})
+                == std::vector<double>{eph1[0][0], eph1[0][1], eph1[0][2], eph1[1][0], eph1[1][1], eph1[1][2],
+                                       eph2[0][0], eph2[0][1], eph2[0][2], eph2[1][0], eph2[1][1], eph2[1][2]});
     }
     {
         // Constructor from a more complete udpla
@@ -240,8 +255,12 @@ TEST_CASE("construction")
         REQUIRE(pla.get_radius() == -1);
         REQUIRE(pla.get_safe_radius() == 4.);
         REQUIRE(std::isfinite(pla.period()));
-        REQUIRE(pla.elements() == std::array<double, 6>{-1,-1,-1,-1,-1,-1});
-
+        REQUIRE(pla.elements() == std::array<double, 6>{-1, -1, -1, -1, -1, -1});
+        auto eph1 = pla.eph(0.);
+        auto eph2 = pla.eph(2.);
+        REQUIRE(pla.eph_v(std::vector<double>{1., 2.})
+                == std::vector<double>{eph1[0][0], eph1[0][1], eph1[0][2], eph1[1][0], eph1[1][1], eph1[1][2],
+                                       eph2[0][0], eph2[0][1], eph2[0][2], eph2[1][0], eph2[1][1], eph2[1][2]});
     }
     {
         // Constructor from a simple udpla with mu and hyperbolic orbit
@@ -254,7 +273,6 @@ TEST_CASE("construction")
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] < 0);
-
     }
     {
         // Constructor from a simple udpla with mu and elliptical orbit

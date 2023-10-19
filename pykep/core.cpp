@@ -106,7 +106,7 @@ PYBIND11_MODULE(core, m)
     m.def("eq2par", &kep3::eq2par);
 
     // Class epoch
-    py::class_<kep3::epoch> epoch_class(m, "epoch");
+    py::class_<kep3::epoch> epoch_class(m, "epoch", "Represents a specific point in time.");
 
     py::enum_<kep3::epoch::julian_type>(epoch_class, "julian_type")
         .value("MJD2000", kep3::epoch::julian_type::MJD2000, "Modified Julian Date 2000.")
@@ -155,9 +155,9 @@ PYBIND11_MODULE(core, m)
         // now().
         .def_static("now", &kep3::epoch::now, "Returns a pykep.epoch with the current UTC date.")
         // julian dates
-        .def("mjd2000", &kep3::epoch::mjd2000, "Returns the Modified Julian Date 2000")
-        .def("mjd", &kep3::epoch::mjd, "Returns the Modified Julian Date")
-        .def("jd", &kep3::epoch::jd, "Returns the Julian Date")
+        .def_property_readonly("mjd2000", &kep3::epoch::mjd2000, "The Modified Julian Date 2000")
+        .def_property_readonly("mjd", &kep3::epoch::mjd, "The Modified Julian Date")
+        .def_property_readonly("jd", &kep3::epoch::jd, "The Julian Date")
         // comparison operators
         .def("__lt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 < ep2; })
         .def("__gt__", [](const kep3::epoch &ep1, const kep3::epoch &ep2) { return ep1 > ep2; })
@@ -190,7 +190,34 @@ PYBIND11_MODULE(core, m)
         py::pickle(&pykep::pickle_getstate_wrapper<kep3::planet>, &pykep::pickle_setstate_wrapper<kep3::planet>));
     // Planet methods.
     planet_class.def(
-        "eph", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.eph(ep); }, py::arg("ep"));
+        "eph",
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
+            return std::visit([&](const auto &v) { return pl.eph(v); }, when);
+        },
+        py::arg("when"), pykep::planet_eph_docstring().c_str());
+    // Vectorized version. Note that the udpla method flattens everything but planet returns a non flat array.
+    planet_class.def(
+        "eph_v",
+        [](const kep3::planet &pl, const std::vector<double> &eps) {
+            std::vector<double> res = pl.eph_v(eps);
+            // We create a capsule for the py::array_t to manage ownership change.
+            auto vec_ptr = std::make_unique<std::vector<double>>(std::move(res));
+
+            py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+            });
+
+            // NOTE: at this point, the capsule has been created successfully (including
+            // the registration of the destructor). We can thus release ownership from vec_ptr,
+            // as now the capsule is responsible for destroying its contents. If the capsule constructor
+            // throws, the destructor function is not registered/invoked, and the destructor
+            // of vec_ptr will take care of cleaning up.
+            auto *ptr = vec_ptr.release();
+
+            return py::array_t<double>({eps.size(), 6lu}, // shape
+                                       ptr->data(), std::move(vec_caps));
+        },
+        py::arg("when"), pykep::planet_eph_v_docstring().c_str());
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
     planet_class.def(                                                                                                  \
@@ -207,18 +234,23 @@ PYBIND11_MODULE(core, m)
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
     planet_class.def(
-        "period", [](const kep3::planet &pl, const kep3::epoch &ep) { return pl.period(ep); },
-        py::arg("ep") = kep3::epoch{}, pykep::planet_period_docstring().c_str());
+        "period",
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
+            return std::visit([&](const auto &v) { return pl.period(v); }, when);
+        },
+        py::arg("when") = 0., pykep::planet_period_docstring().c_str());
+
     planet_class.def(
         "elements",
-        [](const kep3::planet &pl, const kep3::epoch &ep, kep3::elements_type el_ty) { return pl.elements(ep, el_ty); },
-        py::arg("ep") = kep3::epoch{}, py::arg("el_type") = kep3::elements_type::KEP_F,
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when, kep3::elements_type el_ty) {
+            return std::visit([&](const auto &v) { return pl.elements(v, el_ty); }, when);
+        },
+        py::arg("when") = 0., py::arg("el_type") = kep3::elements_type::KEP_F,
         pykep::planet_elements_docstring().c_str());
 
     // We now expose the cpp udplas. They will also add a constructor and the extract machinery to the planet_class
     // UDPLA module
-    auto udpla_module = m.def_submodule("udpla", "User defined planets that can construct a pykep.planet");
-    pykep::expose_all_udplas(udpla_module, planet_class);
+    pykep::expose_all_udplas(m, planet_class);
 
     // Finalize (this constructor must be the last one of planet_class: else overload will fail with all the others)
     planet_class.def(py::init([](const py::object &o) { return kep3::planet{pk::python_udpla(o)}; }), py::arg("udpla"));
@@ -227,7 +259,7 @@ PYBIND11_MODULE(core, m)
     py::class_<kep3::lambert_problem> lambert_problem(m, "lambert_problem", pykep::lambert_problem_docstring().c_str());
     lambert_problem
         .def(py::init<const std::array<double, 3> &, const std::array<double, 3> &, double, double, bool, unsigned>(),
-             py::arg("rs") = std::array<double, 3>{{1., 0., 0}}, py::arg("rf") = std::array<double, 3>{{0., 1., 0}},
+             py::arg("r0") = std::array<double, 3>{{1., 0., 0}}, py::arg("r1") = std::array<double, 3>{{0., 1., 0}},
              py::arg("tof") = kep3::pi / 2, py::arg("mu") = 1., py::arg("cw") = false, py::arg("multi_revs") = 1)
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::lambert_problem>)
@@ -237,15 +269,17 @@ PYBIND11_MODULE(core, m)
         // Pickle support.
         .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::lambert_problem>,
                         &pykep::pickle_setstate_wrapper<kep3::lambert_problem>))
-        .def("get_vs", &kep3::lambert_problem::get_v0, "Returns the velocity at the first point.")
-        .def("get_vf", &kep3::lambert_problem::get_v1, "Returns the velocity at the second point.")
-        .def("get_rs", &kep3::lambert_problem::get_r0, "Returns the first point.")
-        .def("get_rf", &kep3::lambert_problem::get_r1, "Returns the second point.")
-        .def("get_tof", &kep3::lambert_problem::get_tof, "Returns the time of flight between the two points.")
-        .def("get_mu", &kep3::lambert_problem::get_mu, "Returns the gravitational parameter of the attracting body.")
-        .def("get_x", &kep3::lambert_problem::get_x, "Returns the Battin variable x along the time of flight curves.")
-        .def("get_iters", &kep3::lambert_problem::get_iters, "Returns the number of iteration made.")
-        .def("get_Nmax", &kep3::lambert_problem::get_Nmax, "Returns the maximum number of iterations allowed.");
+        .def_property_readonly("v0", &kep3::lambert_problem::get_v0, "The velocity at the first point.")
+        .def_property_readonly("v1", &kep3::lambert_problem::get_v1, "The velocity at the second point.")
+        .def_property_readonly("r0", &kep3::lambert_problem::get_r0, "The first point.")
+        .def_property_readonly("r1", &kep3::lambert_problem::get_r1, "The second point.")
+        .def_property_readonly("tof", &kep3::lambert_problem::get_tof, "The time of flight between the two points.")
+        .def_property_readonly("mu", &kep3::lambert_problem::get_mu,
+                               "The gravitational parameter of the attracting body.")
+        .def_property_readonly("x", &kep3::lambert_problem::get_x,
+                               "The Battin variable x along the time of flight curves.")
+        .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
+        .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing propagators
     m.def(

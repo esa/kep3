@@ -41,7 +41,7 @@ TEST_CASE("constructor")
 TEST_CASE("eph")
 {
     // We use 2030-01-01 as a reference epoch for all these tests
-    kep3::epoch ref_epoch{2458849.5, kep3::epoch::julian_type::JD};
+    double ref_epoch = kep3::epoch(2458849.5, kep3::epoch::julian_type::JD).mjd2000();
     {
         // This is Mercury w.r.t. the Sun queried from JPL Horizon at
         // 2020-01-01
@@ -128,12 +128,12 @@ TEST_CASE("eph")
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 0.01);
     }
     jpl_lp udpla{"uranus"};
-    REQUIRE_THROWS_AS(udpla.eph(kep3::epoch(5347534., kep3::epoch::julian_type::MJD2000)), std::domain_error);
+    REQUIRE_THROWS_AS(udpla.eph(5347534.), std::domain_error);
 }
 
 TEST_CASE("elements")
 {
-    kep3::epoch ref_epoch{12.22, kep3::epoch::julian_type::MJD2000};
+    double ref_epoch = 12.22;
     // We use Neptune
     jpl_lp udpla{"nePTUne"}; // casing is not important
     auto pos_vel = udpla.eph(ref_epoch);

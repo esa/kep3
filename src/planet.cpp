@@ -57,13 +57,15 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
         case kep3::elements_type::MEQ_R:
             retval = kep3::par2eq(retval, true);
             break;
+        // LCOV_EXCL_START
         default:
             throw std::logic_error("You should not go here!");
+        // LCOV_EXCL_END
     }
     return retval;
 }
 
-std::array<std::array<double, 3>, 2> null_udpla::eph(const epoch &)
+std::array<std::array<double, 3>, 2> null_udpla::eph(double)
 {
     std::array<double, 3> pos = {1., 0., 0.};
     std::array<double, 3> vel = {0., 1., 0.};
@@ -78,7 +80,7 @@ std::ostream &operator<<(std::ostream &os, const planet &p)
 {
     os << "Planet name: " << p.get_name();
     os << "\nC++ class name: " << boost::core::demangle(value_type_index(p).name()) << '\n';
-    os << fmt::format("mu central body (-1 if not defined): {}\n", p.get_mu_central_body());
+    os << fmt::format("\nmu central body (-1 if not defined): {}\n", p.get_mu_central_body());
     os << fmt::format("mu body (-1 if not defined): {}\n", p.get_mu_self());
     os << fmt::format("radius body (-1 if not defined): {}\n", p.get_radius());
     os << fmt::format("safe body radius (-1 if not defined): {}\n", p.get_safe_radius());

@@ -92,13 +92,14 @@ TEST_CASE("constructor")
 TEST_CASE("eph")
 {
     // We use 2000-01-01 as a reference epoch for all these tests
-    kep3::epoch ref_epoch{0., kep3::epoch::julian_type::MJD2000};
+    double ref_epoch = 0.;
     // This is a circular orbit at 1 AU.
     std::array<std::array<double, 3>, 2> pos_vel_0{{{kep3::AU, 0., 0.}, {0., kep3::EARTH_VELOCITY, 0.}}};
     // A keplerian planet orbiting the Sun on such a perfectly circular orbit.
-    keplerian udpla1{ref_epoch, pos_vel_0, kep3::MU_SUN};
-    double period_in_days = (2 * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
-    auto [r, v] = udpla1.eph(ref_epoch + epoch::days(period_in_days));
+    keplerian udpla{kep3::epoch(ref_epoch), pos_vel_0, kep3::MU_SUN};
+    double period_in_days = (2. * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
+    auto [r, v] = udpla.eph(period_in_days);
+
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
 }
@@ -111,32 +112,39 @@ TEST_CASE("elements")
     keplerian udpla{ref_epoch, pos_vel};
     // Test on various element types
     {
-        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::KEP_F);
+        auto par = udpla.elements(0., kep3::elements_type::KEP_F);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::KEP_M);
+        auto par = udpla.elements(0., kep3::elements_type::KEP_M);
         par[5] = kep3::m2f(par[5], par[1]);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::MEQ);
+        auto par = udpla.elements(0., kep3::elements_type::MEQ);
         auto [r, v] = kep3::eq2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(kep3::epoch{}, kep3::elements_type::MEQ_R);
+        auto par = udpla.elements(0., kep3::elements_type::MEQ_R);
         auto [r, v] = kep3::eq2ic(par, 1., true);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        REQUIRE_THROWS_AS(udpla.elements(kep3::epoch{}, kep3::elements_type::POSVEL), std::logic_error);
+        REQUIRE_THROWS_AS(udpla.elements(0., kep3::elements_type::POSVEL), std::logic_error);
+    }
+    // We test on hyperbolas
+    std::array<std::array<double, 3>, 2> pos_vel_h{{{1., 0.1, 0.1}, {0.1, 3., 0.1}}};
+    keplerian udpla_h{kep3::epoch(ref_epoch), pos_vel_h, kep3::MU_SUN};
+
+    {
+        REQUIRE_THROWS_AS(udpla_h.elements(0., kep3::elements_type::POSVEL), std::logic_error);
     }
 }
 

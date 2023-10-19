@@ -57,13 +57,13 @@ class epoch_test(_ut.TestCase):
         ep1 = pk.epoch(0., pk.epoch.julian_type.MJD2000)
         ep2 = pk.epoch(0., pk.epoch.julian_type.MJD)
         ep3 = pk.epoch(0., pk.epoch.julian_type.JD)
-        self.assertTrue(ep1.mjd2000() == 0.0)
-        self.assertTrue(ep2.mjd() == 0.0)
-        self.assertTrue(ep3.jd() == 0.0)
+        self.assertTrue(ep1.mjd2000 == 0.0)
+        self.assertTrue(ep2.mjd == 0.0)
+        self.assertTrue(ep3.jd == 0.0)
 
         ep_py = datetime.datetime(2000, 1, 1, 0, 0, 0, 0)
         ep4 = pk.epoch(ep_py)
-        self.assertTrue(ep4.mjd2000() == 0.0)
+        self.assertTrue(ep4.mjd2000 == 0.0)
         self.assertRaises(TypeError, pk.epoch, datetime.timedelta(1.2))
 
         self.assertTrue(pk.epoch("2000-01") == ep1)
@@ -98,6 +98,19 @@ class my_udpla:
 class my_udpla_malformed1:
     def ephs(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
+    
+class my_udpla_with_optionals:
+    def eph(self, ep):
+        # Some weird return value just to make it not constant
+        return [[ep,0.,0.],[0.,1.,0.]]
+    def eph_v(self, eps):
+        retval = []
+        [retval.extend([item,0.,0,.0,1.,.0]) for item in eps]
+        return retval
+    def elements(self, ep, el_type ):
+        return [1.,2.,3.,4.,5.,6.]
+    def period(self, mjd2000):
+        return 3.14
     
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
@@ -146,6 +159,105 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla2.get_radius() == -1)
         self.assertTrue(pla2.get_safe_radius() == -1)
 
+    def test_udpla_optional_methods(self):
+        import pykep as pk
+        import numpy as np
+        # Testing eph_v
+        udpla = my_udpla_with_optionals()
+        pla = pk.planet(udpla)
+        self.assertTrue(pla.elements(0.) == [1.,2.,3.,4.,5.,6.])
+        r0, v0 = pla.eph(0.)
+        r1, v1 = pla.eph(1.)
+        self.assertTrue(np.all(pla.eph_v([0., 1]) == [r0+v0,r1+v1]))
+        # Testing period
+        self.assertTrue(pla.period() == 3.14)
+        self.assertTrue(pla.period(when = 0.) == 3.14)
+        self.assertTrue(pla.period(when = pk.epoch(0.)) == 3.14)
+        # Testing elements
+        self.assertTrue(pla.elements() == [1.,2.,3.,4.,5.,6.])
+        self.assertTrue(pla.elements(when = 0.) == [1.,2.,3.,4.,5.,6.])
+        self.assertTrue(pla.elements(when = pk.epoch(0.)) == [1.,2.,3.,4.,5.,6.])
+
+class py_udplas_test(_ut.TestCase):
+    def test_tle(self):
+        import pykep as pk
+        from sgp4.api import Satrec
+        from sgp4 import exporter
+        import numpy as np
+        from pathlib import Path
+
+        pk_path = Path(pk.__path__[0])
+        data_file = str(pk_path / "data" / "tle.txt")
+
+        ## Test eph
+        file = open(data_file, "r")
+        while(True):
+            header = file.readline()
+            if header == "":
+                break
+            line1 = file.readline()
+            line2 = file.readline()
+            udpla = pk.udpla.tle(line1 = line1, line2 = line2)
+            pla = pk.planet(udpla)
+            ref_epoch = pk.epoch("2023-10")
+            rpk,vpk = pla.eph(ref_epoch)
+            satellite = Satrec.twoline2rv(line1, line2)
+            jd = ref_epoch.mjd2000 + 2451544.5
+            jd_i = int(jd)
+            jd_fr = jd-jd_i
+            e, r, v = satellite.sgp4(jd_i, jd_fr)
+            self.assertTrue(np.allclose(np.array(r) * 1000, rpk, equal_nan=True, atol=1e-13))
+            self.assertTrue(np.allclose(np.array(v) * 1000, vpk, equal_nan=True, atol=1e-13))
+        file.close()
+
+        ## Test eph_v
+        file = open(data_file, "r")
+        while(True):
+            header = file.readline()
+            if header == "":
+                break
+            line1 = file.readline()
+            line2 = file.readline()
+            udpla = pk.udpla.tle(line1 = line1, line2 = line2)
+            pla = pk.planet(udpla)
+            ref_epoch = pk.epoch("2023-10")
+            mjd2000s = np.linspace(ref_epoch.mjd2000, ref_epoch.mjd2000 + 10, 10)
+            respk = pla.eph_v(mjd2000s)
+            satellite = Satrec.twoline2rv(line1, line2)
+            jds = [mjd2000 + 2451544.5 for mjd2000 in mjd2000s]
+            jd_is = [int(item) for item in jds]
+            jd_frs = [a-b for a,b in zip(jds, jd_is)]
+            e, r, v = satellite.sgp4_array(np.array(jd_is), np.array(jd_frs))
+            rv = np.hstack((r,v))
+            rv = rv.reshape((-1,6))*1000
+            self.assertTrue(np.allclose(rv, respk, equal_nan=True, atol=1e-13))
+
+    def test_spice(self):
+        import pykep as pk
+        import spiceypy as pyspice
+        import numpy as np
+        from pathlib import Path
+
+
+        pk_path = Path(pk.__path__[0])
+        kernel_file = str(pk_path / "data" / "de440s.bsp")
+        pk.utils.load_spice_kernels(kernel_file)
+
+        # We test eph
+        udpla = pk.udpla.spice("JUPITER BARYCENTER", "ECLIPJ2000", "SSB")
+        pla = pk.planet(udpla)
+        rvpk = udpla.eph(0.12345)
+        rv, _ = pyspice.spkezr("JUPITER BARYCENTER", (0.12345-0.5)*pk.DAY2SEC, "ECLIPJ2000", "NONE", "SSB")
+        self.assertTrue(np.allclose(rvpk[0], rv[0:3]*1000, atol=1e-13))
+        self.assertTrue(np.allclose(rvpk[1], rv[3:]*1000, atol=1e-13))
+
+        # We test eph_v
+        mjd2000s = np.linspace(0.12345, 30, 100)
+        rvpk = udpla.eph_v(mjd2000s)
+        rv, _ = pyspice.spkezr("JUPITER BARYCENTER", (mjd2000s-0.5)*pk.DAY2SEC, "ECLIPJ2000", "NONE", "SSB")
+        self.assertTrue(np.allclose(rvpk, np.array(rv)*1000, atol=1e-13))
+
+
 def run_test_suite():
     suite = _ut.TestSuite()
     suite.addTest(anomaly_conversions_tests("test_m2e"))
@@ -158,7 +270,12 @@ def run_test_suite():
     suite.addTest(planet_test("test_planet_construction"))
     suite.addTest(planet_test("test_udpla_extraction"))
     suite.addTest(planet_test("test_udpla_getters"))
+    suite.addTest(planet_test("test_udpla_optional_methods"))
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
+    suite.addTest(py_udplas_test("test_tle"))
+    suite.addTest(py_udplas_test("test_spice"))
+
+
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)

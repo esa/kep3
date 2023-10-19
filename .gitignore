@@ -9,6 +9,7 @@ build*
 
 # config files
 include/kep3/config.hpp
+pykep/_version.py
 
 # python stuff
 *__pycache__*
