@@ -48,6 +48,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/epochs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interfacing to SPICE and JPL DE ephs" href="interface_to_spice.html" />
     <link rel="prev" title="The various anomalies in pykep" href="anomalies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -149,12 +150,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of implemented planets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Epochs and Julian Dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 </ul>
 </li>
 </ul>
@@ -412,7 +414,7 @@ document.write(`
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The date in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> <strong>does</strong> account for leap seconds. If the user wishes to use the exact ISO 8601 representation of some epoch, also including leap seconds, he will have to account for the offset himself. As of of 2023 this may account to maximum 28 seconds. <a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">More info</a> on leap seconds.</p>
+<p>The date in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> <strong>does not</strong> account for leap seconds. If the user wishes to use the exact ISO 8601 representation of some epoch, also including leap seconds, he will have to account for the offset himself. As of of 2023 this may account to maximum 28 seconds. <a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">More info</a> on leap seconds.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -485,7 +487,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-17T14:15:54.219174
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-19T08:07:55.051116
 </pre></div>
 </div>
 </div>
@@ -525,7 +527,7 @@ document.write(`
 <p>and convert it, when needed, to a julian representation:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">mjd</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">mjd</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -605,6 +607,15 @@ True
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">The various anomalies in pykep</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="interface_to_spice.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Interfacing to SPICE and JPL DE ephs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>

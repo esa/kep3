@@ -22,11 +22,4 @@ library and to the python `datetime <https://docs.python.org/3/library/datetime.
 -----------------------------------
 
 .. autoclass:: pykep.epoch
-   :members: jd, mjd, mjd2000
-   :special-members: __init__
-   
-   .. automethod:: pykep.epoch.julian_type
-
-   .. automethod:: pykep.epoch.string_format
-
-   .. automethod:: pykep.epoch.now
+   :members:

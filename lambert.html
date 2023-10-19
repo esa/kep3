@@ -152,12 +152,13 @@
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of implemented planets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 </ul>
 </li>
 </ul>
@@ -354,15 +355,15 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_Nmax()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_iters()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_mu()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_rf"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_rf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_rs"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_rs()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_tof()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_vf"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_vf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_vs"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_vs()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_x()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.Nmax</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.iters</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.mu</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r0</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.tof</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v0</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.x</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -380,10 +381,10 @@ document.write(`
 <span id="lambert"></span><h1>Lambert class<a class="headerlink" href="#lambert-class" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.lambert_problem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">lambert_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_revs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">lambert_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_revs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem" title="Permalink to this definition">#</a></dt>
 <dd><dl>
-<dt>Args:</dt><dd><p><em>r1</em> (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].</p>
-<p><em>r2</em> (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].</p>
+<dt>Args:</dt><dd><p><em>r0</em> (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].</p>
+<p><em>r1</em> (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].</p>
 <p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight. Defaults to <span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>.</p>
 <p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
 <p><em>cw</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): True for retrograde motion (clockwise). Defaults to False.</p>
@@ -403,64 +404,64 @@ and its solution stored in data members.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">lambert_problem</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lp</span><span class="o">.</span><span class="n">get_vs</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lp</span><span class="o">.</span><span class="n">v0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[-4.1028493158958256e-16, 1.0000000000000002, 0.0]</span>
 </pre></div>
 </div>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_Nmax">
-<span class="sig-name descname"><span class="pre">get_Nmax</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_Nmax" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the maximum number of iterations allowed.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.Nmax">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Nmax</span></span><a class="headerlink" href="#pykep.lambert_problem.Nmax" title="Permalink to this definition">#</a></dt>
+<dd><p>The maximum number of iterations allowed.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_iters">
-<span class="sig-name descname"><span class="pre">get_iters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_iters" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the number of iteration made.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.iters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iters</span></span><a class="headerlink" href="#pykep.lambert_problem.iters" title="Permalink to this definition">#</a></dt>
+<dd><p>The number of iterations made.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_mu">
-<span class="sig-name descname"><span class="pre">get_mu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_mu" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the gravitational parameter of the attracting body.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.mu">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#pykep.lambert_problem.mu" title="Permalink to this definition">#</a></dt>
+<dd><p>The gravitational parameter of the attracting body.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_rf">
-<span class="sig-name descname"><span class="pre">get_rf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_rf" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the second point.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.r0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#pykep.lambert_problem.r0" title="Permalink to this definition">#</a></dt>
+<dd><p>The first point.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_rs">
-<span class="sig-name descname"><span class="pre">get_rs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_rs" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the first point.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.r1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">r1</span></span><a class="headerlink" href="#pykep.lambert_problem.r1" title="Permalink to this definition">#</a></dt>
+<dd><p>The second point.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_tof">
-<span class="sig-name descname"><span class="pre">get_tof</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_tof" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the time of flight between the two points.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.tof">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tof</span></span><a class="headerlink" href="#pykep.lambert_problem.tof" title="Permalink to this definition">#</a></dt>
+<dd><p>The time of flight between the two points.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_vf">
-<span class="sig-name descname"><span class="pre">get_vf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_vf" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the velocity at the second point.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.v0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v0</span></span><a class="headerlink" href="#pykep.lambert_problem.v0" title="Permalink to this definition">#</a></dt>
+<dd><p>The velocity at the first point.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_vs">
-<span class="sig-name descname"><span class="pre">get_vs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_vs" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the velocity at the first point.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.v1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v1</span></span><a class="headerlink" href="#pykep.lambert_problem.v1" title="Permalink to this definition">#</a></dt>
+<dd><p>The velocity at the second point.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.lambert_problem.get_x">
-<span class="sig-name descname"><span class="pre">get_x</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem.get_x" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the Battin variable x along the time of flight curves.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.lambert_problem.x">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#pykep.lambert_problem.x" title="Permalink to this definition">#</a></dt>
+<dd><p>The Battin variable x along the time of flight curves.</p>
 </dd></dl>
 
 </dd></dl>
@@ -512,15 +513,15 @@ and its solution stored in data members.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_Nmax()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_iters()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_mu()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_rf"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_rf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_rs"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_rs()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_tof()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_vf"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_vf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_vs"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_vs()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.get_x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.get_x()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.Nmax</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.iters</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.mu</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r0</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.tof</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v0</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.x</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>The various anomalies in pykep &#8212; pykep 0.0.1 documentation</title>
+    <title>Ephemerides &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -45,13 +45,9 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/anomalies';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/planet';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Epochs and Julian Dates" href="epochs.html" />
-    <link rel="prev" title="Tutorials" href="../tutorials.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -144,7 +140,7 @@
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Anomalies Conversions</a></li>
@@ -155,8 +151,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">The various anomalies in pykep</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 </ul>
@@ -215,7 +211,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/anomalies.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/planet.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch onBinder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -263,7 +259,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/anomalies.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/planet.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -293,7 +289,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/anomalies.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/planet.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -373,7 +369,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>The various anomalies in pykep</h1>
+    <h1>Ephemerides</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -387,92 +383,70 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="the-various-anomalies-in-pykep">
-<h1>The various anomalies in pykep<a class="headerlink" href="#the-various-anomalies-in-pykep" title="Permalink to this heading">#</a></h1>
-<p>A number of anomalies are typically of use in space-flight mechanics and its useful to define the various symbols used to indicate them. Throughout pykep code and documentation we mostly use:</p>
-<p><span class="math notranslate nohighlight">\(f\)</span>: True, <span class="math notranslate nohighlight">\(M\)</span>: Mean,  <span class="math notranslate nohighlight">\(E\)</span>: Eccentric, <span class="math notranslate nohighlight">\(N\)</span>: Hyperbolic Mean, <span class="math notranslate nohighlight">\(H\)</span>: Hyperbolic, <span class="math notranslate nohighlight">\(\zeta\)</span>: Gudermannian, <span class="math notranslate nohighlight">\(L\)</span>: True longitude, <span class="math notranslate nohighlight">\(\lambda\)</span>: Mean longitude.</p>
-<p>To keep the various function name consistent with our naming scheme we do not use there capitalized letters so that, for example,  <a class="reference internal" href="../anomalies.html#pykep.n2h" title="pykep.n2h"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.n2h()</span></code></a>
-is the name indicating a function transforming N to H. At times we also must avoid the use of single letter variables so that for example we may write, for example, <strong>mean</strong> if necessary to indicate <span class="math notranslate nohighlight">\(M\)</span>.</p>
-<p>All anomalies are linked with each other through algebraic explicit and implicit equations such as the most famous Kepler’s equation:</p>
-<div class="math notranslate nohighlight">
-\[
-M = E - e \sin E
-\]</div>
-<p>and can be mostly converted to / from using dedicated functions here briefly showcased.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="ephemerides">
+<h1>Ephemerides<a class="headerlink" href="#ephemerides" title="Permalink to this heading">#</a></h1>
+<p>The ephemerides are the position end velocity Cartesian vectors of a moving object. In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> the class <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> offers a common interface to access various ephemerides, regardless on how they are computed. Whether the underlying computations are simply Keplerian, or based on more advanced trajectory propagations, interpolations or predictions, a unified interface is offered by this type-erasing class.</p>
+<p>The user can code his own python class following the mandatory interface of a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> and his own coded objects will be treated uniformly as any other planet in <code class="docutils literal notranslate"><span class="pre">pykep</span></code>. These User Defined Planets (or UPLAs) can implement heterogeneous techniques and interface to any third-party API, but once they are used to construct a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>, they will appear as any other <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> in <code class="docutils literal notranslate"><span class="pre">pykep</span></code>.</p>
+<p>For convenience, a number of already coded UDPLAs are offered so that, to start with, users can compute the positions of planet, satellites comets and spacecarft without the need to code their own UDPLA.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>We start considering a satellite on an elliptical orbit having a low eccentricity <span class="math notranslate nohighlight">\(e=0.1\)</span>. The relation between its True anomaly <span class="math notranslate nohighlight">\(f\)</span> and the eccentric anomaly <span class="math notranslate nohighlight">\(E\)</span> is relatively simple:</p>
+<p>Let us start to use the UDPLA <a class="reference internal" href="../udplas.html#pykep.udpla.keplerian" title="pykep.udpla.keplerian"><code class="xref py py-class docutils literal notranslate"><span class="pre">keplerian</span></code></a> which describes the motion of an object in a Keplerian orbit. All UDPLAS provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code> are in the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">udpla</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">M</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eccentric Anomaly: &quot;</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">ecc</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We instantiate the udpla</span>
+<span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mu_central_body</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;A Circular Orbit&quot;</span><span class="p">)</span>
+<span class="c1"># And use it to construct a pykep planet, hence erasing its type.</span>
+<span class="n">pla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Non-dimensional units are often useful in astrodynamics and most pykep class allow their use. Of course only if everything is consistent the computations will make sense. `pykep`` does not check this consistency and thus the user must be careful when using anything which is non SI, and to not mix units.</p>
+</div>
+<p>Let us print on screen this <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">pla</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Eccentric Anomaly:  0.39017524962497735
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Planet name: A Circular Orbit
+C++ class name: kep3::udpla::keplerian
+
+mu central body (-1 if not defined): 1
+mu body (-1 if not defined): -1
+radius body (-1 if not defined): -1
+safe body radius (-1 if not defined): -1
+
+Extra info:
+Keplerian planet elements: 
+Semi major axis: 1
+Semi major axis (AU): 6.684587122268445e-12
+Eccentricity: 0
+Inclination (deg.): 0
+Big Omega (deg.): 0
+Small omega (deg.): 0
+True anomly (deg.): 0
+Mean anomly (deg.): 0
+Elements reference epoch (MJD2000): 0
+Elements reference epoch (UTC): 2000-01-01T00:00:00.000000
+r at ref. = [1, 0, 0]
+v at ref. = [0, 1, 0]
 </pre></div>
 </div>
 </div>
 </div>
-<p>We may have a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of True Anomalies (or eccentricities), in which case we can use the vectorized version of the same function (note the subscript):</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">Es</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e_v</span><span class="p">(</span><span class="n">Ms</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Es</span><span class="p">,</span><span class="n">Ms</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Eccentric Anomaly&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Mean Anomaly&quot;</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/331fbc62646bd536cd2fd92b640b3bddf8d3c12680223042adcdf85e6a288dc3.png" src="../_images/331fbc62646bd536cd2fd92b640b3bddf8d3c12680223042adcdf85e6a288dc3.png" />
-</div>
-</div>
-<p>and do the same for, e.g. the True Anomaly relation to <span class="math notranslate nohighlight">\(M\)</span></p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">Ms</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">f2m_v</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span><span class="n">Ms</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;True Anomaly&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Mean Anomaly&quot;</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/54039b6452d31448971a4cc04ee662c422e35464a4108eb8b807e3982ba3f291.png" src="../_images/54039b6452d31448971a4cc04ee662c422e35464a4108eb8b807e3982ba3f291.png" />
-</div>
-</div>
-<p>Finally we may want to know about the comutational speed of these functions. Let us compute 100000 times 100 Eccentric anomalies from the Mean anomaly (i.e. solve 1e7 times Kepler’s equation):</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100000</span><span class="p">):</span>
-    <span class="n">Es</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e_v</span><span class="p">(</span><span class="n">Ms</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We solve </span><span class="si">{</span><span class="mf">1e7</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="si">:</span><span class="s2">1.0f</span><span class="si">}</span><span class="s2"> Kepler&#39;s Equations each second.&quot;</span> <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 4004005 Kepler&#39;s Equations each second.
-</pre></div>
-</div>
-</div>
-</div>
+<p>The textual representation of a planet is made of two parts.</p>
+<p>The first part is common to all objects of type <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> and reports the body name, its physical parameters and the name of the underlying c++ class of the udpla (for pythonic udplas, this will be always the same and eaul to kep3::python_udpla).</p>
+<p>The second part is instead original with the udpla type, and is essentially whatever is returned by the <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface optional method <code class="docutils literal notranslate"><span class="pre">extra_info</span></code>. In this case, the udpla is a c++ based class exposed to python as :class:<code class="docutils literal notranslate"><span class="pre">pykep.udpla.keplerian</span></code> and its extra info report the orbital parameters as well as the Cartesian components of the body state at the reference epoch.</p>
 </section>
 
 
@@ -486,24 +460,6 @@ M = E - e \sin E
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="../tutorials.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Tutorials</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="epochs.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Epochs and Julian Dates</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               

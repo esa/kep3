@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'planet';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="List of implemented planets" href="udplas.html" />
+    <link rel="next" title="List of user implemented planets (UDPLAs)" href="udplas.html" />
     <link rel="prev" title="Lambert class" href="lambert.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -152,12 +152,13 @@
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of implemented planets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 </ul>
 </li>
 </ul>
@@ -355,6 +356,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet"><code class="docutils literal notranslate"><span class="pre">planet</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.elements"><code class="docutils literal notranslate"><span class="pre">planet.elements()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.eph"><code class="docutils literal notranslate"><span class="pre">planet.eph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.eph_v"><code class="docutils literal notranslate"><span class="pre">planet.eph_v()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.extract"><code class="docutils literal notranslate"><span class="pre">planet.extract()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.get_extra_info"><code class="docutils literal notranslate"><span class="pre">planet.get_extra_info()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.get_mu_central_body"><code class="docutils literal notranslate"><span class="pre">planet.get_mu_central_body()</span></code></a></li>
@@ -381,7 +384,7 @@ document.write(`
 <span id="planet"></span><h1>Planet class<a class="headerlink" href="#planet-class" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.planet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">planet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">udpla</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">null_udpla()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">planet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">udpla</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet" title="Permalink to this definition">#</a></dt>
 <dd><p>Planet class.</p>
 <p>This type-erasing class represents a generic object moving in space. 
 Basically anything which can be defined by its position and velocity in some reference frame.</p>
@@ -399,13 +402,15 @@ of this class, the <a class="reference internal" href="#pykep.planet" title="pyk
 <p>The <code class="docutils literal notranslate"><span class="pre">eph()</span></code> method is expected to return the Cartesian position and velocity at epoch
 in some chosen reference frame.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">eph()</span></code> method of the UDPLA will then be accessible from the corresponding
-<code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.planet.eph()</span></code> method (see its documentation for information on how the method should be implemented
+<a class="reference internal" href="#pykep.planet.eph" title="pykep.planet.eph"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.planet.eph()</span></code></a> method (see its documentation for information on how the method should be implemented
 in the UDPLA and other details).</p>
 <p>The mandatory method above allow to define a simple planet, which, in a minimal case,
 could actually be also just a fixed point in space, for example if its <code class="docutils literal notranslate"><span class="pre">eph()</span></code> method
 returns a constant position and zero velocity.</p>
 <p>In order to consider more complex cases, the UDPLA may implement one or more of the following methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_mu_central_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eph_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mjd2000s</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="k">def</span> <span class="nf">get_mu_central_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="o">...</span>
 <span class="k">def</span> <span class="nf">get_mu_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="o">...</span>
@@ -413,9 +418,9 @@ returns a constant position and zero velocity.</p>
   <span class="o">...</span>
 <span class="k">def</span> <span class="nf">get_safe_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="o">...</span>
-<span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mjd2000</span><span class="p">):</span>
   <span class="o">...</span>
-<span class="k">def</span> <span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">elements_type</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mjd2000</span><span class="p">,</span> <span class="n">elements_type</span><span class="p">):</span>
   <span class="o">...</span>
 <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="o">...</span>
@@ -437,16 +442,60 @@ signatures, etc.)</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.elements">
-<span class="sig-name descname"><span class="pre">elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pk.epoch(0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el_ty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">KEP_F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.elements" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">KEP_F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.elements" title="Permalink to this definition">#</a></dt>
 <dd><p>The period of the planet in seconds.</p>
-<p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">elements()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">elements()</span></code> method.
-Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method it will return the elements as computed by the
+<p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">elements(float,</span> <span class="pre">pk.el_type)</span></code> method, then <code class="docutils literal notranslate"><span class="pre">planet.elements</span></code> will call it.
+Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method <code class="docutils literal notranslate"><span class="pre">planet.elements</span></code> will return the elements as computed by the
 <a class="reference internal" href="elements.html#pykep.ic2par" title="pykep.ic2par"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.ic2par()</span></code></a>. Otherwise, -1 will be returned.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>ep</em> (<a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the elements.</p>
-<p><em>el_ty</em> (<a class="reference internal" href="elements.html#pykep.el_type" title="pykep.el_type"><code class="xref py py-class docutils literal notranslate"><span class="pre">el_type</span></code></a>): the elements type.</p>
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
+<p><em>el_type</em> (<a class="reference internal" href="elements.html#pykep.el_type" title="pykep.el_type"><code class="xref py py-class docutils literal notranslate"><span class="pre">el_type</span></code></a>): the elements type.</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>: the planet’s elements at epoch.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.planet.eph">
+<span class="sig-name descname"><span class="pre">eph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.eph" title="Permalink to this definition">#</a></dt>
+<dd><p>The planet ephemerides, i.e. its position and velocity.</p>
+<p>In order to be able to construct a <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> object, the user must provide his own UDPLA (User-Defined-Planet).
+This is a class that must implement the method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mjd2000</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+   <span class="o">...</span>
+   <span class="k">return</span> <span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the udpla, the signature for eph demands a float as epoch (mjd2000). The planet, instead, constructed from the same udpla, will also allow <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>.</p>
+</div>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
+</dd>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.planet.eph_v">
+<span class="sig-name descname"><span class="pre">eph_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.eph_v" title="Permalink to this definition">#</a></dt>
+<dd><p>The planet ephemerides, i.e. position and velocity (vectorized version over many epochs).</p>
+<p>This method is the vectorized version of its companion <a class="reference internal" href="#pykep.planet.eph" title="pykep.planet.eph"><code class="xref py py-func docutils literal notranslate"><span class="pre">eph()</span></code></a> and, in its default implementation, it just
+calls it in a loop. This behaviour can be changed by the user (for efficiency purposes) who can provide a more efficient version
+in his UDPLA by coding a method having the signature:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eph_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mjd2000s</span><span class="p">):</span>
+   <span class="o">...</span>
+   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">mjd2000s</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>see, for example, the python implementation of the UDPLAS <a class="reference internal" href="udplas.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> and <a class="reference internal" href="udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>mjd2000s</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
+</dd>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -476,8 +525,8 @@ UDPLA will be returned (this allows to extract a Python UDPLA without knowing it
 <span class="gp">&gt;&gt;&gt; </span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">pla</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">))</span> 
-<span class="go">&lt;class &#39;pykep.core.udpla.keplerian&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pla</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">&lt;class &#39;udpla._keplerian&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pla</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">my_udpla</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="nf">eph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ep</span><span class="p">):</span>
@@ -594,16 +643,16 @@ Otherwise, -1 will be returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.period">
-<span class="sig-name descname"><span class="pre">period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pk.epoch(0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.period" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.period" title="Permalink to this definition">#</a></dt>
 <dd><p>The period of the planet in seconds.</p>
-<p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">period()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">period()</span></code> method.
-Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method it will return the period as computed by the
+<p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">period(float)</span></code> method, <code class="docutils literal notranslate"><span class="pre">planet.period</span></code> will call it.
+Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method <code class="docutils literal notranslate"><span class="pre">planet.period</span></code> will return the period as computed by the
 equation:</p>
 <div class="math notranslate nohighlight">
 \[T = 2 \pi \sqrt{\frac{a^3}{\mu}}\]</div>
-<p>Otherwise, -1 will be returned.</p>
+<p>Else, -1 will be returned.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>ep</em> (<a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period.</p>
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s period.</p>
 </dd>
@@ -639,7 +688,7 @@ equation:</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">List of implemented planets</p>
+        <p class="prev-next-title">List of user implemented planets (UDPLAs)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -660,6 +709,8 @@ equation:</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet"><code class="docutils literal notranslate"><span class="pre">planet</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.elements"><code class="docutils literal notranslate"><span class="pre">planet.elements()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.eph"><code class="docutils literal notranslate"><span class="pre">planet.eph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.eph_v"><code class="docutils literal notranslate"><span class="pre">planet.eph_v()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.extract"><code class="docutils literal notranslate"><span class="pre">planet.extract()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.get_extra_info"><code class="docutils literal notranslate"><span class="pre">planet.get_extra_info()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.planet.get_mu_central_body"><code class="docutils literal notranslate"><span class="pre">planet.get_mu_central_body()</span></code></a></li>

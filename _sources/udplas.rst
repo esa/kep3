@@ -1,12 +1,25 @@
 .. _udplas:
 
-List of implemented planets
-============================
+List of user implemented planets (UDPLAs)
+=========================================
 
 .. currentmodule:: pykep.udpla
+
+.. autoclass:: null_udpla
+   :members:
 
 .. autoclass:: keplerian
    :members:
 
-.. autoclass:: null_udpla
+.. autoclass:: jpl_lp
    :members:
+
+.. autoclass:: tle
+   :members:
+
+.. autoclass:: spice
+   :members:
+
+.. autoclass:: de440s
+   :members:
+
