@@ -214,7 +214,8 @@ PYBIND11_MODULE(core, m)
             // of vec_ptr will take care of cleaning up.
             auto *ptr = vec_ptr.release();
 
-            return py::array_t<double>({eps.size(), 6lu}, // shape
+            return py::array_t<double>(py::array::ShapeContainer{boost::numeric_cast<py::ssize_t>(eps.size()),
+                                                                 static_cast<py::ssize_t>(6)}, // shape
                                        ptr->data(), std::move(vec_caps));
         },
         py::arg("when"), pykep::planet_eph_v_docstring().c_str());
