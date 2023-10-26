@@ -58,6 +58,8 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N)
         }
         pos_vels[i] = kep3::par2ic({sma, ecc, incl_d(rng_engine), Omega_d(rng_engine), omega_d(rng_engine), f}, 1.);
         tofs[i] = tof_d(rng_engine);
+        //fmt::print("[{}, {},{},{},{},{},{}],", pos_vels[i][0][0], pos_vels[i][0][1], pos_vels[i][0][2], pos_vels[i][1][0],
+        //           pos_vels[i][1][1], pos_vels[i][1][2], tofs[i]);
     }
 
     // We log progress
@@ -72,66 +74,12 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N)
     fmt::print("{:.3f}s\n", (static_cast<double>(duration.count()) / 1e6));
 }
 
-oid perform_test_accuracy(double min_ecc, double max_ecc, unsigned N)
-{
-    //
-    // Engines
-    //
-    // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
-    std::mt19937 rng_engine(53534535u);
-    //
-    // Distributions
-    //
-    std::uniform_real_distribution<double> sma_d(0.5, 10.);
-    std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
-    std::uniform_real_distribution<double> incl_d(0., kep3::pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
-    std::uniform_real_distribution<double> omega_d(0., 2 * kep3::pi);
-    std::uniform_real_distribution<double> f_d(0, 2 * kep3::pi);
-    std::uniform_real_distribution<double> tof_d(10, 100.);
-
-    // We generate the random dataset
-    std::vector<std::array<std::array<double, 3>, 2>> pos_vels(N);
-    std::vector<double> tofs(N);
-    for (auto i = 0u; i < N; ++i) {
-        double f = pi;
-        double ecc = 10.;
-        double sma = -1.;
-        while (std::cos(f) < -1. / ecc && sma < 0.) {
-            ecc = ecc_d(rng_engine);
-            sma = sma_d(rng_engine);
-            ecc > 1. ? sma = -sma : sma;
-            f = f_d(rng_engine);
-        }
-
-        pos_vels[i] = kep3::par2ic({sma, ecc, incl_d(rng_engine), Omega_d(rng_engine), omega_d(rng_engine), f}, 1.);
-        tofs[i] = tof_d(rng_engine);
-    }
-    // We log progress
-    fmt::print("{:.2f} min_ecc, {:.2f} max_ecc, on {} data points: ", min_ecc, max_ecc, N);
-    std::vector<double> err(N);
-    auto pos_vels_old(pos_vels);
-    for (auto i = 0u; i < N; ++i) {
-        propagate(pos_vels[i], tofs[i], 1.);
-        propagate(pos_vels[i], -tofs[i], 1.);
-        err[i] = std::abs(pos_vels[i][0][0] - pos_vels_old[i][0][0])
-                 + std::abs(pos_vels[i][0][1] - pos_vels_old[i][0][1])
-                 + std::abs(pos_vels[i][0][2] - pos_vels_old[i][0][2])
-                 + std::abs(pos_vels[i][1][0] - pos_vels_old[i][1][0])
-                 + std::abs(pos_vels[i][1][1] - pos_vels_old[i][1][1])
-                 + std::abs(pos_vels[i][1][2] - pos_vels_old[i][1][2]);
-    }
-    auto max_it = max_element(std::begin(err), std::end(err));
-    auto min_it = min_element(std::begin(err), std::end(err));
-    auto avg = std::accumulate(err.begin(), err.end(), 0.0) / static_cast<double>(err.size()) / 6.;
-    fmt::print("{:.3e} avg, {:.3e} min, {:.3e} max\n", avg, *min_it, *max_it);
-}
 
 int main()
 {
     fmt::print("\nComputes speed at different eccentricity ranges:\n");
-    perform_test_speed(0, 0.5, 10000);
-    perform_test_speed(0.5, 0.9, 10000);
-    perform_test_speed(0.9, 0.99, 10000);
-    perform_test_speed(1.1, 10., 10000);
+    perform_test_speed(0, 0.5, 1000);
+    //perform_test_speed(0.5, 0.9, 10000);
+    //perform_test_speed(0.9, 0.99, 10000);
+    //perform_test_speed(1.1, 10., 10000);
 }
