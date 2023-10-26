@@ -22,29 +22,30 @@
 
 using xt::linalg::dot;
 using xt::linalg::inv;
+using column_v = xt::xtensor_fixed<double, xt::xshape<3, 1>>;
+using mat33 = xt::xtensor_fixed<double, xt::xshape<3, 3>>;
+using mat66 = xt::xtensor_fixed<double, xt::xshape<6, 6>>;
 
 namespace kep3
 {
 
-xt::xarray<double> _skew(const xt::xarray<double> &v)
+mat33 _skew(const column_v &v)
 {
-    xt::xarray<double> retval{{0., -v(2, 0), v(1, 0)}, {v(2, 0), 0., -v(0, 0)}, {-v(1, 0), v(0, 0), 0.}};
+    mat33 retval{{0., -v(2, 0), v(1, 0)}, {v(2, 0), 0., -v(0, 0)}, {-v(1, 0), v(0, 0), 0.}};
     return retval;
 }
 
-xt::xarray<double> _cross(const xt::xarray<double> &v1, const xt::xarray<double> &v2)
+column_v _cross(const column_v &v1, const column_v &v2)
 {
-    xt::xarray<double> retval{{v1(1, 0) * v2(2, 0) - v2(1, 0) * v1(2, 0), v2(0, 0) * v1(2, 0) - v1(0, 0) * v2(2, 0),
-                               v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
-    return retval.reshape({-1, 1});
+    return {{v1(1, 0) * v2(2, 0) - v2(1, 0) * v1(2, 0), v2(0, 0) * v1(2, 0) - v1(0, 0) * v2(2, 0),
+             v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
 }
 
-xt::xarray<double> _compute_Y(const xt::xarray<double> &r0, const xt::xarray<double> &v0, const xt::xarray<double> &r,
-                              const xt::xarray<double> &v, double tof, double mu)
+mat66 _compute_Y(const column_v &r0, const column_v &v0, const column_v &r, const column_v &v, double tof, double mu)
 {
-    auto h = _cross(r, v);
-    auto r0_mod = xt::linalg::norm(r0);
-    auto r3 = std::pow(xt::linalg::norm(r), 3);
+    column_v h = _cross(r, v);
+    double r0_mod = xt::linalg::norm(r0);
+    double r3 = std::pow(xt::linalg::norm(r), 3);
     auto B = xt::concatenate(xt::xtuple(r0 / std::sqrt(mu * r0_mod), v0 * r0_mod / mu), 1);
     auto fc = xt::concatenate(xt::xtuple(_skew(r), _skew(v)));
     auto tmp = dot(_skew(r), _skew(v));
@@ -54,7 +55,7 @@ xt::xarray<double> _compute_Y(const xt::xarray<double> &r0, const xt::xarray<dou
     auto tct = (-r + 1.5 * v * tof);
     auto tcb = (v / 2. - 1.5 * mu / r3 * r * tof);
     auto tc = xt::concatenate(xt::xtuple(tct, tcb));
-    auto Y = xt::concatenate(xt::xtuple(fc, sc, tc), 1);
+    mat66 Y = xt::concatenate(xt::xtuple(fc, sc, tc), 1);
     return Y;
 }
 
