@@ -77,7 +77,7 @@ int main()
     for (auto i = 0u; i < trials; ++i) {
         // 2 - Solve the lambert problem
         kep3::lambert_problem lp(r1s[i], r2s[i], tof[i], mu[i], cw[i], revs_max);
-        count = count + lp.get_vs().size();
+        count = count + lp.get_v0().size();
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
