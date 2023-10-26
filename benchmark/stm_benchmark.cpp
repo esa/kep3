@@ -9,27 +9,25 @@
 
 #include <chrono>
 #include <iostream>
-#include <kep3/core_astro/ic2par2ic.hpp>
-#include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <random>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/constants.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/stm.hpp>
+
 #include <xtensor/xtensor.hpp>
 
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::microseconds;
 
-constexpr double pi{boost::math::constants::pi<double>()};
-
 // In this benchmark we test the speed and accuracy of the Lagrangian
 // propagation solvers
 
-void perform_test_speed(double min_ecc, double max_ecc, unsigned N,
-                        const std::function<void(std::array<std::array<double, 3>, 2> &, double, double)> &propagate)
+void perform_test_speed(double min_ecc, double max_ecc, unsigned N)
 {
     //
     // Engines
@@ -41,10 +39,10 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N,
     //
     std::uniform_real_distribution<double> sma_d(0.5, 20.);
     std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
-    std::uniform_real_distribution<double> incl_d(0., pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-    std::uniform_real_distribution<double> omega_d(0., 2 * pi);
-    std::uniform_real_distribution<double> f_d(0, 2 * pi);
+    std::uniform_real_distribution<double> incl_d(0., kep3::pi);
+    std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
+    std::uniform_real_distribution<double> omega_d(0., 2 * kep3::pi);
+    std::uniform_real_distribution<double> f_d(0, 2 * kep3::pi);
     std::uniform_real_distribution<double> tof_d(10., 100.);
 
     // We generate the random dataset
@@ -54,7 +52,7 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N,
         auto ecc = ecc_d(rng_engine);
         auto sma = sma_d(rng_engine);
         ecc > 1. ? sma = -sma : sma;
-        double f = pi;
+        double f = kep3::pi;
         while (std::cos(f) < -1. / ecc && sma < 0.) {
             f = f_d(rng_engine);
         }
@@ -67,15 +65,14 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N,
 
     auto start = high_resolution_clock::now();
     for (auto i = 0u; i < N; ++i) {
-        propagate(pos_vels[i], tofs[i], 1.);
+        kep3::propagate_stm(pos_vels[i], tofs[i], 1.);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     fmt::print("{:.3f}s\n", (static_cast<double>(duration.count()) / 1e6));
 }
 
-void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N,
-                           const std::function<void(std::array<std::array<double, 3>, 2> &, double, double)> &propagate)
+oid perform_test_accuracy(double min_ecc, double max_ecc, unsigned N)
 {
     //
     // Engines
@@ -87,10 +84,10 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N,
     //
     std::uniform_real_distribution<double> sma_d(0.5, 10.);
     std::uniform_real_distribution<double> ecc_d(min_ecc, max_ecc);
-    std::uniform_real_distribution<double> incl_d(0., pi);
-    std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-    std::uniform_real_distribution<double> omega_d(0., 2 * pi);
-    std::uniform_real_distribution<double> f_d(0, 2 * pi);
+    std::uniform_real_distribution<double> incl_d(0., kep3::pi);
+    std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
+    std::uniform_real_distribution<double> omega_d(0., 2 * kep3::pi);
+    std::uniform_real_distribution<double> f_d(0, 2 * kep3::pi);
     std::uniform_real_distribution<double> tof_d(10, 100.);
 
     // We generate the random dataset
@@ -133,38 +130,8 @@ void perform_test_accuracy(double min_ecc, double max_ecc, unsigned N,
 int main()
 {
     fmt::print("\nComputes speed at different eccentricity ranges:\n");
-    perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian);
-    perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian);
-    perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian);
-    perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian);
-
-    fmt::print("\nComputes error at different eccentricity ranges:\n");
-    perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian);
-    perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian);
-    perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian);
-    //
-    // fmt::print("\nComputes speed at different eccentricity ranges [Universal "
-    //           "Anomaly]:\n");
-    // perform_test_speed(0, 0.5, 1000000, &kep3::propagate_lagrangian_u);
-    // perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_lagrangian_u);
-    // perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_lagrangian_u);
-    // perform_test_speed(1.1, 10., 1000000, &kep3::propagate_lagrangian_u);
-    //
-    // fmt::print("\nComputes error at different eccentricity ranges [Universal "
-    //           "Anomaly]:\n");
-    // perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_lagrangian_u);
-    // perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_lagrangian_u);
-    // perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_lagrangian_u);
-    //
-    // fmt::print("\nComputes speed at different eccentricity ranges [keplerian "
-    //           "propagation]:\n");
-    // perform_test_speed(0, 0.5, 1000000, &kep3::propagate_keplerian);
-    // perform_test_speed(0.5, 0.9, 1000000, &kep3::propagate_keplerian);
-    // perform_test_speed(0.9, 0.99, 1000000, &kep3::propagate_keplerian);
-    //
-    // fmt::print("\nComputes error at different eccentricity ranges [keplerian "
-    //           "propagation]:\n");
-    // perform_test_accuracy(0, 0.5, 100000, &kep3::propagate_keplerian);
-    // perform_test_accuracy(0.5, 0.9, 100000, &kep3::propagate_keplerian);
-    // perform_test_accuracy(0.9, 0.99, 100000, &kep3::propagate_keplerian);
+    perform_test_speed(0, 0.5, 10000);
+    perform_test_speed(0.5, 0.9, 10000);
+    perform_test_speed(0.9, 0.99, 10000);
+    perform_test_speed(1.1, 10., 10000);
 }
