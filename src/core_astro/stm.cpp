@@ -31,8 +31,7 @@ namespace kep3
 
 mat33 _skew(const column_v &v)
 {
-    mat33 retval{{0., -v(2, 0), v(1, 0)}, {v(2, 0), 0., -v(0, 0)}, {-v(1, 0), v(0, 0), 0.}};
-    return retval;
+    return {{0., -v(2, 0), v(1, 0)}, {v(2, 0), 0., -v(0, 0)}, {-v(1, 0), v(0, 0), 0.}};
 }
 
 column_v _cross(const column_v &v1, const column_v &v2)
@@ -48,8 +47,7 @@ mat66 _compute_Y(const column_v &r0, const column_v &v0, const column_v &r, cons
     double r3 = std::pow(xt::linalg::norm(r), 3);
     auto B = xt::concatenate(xt::xtuple(r0 / std::sqrt(mu * r0_mod), v0 * r0_mod / mu), 1);
     auto fc = xt::concatenate(xt::xtuple(_skew(r), _skew(v)));
-    auto tmp = dot(_skew(r), _skew(v));
-    auto sct = -dot((tmp + _skew(h)), B);
+    auto sct = -dot((dot(_skew(r), _skew(v)) + _skew(h)), B);
     auto scb = dot((mu / r3 * dot(_skew(r), _skew(r)) - dot(_skew(v), _skew(v))), B);
     auto sc = xt::concatenate(xt::xtuple(sct, scb));
     auto tct = (-r + 1.5 * v * tof);
