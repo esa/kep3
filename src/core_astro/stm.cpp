@@ -62,6 +62,7 @@ mat31 _cross(const mat31 &v1, const mat31 &v2)
              v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &v, double tof, double mu)
 {
     mat31 h = _cross(r, v);
@@ -88,7 +89,6 @@ mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &
     xt::view(Y, xt::all(), xt::range(0, 3)) = fc;
     xt::view(Y, xt::all(), xt::range(3, 5)) = sc;
     xt::view(Y, xt::all(), xt::range(5, 6)) = tc;
-
     return Y;
 }
 
@@ -98,22 +98,22 @@ mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &
 std::array<double, 36> stm(const std::array<std::array<double, 3>, 2> &pos_vel0,
                            const std::array<std::array<double, 3>, 2> &pos_velf, double tof, double mu)
 {
-    // Shapes needed
-    std::vector<std::size_t> shape66 = {6, 6};
-    std::vector<std::size_t> shapev = {3, 1};
-    // Lets create an xtensor interface for the inputs (3,1)
-    auto r0 = xt::adapt(pos_vel0[0], shapev);
-    auto v0 = xt::adapt(pos_vel0[1], shapev);
-    auto rf = xt::adapt(pos_velf[0], shapev);
-    auto vf = xt::adapt(pos_velf[1], shapev);
+    mat31 r0 = {{pos_vel0[0][0], pos_vel0[0][1], pos_vel0[0][2]}}; 
+    mat31 v0 = {{pos_vel0[1][0], pos_vel0[1][1], pos_vel0[1][2]}};
+    mat31 rf = {{pos_velf[0][0], pos_velf[0][1], pos_velf[0][2]}};
+    mat31 vf = {{pos_velf[1][0], pos_velf[1][1], pos_velf[1][2]}};
     // And the output (6,6)
-    std::array<double, 36> retval{};
-    auto retval_xt = xt::adapt(retval, shape66);
-    // Compute the STM using Reynolds' Cartesian Representation
+    // std::array<double, 36> retval{};
+    mat66 retval{};
+    // auto retval_xt = xt::adapt(retval, shape66);
+    //  Compute the STM using Reynolds' Cartesian Representation
     auto Y = _compute_Y(r0, v0, rf, vf, tof, mu);
     auto Y0 = _compute_Y(r0, v0, r0, v0, 0., mu);
-    retval_xt = _dot(Y, mat66(inv(Y0)));
-    return retval;
+    retval = dot(Y, inv(Y0));
+    // return retval;
+    std::array<double, 36> ret{};
+    std::copy(retval.begin(), retval.end(), ret.begin());
+    return ret;
 }
 
 std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
