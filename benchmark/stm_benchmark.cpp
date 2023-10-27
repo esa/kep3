@@ -78,7 +78,7 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N)
 int main()
 {
     fmt::print("\nComputes speed at different eccentricity ranges:\n");
-    perform_test_speed(0, 0.5, 1000);
+    perform_test_speed(0, 0.5, 100000);
     //perform_test_speed(0.5, 0.9, 10000);
     //perform_test_speed(0.9, 0.99, 10000);
     //perform_test_speed(1.1, 10., 10000);
