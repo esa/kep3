@@ -77,7 +77,7 @@ std::array<double, 36> stm_l(const std::array<std::array<double, 3>, 2> &pos_vel
                              double F, double G,                                                          // NOLINT
                              double Ft, double Gt)                                                        // NOLINT
 {
-    // Create xtensor fixed arrays from input (we avoid adapt as slower in this case since all is fixed size)
+    // Create xtensor fixed arrays from input (we avoid adapt as its slower in this case since all is fixed size)
     // We use row vectors (not column) as its then more conventional for gradients as the differential goes to the
     // end
     mat13 r0 = {{pos_vel0[0][0]}, {pos_vel0[0][1]}, {pos_vel0[0][2]}};
@@ -95,35 +95,62 @@ std::array<double, 36> stm_l(const std::array<std::array<double, 3>, 2> &pos_vel
     dv0(1, 4) = 1;
     dv0(2, 5) = 1;
 
-    // 1 - We start computing the differentials of basic quantities
-    double sqrta = std::sqrt(a);
-    double sqrtmu = std::sqrt(mu);
-    double sinDE = std::sin(DE);
-    double cosDE = std::cos(DE);
+    // 1 - We start computing the differentials of basic quantities common at all eccentricities
     double Rf = std::sqrt(rf(0, 0) * rf(0, 0) + rf(0, 1) * rf(0, 1) + rf(0, 2) * rf(0, 2));
+    double sqrtmu = std::sqrt(mu);
     mat16 dV02 = 2. * _dot(v0, dv0);
     mat16 dR0 = 1. / R0 * _dot(r0, dr0);
     mat16 denergy = 0.5 * dV02 + mu / R0 / R0 * dR0;
     mat16 dsigma0 = ((_dot(r0, dv0) + _dot(v0, dr0))) / sqrtmu;
-    mat16 da = mu / 2. / energy / energy * denergy;                          // a = -mu / 2 / energy
-    mat16 ds0 = dsigma0 / sqrta - 0.5 * sigma0 / sqrta / sqrta / sqrta * da; // s0 = sigma0 / sqrta
-    mat16 dc0 = -1. / a * dR0 + R0 / a / a * da;                             // c0 = (1- R/a)
-    mat16 dDM = -1.5 * sqrtmu * tof / std::pow(sqrta, 5) * da;               // M = sqrt(mu/a**3) tof
-    mat16 dDE = (dDM - (1 - cosDE) * ds0 + sinDE * dc0) / (1 + s0 * sinDE - c0 * cosDE);
-    mat16 dRf = (1 - cosDE + 0.5 / sqrta * sigma0 * sinDE) * da + cosDE * dR0
-                + (sigma0 * sqrta * cosDE - (R0 - a) * sinDE) * dDE
-                + sqrta * sinDE * dsigma0; // r = a + (r0 - a) * cosDE + sigma0 * sqrta * sinDE
+    mat16 da = mu / 2. / energy / energy * denergy; // a = -mu / 2 / energy
+    mat16 dF, dFt, dG, dGt;
 
-    // 2 - We may now compute the differentials of the Lagrange coefficients
-    mat16 dF = -(1 - cosDE) / R0 * da + a / R0 / R0 * (1 - cosDE) * dR0 - a / R0 * sinDE * dDE;
-    mat16 dG = (1 - F) * (R0 * dsigma0 + sigma0 * dR0) - (sigma0 * R0) * dF + (sqrta * R0 * cosDE) * dDE
-               + (sqrta * sinDE) * dR0 + (0.5 * R0 * sinDE / sqrta) * da; // sqrtmu G = sigma0 r0 (1-F) + r0 sqrta sinDE
-    dG = dG / sqrtmu;
-    mat16 dFt = (-sqrta / R0 / Rf * cosDE) * dDE - (0.5 / sqrta / R0 / Rf * sinDE) * da
-                + (sqrta / Rf / R0 / R0 * sinDE) * dR0 + (sqrta / Rf / Rf / R0 * sinDE) * dRf;
-    dFt = dFt * sqrtmu;
-    mat16 dGt = -(1 - cosDE) / Rf * da + a / Rf / Rf * (1 - cosDE) * dRf - a / Rf * sinDE * dDE;
+    if (a > 0) { // ellipses
+        double sqrta = std::sqrt(a);
+        double sinDE = std::sin(DE);
+        double cosDE = std::cos(DE);
 
+        mat16 ds0 = dsigma0 / sqrta - 0.5 * sigma0 / sqrta / sqrta / sqrta * da; // s0 = sigma0 / sqrta
+        mat16 dc0 = -1. / a * dR0 + R0 / a / a * da;                             // c0 = (1- R/a)
+        mat16 dDM = -1.5 * sqrtmu * tof / std::pow(sqrta, 5) * da;               // M = sqrt(mu/a**3) tof
+        mat16 dDE = (dDM - (1 - cosDE) * ds0 + sinDE * dc0) / (1 + s0 * sinDE - c0 * cosDE);
+        mat16 dRf = (1 - cosDE + 0.5 / sqrta * sigma0 * sinDE) * da + cosDE * dR0
+                    + (sigma0 * sqrta * cosDE - (R0 - a) * sinDE) * dDE
+                    + sqrta * sinDE * dsigma0; // r = a + (r0 - a) * cosDE + sigma0 * sqrta * sinDE
+
+        // 2 - We may now compute the differentials of the Lagrange coefficients
+        dF = -(1 - cosDE) / R0 * da + a / R0 / R0 * (1 - cosDE) * dR0 - a / R0 * sinDE * dDE;
+        dG = (1 - F) * (R0 * dsigma0 + sigma0 * dR0) - (sigma0 * R0) * dF + (sqrta * R0 * cosDE) * dDE
+             + (sqrta * sinDE) * dR0 + (0.5 * R0 * sinDE / sqrta) * da; // sqrtmu G = sigma0 r0 (1-F) + r0 sqrta sinDE
+        dG = dG / sqrtmu;
+        dFt = (-sqrta / R0 / Rf * cosDE) * dDE - (0.5 / sqrta / R0 / Rf * sinDE) * da
+              + (sqrta / Rf / R0 / R0 * sinDE) * dR0 + (sqrta / Rf / Rf / R0 * sinDE) * dRf;
+        dFt = dFt * sqrtmu;
+        dGt = -(1 - cosDE) / Rf * da + a / Rf / Rf * (1 - cosDE) * dRf - a / Rf * sinDE * dDE;
+    } else { // hyperbolas (sqrta is sqrt(-a))
+        double sqrta = std::sqrt(-a);
+        double sinhDH = std::sinh(DE);
+        double coshDH = std::cosh(DE);
+
+        mat16 ds0 = dsigma0 / sqrta + 0.5 * sigma0 / sqrta / sqrta / sqrta * da; // s0 = sigma0 / sqrta
+        mat16 dc0 = -1. / a * dR0 + R0 / a / a * da;                             // c0 = (1- R/a)
+        mat16 dDN = 1.5 * sqrtmu * tof / std::pow(sqrta, 5) * da;                // N = sqrt(-mu/a**3) tof
+        mat16 dDH = (dDN - (coshDH - 1) * ds0 - sinhDH * dc0) / (s0 * sinhDH + c0 * coshDH - 1);
+        mat16 dRf = (coshDH - 1 - 0.5 / sqrta * sigma0 * sinhDH) * da + coshDH * dR0
+                    + (sigma0 * sqrta * coshDH + (R0 + a) * sinhDH) * dDH
+                    + sqrta * sinhDH * dsigma0; // r = -a + (r0 + a) * coshDH + sigma0 * sqrta * sinhDH
+
+        // 2 - We may now compute the differentials of the Lagrange coefficients
+        dF = -(1 - coshDH) / R0 * da + a / R0 / R0 * (1 - coshDH) * dR0 + a / R0 * sinhDH * dDH;
+        dG = (1 - F) * (R0 * dsigma0 + sigma0 * dR0) - (sigma0 * R0) * dF + (sqrta * R0 * coshDH) * dDH
+             + (sqrta * sinhDH) * dR0
+             - (0.5 * R0 * sinhDH / sqrta) * da; // sqrtmu G = sigma0 r0 (1-F) + r0 sqrta sinhDH
+        dG = dG / sqrtmu;
+        dFt = (-sqrta / R0 / Rf * coshDH) * dDH + (0.5 / sqrta / R0 / Rf * sinhDH) * da
+              + (sqrta / Rf / R0 / R0 * sinhDH) * dR0 + (sqrta / Rf / Rf / R0 * sinhDH) * dRf;
+        dFt = dFt * sqrtmu;
+        dGt = (1 - coshDH) / Rf * da + a / Rf / Rf * (1 - coshDH) * dRf + a / Rf * sinhDH * dDH;
+    }
     // 3 - And finally assemble the state transition matrix
     mat36 Mr = F * dr0 + _dot(mat31(xt::transpose(r0)), dF) + G * dv0 + _dot(mat31(xt::transpose(v0)), dG);
     mat36 Mv = Ft * dr0 + _dot(mat31(xt::transpose(r0)), dFt) + Gt * dv0 + _dot(mat31(xt::transpose(v0)), dGt);
