@@ -72,13 +72,15 @@ TEST_CASE("propagate_stm")
     REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-13);
 }
 
-TEST_CASE("test")
+TEST_CASE("propagate_stm2")
 {
     // We test the identity stm02 = stm12stm01
-    std::array<std::array<double, 3>, 2> pos_vel = {{{14.637359583328534, 10.78723150857392, 5.861400375237653},
-                                                     {-0.0905730420014078, 0.1490525975579041, -0.0481309370492284}}};
+    std::array<std::array<double, 3>, 2> pos_vel = {{{1., 0., 0.}, {0., 1.0, 0.}}};
     double mu = 1;
-    double tof = 39.45260056697385;
-    auto res01 = kep3::propagate_stm(pos_vel, tof, mu);
-    fmt::print("{}", res01);
+    double dt = 2*kep3::pi;
+    auto res2 = kep3::propagate_stm2(pos_vel, dt, mu);
+    fmt::print("{}", res2);
+    auto res = kep3::propagate_stm(pos_vel, dt, mu);
+    fmt::print("\n\n{}", res);
+
 }

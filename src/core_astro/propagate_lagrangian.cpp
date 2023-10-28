@@ -7,7 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/ic2par2ic.hpp"
 #include <array>
 #include <cmath>
 #include <stdexcept>
@@ -17,6 +16,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/kepler_equations.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/core_astro/special_functions.hpp>
@@ -35,8 +35,8 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
 {
     auto &[r0, v0] = pos_vel_0;
     double R = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
-    double V = std::sqrt(v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2]);
-    double energy = (V * V / 2 - mu / R);
+    double V2 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
+    double energy = (V2 / 2 - mu / R);
     double a = -mu / 2.0 / energy; // will be negative for hyperbolae
     double sqrta = 0.;
     double F = 0., G = 0., Ft = 0., Gt = 0.;
@@ -136,6 +136,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
  * internally makes use of universal variables formulation for the Lagrange
  * Coefficients.
  */
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
 { // NOLINT
     // If time is negative we need to invert time and velocities. Unlike the other
@@ -219,6 +220,7 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0, con
  * M0 then Mt, etc.. It only here for study purposes as its x10 slower (strange
  * such a high factor ..investigate?)
  */
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
 { // NOLINT
 

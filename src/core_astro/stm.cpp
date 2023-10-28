@@ -7,8 +7,11 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "kep3/core_astro/kepler_equations.hpp"
 #include <array>
 #include <cmath>
+
+#include <boost/math/tools/roots.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -23,11 +26,14 @@
 using xt::linalg::dot;
 using xt::linalg::inv;
 using mat31 = xt::xtensor_fixed<double, xt::xshape<3, 1>>;
+using mat13 = xt::xtensor_fixed<double, xt::xshape<1, 3>>;
 using mat33 = xt::xtensor_fixed<double, xt::xshape<3, 3>>;
+using mat36 = xt::xtensor_fixed<double, xt::xshape<3, 6>>;
 using mat66 = xt::xtensor_fixed<double, xt::xshape<6, 6>>;
 using mat32 = xt::xtensor_fixed<double, xt::xshape<3, 2>>;
 using mat62 = xt::xtensor_fixed<double, xt::xshape<6, 2>>;
 using mat61 = xt::xtensor_fixed<double, xt::xshape<6, 1>>;
+using mat16 = xt::xtensor_fixed<double, xt::xshape<1, 6>>;
 using mat63 = xt::xtensor_fixed<double, xt::xshape<6, 3>>;
 
 namespace kep3
@@ -43,7 +49,7 @@ xt::xtensor_fixed<double, xt::xshape<m, n>> _dot(const xt::xtensor_fixed<double,
             C(i, j) = 0;
             for (decltype(k) l = 0u; l < k; ++l) {
                 {
-                    C(i,j) += A(i,l) * B(l,j);
+                    C(i, j) += A(i, l) * B(l, j);
                 }
             }
         }
@@ -60,6 +66,74 @@ mat31 _cross(const mat31 &v1, const mat31 &v2)
 {
     return {{v1(1, 0) * v2(2, 0) - v2(1, 0) * v1(2, 0), v2(0, 0) * v1(2, 0) - v1(0, 0) * v2(2, 0),
              v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
+}
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+std::array<double, 36> stm_l(const std::array<std::array<double, 3>, 2> &pos_vel0,                        // NOLINT
+                             const std::array<std::array<double, 3>, 2> &pos_velf, double tof, double mu, // NOLINT
+                             double R0,                                                                   // NOLINT
+                             double V02, double energy, double sigma0, double a, double s0, double c0,    // NOLINT
+                             double DE,                                                                   // NOLINT
+                             double F, double G,                                                          // NOLINT
+                             double Ft, double Gt)                                                        // NOLINT
+{
+    // Create xtensor fixed arrays from input (we avoid adapt as slower in this case since all is fixed size)
+    // We use row vectors (not column) as its then more conventional for gradients as the differential goes to the
+    // end
+    mat13 r0 = {{pos_vel0[0][0]}, {pos_vel0[0][1]}, {pos_vel0[0][2]}};
+    mat13 v0 = {{pos_vel0[1][0]}, {pos_vel0[1][1]}, {pos_vel0[1][2]}};
+    mat13 rf = {{pos_velf[0][0]}, {pos_velf[0][1]}, {pos_velf[0][2]}};
+    mat13 vf = {{pos_velf[1][0]}, {pos_velf[1][1]}, {pos_velf[1][2]}};
+
+    // We seed the gradients with the initial dr0/dx0 and dv0/dx0
+    mat36 dr0 = xt::zeros<double>({3, 6});
+    mat36 dv0 = xt::zeros<double>({3, 6});
+    dr0(0, 0) = 1;
+    dr0(1, 1) = 1;
+    dr0(2, 2) = 1;
+    dv0(0, 3) = 1;
+    dv0(1, 4) = 1;
+    dv0(2, 5) = 1;
+
+    // 1 - We start computing the differentials of basic quantities
+    double sqrta = std::sqrt(a);
+    double sqrtmu = std::sqrt(mu);
+    double sinDE = std::sin(DE);
+    double cosDE = std::cos(DE);
+    double Rf = std::sqrt(rf(0, 0) * rf(0, 0) + rf(0, 1) * rf(0, 1) + rf(0, 2) * rf(0, 2));
+    mat16 dV02 = 2. * _dot(v0, dv0);
+    mat16 dR0 = 1. / R0 * _dot(r0, dr0);
+    mat16 denergy = 0.5 * dV02 + mu / R0 / R0 * dR0;
+    mat16 dsigma0 = ((_dot(r0, dv0) + _dot(v0, dr0))) / sqrtmu;
+    mat16 da = mu / 2. / energy / energy * denergy;                          // a = -mu / 2 / energy
+    mat16 ds0 = dsigma0 / sqrta - 0.5 * sigma0 / sqrta / sqrta / sqrta * da; // s0 = sigma0 / sqrta
+    mat16 dc0 = -1. / a * dR0 + R0 / a / a * da;                             // c0 = (1- R/a)
+    mat16 dDM = -1.5 * sqrtmu * tof / std::pow(sqrta, 5) * da;               // M = sqrt(mu/a**3) tof
+    mat16 dDE = (dDM - (1 - cosDE) * ds0 + sinDE * dc0) / (1 + s0 * sinDE - c0 * cosDE);
+    mat16 dRf = (1 - cosDE + 0.5 / sqrta * sigma0 * sinDE) * da + cosDE * dR0
+                + (sigma0 * sqrta * cosDE - (R0 - a) * sinDE) * dDE
+                + sqrta * sinDE * dsigma0; // r = a + (r0 - a) * cosDE + sigma0 * sqrta * sinDE
+
+    // 2 - We may now compute the differentials of the Lagrange coefficients
+    mat16 dF = -(1 - cosDE) / R0 * da + a / R0 / R0 * (1 - cosDE) * dR0 - a / R0 * sinDE * dDE;
+    mat16 dG = (1 - F) * (R0 * dsigma0 + sigma0 * dR0) - (sigma0 * R0) * dF + (sqrta * R0 * cosDE) * dDE
+               + (sqrta * sinDE) * dR0 + (0.5 * R0 * sinDE / sqrta) * da; // sqrtmu G = sigma0 r0 (1-F) + r0 sqrta sinDE
+    dG = dG / sqrtmu;
+    mat16 dFt = (-sqrta / R0 / Rf * cosDE) * dDE - (0.5 / sqrta / R0 / Rf * sinDE) * da
+                + (sqrta / Rf / R0 / R0 * sinDE) * dR0 + (sqrta / Rf / Rf / R0 * sinDE) * dRf;
+    dFt = dFt * sqrtmu;
+    mat16 dGt = -(1 - cosDE) / Rf * da + a / Rf / Rf * (1 - cosDE) * dRf - a / Rf * sinDE * dDE;
+
+    // 3 - And finally assemble the state transition matrix
+    mat36 Mr = F * dr0 + _dot(mat31(xt::transpose(r0)), dF) + G * dv0 + _dot(mat31(xt::transpose(v0)), dG);
+    mat36 Mv = Ft * dr0 + _dot(mat31(xt::transpose(r0)), dFt) + Gt * dv0 + _dot(mat31(xt::transpose(v0)), dGt);
+    mat66 M{};
+    xt::view(M, xt::range(0, 3), xt::all()) = Mr;
+    xt::view(M, xt::range(3, 6), xt::all()) = Mv;
+    // ... and flatten it
+    std::array<double, 36> retval{};
+    std::copy(M.begin(), M.end(), retval.begin());
+    return retval;
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
@@ -98,7 +172,7 @@ mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &
 std::array<double, 36> stm(const std::array<std::array<double, 3>, 2> &pos_vel0,
                            const std::array<std::array<double, 3>, 2> &pos_velf, double tof, double mu)
 {
-    mat31 r0 = {{pos_vel0[0][0], pos_vel0[0][1], pos_vel0[0][2]}}; 
+    mat31 r0 = {{pos_vel0[0][0], pos_vel0[0][1], pos_vel0[0][2]}};
     mat31 v0 = {{pos_vel0[1][0], pos_vel0[1][1], pos_vel0[1][2]}};
     mat31 rf = {{pos_velf[0][0], pos_velf[0][1], pos_velf[0][2]}};
     mat31 vf = {{pos_velf[1][0], pos_velf[1][1], pos_velf[1][2]}};
@@ -125,4 +199,65 @@ propagate_stm(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, 
     return {pos_velf, retval_stm};
 }
 
+std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
+propagate_stm2(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu)
+{
+    auto pos_velf = pos_vel0;
+    kep3::propagate_lagrangian(pos_velf, tof, mu);
+    const auto &[r0, v0] = pos_vel0;
+    double R = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
+    double V2 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
+    double energy = (V2 / 2 - mu / R);
+    double a = -mu / 2.0 / energy; // will be negative for hyperbolae
+    double sqrta = 0.;
+    double F = 0., G = 0., Ft = 0., Gt = 0.;
+    double sigma0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / std::sqrt(mu);
+
+    sqrta = std::sqrt(a);
+    double DM = std::sqrt(mu / std::pow(a, 3)) * tof;
+    double sinDM = std::sin(DM), cosDM = std::cos(DM);
+    // Here we use the atan2 to recover the mean anomaly difference in the
+    // [0,2pi] range. This makes sure that for high value of M no catastrophic
+    // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
+    double DM_cropped = std::atan2(sinDM, cosDM);
+    if (DM_cropped < 0) {
+        DM_cropped += 2 * kep3::pi;
+    }
+    double s0 = sigma0 / sqrta;
+    double c0 = (1 - R / a);
+    // This initial guess was developed applying Lagrange expansion theorem to
+    // the Kepler's equation in DE. We stopped at 3rd order.
+    double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM) + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
+                + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
+                      * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
+                         - (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
+
+    // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
+    const int digits = std::numeric_limits<double>::digits;
+    std::uintmax_t max_iter = 100u;
+    // NOTE: Halley iterates may result into instabilities (specially with a
+    // poor IG)
+
+    double DE = boost::math::tools::newton_raphson_iterate(
+        [DM_cropped, sigma0, sqrta, a, R](double DE) {
+            return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R), d_kepDE(DE, sigma0, sqrta, a, R));
+        },
+        IG, IG - pi, IG + pi, digits, max_iter);
+    if (max_iter == 100u) {
+        throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
+                                            "equation for the eccentric anomaly in propagate_lagrangian.\n"
+                                            "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
+                                            DM, sigma0, sqrta, a, R, DE));
+    }
+    double r = a + (R - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
+
+    // Lagrange coefficients
+    F = 1 - a / R * (1 - std::cos(DE));
+    G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R * std::sqrt(a / mu) * std::sin(DE);
+    Ft = -std::sqrt(mu * a) / (r * R) * std::sin(DE);
+    Gt = 1 - a / r * (1 - std::cos(DE));
+
+    auto retval_stm = stm_l(pos_vel0, pos_velf, tof, mu, R, V2, energy, sigma0, a, s0, c0, DE, F, G, Ft, Gt);
+    return {pos_velf, retval_stm};
+}
 } // namespace kep3

@@ -33,5 +33,8 @@ kep3_DLL_PUBLIC std::array<double, 36> stm(const std::array<std::array<double, 3
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
 propagate_stm(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.);
 
+kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
+propagate_stm2(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.);
+
 } // namespace kep3
 #endif // kep3_IC2EQ2IC_H
