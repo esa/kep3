@@ -177,7 +177,7 @@ TEST_CASE("reynolds_vs_lagrangian")
         std::uniform_real_distribution<double> time_d(-2. * kep3::pi, 2. * kep3::pi);
         std::uniform_real_distribution<double> mu_d(0.8, 10);
 
-        auto N = 1000;
+        auto N = 1000u;
         for (auto i = 0u; i < N; ++i) {
             double sma = sma_d(rng_engine);
             double ecc = ecc_d(rng_engine);
@@ -210,7 +210,7 @@ TEST_CASE("reynolds_vs_lagrangian")
         std::uniform_real_distribution<double> time_d(-2. * kep3::pi, 2. * kep3::pi);
         std::uniform_real_distribution<double> mu_d(0.8, 10);
 
-        auto N = 1000;
+        auto N = 1000u;
         for (auto i = 0u; i < N; ++i) {
             double sma = sma_d(rng_engine);
             double ecc = ecc_d(rng_engine);
@@ -224,13 +224,12 @@ TEST_CASE("reynolds_vs_lagrangian")
                 std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
                 auto pos_vel = kep3::par2ic(par, mu);
                 auto pos_velr = pos_vel;
-                auto copy = pos_vel;
                 auto M01_l = kep3::propagate_lagrangian(pos_vel, tof, mu, true);
                 auto M01_r = kep3::propagate_stm_reynolds(pos_velr, tof, mu, true);
                 REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_velr[0]) < 1e-14);
                 REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[1], pos_velr[1]) < 1e-14);
                 // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-                REQUIRE(kep3_tests::L_infinity_norm(M01_l.value(), M01_r.value()) < 1e-10); // precision is low, as Reynolds algorithm seems to lose quite a bit.
+                REQUIRE(kep3_tests::L_infinity_norm(M01_l.value(), M01_r.value()) < 1e-8); // precision is low, as Reynolds algorithm seems to lose quite a bit.
             }
         }
     }

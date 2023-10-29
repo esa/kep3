@@ -36,7 +36,7 @@ kep3_DLL_PUBLIC std::array<double, 36> stm_reynolds(const std::array<std::array<
 // implement --
 kep3_DLL_PUBLIC std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof,
                                                       double mu,                                       // NOLINT
-                                                      double R0, double Rf, double V02, double energy, // NOLINT
+                                                      double R0, double Rf, double energy, // NOLINT
                                                       double sigma0,                                   // NOLINT
                                                       double a, double s0, double c0,                  // NOLINT
                                                       double DX, double F, double G, double Ft, double Gt);

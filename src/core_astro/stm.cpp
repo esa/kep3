@@ -75,7 +75,7 @@ mat31 _cross(const mat31 &v1, const mat31 &v2)
 // differentiate it to obtain the state transition matrix.
 std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, // NOLINT
                                       double mu,                                                        // NOLINT
-                                      double R0, double Rf, double V02, double energy,                  // NOLINT
+                                      double R0, double Rf, double energy,                              // NOLINT
                                       double sigma0,                                                    // NOLINT
                                       double a, double s0, double c0,                                   // NOLINT
                                       double DX, double F, double G, double Ft, double Gt)
@@ -218,8 +218,8 @@ std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &
     return ret;
 }
 
-std::optional<std::array<double, 36>>
-propagate_stm_reynolds(std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu, bool stm)
+std::optional<std::array<double, 36>> propagate_stm_reynolds(std::array<std::array<double, 3>, 2> &pos_vel0, double tof,
+                                                             double mu, bool stm)
 {
     auto pos_vel0_copy = pos_vel0;
     kep3::propagate_lagrangian(pos_vel0, tof, mu);
@@ -230,7 +230,6 @@ propagate_stm_reynolds(std::array<std::array<double, 3>, 2> &pos_vel0, double to
     } else {
         return std::nullopt;
     }
-    
 }
 
 } // namespace kep3

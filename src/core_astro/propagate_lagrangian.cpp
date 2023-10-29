@@ -142,7 +142,7 @@ std::optional<std::array<double, 36>> propagate_lagrangian(std::array<std::array
         v0[i] = Ft * temp[i] + Gt * v0[i];
     }
     if (stm) {
-        auto retval_stm = kep3::stm_lagrangian(pos_vel0c, tof, mu, R0, Rf, V02, energy, sigma0, a, s0, c0, DX, F, G, Ft, Gt);
+        auto retval_stm = kep3::stm_lagrangian(pos_vel0c, tof, mu, R0, Rf, energy, sigma0, a, s0, c0, DX, F, G, Ft, Gt);
         return retval_stm;
     } else {
         return std::nullopt;
