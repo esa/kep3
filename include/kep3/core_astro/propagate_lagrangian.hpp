@@ -11,8 +11,11 @@
 #define kep3_PROPAGATE_LAGRANGIAN_H
 
 #include <array>
+#include <optional>
 
 #include <kep3/detail/visibility.hpp>
+#include <kep3/core_astro/stm.hpp>
+
 
 namespace kep3
 {
@@ -25,7 +28,8 @@ namespace kep3
  * as the input parameters are all expressed in the same system.
  */
 
-kep3_DLL_PUBLIC void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu);
+kep3_DLL_PUBLIC std::optional<std::array<double, 36>>
+propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel, double tof, double mu, bool stm = false);
 
 kep3_DLL_PUBLIC void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu);
 

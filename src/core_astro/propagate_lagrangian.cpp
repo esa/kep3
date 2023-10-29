@@ -9,6 +9,7 @@
 
 #include <array>
 #include <cmath>
+#include <optional>
 #include <stdexcept>
 
 #include <boost/math/tools/roots.hpp>
@@ -31,20 +32,25 @@ namespace kep3
  * numerical technique. All units systems can be used, as long
  * as the input parameters are all expressed in the same system.
  */
-void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
+std::optional<std::array<double, 36>> propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel0,
+                                                           const double tof, const double mu, bool stm)
 {
-    auto &[r0, v0] = pos_vel_0;
+    auto &[r0, v0] = pos_vel0;
+    auto pos_vel0c = pos_vel0;
     double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
-    double V2 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
-    double energy = (V2 / 2 - mu / R0);
+    double Rf = 0.;
+    double V02 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
+    double DX = 0.;
+    double energy = (V02 / 2 - mu / R0);
     double a = -mu / 2.0 / energy; // will be negative for hyperbolae
     double sqrta = 0.;
     double F = 0., G = 0., Ft = 0., Gt = 0.;
+    double s0 = 0., c0 = 0.;
     double sigma0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / std::sqrt(mu);
 
     if (a > 0) { // Solve Kepler's equation in DE, elliptical case
         sqrta = std::sqrt(a);
-        double DM = std::sqrt(mu / std::pow(a, 3)) * dt;
+        double DM = std::sqrt(mu / std::pow(a, 3)) * tof;
         double sinDM = std::sin(DM), cosDM = std::cos(DM);
         // Here we use the atan2 to recover the mean anomaly difference in the
         // [0,2pi] range. This makes sure that for high value of M no catastrophic
@@ -53,8 +59,8 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
         if (DM_cropped < 0) {
             DM_cropped += 2 * kep3::pi;
         }
-        double s0 = sigma0 / sqrta;
-        double c0 = (1 - R0 / a);
+        s0 = sigma0 / sqrta;
+        c0 = (1 - R0 / a);
         // This initial guess was developed applying Lagrange expansion theorem to
         // the Kepler's equation in DE. We stopped at 3rd order.
         double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
@@ -80,20 +86,23 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
                                                 "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
                                                 DM, sigma0, sqrta, a, R0, DE));
         }
-        double Rf = a + (R0 - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
+        Rf = a + (R0 - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
 
         // Lagrange coefficients
         F = 1 - a / R0 * (1 - std::cos(DE));
         G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R0 * std::sqrt(a / mu) * std::sin(DE);
         Ft = -std::sqrt(mu * a) / (Rf * R0) * std::sin(DE);
         Gt = 1 - a / Rf * (1 - std::cos(DE));
+        DX = DE;
     } else { // Solve Kepler's equation in DH, hyperbolic case
         sqrta = std::sqrt(-a);
-        double DN = std::sqrt(-mu / a / a / a) * dt;
+        double DN = std::sqrt(-mu / a / a / a) * tof;
         double IG = 0.;
-        dt > 0. ? IG = 1. : IG = -1.; // TODO(darioizzo): find a better initial guess.
-                                      // I tried with 0 and DN (both have numercial
-                                      // problems and result in exceptions)
+        s0 = sigma0 / sqrta;
+        c0 = (1 - R0 / a);
+        tof > 0. ? IG = 1. : IG = -1.; // TODO(darioizzo): find a better initial guess.
+                                       // I tried with 0 and DN (both have numercial
+                                       // problems and result in exceptions)
 
         // Solve Kepler Equation for ellipses in DH (hyperbolic anomaly difference)
         const int digits = std::numeric_limits<double>::digits;
@@ -114,22 +123,29 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
                                                 DN, sigma0, sqrta, a, R0, DH));
         }
 
-        // Note: the following equation, according to Battin's (4.63, pag 170), is different. I suspect a typo in Battin book
-        // deriving from the confusion on the convention for the semi-majoraxis being negative. The following expression
-        // instead works in this context.
-        double Rf = a + (R0 - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
+        // Note: the following equation, according to Battin's (4.63, pag 170), is different. I suspect a typo in Battin
+        // book deriving from the confusion on the convention for the semi-majoraxis being negative. The following
+        // expression instead works in this context.
+        Rf = a + (R0 - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
 
         // Lagrange coefficients
         F = 1. - a / R0 * (1. - std::cosh(DH));
         G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) + R0 * std::sqrt(-a / mu) * std::sinh(DH);
         Ft = -std::sqrt(-mu * a) / (Rf * R0) * std::sinh(DH);
         Gt = 1. - a / Rf * (1. - std::cosh(DH));
+        DX = DH;
     }
 
     double temp[3] = {r0[0], r0[1], r0[2]};
     for (auto i = 0u; i < 3; i++) {
         r0[i] = F * r0[i] + G * v0[i];
         v0[i] = Ft * temp[i] + Gt * v0[i];
+    }
+    if (stm) {
+        auto retval_stm = kep3::stm_lagrangian(pos_vel0c, tof, mu, R0, Rf, V02, energy, sigma0, a, s0, c0, DX, F, G, Ft, Gt);
+        return retval_stm;
+    } else {
+        return std::nullopt;
     }
 }
 

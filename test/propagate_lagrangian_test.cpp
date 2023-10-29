@@ -132,7 +132,7 @@ void test_propagate_lagrangian_tof_inversion(
                 auto pos_vel_after = pos_vel;
                 propagate(pos_vel_after, tof, 1.);
                 propagate(pos_vel_after, -tof, 1.);
-                // REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_vel_after[0]) < 1e-13);
+                REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_vel_after[0]) < 1e-13);
             }
         }
     }
@@ -141,7 +141,9 @@ void test_propagate_lagrangian_tof_inversion(
 TEST_CASE("propagate_lagrangian")
 {
     // We test both Normal and Universal variables versions.
-    test_propagate_lagrangian_tof_inversion(&propagate_lagrangian, 10000u);
+    test_propagate_lagrangian_tof_inversion([](std::array<std::array<double, 3>, 2> &posvel, double tof,
+                                               double mu) { kep3::propagate_lagrangian(posvel, tof, mu); },
+                                            10000u);
     test_propagate_lagrangian_tof_inversion(&propagate_lagrangian_u, 10000u);
 }
 

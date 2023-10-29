@@ -67,7 +67,7 @@ void perform_test_speed(double min_ecc, double max_ecc, unsigned N)
 
     auto start = high_resolution_clock::now();
     for (auto i = 0u; i < N; ++i) {
-        kep3::propagate_stm2(pos_vels[i], tofs[i], 1.);
+        kep3::propagate_lagrangian(pos_vels[i], tofs[i], 1., true);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
