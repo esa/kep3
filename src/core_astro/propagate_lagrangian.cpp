@@ -11,6 +11,7 @@
 #include <cmath>
 #include <optional>
 #include <stdexcept>
+#include <utility>
 
 #include <boost/math/tools/roots.hpp>
 #include <fmt/core.h>
@@ -32,11 +33,12 @@ namespace kep3
  * numerical technique. All units systems can be used, as long
  * as the input parameters are all expressed in the same system.
  */
-std::optional<std::array<double, 36>> propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel0,
-                                                           const double tof, const double mu, bool stm)
+std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
+propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double tof, const double mu, bool stm)
 {
-    auto &[r0, v0] = pos_vel0;
-    auto pos_vel0c = pos_vel0;
+    const auto &[r0, v0] = pos_vel0;
+    auto pos_velf = pos_vel0;
+    auto &[rf, vf] = pos_velf;
     double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
     double Rf = 0.;
     double V02 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
@@ -136,16 +138,15 @@ std::optional<std::array<double, 36>> propagate_lagrangian(std::array<std::array
         DX = DH;
     }
 
-    double temp[3] = {r0[0], r0[1], r0[2]};
     for (auto i = 0u; i < 3; i++) {
-        r0[i] = F * r0[i] + G * v0[i];
-        v0[i] = Ft * temp[i] + Gt * v0[i];
+        rf[i] = F * r0[i] + G * v0[i];
+        vf[i] = Ft * r0[i] + Gt * v0[i];
     }
     if (stm) {
-        auto retval_stm = kep3::stm_lagrangian(pos_vel0c, tof, mu, R0, Rf, energy, sigma0, a, s0, c0, DX, F, G, Ft, Gt);
-        return retval_stm;
+        auto retval_stm = kep3::stm_lagrangian(pos_vel0, tof, mu, R0, Rf, energy, sigma0, a, s0, c0, DX, F, G, Ft, Gt);
+        return {pos_velf, retval_stm};
     } else {
-        return std::nullopt;
+        return {pos_velf, std::nullopt};
     }
 }
 
@@ -153,31 +154,35 @@ std::optional<std::array<double, 36>> propagate_lagrangian(std::array<std::array
 /**
  * This function has the same prototype as kep3::propagate_lgrangian, but
  * internally makes use of universal variables formulation for the Lagrange
- * Coefficients.
+ * Coefficients. Its slower so not the main choice in kep3.
  */
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
-{ // NOLINT
+std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
+propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu, // NOLINT
+                       bool)
+{
     // If time is negative we need to invert time and velocities. Unlike the other
     // formulation of the propagate lagrangian we cannot rely on negative times to
     // automatically mean back-propagation
     double dt_copy = dt;
-    auto &[r0, v0] = pos_vel_0;
+    const auto &[r0, v0] = pos_vel0;
+    std::array<std::array<double, 3>, 2> pos_velf = pos_vel0;
+    auto &[rf, vf] = pos_velf;
 
+    // posvelf is at this point storing v0 (will store vf at the end). We cannot use v0 here as its const.
     if (dt < 0) {
         dt_copy = -dt;
-        v0[0] = -v0[0];
-        v0[1] = -v0[1];
-        v0[2] = -v0[2];
+        vf[0] = -vf[0];
+        vf[1] = -vf[1];
+        vf[2] = -vf[2];
     }
 
     double F = 0., G = 0., Ft = 0., Gt = 0.;
-    double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
-    double V0 = std::sqrt(v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2]);
+    double R0 = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
+    double V02 = vf[0] * vf[0] + vf[1] * vf[1] + vf[2] * vf[2];
     // the reciprocal of the semi-major axis
-    double alpha = 2 / R0 - V0 * V0 / mu;
-    // initial radial velocity
-    double VR0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / R0;
+    double alpha = 2 / R0 - V02 / mu;
+    // initial radial velocity (see we use the inverted vf = +-v0 according to dt)
+    double VR0 = (rf[0] * vf[0] + rf[1] * vf[1] + rf[2] * vf[2]) / R0;
 
     // solve kepler's equation in the universal anomaly DS
     double IG = 0;
@@ -209,27 +214,28 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0, con
     F = 1 - DS * DS / R0 * C;
     G = dt_copy - 1 / std::sqrt(mu) * DS * DS * DS * S;
 
-    double r0_copy[3] = {r0[0], r0[1], r0[2]};
-    // compute the final position
-    r0[0] = F * r0[0] + G * v0[0];
-    r0[1] = F * r0[1] + G * v0[1];
-    r0[2] = F * r0[2] + G * v0[2];
-    double RF = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
+    // compute the final position (vf = +-v0 according to dt)
+    rf[0] = F * r0[0] + G * vf[0];
+    rf[1] = F * r0[1] + G * vf[1];
+    rf[2] = F * r0[2] + G * vf[2];
+    double RF = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
 
     // compute the lagrangian coefficients Ft, Gt
     Ft = std::sqrt(mu) / RF / R0 * (z * S - 1) * DS;
     Gt = 1 - DS * DS / RF * C;
 
-    // compute the final velocity
-    v0[0] = Ft * r0_copy[0] + Gt * v0[0];
-    v0[1] = Ft * r0_copy[1] + Gt * v0[1];
-    v0[2] = Ft * r0_copy[2] + Gt * v0[2];
+    // compute the final velocity (vf = +-v0 according to dt)
+    vf[0] = Ft * r0[0] + Gt * vf[0];
+    vf[1] = Ft * r0[1] + Gt * vf[1];
+    vf[2] = Ft * r0[2] + Gt * vf[2];
 
     if (dt < 0) {
-        v0[0] = -v0[0];
-        v0[1] = -v0[1];
-        v0[2] = -v0[2];
+        vf[0] = -vf[0];
+        vf[1] = -vf[1];
+        vf[2] = -vf[2];
     }
+    // since the stm is here not implemented yet, we return always nullopt.
+    return {pos_velf, std::nullopt};
 }
 
 /// Keplerian (not using the lagrangian coefficients) propagation
@@ -239,12 +245,12 @@ void propagate_lagrangian_u(std::array<std::array<double, 3>, 2> &pos_vel_0, con
  * M0 then Mt, etc.. It only here for study purposes as its x10 slower (strange
  * such a high factor ..investigate?)
  */
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
-{ // NOLINT
-
+std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
+propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu, // NOLINT
+                    bool)
+{
     // 1 - Compute the orbital parameters at t0
-    auto par = kep3::ic2par(pos_vel_0, mu);
+    auto par = kep3::ic2par(pos_vel0, mu);
     if (par[0] > 0) {
         // 2e - Compute the mean anomalies
         double n = std::sqrt(mu / par[0] / par[0] / par[0]);
@@ -262,7 +268,8 @@ void propagate_keplerian(std::array<std::array<double, 3>, 2> &pos_vel_0, const 
         par[5] = kep3::n2f(Nf, par[1]);
     }
     // Update posvel
-    pos_vel_0 = kep3::par2ic(par, mu);
+    auto pos_velf = kep3::par2ic(par, mu);
+    return {pos_velf, std::nullopt};
 }
 
 } // namespace kep3

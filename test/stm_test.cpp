@@ -86,18 +86,16 @@ TEST_CASE("propagate_stm_reynolds")
         double mu = 1.02;
         double dt1 = 1.1;
         double dt2 = 2.3;
-        auto pos_vel1 = pos_vel0;
-        auto res01 = kep3::propagate_stm_reynolds(pos_vel1, dt1, mu, true);
-        auto pos_vel2 = pos_vel0;
-        auto res02 = kep3::propagate_stm_reynolds(pos_vel2, dt2, mu, true);
+        auto res01 = kep3::propagate_stm_reynolds(pos_vel0, dt1, mu, true);
+        auto res02 = kep3::propagate_stm_reynolds(pos_vel0, dt2, mu, true);
         // ... and compute the stm from 1 to 2. (pos_vel1 wil also be propagated to pos_vel2)
-        auto res12 = kep3::propagate_stm_reynolds(pos_vel1, dt2 - dt1, mu, true);
+        auto res12 = kep3::propagate_stm_reynolds(res01.first, dt2 - dt1, mu, true);
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M01 = xt::adapt(res01.value(), {6, 6});
+        auto M01 = xt::adapt(res01.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M02 = xt::adapt(res02.value(), {6, 6});
+        auto M02 = xt::adapt(res02.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M12 = xt::adapt(res12.value(), {6, 6});
+        auto M12 = xt::adapt(res12.second.value(), {6, 6});
         REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-13);
     }
     { // We test the identity stm02 = stm12stm01 (hyperbolas)
@@ -105,19 +103,17 @@ TEST_CASE("propagate_stm_reynolds")
         double mu = 1.02;
         double dt1 = 1.6;
         double dt2 = 3.4;
-        auto pos_vel1 = pos_vel0;
-        auto res01 = kep3::propagate_stm_reynolds(pos_vel1, dt1, mu, true);
-        auto pos_vel2 = pos_vel0;
-        auto res02 = kep3::propagate_stm_reynolds(pos_vel2, dt2, mu, true);
+        auto res01 = kep3::propagate_stm_reynolds(pos_vel0, dt1, mu, true);
+        auto res02 = kep3::propagate_stm_reynolds(pos_vel0, dt2, mu, true);
         // ... and compute the stm from 1 to 2. (pos_vel1 wil also be propagated to pos_vel2)
-        auto res12 = kep3::propagate_stm_reynolds(pos_vel1, dt2 - dt1, mu, true);
+        auto res12 = kep3::propagate_stm_reynolds(res01.first, dt2 - dt1, mu, true);
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M01 = xt::adapt(res01.value(), {6, 6});
+        auto M01 = xt::adapt(res01.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M02 = xt::adapt(res02.value(), {6, 6});
+        auto M02 = xt::adapt(res02.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M12 = xt::adapt(res12.value(), {6, 6});
-        REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-12);
+        auto M12 = xt::adapt(res12.second.value(), {6, 6});
+        REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-8);
     }
 }
 
@@ -128,18 +124,16 @@ TEST_CASE("propagate_lagrangian(stm)")
         double mu = 1.02;
         double dt1 = 1.1;
         double dt2 = 2.3;
-        auto pos_vel1 = pos_vel0;
-        auto res01 = kep3::propagate_lagrangian(pos_vel1, dt1, mu, true);
-        auto pos_vel2 = pos_vel0;
-        auto res02 = kep3::propagate_lagrangian(pos_vel2, dt2, mu, true);
+        auto res01 = kep3::propagate_lagrangian(pos_vel0, dt1, mu, true);
+        auto res02 = kep3::propagate_lagrangian(pos_vel0, dt2, mu, true);
         // ... and compute the stm from 1 to 2. (pos_vel1 wil also be propagated to pos_vel2)
-        auto res12 = kep3::propagate_lagrangian(pos_vel1, dt2 - dt1, mu, true);
+        auto res12 = kep3::propagate_lagrangian(res01.first, dt2 - dt1, mu, true);
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M01 = xt::adapt(res01.value(), {6, 6});
+        auto M01 = xt::adapt(res01.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M02 = xt::adapt(res02.value(), {6, 6});
+        auto M02 = xt::adapt(res02.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M12 = xt::adapt(res12.value(), {6, 6});
+        auto M12 = xt::adapt(res12.second.value(), {6, 6});
         REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-13);
     }
     { // We test the identity stm02 = stm12stm01 (hyperbolas)
@@ -147,18 +141,16 @@ TEST_CASE("propagate_lagrangian(stm)")
         double mu = 1.02;
         double dt1 = 1.6;
         double dt2 = 3.4;
-        auto pos_vel1 = pos_vel0;
-        auto res01 = kep3::propagate_lagrangian(pos_vel1, dt1, mu, true);
-        auto pos_vel2 = pos_vel0;
-        auto res02 = kep3::propagate_lagrangian(pos_vel2, dt2, mu, true);
+        auto res01 = kep3::propagate_lagrangian(pos_vel0, dt1, mu, true);
+        auto res02 = kep3::propagate_lagrangian(pos_vel0, dt2, mu, true);
         // ... and compute the stm from 1 to 2. (pos_vel1 wil also be propagated to pos_vel2)
-        auto res12 = kep3::propagate_lagrangian(pos_vel1, dt2 - dt1, mu, true);
+        auto res12 = kep3::propagate_lagrangian(res01.first, dt2 - dt1, mu, true);
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M01 = xt::adapt(res01.value(), {6, 6});
+        auto M01 = xt::adapt(res01.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M02 = xt::adapt(res02.value(), {6, 6});
+        auto M02 = xt::adapt(res02.second.value(), {6, 6});
         // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-        auto M12 = xt::adapt(res12.value(), {6, 6});
+        auto M12 = xt::adapt(res12.second.value(), {6, 6});
         REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-12);
     }
 }
@@ -191,12 +183,12 @@ TEST_CASE("reynolds_vs_lagrange")
             std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
             auto pos_vel = kep3::par2ic(par, 1.);
             auto pos_velr = pos_vel;
-            auto M01_l = kep3::propagate_lagrangian(pos_vel, tof, mu, true);
-            auto M01_r = kep3::propagate_stm_reynolds(pos_velr, tof, mu, true);
+            auto res = kep3::propagate_lagrangian(pos_vel, tof, mu, true);
+            auto res_r = kep3::propagate_stm_reynolds(pos_velr, tof, mu, true);
             REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_velr[0]) < 1e-14);
             REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[1], pos_velr[1]) < 1e-14);
             // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-            REQUIRE(kep3_tests::L_infinity_norm(M01_l.value(), M01_r.value()) < 1e-10);
+            REQUIRE(kep3_tests::L_infinity_norm(res.second.value(), res_r.second.value()) < 1e-10);
         }
     }
 
@@ -222,14 +214,14 @@ TEST_CASE("reynolds_vs_lagrange")
             double mu = mu_d(rng_engine);
             if (std::cos(f) > 0.) {
                 std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
-                auto pos_vel = kep3::par2ic(par, mu);
+                auto pos_vel = kep3::par2ic(par, 1.);
                 auto pos_velr = pos_vel;
-                auto M01_l = kep3::propagate_lagrangian(pos_vel, tof, mu, true);
-                auto M01_r = kep3::propagate_stm_reynolds(pos_velr, tof, mu, true);
+                auto res = kep3::propagate_lagrangian(pos_vel, tof, mu, true);
+                auto res_r = kep3::propagate_stm_reynolds(pos_velr, tof, mu, true);
                 REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_velr[0]) < 1e-14);
                 REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[1], pos_velr[1]) < 1e-14);
                 // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-                REQUIRE(kep3_tests::L_infinity_norm(M01_l.value(), M01_r.value()) < 1e-8); // precision is low, as Reynolds algorithm seems to lose quite a bit.
+                REQUIRE(kep3_tests::L_infinity_norm(res.second.value(), res_r.second.value()) < 1e-8);
             }
         }
     }

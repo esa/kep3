@@ -13,8 +13,6 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <boost/math/constants/constants.hpp>
-
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/kepler_equations.hpp>
@@ -25,13 +23,13 @@
 
 using kep3::propagate_keplerian;
 
-constexpr double pi{boost::math::constants::pi<double>()};
-
 void test_propagate_keplerian(
-    const std::function<void(std::array<std::array<double, 3>, 2> &, double, double)> &propagate,
+    const std::function<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>(
+        const std::array<std::array<double, 3>, 2> &, double, double, bool)> &propagate,
     unsigned int N = 10000)
 {
 
+    // Engines
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
     std::mt19937 rng_engine(1220202343u);
 
@@ -40,8 +38,8 @@ void test_propagate_keplerian(
         std::uniform_real_distribution<double> ecc_d(0, 0.9);
         std::uniform_real_distribution<double> incl_d(0., kep3::pi);
         std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
-        std::uniform_real_distribution<double> omega_d(0., pi);
-        std::uniform_real_distribution<double> f_d(0, 2 * pi);
+        std::uniform_real_distribution<double> omega_d(0., kep3::pi);
+        std::uniform_real_distribution<double> f_d(0, 2 * kep3::pi);
         std::uniform_real_distribution<double> time_d(-2. * kep3::pi, 2. * kep3::pi);
 
         // Testing on N random calls on ellipses
@@ -54,25 +52,22 @@ void test_propagate_keplerian(
             double f = f_d(rng_engine);
 
             std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
-            auto pos_vel = kep3::par2ic(par, 1.);
+            auto pos_vel0 = kep3::par2ic(par, 1.);
             double tof = time_d(rng_engine);
-            auto pos_vel_after = pos_vel;
-            propagate(pos_vel_after, tof, 1.);
-            propagate(pos_vel_after, -tof, 1.);
-            REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0],
-                                                            pos_vel_after[0])
-                    < 1e-10); // Low precision requested. The funciton is only here for
-                              // academic purposes
+            auto res0 = propagate(pos_vel0, tof, 1., false);
+            auto res1 = propagate(res0.first, -tof, 1., false);
+            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-11);
+            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-11);
         }
     }
 
     { // Targeting Hyperbolas
-        std::uniform_real_distribution<double> sma_d(1.1, 100.);
+        std::uniform_real_distribution<double> sma_d(-100, -1.1);
         std::uniform_real_distribution<double> ecc_d(2., 20.);
-        std::uniform_real_distribution<double> incl_d(0., pi);
-        std::uniform_real_distribution<double> Omega_d(0, 2 * pi);
-        std::uniform_real_distribution<double> omega_d(0., pi);
-        std::uniform_real_distribution<double> f_d(0, 2 * pi);
+        std::uniform_real_distribution<double> incl_d(0., kep3::pi);
+        std::uniform_real_distribution<double> Omega_d(0, 2 * kep3::pi);
+        std::uniform_real_distribution<double> omega_d(0., kep3::pi);
+        std::uniform_real_distribution<double> f_d(0, 2 * kep3::pi);
         std::uniform_real_distribution<double> time_d(0.1, 20.);
         // Testing on N random calls on hyperbolas
         for (auto i = 0u; i < N; ++i) {
@@ -83,13 +78,13 @@ void test_propagate_keplerian(
             double omega = omega_d(rng_engine);
             double f = f_d(rng_engine);
             if (std::cos(f) > -1 / ecc) {
-                std::array<double, 6> par = {-sma, ecc, incl, Omega, omega, f};
-                auto pos_vel = kep3::par2ic(par, 1.);
+                std::array<double, 6> par = {sma, ecc, incl, Omega, omega, f};
+                auto pos_vel0 = kep3::par2ic(par, 1.);
                 double tof = time_d(rng_engine);
-                auto pos_vel_after = pos_vel;
-                propagate(pos_vel_after, tof, 1.);
-                propagate(pos_vel_after, -tof, 1.);
-                REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_vel_after[0]) < 1e-10);
+                auto res0 = propagate(pos_vel0, tof, 1., false);
+                auto res1 = propagate(res0.first, -tof, 1., false);
+                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-11);
+                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-11);
             }
         }
     }

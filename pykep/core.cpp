@@ -290,11 +290,10 @@ PYBIND11_MODULE(core, m)
     m.def(
         "propagate_lagrangian",
         [](const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu, bool request_stm) {
-            auto retval = pos_vel;
-            auto pl_retval = kep3::propagate_lagrangian(retval, dt, mu, request_stm);
-            if (pl_retval) {
+            auto pl_retval = kep3::propagate_lagrangian(pos_vel, dt, mu, request_stm);
+            if (pl_retval.second) {
                 // The stm was requested lets transfer ownership to python
-                std::array<double, 36> &stm = pl_retval.value();
+                std::array<double, 36> &stm = pl_retval.second.value();
 
                 // We create a capsule for the py::array_t to manage ownership change.
                 auto vec_ptr = std::make_unique<std::array<double, 36>>(stm);
@@ -313,9 +312,9 @@ PYBIND11_MODULE(core, m)
                 auto computed_stm = py::array_t<double>(
                     py::array::ShapeContainer{static_cast<py::ssize_t>(6), static_cast<py::ssize_t>(6)}, // shape
                     ptr->data(), std::move(vec_caps));
-                return py::make_tuple(pos_vel, computed_stm);
+                return py::make_tuple(pl_retval.first, computed_stm);
             } else {
-                return py::make_tuple(pos_vel[0], pos_vel[1]);
+                return py::make_tuple(pl_retval.first[0], pl_retval.first[1]);
             }
         },
         py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("dt") = kep3::pi / 2,

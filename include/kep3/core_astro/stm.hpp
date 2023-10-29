@@ -35,15 +35,15 @@ kep3_DLL_PUBLIC std::array<double, 36> stm_reynolds(const std::array<std::array<
 // Lagrange Coefficients and their (manually done) derivatives -- faster than Reynolds, more difficult to
 // implement --
 kep3_DLL_PUBLIC std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof,
-                                                      double mu,                                       // NOLINT
+                                                      double mu,                           // NOLINT
                                                       double R0, double Rf, double energy, // NOLINT
-                                                      double sigma0,                                   // NOLINT
-                                                      double a, double s0, double c0,                  // NOLINT
+                                                      double sigma0,                       // NOLINT
+                                                      double a, double s0, double c0,      // NOLINT
                                                       double DX, double F, double G, double Ft, double Gt);
 
 // For consistency we offer the same interface we have for propagate lagrangian to access Reynolds stm.
-kep3_DLL_PUBLIC std::optional<std::array<double, 36>>
-propagate_stm_reynolds(std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.,
+kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
+propagate_stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.,
                        bool stm = false);
 
 } // namespace kep3

@@ -218,17 +218,16 @@ std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &
     return ret;
 }
 
-std::optional<std::array<double, 36>> propagate_stm_reynolds(std::array<std::array<double, 3>, 2> &pos_vel0, double tof,
-                                                             double mu, bool stm)
+std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
+propagate_stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu, bool stm)
 {
-    auto pos_vel0_copy = pos_vel0;
-    kep3::propagate_lagrangian(pos_vel0, tof, mu);
+    auto res = kep3::propagate_lagrangian(pos_vel0, tof, mu);
     if (stm) {
         // NOLINTNEXTLINE(readability-suspicious-call-argument)
-        auto retval_stm = stm_reynolds(pos_vel0_copy, pos_vel0, tof, mu);
-        return retval_stm;
+        auto retval_stm = stm_reynolds(pos_vel0, res.first, tof, mu);
+        return {res.first, retval_stm};
     } else {
-        return std::nullopt;
+        return {res.first, std::nullopt};
     }
 }
 
