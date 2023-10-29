@@ -6,17 +6,22 @@
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#include <pybind11/pytypes.h>
 #include <string>
 
 #include <fmt/chrono.h>
+
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
+#include <kep3/lambert_problem.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/planets/keplerian.hpp>
+
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
 #include <pybind11/numpy.h>
@@ -27,8 +32,7 @@
 #include "common_utils.hpp"
 #include "docstrings.hpp"
 #include "expose_udplas.hpp"
-#include "kep3/core_astro/propagate_lagrangian.hpp"
-#include "kep3/lambert_problem.hpp"
+
 #include "python_udpla.hpp"
 
 namespace py = pybind11;
@@ -285,11 +289,35 @@ PYBIND11_MODULE(core, m)
     // Exposing propagators
     m.def(
         "propagate_lagrangian",
-        [](const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu) {
+        [](const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu, bool request_stm) {
             auto retval = pos_vel;
-            kep3::propagate_lagrangian(retval, dt, mu);
-            return retval;
+            auto pl_retval = kep3::propagate_lagrangian(retval, dt, mu, request_stm);
+            if (pl_retval) {
+                // The stm was requested lets transfer ownership to python
+                std::array<double, 36> &stm = pl_retval.value();
+
+                // We create a capsule for the py::array_t to manage ownership change.
+                auto vec_ptr = std::make_unique<std::array<double, 36>>(stm);
+
+                py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                    std::unique_ptr<std::array<double, 36>> vptr(static_cast<std::array<double, 36> *>(ptr));
+                });
+
+                // NOTE: at this point, the capsule has been created successfully (including
+                // the registration of the destructor). We can thus release ownership from vec_ptr,
+                // as now the capsule is responsible for destroying its contents. If the capsule constructor
+                // throws, the destructor function is not registered/invoked, and the destructor
+                // of vec_ptr will take care of cleaning up.
+                auto *ptr = vec_ptr.release();
+
+                auto computed_stm = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(6), static_cast<py::ssize_t>(6)}, // shape
+                    ptr->data(), std::move(vec_caps));
+                return py::make_tuple(pos_vel, computed_stm);
+            } else {
+                return py::make_tuple(pos_vel[0], pos_vel[1]);
+            }
         },
         py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("dt") = kep3::pi / 2,
-        py::arg("mu") = 1, pykep::propagate_lagrangian_docstring().c_str());
+        py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_docstring().c_str());
 }

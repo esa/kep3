@@ -163,7 +163,7 @@ TEST_CASE("propagate_lagrangian(stm)")
     }
 }
 
-TEST_CASE("reynolds_vs_lagrangian")
+TEST_CASE("reynolds_vs_lagrange")
 {
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
     std::mt19937 rng_engine(1220202343u);
