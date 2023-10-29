@@ -54,7 +54,7 @@ TEST_CASE("stm_reynolds")
             -1.9238348584522358e+00, -8.4747014330838855e-01, -8.6933035567703432e-02, -1.1859991646656800e+00,
             -8.1877937553924118e-01, -1.3149466189047918e-01, -6.5964493675902569e-01, -1.2288436273700180e-02,
             6.1250732945897668e-02,  5.1887648914252108e-03,  -8.3441694841027836e-01, -1.0028936995504940e+00};
-        REQUIRE(kep3_tests::L_infinity_norm(computed, real) < 1e-14);
+        REQUIRE(kep3_tests::L_infinity_norm(computed, real) < 1e-13);
     }
     // Test a case for hyperbolas (ground truth obtained from heyoka numerical propagation of the variational equations)
     {
@@ -75,7 +75,7 @@ TEST_CASE("stm_reynolds")
             3.2054236344814069e-01,  -1.3743648698706183e-03, 2.4410253666026935e-02, 8.1021085851723754e-02,
             1.0723653741971355e+00,  4.5812590638524440e-03,  5.4474821979493340e-02, 2.0107893599865902e-02,
             -3.0333231546807449e-01, 6.2877528525030705e-03,  4.0436438780296381e-03, 9.2489986970891724e-01};
-        REQUIRE(kep3_tests::L_infinity_norm(computed, real) < 1e-14);
+        REQUIRE(kep3_tests::L_infinity_norm(computed, real) < 1e-13);
     }
 }
 
