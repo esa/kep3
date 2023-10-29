@@ -20,7 +20,7 @@
 
 using xt::linalg::dot;
 
-TEST_CASE("stm")
+TEST_CASE("stm_reynolds")
 {
     // Test that the STM is the identity if tof = 0
     {
@@ -28,7 +28,7 @@ TEST_CASE("stm")
         std::array<std::array<double, 3>, 2> pos_velf = {{{1, 0., 0.}, {0., 1., 0.}}};
         double tof = 0;
         double mu = 1.;
-        auto computed = kep3::stm(pos_vel0, pos_velf, tof, mu);
+        auto computed = kep3::stm_reynolds(pos_vel0, pos_velf, tof, mu);
         std::array<double, 36> real{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
                                     0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1};
         REQUIRE(kep3_tests::L_infinity_norm(computed, real) < 1e-16);
@@ -39,7 +39,7 @@ TEST_CASE("stm")
         std::array<std::array<double, 3>, 2> pos_velf = {{{-1, 0.2, 0.2}, {0., -1., 0.}}};
         double tof = 1.34;
         double mu = 2.34;
-        auto computed = kep3::stm(pos_vel0, pos_velf, tof, mu);
+        auto computed = kep3::stm_reynolds(pos_vel0, pos_velf, tof, mu);
         std::array<double, 36> real{-1.5691824598131583, 0.1537355920717801,  -0.2846205723117815, 0.3538015104605221,
                                     -1.3684573575369972, -0.0845546539230396, 2.8449067152872787,  2.7467972480896288,
                                     0.5659753302814089,  3.572868357411019,   1.9316889178225798,  0.1920464396027999,
@@ -53,19 +53,19 @@ TEST_CASE("stm")
     }
 }
 
-TEST_CASE("propagate_stm")
+TEST_CASE("propagate_stm_reynolds")
 {
     // We test the identity stm02 = stm12stm01
-    std::array<std::array<double, 3>, 2> pos_vel = {{{1.2, -0.3, 0.}, {0., 2.3, -1.2}}};
-    double mu = 0.89732;
+    std::array<std::array<double, 3>, 2> pos_vel = {{{1.,0.,0.}, {0., 3., 0.}}};
+    double mu = 1.;
     double dt1 = 1.1;
     double dt2 = 2.3;
-    auto res01 = kep3::propagate_stm(pos_vel, dt1, mu);
-    auto res02 = kep3::propagate_stm(pos_vel, dt2, mu);
+    auto res01 = kep3::propagate_stm_reynolds(pos_vel, dt1, mu);
+    auto res02 = kep3::propagate_stm_reynolds(pos_vel, dt2, mu);
     // We propagate in-place pos_vel ...
     kep3::propagate_lagrangian(pos_vel, dt1, mu);
     // ... and compute the stm from 1 to 2.
-    auto res12 = kep3::propagate_stm(pos_vel, dt2 - dt1, mu);
+    auto res12 = kep3::propagate_stm_reynolds(pos_vel, dt2 - dt1, mu);
     auto M01 = xt::adapt(res01.second, {6, 6});
     auto M02 = xt::adapt(res02.second, {6, 6});
     auto M12 = xt::adapt(res12.second, {6, 6});
@@ -74,13 +74,30 @@ TEST_CASE("propagate_stm")
 
 TEST_CASE("propagate_stm2")
 {
-    // We test the identity stm02 = stm12stm01
-    std::array<std::array<double, 3>, 2> pos_vel = {{{1., 0., 0.}, {0., 1.0, 0.}}};
-    double mu = 1;
-    double dt = 2*kep3::pi;
-    auto res2 = kep3::propagate_stm2(pos_vel, dt, mu);
-    fmt::print("{}", res2);
-    auto res = kep3::propagate_stm(pos_vel, dt, mu);
-    fmt::print("\n\n{}", res);
-
+    {
+        std::array<std::array<double, 3>, 2> pos_vel = {{{1.03, 0.23, 0.33}, {0.022, 5.15, 0.124}}};
+        double mu = 1.23;
+        double dt = 1.34;
+        auto res2 = kep3::propagate_stm_reynolds(pos_vel, dt, mu);
+        fmt::print("{}", res2);
+        auto res = kep3::propagate_stm2(pos_vel, dt, mu);
+        fmt::print("\n\n{}\n", res);
+    }
+    {   // We test the identity stm02 = stm12stm01 (hyperblas)
+        std::array<std::array<double, 3>, 2> pos_vel = {{{0.95281, -0.123, 0.2}, {-0.11, 0.34, 0.02}}};
+        double mu = 1.34;
+        double dt1 = 1.1;
+        double dt2 = 2.3;
+        auto res01 = kep3::propagate_stm2(pos_vel, dt1, mu);
+        auto res02 = kep3::propagate_stm2(pos_vel, dt2, mu);
+        // We propagate in-place pos_vel ...
+        kep3::propagate_lagrangian(pos_vel, dt1, mu);
+        // ... and compute the stm from 1 to 2.
+        auto res12 = kep3::propagate_stm2(pos_vel, dt2 - dt1, mu);
+        auto M01 = xt::adapt(res01.second, {6, 6});
+        auto M02 = xt::adapt(res02.second, {6, 6});
+        auto M12 = xt::adapt(res12.second, {6, 6});
+        REQUIRE(xt::linalg::norm(M02 - dot(M12, M01)) < 1e-13);
+    }
 }
+

@@ -129,7 +129,7 @@ std::array<double, 36> stm_l(const std::array<std::array<double, 3>, 2> &pos_vel
         dGt = -(1 - cosDE) / Rf * da + a / Rf / Rf * (1 - cosDE) * dRf - a / Rf * sinDE * dDE;
     } else { // hyperbolas (sqrta is sqrt(-a))
         double sqrta = std::sqrt(-a);
-        double sinhDH = std::sinh(DE);
+        double sinhDH = std::sinh(DE); // DE is here the hyperbolic.
         double coshDH = std::cosh(DE);
 
         mat16 ds0 = dsigma0 / sqrta + 0.5 * sigma0 / sqrta / sqrta / sqrta * da; // s0 = sigma0 / sqrta
@@ -149,7 +149,7 @@ std::array<double, 36> stm_l(const std::array<std::array<double, 3>, 2> &pos_vel
         dFt = (-sqrta / R0 / Rf * coshDH) * dDH + (0.5 / sqrta / R0 / Rf * sinhDH) * da
               + (sqrta / Rf / R0 / R0 * sinhDH) * dR0 + (sqrta / Rf / Rf / R0 * sinhDH) * dRf;
         dFt = dFt * sqrtmu;
-        dGt = (1 - coshDH) / Rf * da + a / Rf / Rf * (1 - coshDH) * dRf + a / Rf * sinhDH * dDH;
+        dGt = -(1 - coshDH) / Rf * da + a / Rf / Rf * (1 - coshDH) * dRf + a / Rf * sinhDH * dDH;
     }
     // 3 - And finally assemble the state transition matrix
     mat36 Mr = F * dr0 + _dot(mat31(xt::transpose(r0)), dF) + G * dv0 + _dot(mat31(xt::transpose(v0)), dG);
@@ -196,8 +196,8 @@ mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &
 // From:
 // Reynolds, Reid G. "Direct Solution of the Keplerian State Transition Matrix." Journal of Guidance, Control, and
 // Dynamics 45, no. 6 (2022): 1162-1165.
-std::array<double, 36> stm(const std::array<std::array<double, 3>, 2> &pos_vel0,
-                           const std::array<std::array<double, 3>, 2> &pos_velf, double tof, double mu)
+std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0,
+                                    const std::array<std::array<double, 3>, 2> &pos_velf, double tof, double mu)
 {
     mat31 r0 = {{pos_vel0[0][0], pos_vel0[0][1], pos_vel0[0][2]}};
     mat31 v0 = {{pos_vel0[1][0], pos_vel0[1][1], pos_vel0[1][2]}};
@@ -218,11 +218,12 @@ std::array<double, 36> stm(const std::array<std::array<double, 3>, 2> &pos_vel0,
 }
 
 std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
-propagate_stm(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu)
+propagate_stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu)
 {
     auto pos_velf = pos_vel0;
     kep3::propagate_lagrangian(pos_velf, tof, mu);
-    auto retval_stm = stm(pos_vel0, pos_velf, tof, mu);
+    auto retval_stm = stm_reynolds(pos_vel0, pos_velf, tof, mu);
+
     return {pos_velf, retval_stm};
 }
 
@@ -232,59 +233,98 @@ propagate_stm2(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof,
     auto pos_velf = pos_vel0;
     kep3::propagate_lagrangian(pos_velf, tof, mu);
     const auto &[r0, v0] = pos_vel0;
-    double R = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
-    double V2 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
-    double energy = (V2 / 2 - mu / R);
+    double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
+    double V02 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
+    double energy = (V02 / 2 - mu / R0);
     double a = -mu / 2.0 / energy; // will be negative for hyperbolae
     double sqrta = 0.;
     double F = 0., G = 0., Ft = 0., Gt = 0.;
     double sigma0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / std::sqrt(mu);
+    std::array<double, 36> retval_stm{};
 
-    sqrta = std::sqrt(a);
-    double DM = std::sqrt(mu / std::pow(a, 3)) * tof;
-    double sinDM = std::sin(DM), cosDM = std::cos(DM);
-    // Here we use the atan2 to recover the mean anomaly difference in the
-    // [0,2pi] range. This makes sure that for high value of M no catastrophic
-    // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
-    double DM_cropped = std::atan2(sinDM, cosDM);
-    if (DM_cropped < 0) {
-        DM_cropped += 2 * kep3::pi;
+    if (a > 0) { // Solve Kepler's equation in DE, elliptical case
+        sqrta = std::sqrt(a);
+        double DM = std::sqrt(mu / std::pow(a, 3)) * tof;
+        double sinDM = std::sin(DM), cosDM = std::cos(DM);
+        // Here we use the atan2 to recover the mean anomaly difference in the
+        // [0,2pi] range. This makes sure that for high value of M no catastrophic
+        // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
+        double DM_cropped = std::atan2(sinDM, cosDM);
+        if (DM_cropped < 0) {
+            DM_cropped += 2 * kep3::pi;
+        }
+        double s0 = sigma0 / sqrta;
+        double c0 = (1 - R0 / a);
+        // This initial guess was developed applying Lagrange expansion theorem to
+        // the Kepler's equation in DE. We stopped at 3rd order.
+        double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
+                    + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
+                    + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
+                          * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
+                             - (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
+
+        // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
+        const int digits = std::numeric_limits<double>::digits;
+        std::uintmax_t max_iter = 100u;
+        // NOTE: Halley iterates may result into instabilities (specially with a
+        // poor IG)
+
+        double DE = boost::math::tools::newton_raphson_iterate(
+            [DM_cropped, sigma0, sqrta, a, R0](double DE) {
+                return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R0), d_kepDE(DE, sigma0, sqrta, a, R0));
+            },
+            IG, IG - pi, IG + pi, digits, max_iter);
+        if (max_iter == 100u) {
+            throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
+                                                "equation for the eccentric anomaly in propagate_lagrangian.\n"
+                                                "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
+                                                DM, sigma0, sqrta, a, R0, DE));
+        }
+        double Rf = a + (R0 - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
+
+        // Lagrange coefficients
+        F = 1 - a / R0 * (1 - std::cos(DE));
+        G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R0 * std::sqrt(a / mu) * std::sin(DE);
+        Ft = -std::sqrt(mu * a) / (Rf * R0) * std::sin(DE);
+        Gt = 1 - a / Rf * (1 - std::cos(DE));
+        retval_stm = stm_l(pos_vel0, pos_velf, tof, mu, R0, V02, energy, sigma0, a, s0, c0, DE, F, G, Ft, Gt);
+    } else { // Solve Kepler's equation in DH, hyperbolic case
+        sqrta = std::sqrt(-a);
+        double s0 = sigma0 / sqrta;
+        double c0 = (1 - R0 / a);
+        double DN = std::sqrt(-mu / a / a / a) * tof;
+        double IG = 0.;
+        tof > 0. ? IG = 1. : IG = -1.; // TODO(darioizzo): find a better initial guess.
+                                       // I tried with 0 and DN (both have numercial
+                                       // problems and result in exceptions)
+
+        // Solve Kepler Equation for ellipses in DH (hyperbolic anomaly difference)
+        const int digits = std::numeric_limits<double>::digits;
+        std::uintmax_t max_iter = 100u;
+        // NOTE: Halley iterates may result into instabilities (specially with a
+        // poor IG)
+        double DH = boost::math::tools::newton_raphson_iterate(
+            [DN, sigma0, sqrta, a, R0](double DH) {
+                return std::make_tuple(kepDH(DH, DN, sigma0, sqrta, a, R0), d_kepDH(DH, sigma0, sqrta, a, R0));
+            },
+            IG, IG - 50, IG + 50, digits,
+            max_iter); // TODO (dario): study this hyperbolic equation in more
+                       // details as to provide decent and well proved bounds
+        if (max_iter == 100u) {
+            throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
+                                                "equation for the hyperbolic anomaly in propagate_lagrangian.\n"
+                                                "DN={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDH={}",
+                                                DN, sigma0, sqrta, a, R0, DH));
+        }
+        double Rf = -a + (R0 + a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
+
+        // Lagrange coefficients
+        F = 1. - a / R0 * (1. - std::cosh(DH));
+        G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) + R0 * std::sqrt(-a / mu) * std::sinh(DH);
+        Ft = -std::sqrt(-mu * a) / (Rf * R0) * std::sinh(DH);
+        Gt = 1. - a / Rf * (1. - std::cosh(DH));
+        retval_stm = stm_l(pos_vel0, pos_velf, tof, mu, R0, V02, energy, sigma0, a, s0, c0, DH, F, G, Ft, Gt);
     }
-    double s0 = sigma0 / sqrta;
-    double c0 = (1 - R / a);
-    // This initial guess was developed applying Lagrange expansion theorem to
-    // the Kepler's equation in DE. We stopped at 3rd order.
-    double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM) + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
-                + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
-                      * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
-                         - (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
-
-    // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
-    const int digits = std::numeric_limits<double>::digits;
-    std::uintmax_t max_iter = 100u;
-    // NOTE: Halley iterates may result into instabilities (specially with a
-    // poor IG)
-
-    double DE = boost::math::tools::newton_raphson_iterate(
-        [DM_cropped, sigma0, sqrta, a, R](double DE) {
-            return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R), d_kepDE(DE, sigma0, sqrta, a, R));
-        },
-        IG, IG - pi, IG + pi, digits, max_iter);
-    if (max_iter == 100u) {
-        throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
-                                            "equation for the eccentric anomaly in propagate_lagrangian.\n"
-                                            "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
-                                            DM, sigma0, sqrta, a, R, DE));
-    }
-    double r = a + (R - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
-
-    // Lagrange coefficients
-    F = 1 - a / R * (1 - std::cos(DE));
-    G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R * std::sqrt(a / mu) * std::sin(DE);
-    Ft = -std::sqrt(mu * a) / (r * R) * std::sin(DE);
-    Gt = 1 - a / r * (1 - std::cos(DE));
-
-    auto retval_stm = stm_l(pos_vel0, pos_velf, tof, mu, R, V2, energy, sigma0, a, s0, c0, DE, F, G, Ft, Gt);
     return {pos_velf, retval_stm};
 }
 } // namespace kep3

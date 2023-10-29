@@ -26,12 +26,12 @@ namespace kep3
 // From:
 // Reynolds, Reid G. "Direct Solution of the Keplerian State Transition Matrix." Journal of Guidance, Control, and
 // Dynamics 45, no. 6 (2022): 1162-1165.
-kep3_DLL_PUBLIC std::array<double, 36> stm(const std::array<std::array<double, 3>, 2> &pos_vel0,
+kep3_DLL_PUBLIC std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0,
                                            const std::array<std::array<double, 3>, 2> &pos_vel, double tof,
                                            double mu = 1.);
 
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
-propagate_stm(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.);
+propagate_stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.);
 
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::array<double, 36>>
 propagate_stm2(const std::array<std::array<double, 3>, 2> &pos_vel0, double tof, double mu = 1.);

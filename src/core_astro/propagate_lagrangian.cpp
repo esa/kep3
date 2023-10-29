@@ -34,9 +34,9 @@ namespace kep3
 void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const double dt, const double mu)
 {
     auto &[r0, v0] = pos_vel_0;
-    double R = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
+    double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
     double V2 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
-    double energy = (V2 / 2 - mu / R);
+    double energy = (V2 / 2 - mu / R0);
     double a = -mu / 2.0 / energy; // will be negative for hyperbolae
     double sqrta = 0.;
     double F = 0., G = 0., Ft = 0., Gt = 0.;
@@ -54,7 +54,7 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
             DM_cropped += 2 * kep3::pi;
         }
         double s0 = sigma0 / sqrta;
-        double c0 = (1 - R / a);
+        double c0 = (1 - R0 / a);
         // This initial guess was developed applying Lagrange expansion theorem to
         // the Kepler's equation in DE. We stopped at 3rd order.
         double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
@@ -70,23 +70,23 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
         // poor IG)
 
         double DE = boost::math::tools::newton_raphson_iterate(
-            [DM_cropped, sigma0, sqrta, a, R](double DE) {
-                return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R), d_kepDE(DE, sigma0, sqrta, a, R));
+            [DM_cropped, sigma0, sqrta, a, R0](double DE) {
+                return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R0), d_kepDE(DE, sigma0, sqrta, a, R0));
             },
             IG, IG - pi, IG + pi, digits, max_iter);
         if (max_iter == 100u) {
             throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
                                                 "equation for the eccentric anomaly in propagate_lagrangian.\n"
                                                 "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
-                                                DM, sigma0, sqrta, a, R, DE));
+                                                DM, sigma0, sqrta, a, R0, DE));
         }
-        double r = a + (R - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
+        double Rf = a + (R0 - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
 
         // Lagrange coefficients
-        F = 1 - a / R * (1 - std::cos(DE));
-        G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R * std::sqrt(a / mu) * std::sin(DE);
-        Ft = -std::sqrt(mu * a) / (r * R) * std::sin(DE);
-        Gt = 1 - a / r * (1 - std::cos(DE));
+        F = 1 - a / R0 * (1 - std::cos(DE));
+        G = a * sigma0 / std::sqrt(mu) * (1 - std::cos(DE)) + R0 * std::sqrt(a / mu) * std::sin(DE);
+        Ft = -std::sqrt(mu * a) / (Rf * R0) * std::sin(DE);
+        Gt = 1 - a / Rf * (1 - std::cos(DE));
     } else { // Solve Kepler's equation in DH, hyperbolic case
         sqrta = std::sqrt(-a);
         double DN = std::sqrt(-mu / a / a / a) * dt;
@@ -101,8 +101,8 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
         // NOTE: Halley iterates may result into instabilities (specially with a
         // poor IG)
         double DH = boost::math::tools::newton_raphson_iterate(
-            [DN, sigma0, sqrta, a, R](double DH) {
-                return std::make_tuple(kepDH(DH, DN, sigma0, sqrta, a, R), d_kepDH(DH, sigma0, sqrta, a, R));
+            [DN, sigma0, sqrta, a, R0](double DH) {
+                return std::make_tuple(kepDH(DH, DN, sigma0, sqrta, a, R0), d_kepDH(DH, sigma0, sqrta, a, R0));
             },
             IG, IG - 50, IG + 50, digits,
             max_iter); // TODO (dario): study this hyperbolic equation in more
@@ -111,16 +111,19 @@ void propagate_lagrangian(std::array<std::array<double, 3>, 2> &pos_vel_0, const
             throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
                                                 "equation for the hyperbolic anomaly in propagate_lagrangian.\n"
                                                 "DN={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDH={}",
-                                                DN, sigma0, sqrta, a, R, DH));
+                                                DN, sigma0, sqrta, a, R0, DH));
         }
 
-        double r = a + (R - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
+        // Note: the following equation, according to Battin's (4.63, pag 170), is different. I suspect a typo in Battin book
+        // deriving from the confusion on the convention for the semi-majoraxis being negative. The following expression
+        // instead works in this context.
+        double Rf = a + (R0 - a) * std::cosh(DH) + sigma0 * sqrta * std::sinh(DH);
 
         // Lagrange coefficients
-        F = 1. - a / R * (1. - std::cosh(DH));
-        G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) + R * std::sqrt(-a / mu) * std::sinh(DH);
-        Ft = -std::sqrt(-mu * a) / (r * R) * std::sinh(DH);
-        Gt = 1. - a / r * (1. - std::cosh(DH));
+        F = 1. - a / R0 * (1. - std::cosh(DH));
+        G = a * sigma0 / std::sqrt(mu) * (1. - std::cosh(DH)) + R0 * std::sqrt(-a / mu) * std::sinh(DH);
+        Ft = -std::sqrt(-mu * a) / (Rf * R0) * std::sinh(DH);
+        Gt = 1. - a / Rf * (1. - std::cosh(DH));
     }
 
     double temp[3] = {r0[0], r0[1], r0[2]};
