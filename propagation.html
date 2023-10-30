@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Lambert class &#8212; pykep 0.0.1 documentation</title>
+    <title>Numerical Propagation &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'lambert';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'propagation';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Planet class" href="planet.html" />
-    <link rel="prev" title="Epoch class" href="epoch.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="List of user implemented planets (UDPLAs)" href="udplas.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -151,10 +151,10 @@
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Numerical Propagation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -235,7 +235,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Flambert.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fpropagation.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -265,7 +265,7 @@
       
       
       
-      <li><a href="_sources/lambert.rst" target="_blank"
+      <li><a href="_sources/propagation.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -347,7 +347,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lambert class</h1>
+    <h1>Numerical Propagation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -357,18 +357,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.Nmax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.iters</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r0</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r1</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.tof</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v0</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v1</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.x</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -380,93 +369,32 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="lambert-class">
-<span id="lambert"></span><h1>Lambert class<a class="headerlink" href="#lambert-class" title="Permalink to this heading">#</a></h1>
+  <section id="numerical-propagation">
+<span id="propagation"></span><h1>Numerical Propagation<a class="headerlink" href="#numerical-propagation" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="pykep.lambert_problem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">lambert_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_revs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.lambert_problem" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykep.propagate_lagrangian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">propagate_lagrangian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.propagate_lagrangian" title="Permalink to this definition">#</a></dt>
 <dd><dl>
-<dt>Args:</dt><dd><p><em>r0</em> (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].</p>
-<p><em>r1</em> (1D array-like): Cartesian components of the second position vector [xf, yf, zf]. Defaults tot [0,1,0].</p>
+<dt>Args:</dt><dd><p><em>r0</em> (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].</p>
+<p><em>v0</em> (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].</p>
 <p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight. Defaults to <span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>.</p>
 <p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
-<p><em>cw</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): True for retrograde motion (clockwise). Defaults to False.</p>
-<p><em>max_revs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): Maximum number of multiple revolutions to be computed. Defaults to 0.</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>stm (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
 </dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Units need to be consistent. The multirev Lambert’s problem will be solved upon construction
-and its solution stored in data members.</p>
-</div>
-<dl>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation. (if <em>stm</em> is False)
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> ([<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>], :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>numpy.ndarray`(6,6)): r and v and the STM. (if <em>stm</em> is True)</p>
+</dd>
+<dt>Example::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">lambert_problem</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lp</span><span class="o">.</span><span class="n">v0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">[-4.1028493158958256e-16, 1.0000000000000002, 0.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span> <span class="o">=</span> <span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">r0</span> <span class="o">=</span> <span class="n">r0</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="p">,</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 </dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.Nmax">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Nmax</span></span><a class="headerlink" href="#pykep.lambert_problem.Nmax" title="Permalink to this definition">#</a></dt>
-<dd><p>The maximum number of iterations allowed.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.iters">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iters</span></span><a class="headerlink" href="#pykep.lambert_problem.iters" title="Permalink to this definition">#</a></dt>
-<dd><p>The number of iterations made.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.mu">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#pykep.lambert_problem.mu" title="Permalink to this definition">#</a></dt>
-<dd><p>The gravitational parameter of the attracting body.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.r0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#pykep.lambert_problem.r0" title="Permalink to this definition">#</a></dt>
-<dd><p>The first point.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.r1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">r1</span></span><a class="headerlink" href="#pykep.lambert_problem.r1" title="Permalink to this definition">#</a></dt>
-<dd><p>The second point.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.tof">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tof</span></span><a class="headerlink" href="#pykep.lambert_problem.tof" title="Permalink to this definition">#</a></dt>
-<dd><p>The time of flight between the two points.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.v0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v0</span></span><a class="headerlink" href="#pykep.lambert_problem.v0" title="Permalink to this definition">#</a></dt>
-<dd><p>The velocity at the first point.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.v1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v1</span></span><a class="headerlink" href="#pykep.lambert_problem.v1" title="Permalink to this definition">#</a></dt>
-<dd><p>The velocity at the second point.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.lambert_problem.x">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#pykep.lambert_problem.x" title="Permalink to this definition">#</a></dt>
-<dd><p>The Battin variable x along the time of flight curves.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -483,20 +411,20 @@ and its solution stored in data members.</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="epoch.html"
+       href="udplas.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Epoch class</p>
+        <p class="prev-next-title">List of user implemented planets (UDPLAs)</p>
       </div>
     </a>
     <a class="right-next"
-       href="planet.html"
+       href="tutorials.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Planet class</p>
+        <p class="prev-next-title">Tutorials</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -515,18 +443,7 @@ and its solution stored in data members.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.Nmax"><code class="docutils literal notranslate"><span class="pre">lambert_problem.Nmax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.iters"><code class="docutils literal notranslate"><span class="pre">lambert_problem.iters</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.mu"><code class="docutils literal notranslate"><span class="pre">lambert_problem.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r0</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.r1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.r1</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.tof"><code class="docutils literal notranslate"><span class="pre">lambert_problem.tof</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v0"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v0</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.v1"><code class="docutils literal notranslate"><span class="pre">lambert_problem.v1</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.lambert_problem.x"><code class="docutils literal notranslate"><span class="pre">lambert_problem.x</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian</span></code></a></li>
 </ul>
   </nav></div>
 

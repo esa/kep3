@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -127,13 +127,14 @@
   
   
   
+  
     
     
       
     
     
-    <img src="../_static/pykep_logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/pykep_logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/pykep_logo.png" class="logo__image only-light" alt="pykep 0.0.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/pykep_logo.png" class="logo__image only-dark" alt="pykep 0.0.1 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -149,12 +150,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 </ul>
 </li>
 </ul>
@@ -431,7 +434,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph
- Real time: 0.47570 seconds
+ Real time: 0.42243 seconds
 </pre></div>
 </div>
 </div>
@@ -450,7 +453,9 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph
- Real time: 0.22406 seconds
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Real time: 0.19412 seconds
 </pre></div>
 </div>
 </div>
@@ -468,7 +473,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph_v
- Real time: 0.60797 seconds
+ Real time: 0.55561 seconds
 </pre></div>
 </div>
 </div>
@@ -490,7 +495,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sgp4
- Real time: 0.45511 seconds
+ Real time: 0.40697 seconds
 </pre></div>
 </div>
 </div>
@@ -511,7 +516,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sgp4 - vectorized
- Real time: 0.59518 seconds
+ Real time: 0.48900 seconds
 </pre></div>
 </div>
 </div>
@@ -528,11 +533,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.47570
-pla.eph -&gt; 0.22406
-eph_v.eph -&gt; 0.60797
-sgp4 -&gt; 0.45511
-sgp4_v -&gt; 0.59518
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.42243
+pla.eph -&gt; 0.19412
+eph_v.eph -&gt; 0.55561
+sgp4 -&gt; 0.40697
+sgp4_v -&gt; 0.48900
 </pre></div>
 </div>
 </div>
@@ -560,7 +565,7 @@ sgp4_v -&gt; 0.59518
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph
- Real time: 0.33628 seconds
+ Real time: 0.28086 seconds
 </pre></div>
 </div>
 </div>
@@ -579,7 +584,7 @@ sgp4_v -&gt; 0.59518
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph
- Real time: 0.42305 seconds
+ Real time: 0.37163 seconds
 </pre></div>
 </div>
 </div>
@@ -597,7 +602,7 @@ sgp4_v -&gt; 0.59518
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph_v
- Real time: 0.14717 seconds
+ Real time: 0.12372 seconds
 </pre></div>
 </div>
 </div>
@@ -616,7 +621,7 @@ sgp4_v -&gt; 0.59518
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>spice
- Real time: 0.21557 seconds
+ Real time: 0.18197 seconds
 </pre></div>
 </div>
 </div>
@@ -634,7 +639,7 @@ sgp4_v -&gt; 0.59518
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>spicev
- Real time: 0.12404 seconds
+ Real time: 0.10087 seconds
 </pre></div>
 </div>
 </div>
@@ -651,11 +656,11 @@ sgp4_v -&gt; 0.59518
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.33628
-pla.eph -&gt; 0.42305
-eph_v.eph -&gt; 0.14717
-spice -&gt; 0.21557
-spice_v -&gt; 0.12404
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.28086
+pla.eph -&gt; 0.37163
+eph_v.eph -&gt; 0.12372
+spice -&gt; 0.18197
+spice_v -&gt; 0.10087
 </pre></div>
 </div>
 </div>
@@ -735,8 +740,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
 
   <footer class="bd-footer">
   </footer>
