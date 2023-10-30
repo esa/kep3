@@ -34,4 +34,6 @@ astrodynamical notation and computations.
   notebooks/anomalies
   notebooks/epochs
   notebooks/interface_to_spice
+  notebooks/propagate_lagrangian
+
 
