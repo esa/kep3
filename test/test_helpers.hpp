@@ -28,7 +28,17 @@ inline double floating_point_error(double a, double b)
     return std::abs(a - b) / std::max(1., std::max(a, b));
 }
 
-// This tests how close two vectors are in the euclidean metric. err = r2-r1
+template <typename T>
+double L_infinity_norm(T a, T b)
+{
+    double retval = 0.;
+    for (decltype(a.size()) i=0u; i < a.size() ; ++i) {
+        std::abs(a[i]-b[i]) > retval ? retval = std::abs(a[i]-b[i]) : retval;
+    }
+    return retval;
+}
+
+// This tests how close two 3D vectors are in the euclidean metric. err = r2-r1
 inline double floating_point_error_vector(const std::array<double, 3> &r1, const std::array<double, 3> &r2)
 {
     double R1 = std::sqrt(r1[0] * r1[0] + r1[1] * r1[1] + r1[2] * r1[2]);

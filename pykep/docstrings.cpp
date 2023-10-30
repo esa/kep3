@@ -977,7 +977,7 @@ in his UDPLA by coding a method having the signature:
 see, for example, the python implementation of the UDPLAS :class:`~pykep.udpla.tle` and :class:`~pykep.udpla.spice`.
 
 Args:
-    *mjd2000s* (:class:`ndarray` or :class:`list`): the Modified Julian Dates at which to compute the ephemerides.
+    *mjd2000s* (:class:`numpy.ndarray` or :class:`list`): the Modified Julian Dates at which to compute the ephemerides.
 
 Returns:
     :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
@@ -1067,7 +1067,7 @@ Constructs a Keplerian udpla from its orbital elements at epoch.
 Args:
     *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
 
-    *elem* (:class:`list` or :class:ndarray`): the orbital elements. by default.
+    *elem* (:class:`list` or :class:`numpy.ndarray`): the orbital elements. by default.
 
     *mu_central_body* (:class:`float`): the gravitational parameter of the main attracting body.
 
@@ -1140,7 +1140,7 @@ std::string lambert_problem_docstring()
 
 std::string propagate_lagrangian_docstring()
 {
-    return R"(propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1)
+    return R"(propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1, stm = False)
 
     Args:
           *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
@@ -1151,8 +1151,11 @@ std::string propagate_lagrangian_docstring()
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
+          *stm (:class:`bool`): requests the computations of the State Transition Matrix
+
     Returns:
-          :class:`list` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation.
+          :class:`tuple` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation. (if *stm* is False)
+          :class:`tuple` ([:class:`list`, :class:`list`], :class:`numpy.ndarray`(6,6)): r and v and the STM. (if *stm* is True)
 
     Example::
         >>> import pykep as pk
@@ -1161,7 +1164,7 @@ std::string propagate_lagrangian_docstring()
         >>> v0 = [0,1,0]
         >>> tof = pi/2
         >>> mu = 1
-        >>> r1,v1 = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1)
+        >>> r1,v1 = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1, stm = True)
 )";
 }
 

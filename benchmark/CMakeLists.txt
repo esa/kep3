@@ -19,4 +19,5 @@ endfunction()
 ADD_kep3_BENCHMARK(convert_anomalies_benchmark)
 ADD_kep3_BENCHMARK(propagate_lagrangian_benchmark)
 ADD_kep3_BENCHMARK(lambert_problem_benchmark)
+ADD_kep3_BENCHMARK(stm_benchmark)
 
