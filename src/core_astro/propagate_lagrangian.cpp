@@ -82,12 +82,14 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
                 return std::make_tuple(kepDE(DE, DM_cropped, sigma0, sqrta, a, R0), d_kepDE(DE, sigma0, sqrta, a, R0));
             },
             IG, IG - pi, IG + pi, digits, max_iter);
+        // LCOV_EXCL_START
         if (max_iter == 100u) {
             throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
                                                 "equation for the eccentric anomaly in propagate_lagrangian.\n"
                                                 "DM={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDE={}",
                                                 DM, sigma0, sqrta, a, R0, DE));
         }
+        // LCOV_EXCL_STOP
         Rf = a + (R0 - a) * std::cos(DE) + sigma0 * sqrta * std::sin(DE);
 
         // Lagrange coefficients
@@ -118,12 +120,14 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
             IG, IG - 50, IG + 50, digits,
             max_iter); // TODO (dario): study this hyperbolic equation in more
                        // details as to provide decent and well proved bounds
+        // LCOV_EXCL_START
         if (max_iter == 100u) {
             throw std::domain_error(fmt::format("Maximum number of iterations exceeded when solving Kepler's "
                                                 "equation for the hyperbolic anomaly in propagate_lagrangian.\n"
                                                 "DN={}\nsigma0={}\nsqrta={}\na={}\nR={}\nDH={}",
                                                 DN, sigma0, sqrta, a, R0, DH));
         }
+        // LCOV_EXCL_STOP
 
         // Note: the following equation, according to Battin's (4.63, pag 170), is different. I suspect a typo in Battin
         // book deriving from the confusion on the convention for the semi-majoraxis being negative. The following

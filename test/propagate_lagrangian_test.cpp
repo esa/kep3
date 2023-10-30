@@ -173,3 +173,10 @@ TEST_CASE("correctness")
         REQUIRE(kep3_tests::floating_point_error_vector(v, vu) < 1e-13);
     }
 }
+
+TEST_CASE("vectorized") {
+    std::array<std::array<double, 3>, 2> pos_vel = {{{1.223, 0.3123, -0.432}, {0.06345, 0.43234, -0.874634}}};
+    std::vector<double> tofs{1,2,3,4,5,6,7,8,9};
+    auto res = kep3::propagate_lagrangian_v(pos_vel, tofs, 1.24);
+    REQUIRE(res.size() == 9);
+}
