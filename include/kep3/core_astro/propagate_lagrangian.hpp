@@ -31,6 +31,10 @@ namespace kep3
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
 propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel, double tof, double mu, bool stm = false);
 
+kep3_DLL_PUBLIC std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>>
+propagate_lagrangian_v(const std::array<std::array<double, 3>, 2> &pos_vel, std::vector<double> tof, double mu,
+                       bool stm = false);
+
 // These are backup functions that use a different algorithm to get the same as propagate_lagrangian.
 // We offer them with an identical interface even if the stm is not implements.
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>

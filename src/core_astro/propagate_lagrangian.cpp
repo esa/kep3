@@ -150,6 +150,18 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
     }
 }
 
+std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>>
+propagate_lagrangian_v(const std::array<std::array<double, 3>, 2> &pos_vel, std::vector<double> tof, double mu,
+                       bool stm)
+{
+    auto n = tof.size();
+    std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>> retval(n);
+    for (decltype(n) i = 0u; i < n; ++i) {
+        retval[i] = kep3::propagate_lagrangian(pos_vel, tof[i], mu, stm);
+    }
+    return retval;
+}
+
 /// Universial Variables version
 /**
  * This function has the same prototype as kep3::propagate_lgrangian, but
