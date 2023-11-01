@@ -7,9 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/convert_anomalies.hpp"
-#include "kep3/core_astro/eq2par2eq.hpp"
-#include "kep3/core_astro/ic2par2ic.hpp"
 #include <array>
 #include <cmath>
 #include <limits>
@@ -17,6 +14,9 @@
 #include <boost/core/demangle.hpp>
 
 #include <kep3/core_astro/constants.hpp>
+#include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
@@ -38,8 +38,8 @@ double period_from_energy(const std::array<double, 3> &r, const std::array<doubl
     }
 }
 
-std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &pos_vel,
-                                                           double mu, kep3::elements_type el_type)
+std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &pos_vel, double mu,
+                                           kep3::elements_type el_type)
 {
     std::array<double, 6> retval = kep3::ic2par(pos_vel, mu);
     switch (el_type) {
@@ -60,7 +60,7 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
         // LCOV_EXCL_START
         default:
             throw std::logic_error("You should not go here!");
-        // LCOV_EXCL_END
+            // LCOV_EXCL_END
     }
     return retval;
 }
@@ -70,7 +70,8 @@ std::array<std::array<double, 3>, 2> null_udpla::eph(double)
     std::array<double, 3> pos = {1., 0., 0.};
     std::array<double, 3> vel = {0., 1., 0.};
     return {pos, vel};
-};
+}
+
 } // namespace kep3::detail
 
 namespace kep3::detail

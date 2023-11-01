@@ -68,8 +68,7 @@ public:
     [[nodiscard]] double get_radius() const;
     [[nodiscard]] double get_safe_radius() const;
     [[nodiscard]] std::string get_extra_info() const;
-    [[nodiscard]] std::array<double, 6> elements(double = 0.,
-                                                 kep3::elements_type = kep3::elements_type::KEP_F) const;
+    [[nodiscard]] std::array<double, 6> elements(double = 0., kep3::elements_type = kep3::elements_type::KEP_F) const;
 
 private:
     [[nodiscard]] std::array<double, 6> _f_elements(double = 0.) const;
