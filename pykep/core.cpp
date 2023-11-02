@@ -319,6 +319,6 @@ PYBIND11_MODULE(core, m)
         },
         py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tof") = kep3::pi / 2,
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_docstring().c_str());
-    m.def("propagate_lagrangian_v", &kep3::propagate_lagrangian_v, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{1.,},
-        py::arg("mu") = 1, py::arg("stm") = false);
+    m.def("propagate_lagrangian_v", &kep3::propagate_lagrangian_v, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
+        py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_v_docstring().c_str());
 }
