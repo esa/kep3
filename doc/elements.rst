@@ -6,14 +6,14 @@ Orbital Elements
 In `pykep` the default osculating orbital elements used are the classical set :math:`[a, e, i, \Omega, \omega, f]`
 (:math:`f` is the True Anomaly) together with the Cartesian position and velocity :math:`[\mathbf r, \mathbf v]`. Support is given also for
 the set :math:`[a, e, i, \Omega, \omega, M]` (:math:`M` is the Mean Anomaly) is supported as well as
-the Mean Equinoctial Elements defined as:
+the Mean Equinoctial Elements :cite:p:`equinoctialelems` defined as:
 
 .. math::
     \left\{
     \begin{array}{l}
     p = a (1 - e^2) \\
-    f = \cos(\omega + \Omega) \\
-    g = \sin(\omega + \Omega) \\
+    f = e\cos(\omega + \Omega) \\
+    g = e\sin(\omega + \Omega) \\
     h = \tan\left(\frac i2\right)\cos\Omega \\
     k = \tan\left(\frac i2\right)\sin\Omega \\
     L = \Omega + \omega + f 

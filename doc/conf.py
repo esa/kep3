@@ -16,7 +16,10 @@ release = pk.__version__
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["myst_nb", "sphinx.ext.intersphinx", "sphinx.ext.autodoc", "sphinx.ext.doctest"]
+extensions = ["myst_nb", "sphinx.ext.intersphinx", "sphinx.ext.autodoc", "sphinx.ext.doctest", "sphinxcontrib.bibtex"]
+
+bibtex_bibfiles = ['refs.bib']
+
 
 intersphinx_mapping = {
     "hy": ("https://bluescarni.github.io/heyoka.py", None),
