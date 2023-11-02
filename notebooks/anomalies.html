@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -155,6 +155,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
+
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -164,6 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -440,7 +442,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/331fbc62646bd536cd2fd92b640b3bddf8d3c12680223042adcdf85e6a288dc3.png" src="../_images/331fbc62646bd536cd2fd92b640b3bddf8d3c12680223042adcdf85e6a288dc3.png" />
+<img alt="../_images/ba67cf351af9c0c5feb6c9cebd0b06573712a1376cfa851bfa43e08b6b98e94e.png" src="../_images/ba67cf351af9c0c5feb6c9cebd0b06573712a1376cfa851bfa43e08b6b98e94e.png" />
 </div>
 </div>
 <p>and do the same for, e.g. the True Anomaly relation to <span class="math notranslate nohighlight">\(M\)</span></p>
@@ -456,7 +458,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/54039b6452d31448971a4cc04ee662c422e35464a4108eb8b807e3982ba3f291.png" src="../_images/54039b6452d31448971a4cc04ee662c422e35464a4108eb8b807e3982ba3f291.png" />
+<img alt="../_images/9b901a103b5a8689b1bce786604865e9cd19bb8f40e2d5c7759767aa20954a32.png" src="../_images/9b901a103b5a8689b1bce786604865e9cd19bb8f40e2d5c7759767aa20954a32.png" />
 </div>
 </div>
 <p>Finally we may want to know about the comutational speed of these functions. Let us compute 100000 times 100 Eccentric anomalies from the Mean anomaly (i.e. solve 1e7 times Kepler’s equation):</p>
@@ -471,7 +473,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 4453041 Kepler&#39;s Equations each second.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 5730447 Kepler&#39;s Equations each second.
 </pre></div>
 </div>
 </div>
@@ -556,8 +558,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -155,6 +155,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Numerical Propagation</a></li>
+
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -164,6 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -357,8 +359,14 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
 </ul>
+</li>
+</ul>
+
             </nav>
         </div>
     </div>
@@ -371,18 +379,27 @@ document.write(`
                   
   <section id="numerical-propagation">
 <span id="propagation"></span><h1>Numerical Propagation<a class="headerlink" href="#numerical-propagation" title="Permalink to this heading">#</a></h1>
-<dl class="py class">
+<p>The backbone of numerical propagation in <cite>pykep</cite> is based on Lagrangian coefficients for
+Kepler’s  dynamics and Taylor numerical integration, as implemented in the
+<a class="reference external" href="https://bluescarni.github.io/heyoka.py/index.html">Heyoka</a> <span id="id1">[<a class="reference internal" href="bibliography.html#id5" title="Francesco Biscani and Dario Izzo. Revisiting high-order taylor methods for astrodynamics and celestial mechanics. Monthly Notices of the Royal Astronomical Society, 504(2):2614–2628, 2021.">BI21</a>]</span> python package, for all
+other cases. The state transition matrix is also available and provided, in the case of numerical integration,
+seamlessly via variational equations.</p>
+<p>The main routines are listed here:</p>
+</section>
+<section id="keplerian-dynamics">
+<h1>Keplerian dynamics<a class="headerlink" href="#keplerian-dynamics" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
 <dt class="sig sig-object py" id="pykep.propagate_lagrangian">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">propagate_lagrangian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.propagate_lagrangian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">propagate_lagrangian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.propagate_lagrangian" title="Permalink to this definition">#</a></dt>
 <dd><dl>
 <dt>Args:</dt><dd><p><em>r0</em> (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].</p>
 <p><em>v0</em> (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].</p>
 <p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight. Defaults to <span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>.</p>
 <p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
-<p><a href="#id1"><span class="problematic" id="id2">*</span></a>stm (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
+<p><em>stm</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation. (if <em>stm</em> is False)
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> ([<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>], :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>numpy.ndarray`(6,6)): r and v and the STM. (if <em>stm</em> is True)</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): r and v, that is the final position and velocity after the propagation. (if <em>stm</em> is False)
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (6,6)): [r,v] and the STM. (if <em>stm</em> is True)</p>
 </dd>
 <dt>Example::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -390,7 +407,41 @@ document.write(`
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span> <span class="o">=</span> <span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">r0</span> <span class="o">=</span> <span class="n">r0</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="p">,</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span><span class="p">],</span> <span class="n">stm</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">rv</span><span class="o">=</span><span class="p">[</span><span class="n">r0</span><span class="p">,</span><span class="n">v0</span><span class="p">],</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">rv</span><span class="o">=</span><span class="p">[</span><span class="n">r0</span><span class="p">,</span><span class="n">v0</span><span class="p">],</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.propagate_lagrangian_v">
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">propagate_lagrangian_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tofs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[pi</span> <span class="pre">/</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.propagate_lagrangian_v" title="Permalink to this definition">#</a></dt>
+<dd><p>This is the vectorized version of <a class="reference internal" href="#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a>. Vectorization allows to compute many
+different time of flights at once. Note that this is not necessarily more efficient than calling
+<a class="reference internal" href="#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> in a loop, since there is no parallelization nor SIMD magic implemented atm. 
+Nevertheless we offer this interface for cenvenience as it may allow more compact code.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>r0</em> (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].</p>
+<p><em>v0</em> (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].</p>
+<p><em>tof</em> (1D array-like): time of flight. Defaults to [<span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>].</p>
+<p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
+<p><em>stm</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
+</dd>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> ( <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> , <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> ) ]: For each time of flight: [r,v], that is the final position
+and velocity after the propagation and the flattened stm (if requested).</p>
+</dd>
+<dt>Example::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tofs</span> <span class="o">=</span> <span class="p">[</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="n">pi</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian_v</span><span class="p">(</span><span class="n">rv</span> <span class="o">=</span> <span class="p">[</span><span class="n">r0</span><span class="p">,</span> <span class="n">v0</span><span class="p">],</span> <span class="n">tofs</span> <span class="o">=</span> <span class="n">tofs</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="p">[</span><span class="n">it</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vs</span> <span class="o">=</span> <span class="p">[</span><span class="n">it</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stms</span> <span class="o">=</span> <span class="p">[</span><span class="n">it</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd>
@@ -443,8 +494,14 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
 </ul>
+</li>
+</ul>
+
   </nav></div>
 
 </div></div>
@@ -491,8 +548,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

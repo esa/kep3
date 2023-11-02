@@ -21,4 +21,5 @@ and for preliminary mission analysis of the HERA mission.
 
 api
 tutorials
+bibliography
 ```

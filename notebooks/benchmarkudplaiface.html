@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -151,6 +151,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
+
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -160,6 +161,7 @@
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -434,7 +436,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph
- Real time: 0.42243 seconds
+ Real time: 0.31011 seconds
 </pre></div>
 </div>
 </div>
@@ -453,9 +455,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Real time: 0.19412 seconds
+ Real time: 0.15681 seconds
 </pre></div>
 </div>
 </div>
@@ -473,7 +473,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph_v
- Real time: 0.55561 seconds
+ Real time: 0.40011 seconds
 </pre></div>
 </div>
 </div>
@@ -495,7 +495,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sgp4
- Real time: 0.40697 seconds
+ Real time: 0.30949 seconds
 </pre></div>
 </div>
 </div>
@@ -516,7 +516,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sgp4 - vectorized
- Real time: 0.48900 seconds
+ Real time: 0.36047 seconds
 </pre></div>
 </div>
 </div>
@@ -533,11 +533,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.42243
-pla.eph -&gt; 0.19412
-eph_v.eph -&gt; 0.55561
-sgp4 -&gt; 0.40697
-sgp4_v -&gt; 0.48900
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.31011
+pla.eph -&gt; 0.15681
+eph_v.eph -&gt; 0.40011
+sgp4 -&gt; 0.30949
+sgp4_v -&gt; 0.36047
 </pre></div>
 </div>
 </div>
@@ -565,7 +565,7 @@ sgp4_v -&gt; 0.48900
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph
- Real time: 0.28086 seconds
+ Real time: 0.21630 seconds
 </pre></div>
 </div>
 </div>
@@ -584,7 +584,7 @@ sgp4_v -&gt; 0.48900
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph
- Real time: 0.37163 seconds
+ Real time: 0.26859 seconds
 </pre></div>
 </div>
 </div>
@@ -602,7 +602,7 @@ sgp4_v -&gt; 0.48900
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pla.eph_v
- Real time: 0.12372 seconds
+ Real time: 0.08816 seconds
 </pre></div>
 </div>
 </div>
@@ -621,7 +621,7 @@ sgp4_v -&gt; 0.48900
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>spice
- Real time: 0.18197 seconds
+ Real time: 0.13316 seconds
 </pre></div>
 </div>
 </div>
@@ -639,7 +639,7 @@ sgp4_v -&gt; 0.48900
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>spicev
- Real time: 0.10087 seconds
+ Real time: 0.07456 seconds
 </pre></div>
 </div>
 </div>
@@ -656,11 +656,11 @@ sgp4_v -&gt; 0.48900
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.28086
-pla.eph -&gt; 0.37163
-eph_v.eph -&gt; 0.12372
-spice -&gt; 0.18197
-spice_v -&gt; 0.10087
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>udpla.eph -&gt; 0.21630
+pla.eph -&gt; 0.26859
+eph_v.eph -&gt; 0.08816
+spice -&gt; 0.13316
+spice_v -&gt; 0.07456
 </pre></div>
 </div>
 </div>
@@ -740,8 +740,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

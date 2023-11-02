@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -50,6 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/propagate_lagrangian';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bibliography" href="../bibliography.html" />
     <link rel="prev" title="Interfacing to SPICE and JPL DE ephs" href="interface_to_spice.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -154,6 +155,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
+
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -163,6 +165,7 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Lagrange Propagation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -401,16 +404,17 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="lagrange-propagation">
 <h1>Lagrange Propagation<a class="headerlink" href="#lagrange-propagation" title="Permalink to this heading">#</a></h1>
-<p>One of the most efficient ways to perform the numerical propagation of some Cartesian state assuming a Keplerian motion, is the use of the Lagrange coefficients. These are four scalar coefficients <span class="math notranslate nohighlight">\(F,G,F_t,G_t\)</span> defined by the relation:
-$<span class="math notranslate nohighlight">\(
+<p>One of the most efficient ways to perform the numerical propagation of some Cartesian state assuming a Keplerian motion, is the use of the Lagrange coefficients. These are four scalar coefficients <span class="math notranslate nohighlight">\(F,G,F_t,G_t\)</span> defined by the relation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{array}{l}
 \mathbf r = F\mathbf r_0 + G\mathbf v_0 \\
 \mathbf v = F_t\mathbf r_0 + Gt\mathbf v_0
 \end{array}
-\)</span>$</p>
+\end{split}\]</div>
 <p>Analytical expressions for these coefficients are available in terms of the True Anomaly difference, the Eccentric Anomaly difference, as well as the Hyperbolic Anomaly difference or the Universal Anomaly difference between the state <span class="math notranslate nohighlight">\(\mathbf r_0, \mathbf v_0\)</span> and the state <span class="math notranslate nohighlight">\(\mathbf r, \mathbf v\)</span>.</p>
-<p>The details on these analytical expressions and their derivation can be found, for example, in the seminal book by Richard Battin: “Fundamentals of Astrodynamics.”</p>
-<p>In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> the <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian_v()</span></code> implement the kplerian propagation algorithm based on the Lagrange coefficients, as well as the analytical computation of the resulting State Transition Matrix.</p>
+<p>The details on these analytical expressions and their derivation can be found, for example, in the seminal book by Richard Battin: “Fundamentals of Astrodynamics.” <span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Richard H Battin. An introduction to the mathematics and methods of astrodynamics. AIAA, 1999.">Bat99</a>]</span>.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> the <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian_v" title="pykep.propagate_lagrangian_v"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian_v()</span></code></a> implement the keplerian propagation algorithm based on the Lagrange coefficients, as well as the analytical computation of the resulting State Transition Matrix.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">pykep</span></code> will fail for the perfectly parabolic case. For example <span class="math notranslate nohighlight">\(\mu=1\)</span>, <span class="math notranslate nohighlight">\(\mathbf r = [1,0,0]\)</span> and <span class="math notranslate nohighlight">\(\mathbf v = [0,0,1]\)</span></p>
@@ -445,7 +449,7 @@ $<span class="math notranslate nohighlight">\(
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Only Keplerian Propagations
- Real time: 0.10458 seconds
+ Real time: 0.08331 seconds
 </pre></div>
 </div>
 </div>
@@ -464,12 +468,12 @@ $<span class="math notranslate nohighlight">\(
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Keplerian Propagations with the STM computations
- Real time: 0.29819 seconds
+ Real time: 0.25133 seconds
 </pre></div>
 </div>
 </div>
 </div>
-<p>Let us consider non-dimensional units <span class="math notranslate nohighlight">\(\mu=1\)</span>. The following code computes the positions along one period of circulr orbits, it makes use of the vectorized version <code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian_v()</span></code> which is not necessarily faster but surely convenient in this case.</p>
+<p>Let us consider non-dimensional units <span class="math notranslate nohighlight">\(\mu=1\)</span>. The following code computes the positions along one period of circulr orbits, it makes use of the vectorized version <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian_v" title="pykep.propagate_lagrangian_v"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian_v()</span></code></a> which is not necessarily faster but surely convenient in this case.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -508,7 +512,7 @@ $<span class="math notranslate nohighlight">\(
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f0d67897bce60f18b6d1b96a6aceb402e40c065d03a73bc4d69faed5242e3c27.png" src="../_images/f0d67897bce60f18b6d1b96a6aceb402e40c065d03a73bc4d69faed5242e3c27.png" />
+<img alt="../_images/0db7a2f2c5876f179c3f20777040e6ae78f925ded634673559217dc9e96a13c1.png" src="../_images/0db7a2f2c5876f179c3f20777040e6ae78f925ded634673559217dc9e96a13c1.png" />
 </div>
 </div>
 <p>Ok, this is admittedly underwhelming and very basic ……. lets try to do something a bit more advanced.</p>
@@ -525,8 +529,8 @@ $<span class="math notranslate nohighlight">\(
 <img alt="../_images/8e7887e6bab5040cf5bf2a12d75dd547ad8c9ce3e9ea2c6afd70903c5e5b8ae3.png" src="../_images/8e7887e6bab5040cf5bf2a12d75dd547ad8c9ce3e9ea2c6afd70903c5e5b8ae3.png" />
 </div>
 </div>
-<p>With reference to the diagram above, where we plotted a three segment leg and we assume the ballistic arc to have length <span class="math notranslate nohighlight">\(\frac{dt}{2}, dt\)</span> and <span class="math notranslate nohighlight">\(\frac{dt}{2}\)</span>
-we now use <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> to compute the gradient of the final state [<span class="math notranslate nohighlight">\(\mathbf r_f, \mathbf v_f\)</span>] with respect to the initial state [<span class="math notranslate nohighlight">\(\mathbf x_f = \mathbf r_0, \mathbf v_0\)</span>] as well as of the applied <span class="math notranslate nohighlight">\(\Delta \mathbf v_i\)</span>. That is, as we shall see, all information stored in the STMs of this bi-impulsive transfer.</p>
+<p>With reference to the diagram above (a common block present, for example, in the Sims-Flanagan <span id="id2">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> model for low-thrust orbital transfers), we consider a three segment leg and we assume the ballistic arc to have length <span class="math notranslate nohighlight">\(\frac{dt}{2}, dt\)</span> and <span class="math notranslate nohighlight">\(\frac{dt}{2}\)</span>
+we now use <a class="reference internal" href="../propagation.html#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> to compute the gradient of the final state [<span class="math notranslate nohighlight">\(\mathbf r_f, \mathbf v_f\)</span>] with respect to the initial state [<span class="math notranslate nohighlight">\(\mathbf x_f = \mathbf r_0, \mathbf v_0\)</span>] as well as of the applied <span class="math notranslate nohighlight">\(\Delta \mathbf v_i\)</span>.  That is, as we shall see, all information stored in the STMs of this bi-impulsive transfer.</p>
 <p>This is actually rather straightforward after we get convinced that, indicating with <span class="math notranslate nohighlight">\(\mathbf M_{i}\)</span> the state transition matrix between the states [<span class="math notranslate nohighlight">\(\mathbf r_{i-1}^+, \mathbf v_{i-1}^+\)</span>] and [<span class="math notranslate nohighlight">\(\mathbf r_{i}^-, \mathbf v_{i}^-\)</span>], then the first order variations of the final state w.r.t. variations of the state at the nodes are:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -538,8 +542,9 @@ we now use <a class="reference internal" href="../propagation.html#pykep.propaga
 \end{split}\]</div>
 <p>trivially, this allows to compute easily the seeked gradients.</p>
 <p>For example <span class="math notranslate nohighlight">\(\frac{\partial \mathbf x_f}{{\partial \Delta \mathbf v_1}}\)</span> will be <span class="math notranslate nohighlight">\(\mathbf M_{3}\mathbf M_{2} \mathbf I_v\)</span>.</p>
-<p>where we have introduced the matrix <span class="math notranslate nohighlight">\(\mathbf I_v\)</span> that selects the velocity components of the STM.
-$<span class="math notranslate nohighlight">\(
+<p>where we have introduced the matrix <span class="math notranslate nohighlight">\(\mathbf I_v\)</span> that selects the velocity components of the STM.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \mathbf Iv = \left[\begin{array}{llllll}
 0&amp;0&amp;0&amp;0&amp;0&amp;0\\
 0&amp;0&amp;0&amp;0&amp;0&amp;0\\
@@ -548,7 +553,7 @@ $<span class="math notranslate nohighlight">\(
 0&amp;0&amp;0&amp;0&amp;1&amp;0\\
 0&amp;0&amp;0&amp;0&amp;0&amp;1\\
 \end{array}\right]
-\)</span>$</p>
+\end{split}\]</div>
 <p>We have thus also shown how the complexity of computing the gradients is linear with the number of impulses in a trajectory leg since <span class="math notranslate nohighlight">\(N\)</span> impulses would result into the computation of <span class="math notranslate nohighlight">\(N\)</span> state transition matrices and <span class="math notranslate nohighlight">\(N\)</span> matrix multiplications. Lets see one specific exampl below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -666,6 +671,15 @@ $<span class="math notranslate nohighlight">\(
         <p class="prev-next-title">Interfacing to SPICE and JPL DE ephs</p>
       </div>
     </a>
+    <a class="right-next"
+       href="../bibliography.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Bibliography</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -729,8 +743,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>
