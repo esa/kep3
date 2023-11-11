@@ -84,18 +84,6 @@ class spice:
         """
         return "Body: " + self.body + "\nObserver: " + self.obs + "\nReference Frame: " + self.ref_frame 
     
-    def get_mu_central_body(self):
-        return self.mu_central_body
-    
-    def get_mu_self(self):
-        return self.mu_self
-    
-    def get_radius(self):
-        return self.radius
-    
-    def get_safe_radius(self):
-        return self.safe_radius
-    
 
 class de440s(spice):
     """__init__(body = "EARTH BARYCENTER", ref_frame = "ECLIPJ2000", obs = "SSB")
@@ -142,7 +130,7 @@ class de440s(spice):
     
     def body_list():
         """The list of bodies contained in the de440s ephemerides. 
-        This is a static method and can be quieried before constructing the object.
+        This is a static method and can be queried before constructing the object.
 
         Returns:
             :class:`list`: The list of possible body names.

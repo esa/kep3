@@ -1157,7 +1157,7 @@ std::string propagate_lagrangian_docstring()
           :class:`tuple` (:class:`list`, :class:`list`): r and v, that is the final position and velocity after the propagation. (if *stm* is False)
           :class:`tuple` (:class:`list` [:class:`list`, :class:`list`], :class:`numpy.ndarray` (6,6)): [r,v] and the STM. (if *stm* is True)
 
-    Example::
+    Examples:
         >>> import pykep as pk
         >>> import numpy as np
         >>> r0 = [1,0,0]
@@ -1194,7 +1194,7 @@ std::string propagate_lagrangian_v_docstring()
           :class:`list` [:class:`tuple` ( :class:`list` , :class:`list` ) ]: For each time of flight: [r,v], that is the final position
           and velocity after the propagation and the flattened stm (if requested).
 
-    Example::
+    Examples:
         >>> import pykep as pk
         >>> import numpy as np
         >>> r0 = [1,0,0]

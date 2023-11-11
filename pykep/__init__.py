@@ -35,5 +35,8 @@ from .utils import *
 # Patch the problem class.
 from . import _patch_planet
 
+# Import the plot module
+from . import plot
+
 # We import the unit test submodule
 from . import test
