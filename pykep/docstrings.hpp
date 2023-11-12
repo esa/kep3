@@ -83,6 +83,8 @@ std::string lambert_problem_docstring();
 
 // Propagators
 std::string propagate_lagrangian_docstring();
+std::string propagate_lagrangian_v_docstring();
+
 
 } // namespace pykep
 

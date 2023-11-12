@@ -1151,11 +1151,11 @@ std::string propagate_lagrangian_docstring()
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
-          *stm (:class:`bool`): requests the computations of the State Transition Matrix
+          *stm* (:class:`bool`): requests the computations of the State Transition Matrix
 
     Returns:
-          :class:`tuple` [:class:`list`, :class:`list`]: r and v, that is the final position and velocity after the propagation. (if *stm* is False)
-          :class:`tuple` ([:class:`list`, :class:`list`], :class:`numpy.ndarray`(6,6)): r and v and the STM. (if *stm* is True)
+          :class:`tuple` (:class:`list`, :class:`list`): r and v, that is the final position and velocity after the propagation. (if *stm* is False)
+          :class:`tuple` (:class:`list` [:class:`list`, :class:`list`], :class:`numpy.ndarray` (6,6)): [r,v] and the STM. (if *stm* is True)
 
     Example::
         >>> import pykep as pk
@@ -1164,8 +1164,49 @@ std::string propagate_lagrangian_docstring()
         >>> v0 = [0,1,0]
         >>> tof = pi/2
         >>> mu = 1
-        >>> r1,v1 = propagate_lagrangian(r0 = r0, v0 = v0, tof = pi/2, mu = 1, stm = True)
+        >>> [r1,v1], stm = pk.propagate_lagrangian(rv=[r0,v0], tof = tof, mu = mu, stm = True)
+        >>> [r1,v1] = pk.propagate_lagrangian(rv=[r0,v0], tof = tof, mu = mu, stm = False)
+
 )";
 }
+
+std::string propagate_lagrangian_v_docstring()
+{
+    return R"(propagate_lagrangian_v(r0 = [1,0,0], v0 = [0,1,0], tofs = [pi/2], mu = 1, stm = False)
+
+    This is the vectorized version of :func:`pykep.propagate_lagrangian`. Vectorization allows to compute many
+    different time of flights at once. Note that this is not necessarily more efficient than calling
+    :func:`pykep.propagate_lagrangian` in a loop, since there is no parallelization nor SIMD magic implemented atm. 
+    Nevertheless we offer this interface for cenvenience as it may allow more compact code. 
+
+    Args:
+          *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
+
+          *v0* (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].
+
+          *tof* (1D array-like): time of flight. Defaults to [:math:`\frac{\pi}{2}`].
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *stm* (:class:`bool`): requests the computations of the State Transition Matrix
+
+    Returns:
+          :class:`list` [:class:`tuple` ( :class:`list` , :class:`list` ) ]: For each time of flight: [r,v], that is the final position
+          and velocity after the propagation and the flattened stm (if requested).
+
+    Example::
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> r0 = [1,0,0]
+        >>> v0 = [0,1,0]
+        >>> tofs = [pi/2, pi, 3/4pi]
+        >>> mu = 1
+        >>> res = pk.propagate_lagrangian_v(rv = [r0, v0], tofs = tofs, mu = mu, stm = True)
+        >>> rs = [it[0][0] for it in res]
+        >>> vs = [it[0][1] for it in res]
+        >>> stms = [it[1] for it in res]
+)";
+}
+
 
 } // namespace pykep
