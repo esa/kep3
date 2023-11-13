@@ -1033,7 +1033,7 @@ Returns:
 std::string udpla_keplerian_from_posvel_docstring()
 {
     return R"(**Alternative Constructor:**
-    **__init__(** *ep*, *posvel*, *mu_central_body*, *name* = "unkown", *added_params* = [-1,-1,-1]**)**
+    __init__(ep, posvel, mu_central_body, name = "unkown", added_params = [-1,-1,-1])
 
 Constructs a Keplerian udpla from its position and velocity at epoch.
 

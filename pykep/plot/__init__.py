@@ -3,7 +3,7 @@
 import matplotlib.pyplot as _plt
 from mpl_toolkits.mplot3d import axes3d as _axes3d
 
-from ._planet import add_planet_orbit, add_planet
+from ._planet import add_planet_orbit, add_planet, add_solar_system
 
 def make_3Daxis(**kwargs):
     """Constructs and returns a 3D axis.  All kwargs are forwarded to the call to `figure()` in matplotlib.
@@ -24,7 +24,7 @@ def add_sun(ax, **kwargs):
         :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: the 3D axis.
     """
     kwargs.setdefault('c', 'y')
-    kwargs.setdefault('s', 50)
+    kwargs.setdefault('s', 30)
     kwargs.setdefault('label', 'Sun')
 
     ax.scatter(0,0,0, **kwargs)
