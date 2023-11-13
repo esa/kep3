@@ -112,67 +112,79 @@ def add_planet_orbit(
 
 
 def add_solar_system(
-    ax, planets = [1, 2, 3, 4, 5, 6, 7, 8], ep=_pk.epoch(0), s=[15, 2, 3, 3, 2, 8, 8, 5, 5]
+    ax, bodies=[1, 2, 3, 4, 5, 6], ep=_pk.epoch(0), s=[15, 2, 3, 3, 2, 8, 8, 5, 5]
 ):
     # Sun
     _pk.plot.add_sun(ax, s=s[0])
 
     # Mercury
-    if 1 in planets:
+    if 1 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Mercury")
-        mercury = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        mercury = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, mercury, c="tomato", label="")
-        _pk.plot.add_planet(ax, mercury, when=ep, c="tomato", s=s[1])
+        _pk.plot.add_planet(ax, mercury, when=ep, c="tomato", s=s[1], label = "Mercury")
 
     # Venus
-    if 2 in planets:
+    if 2 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Venus")
-        venus = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        venus = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, venus, c="forestgreen", label="")
-        _pk.plot.add_planet(ax, venus, when=ep, c="forestgreen", s=s[2])
+        _pk.plot.add_planet(ax, venus, when=ep, c="forestgreen", s=s[2], label = "Venus")
 
     # Earth
-    if 3 in planets:
+    if 3 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Earth")
-        earth = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        earth = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, earth, c="royalblue", label="")
-        _pk.plot.add_planet(ax, earth, when=ep, c="royalblue", s=s[3])
+        _pk.plot.add_planet(ax, earth, when=ep, c="royalblue", s=s[3], label = "Earth")
 
     # Mars
-    if 4 in planets:
+    if 4 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Mars")
-        mars = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        mars = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, mars, c="indianred", label="")
-        _pk.plot.add_planet(ax, mars, when=ep, c="indianred", s=s[4])
+        _pk.plot.add_planet(ax, mars, when=ep, c="indianred", s=s[4], label = "Mars")
 
     # Jupiter
-    if 5 in planets:
+    if 5 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Jupiter")
-        jupiter = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        jupiter = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, jupiter, c="tan", label="")
-        _pk.plot.add_planet(ax, jupiter, when=ep, c="tan", s=s[5])
+        _pk.plot.add_planet(ax, jupiter, when=ep, c="tan", s=s[5], label = "Jupiter")
 
     # Saturn
-    if 6 in planets:
+    if 6 in bodies:
         udpla = _pk.udpla.jpl_lp(body="Saturn")
-        saturn = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
+        saturn = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
         _pk.plot.add_planet_orbit(ax, saturn, c="darkcyan", label="")
-        _pk.plot.add_planet(ax, saturn, when=ep, c="darkcyan", s=s[6])
+        _pk.plot.add_planet(ax, saturn, when=ep, c="darkcyan", s=s[6], label = "Saturn")
 
-    # For these outer we use the de440s ephs, else no data would be available. 
+    # For these outer we use the de440s ephs, else no data would be available.
     # Keplerian planets would likely make more sense everywere in this function
     # Uranus
-    if 7 in planets:
+    if 7 in bodies:
         udpla = _pk.udpla.jpl_lp(body="uranus")
-        uranus = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
-        _pk.plot.add_planet_orbit(ax, uranus, c="slateblue", label="", plot_range = [-40000, -40000 + 84.8 * 365.25])
-        _pk.plot.add_planet(ax, uranus, when=ep, c="slateblue", s=s[7])
+        uranus = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
+        _pk.plot.add_planet_orbit(
+            ax,
+            uranus,
+            c="slateblue",
+            label="",
+            plot_range=[-40000, -40000 + 84.8 * 365.25],
+        )
+        _pk.plot.add_planet(ax, uranus, when=ep, c="slateblue", s=s[7], label = "Uranus")
 
     # Neptune
-    if 8 in planets:
+    if 8 in bodies:
         udpla = _pk.udpla.jpl_lp(body="neptune")
-        neptune = _pk.planet_to_keplerian(_pk.planet(udpla), ep = ep)
-        _pk.plot.add_planet_orbit(ax, neptune, c="orchid", label="", plot_range = [-40000, -40000 + 164.8 * 365.25])
-        _pk.plot.add_planet(ax, neptune, when=ep, c="orchid", s=s[7])
+        neptune = _pk.planet_to_keplerian(_pk.planet(udpla), ep=ep)
+        _pk.plot.add_planet_orbit(
+            ax,
+            neptune,
+            c="orchid",
+            label="",
+            plot_range=[-40000, -40000 + 164.8 * 365.25],
+        )
+        _pk.plot.add_planet(ax, neptune, when=ep, c="orchid", s=s[7], label = "Neptune")
 
     return ax
