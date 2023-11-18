@@ -35,19 +35,17 @@ def add_sun(ax, **kwargs):
     return ax
 
 
-def propagate_lagrangian_theta_v(
-    rv=[[1, 0, 0], [0, 1, 0]], thetas=[0.0, _np.pi / 2], mu=1, stm=False
-):
+def propagate_lagrangian_theta_v(rv=[[1, 0, 0], [0, 1, 0]], thetas=[0.0, _np.pi / 2], mu=1, stm=False):
     """propagate_lagrangian_theta_v(rv = [[1,0,0], [0,1,0]], thetas = [0, pi/2], mu = 1, stm = False)
 
     Propagates (Keplerian) the state for an assigned difference in True anomalies. It does not compute the State Transition Matrix
-    A similar API is offered as that of :func:`pykep.propagate_lagrangian`, but not identical. The function is essentially offered only for plotting
+    A similar API is offered as that of :func:`~pykep.propagate_lagrangian`, but not identical. The function is essentially offered only for plotting
     purposes as to avoid (or anyway alleviate) the non uniform grid effect deriving when plotting at equal time intervals.
 
     Args:
           *rv* (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].
 
-          *thetas* (:class:`numpy.ndarray` (N,)): true anomaly dfferences to plot at. Defaults to [0, :math:`\frac{\pi}{2}`].
+          *thetas* (:class:`numpy.ndarray` (N,)): true anomaly dfferences to plot at. Defaults to [0, pi/2].
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
@@ -61,7 +59,7 @@ def propagate_lagrangian_theta_v(
         >>> import numpy as np
         >>> r0 = [1,0,0]
         >>> v0 = [0,1,0]
-        >>> thetas = [0, pi/2]
+        >>> thetas = [0, np.pi/2]
         >>> mu = 1
         >>> [r1,v1] = pk.propagate_lagrangian_theta_v(rv=[r0,v0], thetas = thetas, mu = mu)
     """
