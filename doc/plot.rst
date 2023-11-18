@@ -18,3 +18,6 @@ Plotting planets
 .. autofunction:: add_planet
 
 .. autofunction:: add_planet_orbit
+
+.. autofunction:: add_solar_system
+

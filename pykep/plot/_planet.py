@@ -2,8 +2,8 @@ import pykep as _pk
 import numpy as _np
 
 
-def add_planet(ax, pla: _pk.planet, when, label=None, c="gray", s=10, units=_pk.AU):
-    """Adds a planet to *ax*.
+def add_planet(ax, pla: _pk.planet, when, units=_pk.AU, **kwargs):
+    """Adds a planet to *ax*.  All kwargs are forwarded to the scatter method of *ax*.
 
     Args:
         *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): the 3D axis.
@@ -11,12 +11,6 @@ def add_planet(ax, pla: _pk.planet, when, label=None, c="gray", s=10, units=_pk.
         *pla* (:class:`~pykep.planet`): the planet.
 
         *when* (:class:`~pykep.epoch` or :class:`float`): the epoch (in mjd2000 if float).
-
-        *label* (:class:`str`, optional): the plot label. Defaults to the planet name as retuned by the corresponding planet method.
-
-        *c* (:class:`str`, optional): the color. Defaults to "gray".
-
-        *s* (:class:`int`, optional): the size. Defaults to 10.
 
         *units* (:class:`float`, optional): length units to be used. Defaults to pk.AU.
 
@@ -32,15 +26,11 @@ def add_planet(ax, pla: _pk.planet, when, label=None, c="gray", s=10, units=_pk.
         >>> pk.plot.add_planet_orbit(ax, earth, plot_range = [0, 365.25], c = "royalblue", label = "")
         >>> pk.plot.add_planet(ax, earth, when = pk.epoch(0), c = "royalblue")
     """
-    # When no label is passed, the default behaviour is to add one with the planet name as returned by the corresponding method.
-    if label is None:
-        label = pla.get_name()
-
     # We compute the ephemerides
     r, _ = pla.eph(when)
 
     # And plot them as a scatter3D
-    ax.scatter(r[0] / units, r[1] / units, r[2] / units, s=s, c=c, label=label)
+    ax.scatter(r[0] / units, r[1] / units, r[2] / units, **kwargs)
 
     # Returning the axes.
     return ax
@@ -50,12 +40,11 @@ def add_planet_orbit(
     ax,
     pla: _pk.planet,
     plot_range=None,
-    label=None,
-    c="gray",
     units=_pk.AU,
     N=60,
+    **kwargs
 ):
-    """Adds a planet orbit to *ax*.
+    """Adds a planet orbit to *ax*. All kwargs are forwarded to the plot method of *ax*.
 
     Args:
         *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): the 3D axis.
@@ -63,12 +52,6 @@ def add_planet_orbit(
         *pla* (:class:`~pykep.planet`): the planet.
 
         *plot_range* (:class:`list`, optional): the starting and end mjd2000 to be plotted. Defaults to [0., one_orbital_period] if a period can be computed.
-
-        *label* (:class:`str`, optional): the plot label. Defaults to the planet name as retuned by the corresponding planet method.
-
-        *c* (:class:`str`, optional): the color. Defaults to "gray".
-
-        *s* (:class:`int`, optional): the size. Defaults to 10.
 
         *units* (:class:`float`, optional): length units to be used. Defaults to pk.AU.
 
@@ -84,9 +67,6 @@ def add_planet_orbit(
         >>> pk.plot.add_planet_orbit(ax, earth, plot_range = [0, 365.25], c = "royalblue", label = "")
         >>> pk.plot.add_planet(ax, earth, when = pk.epoch(0), c = "royalblue")
     """
-    # When no label is passed, the default behaviour is to add one with the planet name as returned by the corresponding method.
-    if label is None:
-        label = pla.get_name()
 
     # If the plot_range is not defined by the user, then a defult is attempted [0,T]
     if plot_range is None:
@@ -105,7 +85,7 @@ def add_planet_orbit(
     rvs = pla.eph_v(epochs)[:, :3] / units
 
     # Plots the planet in the range.
-    ax.plot(rvs[:, 0], rvs[:, 1], rvs[:, 2], c=c, label=label)
+    ax.plot(rvs[:, 0], rvs[:, 1], rvs[:, 2], **kwargs)
 
     # Returning the axes.
     return ax
@@ -114,6 +94,20 @@ def add_planet_orbit(
 def add_solar_system(
     ax, bodies=[1, 2, 3, 4, 5, 6], ep=_pk.epoch(0), s=[15, 2, 3, 3, 2, 8, 8, 5, 5]
 ):
+    """Adds to *ax* the selected solar system planets.
+
+    Args:
+        *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): the 3D axis.
+
+        *bodies* (:class:`list`, optional): the solar system planet id (i.e. 3 for Earth). Defaults to [1, 2, 3, 4, 5, 6].
+
+        *ep* (:class:`~pykep.epoch`): the epoch.
+        
+        *s* (:class:`list`, optional): the size of the Sun and all the 8 solar system planets. Defaults to [15, 2, 3, 3, 2, 8, 8, 5, 5].
+
+    Returns:
+        :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: the 3D axis.
+    """
     # Sun
     _pk.plot.add_sun(ax, s=s[0])
 
