@@ -17,8 +17,8 @@ bash mambaforge.sh -b -p $HOME/mambaforge
 mamba env create -f kep3_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
-# Install additional packages for Python compiling and docs building
-mamba install numpy sphinx sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
+# Install additional packages for Python compiling and docs building (19/11/2023 sphinx 7 not working)
+mamba install numpy "sphinx<7" sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
 
 # We build and install pykep (and the kep3 library)
 mkdir build
