@@ -98,9 +98,8 @@ std::array<std::array<double, 3>, 2> keplerian::eph(double mjd2000) const
 {
     // 1 - We compute the dt
     auto dt = (mjd2000 - m_ref_epoch.mjd2000()) * kep3::DAY2SEC;
-    // 2 - We propagate (make a copy as we do not want to change m_pos_vel_0)
-    auto retval(m_pos_vel_0);
-    kep3::propagate_lagrangian(retval, dt, m_mu_central_body);
+    // 2 - We propagate
+    auto retval = kep3::propagate_lagrangian(m_pos_vel_0, dt, m_mu_central_body).first;
     return retval;
 }
 

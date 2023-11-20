@@ -26,6 +26,7 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "python": ("https://docs.python.org/3", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None)
 }
 
 autoclass_content = 'both'
@@ -67,7 +68,6 @@ html_theme_options = {
     "home_page_in_toc": True,
     },
 }
-
 
 nb_execution_mode = "force"
 

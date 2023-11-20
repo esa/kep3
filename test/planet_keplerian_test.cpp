@@ -100,8 +100,15 @@ TEST_CASE("eph")
     double period_in_days = (2. * kep3::pi * kep3::AU / kep3::EARTH_VELOCITY) * kep3::SEC2DAY;
     auto [r, v] = udpla.eph(period_in_days);
 
+    // Testing after a period - same eph
     REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel_0[0]) < 1e-13);
     REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel_0[1]) < 1e-13);
+
+    // Testing ephs are different after 3 months.
+    auto pos_vel = udpla.eph(period_in_days + 90.);
+    fmt::print("{}\n{}", pos_vel, pos_vel_0);
+    REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[0], pos_vel_0[0]) > 1e-4);
+    REQUIRE(kep3_tests::floating_point_error_vector(pos_vel[1], pos_vel_0[1]) > 1e-4);
 }
 
 TEST_CASE("elements")

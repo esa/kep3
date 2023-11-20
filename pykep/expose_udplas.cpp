@@ -57,7 +57,7 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
         udpla_module, planet_class, "_jpl_lp", "Low precision ephemerides from JPL for the solar system planets");
     // Constructors.
     jpl_lp_udpla
-        .def(py::init<std::string>(), py::arg("name") = "earth",
+        .def(py::init<std::string>(), py::arg("body") = "earth",
              pykep::udpla_jpl_lp_docstring().c_str())
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::udpla::jpl_lp>);
