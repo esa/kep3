@@ -49,7 +49,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Lagrange Propagation" href="propagate_lagrangian.html" />
-    <link rel="prev" title="Epochs and Julian Dates" href="epochs.html" />
+    <link rel="prev" title="Ephemerides" href="planet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -142,8 +142,8 @@
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current nav bd-sidenav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Anomalies Conversions</a></li>
@@ -154,16 +154,22 @@
 <li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
 
-</ul>
-</li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
-<li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Interfacing to SPICE and JPL DE ephs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Basic</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Interfacing to SPICE and JPL DE ephs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
+</ul>
+</li>
 </ul>
 
     </div>
@@ -403,7 +409,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="interfacing-to-spice-and-jpl-de-ephs">
 <h1>Interfacing to SPICE and JPL DE ephs<a class="headerlink" href="#interfacing-to-spice-and-jpl-de-ephs" title="Permalink to this heading">#</a></h1>
-<p>A <code class="docutils literal notranslate"><span class="pre">pykep</span></code> :class:<code class="docutils literal notranslate"><span class="pre">~pykep.planet</span></code> is able to represent, with a unique interface, objects moving through space. and we
+<p>A <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.planet</span></code></a> is able to represent, with a unique interface, objects moving through space. and we
 here showcase the case of asteroids/comets and satellites whose motion is not integrated numerically, but rather fitted
 to observations, simulations or historical data and encapsulated into <a class="reference external" href="https://naif.jpl.nasa.gov/naif/data_generic.html">NAIF SPICE kernels</a>.</p>
 <p>Under the hoods, the SPICE C code made available by NAIF, is used and interfaced to the <code class="docutils literal notranslate"><span class="pre">pykep</span></code> relevant classes.</p>
@@ -460,7 +466,8 @@ to observations, simulations or historical data and encapsulated into <a class="
 </div>
 </div>
 </div>
-<p>This is done only once and we can now forget about it (unless memory is an issue and we want to unload the data, in which case we provide a corresponding <code class="xref py py-func docutils literal notranslate"><span class="pre">unload_spice_kernels()</span></code> function). We instantiate a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.planet</span></code></a> form the UDPLA <a class="reference internal" href="../udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>.</p>
+<p>This is done only once and we can now forget about it (unless memory is an issue and we want to unload the data, in which case we provide a corresponding <code class="xref py py-func docutils literal notranslate"><span class="pre">unload_spice_kernels()</span></code> function).</p>
+<p>We now instantiate a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> form the UDPLA <a class="reference internal" href="../udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">spice</span><span class="p">(</span><span class="s2">&quot;JUPITER BARYCENTER&quot;</span><span class="p">,</span> <span class="s2">&quot;ECLIPJ2000&quot;</span><span class="p">,</span> <span class="s2">&quot;SSB&quot;</span><span class="p">)</span>
@@ -478,7 +485,7 @@ Velocity (m/s): [-2933.2858571285688, 13378.581606366935, 10.115066760074676]
 </div>
 </div>
 </div>
-<p>And inspect the <code class="docutils literal notranslate"><span class="pre">pykep</span></code> planet:</p>
+<p>And inspect it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">jupiter</span><span class="p">)</span>
@@ -589,12 +596,12 @@ We then perform the transformation.</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="epochs.html"
+       href="planet.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Epochs and Julian Dates</p>
+        <p class="prev-next-title">Ephemerides</p>
       </div>
     </a>
     <a class="right-next"
