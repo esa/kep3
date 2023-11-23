@@ -258,7 +258,18 @@ class py_udplas_test(_ut.TestCase):
         self.assertTrue(np.allclose(rvpk, np.array(rv)*1000, atol=1e-13))
 
 
+class vsop2013_test(_ut.TestCase):
+    def test_basic(self):
+        import pykep as pk
+
+        p = pk.planet(pk.udpla.vsop2013())
+        self.assertTrue("mercury" in str(p))
+        self.assertTrue("1e-05" in str(p))
+
+
 def run_test_suite():
+    tl = _ut.TestLoader()
+
     suite = _ut.TestSuite()
     suite.addTest(anomaly_conversions_tests("test_m2e"))
     suite.addTest(anomaly_conversions_tests("test_m2f"))
@@ -275,6 +286,7 @@ def run_test_suite():
     suite.addTest(epoch_test("test_epoch_operators"))
     suite.addTest(py_udplas_test("test_tle"))
     suite.addTest(py_udplas_test("test_spice"))
+    suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
 
 
 
