@@ -76,7 +76,7 @@ std::string planet_elements_docstring();
 std::string udpla_keplerian_from_elem_docstring();
 std::string udpla_keplerian_from_posvel_docstring();
 std::string udpla_jpl_lp_docstring();
-
+std::string udpla_vsop2013_docstring();
 
 // Lambert Problem
 std::string lambert_problem_docstring();
@@ -84,7 +84,6 @@ std::string lambert_problem_docstring();
 // Propagators
 std::string propagate_lagrangian_docstring();
 std::string propagate_lagrangian_v_docstring();
-
 
 } // namespace pykep
 

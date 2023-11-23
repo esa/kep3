@@ -14,6 +14,7 @@
 #include <kep3/planet.hpp>
 #include <kep3/planets/jpl_lp.hpp>
 #include <kep3/planets/keplerian.hpp>
+#include <kep3/planets/vsop2013.hpp>
 
 #include "common_utils.hpp"
 #include "docstrings.hpp"
@@ -57,10 +58,16 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
         udpla_module, planet_class, "_jpl_lp", "Low precision ephemerides from JPL for the solar system planets");
     // Constructors.
     jpl_lp_udpla
-        .def(py::init<std::string>(), py::arg("body") = "earth",
-             pykep::udpla_jpl_lp_docstring().c_str())
+        .def(py::init<std::string>(), py::arg("body") = "earth", pykep::udpla_jpl_lp_docstring().c_str())
         // repr().
         .def("__repr__", &pykep::ostream_repr<kep3::udpla::jpl_lp>);
+
+    // vsop2013 udpla.
+    auto vsop2013_udpla = pykep::expose_one_udpla<kep3::udpla::vsop2013>(
+        udpla_module, planet_class, "_vsop2013", "Analytical planetary ephemerides from the VSOP2013 theory");
+    // Constructors.
+    vsop2013_udpla.def(py::init<std::string, double>(), py::arg("body") = "mercury", py::arg("thresh") = 1e-5,
+                       pykep::udpla_vsop2013_docstring().c_str());
 }
 
 } // namespace pykep
