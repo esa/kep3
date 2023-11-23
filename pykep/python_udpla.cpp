@@ -13,8 +13,10 @@
 
 #include <fmt/core.h>
 #include <fmt/std.h>
+
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/planet.hpp>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 

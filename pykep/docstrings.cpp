@@ -1103,6 +1103,24 @@ Examples:
 )";
 }
 
+std::string udpla_vsop2013_docstring()
+{
+    return R"(__init__(body = "mercury", thresh = 1e-5)
+
+Constructs a solar system planet with ephemerides computed using the VSOP2013 analytical
+theory (https://en.wikipedia.org/wiki/VSOP_model).
+
+Args:
+    *body* (:class:`str`): the name of the solar system planet.
+    *thresh* (:class:`float`): the truncation threshold for the theory's coefficients.
+
+Examples:
+    >>> import pykep as pk
+    >>> udpla = pk.udpla.vsop2013(body="venus")
+    >>> pla = pk.planet(udpla)
+)";
+}
+
 std::string lambert_problem_docstring()
 {
     return R"(__init__(r0 = [1,0,0], r1 = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
@@ -1205,6 +1223,5 @@ std::string propagate_lagrangian_v_docstring()
         >>> stms = [it[1] for it in res]
 )";
 }
-
 
 } // namespace pykep
