@@ -1,8 +1,5 @@
 .. _tutorials:
 
-Tutorials
-===============
-
 .. only:: html
 
   .. important::
@@ -24,7 +21,7 @@ Tutorials
 -------------------------------
 
 Basic
-^^^^^^^^^^^
+======
 Start with these tutorials to get the basic gist of how `pykep` works and its conventions when dealing with
 astrodynamical notation and computations.
 
@@ -33,7 +30,10 @@ astrodynamical notation and computations.
 
   notebooks/anomalies
   notebooks/epochs
+  notebooks/planet
   notebooks/interface_to_spice
   notebooks/propagate_lagrangian
+  notebooks/plotting
+
 
 

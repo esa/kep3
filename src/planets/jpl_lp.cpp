@@ -120,6 +120,7 @@ jpl_lp::jpl_lp(std::string name)
             // LCOV_EXCL_END
         }
     }
+    m_name = m_name + " - jpl_lp";
 }
 
 // Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.

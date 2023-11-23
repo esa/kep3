@@ -1033,7 +1033,7 @@ Returns:
 std::string udpla_keplerian_from_posvel_docstring()
 {
     return R"(**Alternative Constructor:**
-    **__init__(** *ep*, *posvel*, *mu_central_body*, *name* = "unkown", *added_params* = [-1,-1,-1]**)**
+    __init__(ep, posvel, mu_central_body, name = "unkown", added_params = [-1,-1,-1])
 
 Constructs a Keplerian udpla from its position and velocity at epoch.
 
@@ -1140,12 +1140,12 @@ std::string lambert_problem_docstring()
 
 std::string propagate_lagrangian_docstring()
 {
-    return R"(propagate_lagrangian(r0 = [1,0,0], v0 = [0,1,0], tof = pi/2, mu = 1, stm = False)
+    return R"(propagate_lagrangian(rv = [[1,0,0], [0,1,0]], tof = pi/2, mu = 1, stm = False)
+
+    Propagates (Keplerian) the state for an assigned time and computes the State Transition Matrix (if requested) using the Lagrangian coefficients.
 
     Args:
-          *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
-
-          *v0* (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].
+          *rv* (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].
 
           *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
 
@@ -1157,7 +1157,7 @@ std::string propagate_lagrangian_docstring()
           :class:`tuple` (:class:`list`, :class:`list`): r and v, that is the final position and velocity after the propagation. (if *stm* is False)
           :class:`tuple` (:class:`list` [:class:`list`, :class:`list`], :class:`numpy.ndarray` (6,6)): [r,v] and the STM. (if *stm* is True)
 
-    Example::
+    Examples:
         >>> import pykep as pk
         >>> import numpy as np
         >>> r0 = [1,0,0]
@@ -1172,7 +1172,7 @@ std::string propagate_lagrangian_docstring()
 
 std::string propagate_lagrangian_v_docstring()
 {
-    return R"(propagate_lagrangian_v(r0 = [1,0,0], v0 = [0,1,0], tofs = [pi/2], mu = 1, stm = False)
+    return R"(propagate_lagrangian_v(rv = [[1,0,0], [0,1,0]], tofs = [pi/2], mu = 1, stm = False)
 
     This is the vectorized version of :func:`pykep.propagate_lagrangian`. Vectorization allows to compute many
     different time of flights at once. Note that this is not necessarily more efficient than calling
@@ -1180,9 +1180,7 @@ std::string propagate_lagrangian_v_docstring()
     Nevertheless we offer this interface for cenvenience as it may allow more compact code. 
 
     Args:
-          *r0* (1D array-like): Cartesian components of the initial position vector [x0, y0, z0]. Defaults to [1,0,0].
-
-          *v0* (1D array-like): Cartesian components of the initial velocity [vx0, vy0, vz0]. Defaults tot [0,1,0].
+          *rv* (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].
 
           *tof* (1D array-like): time of flight. Defaults to [:math:`\frac{\pi}{2}`].
 
@@ -1194,7 +1192,7 @@ std::string propagate_lagrangian_v_docstring()
           :class:`list` [:class:`tuple` ( :class:`list` , :class:`list` ) ]: For each time of flight: [r,v], that is the final position
           and velocity after the propagation and the flattened stm (if requested).
 
-    Example::
+    Examples:
         >>> import pykep as pk
         >>> import numpy as np
         >>> r0 = [1,0,0]

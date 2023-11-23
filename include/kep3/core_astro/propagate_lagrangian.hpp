@@ -13,6 +13,7 @@
 #include <array>
 #include <optional>
 #include <utility>
+#include <vector>
 
 #include <kep3/core_astro/stm.hpp>
 #include <kep3/detail/visibility.hpp>

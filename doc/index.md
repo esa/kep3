@@ -17,9 +17,15 @@ and for preliminary mission analysis of the HERA mission.
 
 ```{toctree}
 :maxdepth: 2
-:caption: Contents
+:caption: Main
 
 api
-tutorials
 bibliography
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Tutorials
+
+tutorials
 ```
