@@ -79,15 +79,17 @@ struct vsop2013::impl {
     fptr_t eval_f = nullptr;
     double m_mu = 0;
     std::string m_pl_name;
+    double m_thresh = 0;
 
     impl() = default;
-    explicit impl(heyoka::llvm_state s, double mu, std::string pl_name)
-        : m_state(std::move(s)), m_mu(mu), m_pl_name(std::move(pl_name))
+    explicit impl(heyoka::llvm_state s, double mu, std::string pl_name, double thresh)
+        : m_state(std::move(s)), m_mu(mu), m_pl_name(std::move(pl_name)), m_thresh(thresh)
     {
         eval_f = reinterpret_cast<fptr_t>(m_state.jit_lookup("eval_f"));
     }
     impl(impl &&) noexcept = delete;
-    impl(const impl &other) : m_state(other.m_state), m_mu(other.m_mu), m_pl_name(other.m_pl_name)
+    impl(const impl &other)
+        : m_state(other.m_state), m_mu(other.m_mu), m_pl_name(other.m_pl_name), m_thresh(other.m_thresh)
     {
         eval_f = reinterpret_cast<fptr_t>(m_state.jit_lookup("eval_f"));
     }
@@ -100,12 +102,14 @@ struct vsop2013::impl {
         ar << m_state;
         ar << m_mu;
         ar << m_pl_name;
+        ar << m_thresh;
     }
     void load(boost::archive::binary_iarchive &ar, unsigned)
     {
         ar >> m_state;
         ar >> m_mu;
         ar >> m_pl_name;
+        ar >> m_thresh;
 
         eval_f = reinterpret_cast<fptr_t>(m_state.jit_lookup("eval_f"));
     }
@@ -161,10 +165,10 @@ vsop2013::vsop2013(std::string pl_name, double thresh)
         assert(flag);
 
         // Build the impl.
-        m_impl = std::make_unique<impl>(std::move(s), mu, std::move(pl_name));
+        m_impl = std::make_unique<impl>(std::move(s), mu, std::move(pl_name), thresh);
     } else {
         // Cache hit, build the impl from the cache content.
-        m_impl = std::make_unique<impl>(it->second, mu, std::move(pl_name));
+        m_impl = std::make_unique<impl>(it->second, mu, std::move(pl_name), thresh);
     }
 }
 
@@ -214,7 +218,7 @@ std::array<std::array<double, 3>, 2> vsop2013::eph(double mjd2000) const
 
 std::string vsop2013::get_name() const
 {
-    return fmt::format("vsop2013_{}", m_impl->m_pl_name);
+    return fmt::format("vsop2013 {}, threshold={}", m_impl->m_pl_name, m_impl->m_thresh);
 }
 
 } // namespace kep3::udpla
