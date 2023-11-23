@@ -16,7 +16,7 @@
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/exceptions.hpp>
-#include <kep3/planets/jpl_lp.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
 
 #include "catch.hpp"
 #include "test_helpers.hpp"

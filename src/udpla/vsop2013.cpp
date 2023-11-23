@@ -32,7 +32,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/planets/vsop2013.hpp>
+#include <kep3/udpla/vsop2013.hpp>
 
 namespace kep3::udpla
 {

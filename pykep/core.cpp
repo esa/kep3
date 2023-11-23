@@ -20,7 +20,7 @@
 #include <kep3/epoch.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/planets/keplerian.hpp>
+#include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>

@@ -21,7 +21,7 @@
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/planets/jpl_lp.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
 
 namespace kep3::udpla
 {

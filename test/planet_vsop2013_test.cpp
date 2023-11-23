@@ -22,8 +22,8 @@
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/exceptions.hpp>
-#include <kep3/planets/jpl_lp.hpp>
-#include <kep3/planets/vsop2013.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
+#include <kep3/udpla/vsop2013.hpp>
 
 #include "catch.hpp"
 
