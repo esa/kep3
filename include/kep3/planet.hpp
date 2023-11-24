@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_PLANET_H
-#define kep3_PLANET_H
+#ifndef kep3_UDPLA_H
+#define kep3_UDPLA_H
 
 #include <concepts>
 #include <string>
@@ -307,4 +307,8 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const planet &);
 
 } // namespace kep3
 
-#endif // kep3_PLANET_H
+template <>
+struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
+};
+
+#endif // kep3_UDPLA_H
