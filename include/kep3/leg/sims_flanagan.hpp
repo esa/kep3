@@ -34,7 +34,7 @@ class kep3_DLL_PUBLIC sims_flanagan
 public:
     // Default Constructor.
     sims_flanagan() = default;
-    // Constructor
+    // Constructors
     sims_flanagan(const std::array<double, 7> &xs, std::vector<double> throttles, const std::array<double, 7> &xf,
                   double tof, double max_thrust, double isp, double mu, double cut = 0.5);
 
@@ -47,7 +47,7 @@ public:
     void set_isp(double isp);
     void set_mu(double mu);
     void set_cut(double cut);
-    void set(const std::array<double, 7> &xs, std::vector<double> throttles, const std::array<double, 7> &xf,
+    void set(const std::array<double, 7> &xs, const std::vector<double>& throttles, const std::array<double, 7> &xf,
              double tof, double max_thrust, double isp, double mu, double cut = 0.5);
 
     // Getters
@@ -85,7 +85,7 @@ private:
     std::vector<double> m_throttles{0., .0, 0., 0., 0., 0.};
     // Final spacecraft state.
     std::array<double, 7> m_xf{0., 1., 0., -1., 0., 0., 1.};
-    // Time of flight
+    // Time of flight (defaults to 1/4 of the period)
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion system maximum thrust.
     double m_max_thrust{1.};
