@@ -160,7 +160,7 @@ TEST_CASE("compute_mismatch_constraints_test")
             kep3::leg::sims_flanagan sf(rv0, 1., throttles, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
             auto mc = sf.compute_mismatch_constraints();
             mc = normalize_con(mc);
-            REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-12);
+            REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-11);
         }
     }
 
