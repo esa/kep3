@@ -35,26 +35,33 @@ public:
     // Default Constructor.
     sims_flanagan() = default;
     // Constructors
-    sims_flanagan(const std::array<double, 7> &xs, std::vector<double> throttles, const std::array<double, 7> &xf,
-                  double tof, double max_thrust, double isp, double mu, double cut = 0.5);
+    sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+                  const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+                  double mu, double cut = 0.5);
 
     // Setters
     void set_tof(double tof);
-    void set_xs(std::array<double, 7> xs);
+    void set_rvs(std::array<std::array<double, 3>, 2> rv);
+    void set_ms(double mass);
     void set_throttles(std::vector<double> throttles);
-    void set_xf(std::array<double, 7> xf);
+    void set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2);
+    void set_rvf(std::array<std::array<double, 3>, 2> rv);
+    void set_mf(double mass);
     void set_max_thrust(double max_thrust);
     void set_isp(double isp);
     void set_mu(double mu);
     void set_cut(double cut);
-    void set(const std::array<double, 7> &xs, const std::vector<double>& throttles, const std::array<double, 7> &xf,
-             double tof, double max_thrust, double isp, double mu, double cut = 0.5);
+    void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
+             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+             double mu, double cut = 0.5);
 
     // Getters
     [[nodiscard]] double get_tof() const;
-    [[nodiscard]] const std::array<double, 7> &get_xs() const;
+    [[nodiscard]] const std::array<std::array<double, 3>, 2> &get_rvs() const;
+    [[nodiscard]] double get_ms() const;
     [[nodiscard]] const std::vector<double> &get_throttles() const;
-    [[nodiscard]] const std::array<double, 7> &get_xf() const;
+    [[nodiscard]] const std::array<std::array<double, 3>, 2> &get_rvf() const;
+    [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
     [[nodiscard]] double get_isp() const;
     [[nodiscard]] double get_mu() const;
@@ -69,10 +76,12 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
     {
-        ar &m_xs;
+        ar &m_rvs;
+        ar &m_ms;
         ar &m_throttles;
         ar &m_tof;
-        ar &m_xf;
+        ar &m_rvf;
+        ar &m_mf;
         ar &m_max_thrust;
         ar &m_isp;
         ar &m_mu;
@@ -80,11 +89,13 @@ private:
     }
 
     // Initial spacecraft state.
-    std::array<double, 7> m_xs{1., 0., 0., 0, 1., 0., 1.};
+    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0, 1., 0.}}};
+    double m_ms = 1.;
     // Sequence of throttles.
     std::vector<double> m_throttles{0., .0, 0., 0., 0., 0.};
     // Final spacecraft state.
-    std::array<double, 7> m_xf{0., 1., 0., -1., 0., 0., 1.};
+    std::array<std::array<double, 3>, 2> m_rvf{{{0., 1., 0.}, {-1., 0., 0.}}};
+    double m_mf = 1.;
     // Time of flight (defaults to 1/4 of the period)
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion system maximum thrust.

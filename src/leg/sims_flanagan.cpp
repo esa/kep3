@@ -9,6 +9,7 @@
 
 #include <array>
 #include <iomanip>
+#include <iterator>
 #include <vector>
 
 #include <fmt/core.h>
@@ -34,7 +35,8 @@ void _check_throttles(const std::vector<double> &throttles)
                                "[u0x, u0y, u0z, .....].");
     }
     if (throttles.empty()) {
-        throw std::logic_error("The throttles of a sims_flanagan leg are detected to be empty! At least one esegment is necessary.");
+        throw std::logic_error(
+            "The throttles of a sims_flanagan leg are detected to be empty! At least one segment is necessary.");
     }
 }
 void _check_max_thrust(double max_thrust)
@@ -63,9 +65,10 @@ void _check_cut(double cut)
         throw std::domain_error("The parameter cut of a sims_flanagan leg must be in [0, 1].");
     }
 }
-void _sanity_checks(const std::array<double, 7> &, const std::vector<double> &throttles,
+void _sanity_checks(const std::array<std::array<double, 3>, 2> &, double, const std::vector<double> &throttles,
                     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                    const std::array<double, 7> &, double tof, double max_thrust, double isp, double mu, double cut)
+                    const std::array<std::array<double, 3>, 2> &, double, double tof, double max_thrust, double isp,
+                    double mu, double cut)
 {
     _check_throttles(throttles);
     _check_tof(tof);
@@ -75,14 +78,14 @@ void _sanity_checks(const std::array<double, 7> &, const std::vector<double> &th
     _check_cut(cut);
 }
 
-sims_flanagan::sims_flanagan(const std::array<double, 7> &xs, std::vector<double> throttles,
+sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                             const std::array<double, 7> &xf, double tof, double max_thrust, double isp, double mu,
-                             double cut)
-    : m_xs(xs), m_throttles(std::move(throttles)), m_xf(xf), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp), m_mu(mu),
-      m_cut(cut)
+                             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
+                             double isp, double mu, double cut)
+    : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
+      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut)
 {
-    _sanity_checks(xs, m_throttles, xf, tof, max_thrust, isp, mu, cut);
+    _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
 }
 
 // Setters
@@ -91,18 +94,33 @@ void sims_flanagan::set_tof(double tof)
     _check_tof(tof);
     m_tof = tof;
 }
-void sims_flanagan::set_xs(std::array<double, 7> xs)
+void sims_flanagan::set_rvs(std::array<std::array<double, 3>, 2> rv)
 {
-    m_xs = xs;
+    m_rvs = rv;
+}
+void sims_flanagan::set_ms(double mass)
+{
+    m_ms = mass;
 }
 void sims_flanagan::set_throttles(std::vector<double> throttles)
 {
     _check_throttles(throttles);
     m_throttles = std::move(throttles);
 }
-void sims_flanagan::set_xf(std::array<double, 7> xf)
+void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
 {
-    m_xf = xf;
+    if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
+        throw std::logic_error("The throttles of a sims_flanagan leg are being set with invalid iterators.");
+    }
+    std::copy(it1, it2, m_throttles.begin());
+}
+void sims_flanagan::set_rvf(std::array<std::array<double, 3>, 2> rv)
+{
+    m_rvf = rv;
+}
+void sims_flanagan::set_mf(double mass)
+{
+    m_mf = mass;
 }
 void sims_flanagan::set_max_thrust(double max_thrust)
 {
@@ -124,14 +142,17 @@ void sims_flanagan::set_cut(double cut)
     _check_cut(cut);
     m_cut = cut;
 }
-void sims_flanagan::set(const std::array<double, 7> &xs, const std::vector<double> &throttles,
-                        const std::array<double, 7> &xf, double tof, double max_thrust, double isp, double mu,
-                        double cut)
+void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double>& throttles,
+                        // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
+                        double isp, double mu, double cut)
 {
-    _sanity_checks(xs, throttles, xf, tof, max_thrust, isp, mu, cut);
-    m_xs = xs;
+    _sanity_checks(rvs, ms, throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
+    m_rvs = rvs;
+    m_ms = ms;
     m_throttles = throttles;
-    m_xf = xf;
+    m_rvf = rvf;
+    m_mf = mf;
     m_tof = tof;
     m_max_thrust = max_thrust;
     m_isp = isp;
@@ -144,17 +165,25 @@ double sims_flanagan::get_tof() const
 {
     return m_tof;
 }
-const std::array<double, 7> &sims_flanagan::get_xs() const
+const std::array<std::array<double, 3>, 2> &sims_flanagan::get_rvs() const
 {
-    return m_xs;
+    return m_rvs;
+}
+double sims_flanagan::get_ms() const
+{
+    return m_ms;
 }
 const std::vector<double> &sims_flanagan::get_throttles() const
 {
     return m_throttles;
 }
-const std::array<double, 7> &sims_flanagan::get_xf() const
+const std::array<std::array<double, 3>, 2> &sims_flanagan::get_rvf() const
 {
-    return m_xf;
+    return m_rvf;
+}
+double sims_flanagan::get_mf() const
+{
+    return m_mf;
 }
 double sims_flanagan::get_max_thrust() const
 {
@@ -185,14 +214,12 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     double max_thrust = get_max_thrust();
     double isp = get_isp();
     double mu = get_mu();
-    auto xs = get_xs();
-    auto xf = get_xf();
     std::array<double, 3> dv{};
 
     // Forward pass
     // Initial state
-    std::array<std::array<double, 3>, 2> rv_fwd{{{xs[0], xs[1], xs[2]}, {xs[3], xs[4], xs[5]}}};
-    double mass_fwd = xs[6];
+    std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
+    double mass_fwd = get_mf();
     double dt = m_tof / static_cast<double>(n_seg);
     // We propagate for a first dt/2 (only if there is at least one forward segment)
     if (n_seg_fwd > 0) {
@@ -219,8 +246,8 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 
     // Backward pass
     // Final state
-    std::array<std::array<double, 3>, 2> rv_bck{{{xf[0], xf[1], xf[2]}, {xf[3], xf[4], xf[5]}}};
-    double mass_bck = xf[6];
+    std::array<std::array<double, 3>, 2> rv_bck(get_rvf());
+    double mass_bck = get_mf();
     // We propagate for a first dt/2 (only if there is at least one backward segment)
     if (n_seg_bck > 0) {
         rv_bck = propagate_lagrangian(rv_bck, -dt / 2, mu, false).first;
@@ -236,7 +263,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
         rv_bck[1][0] -= dv[0];
         rv_bck[1][1] -= dv[1];
         rv_bck[1][2] -= dv[2];
-        // Update the mass accordingly
+        // Update the mass accordingly (will increase as we go backward)
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
         mass_bck *= std::exp(norm_dv / isp / kep3::G0);
         // Perform the propagation
@@ -271,10 +298,10 @@ std::ostream &operator<<(std::ostream &s, const sims_flanagan &sf)
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
     s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());
     s << fmt::format("Time of flight: {}\n", sf.get_tof());
-    s << fmt::format("Initial mass: {}\n", sf.get_xs()[6]);
-    s << fmt::format("Final mass: {}\n", sf.get_xf()[6]);
-    s << fmt::format("State at departure: {}\n", sf.get_xs());
-    s << fmt::format("State at arrival: {}\n", sf.get_xf());
+    s << fmt::format("Initial mass: {}\n", sf.get_ms());
+    s << fmt::format("Final mass: {}\n", sf.get_mf());
+    s << fmt::format("State at departure: {}\n", sf.get_rvs());
+    s << fmt::format("State at arrival: {}\n", sf.get_rvf());
     s << fmt::format("Throttles values: {}\n\n", sf.get_throttles());
     s << fmt::format("Mismatch constraints: {}\n", sf.compute_mismatch_constraints());
     s << fmt::format("Throttle constraints: {}\n\n", sf.compute_throttle_constraints());
