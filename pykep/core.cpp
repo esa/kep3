@@ -324,45 +324,45 @@ PYBIND11_MODULE(core, m)
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_v_docstring().c_str());
 
     // Exposing the sims_flanagan leg
-//    py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());
-//    sims_flanagan
-//        .def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
-//                      const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
-//             py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
-//             py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-//             py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-//             py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
-//             py::arg("cut") = 0.5)
-//        // repr().
-//        .def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan>)
-//        // Copy and deepcopy.
-//        .def("__copy__", &pykep::generic_copy_wrapper<kep3::leg::sims_flanagan>)
-//        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan>)
-//        // Pickle support.
-//        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan>,
-//                        &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan>))
-//        // The rest
-//        .def_property(
-//            "throttles", &kep3::leg::sims_flanagan::get_throttles,
-//            [](kep3::leg::sims_flanagan &sf, const std::vector<double> &throttles) {
-//                return sf.set_throttles(throttles);
-//            },
-//            pykep::leg_sf_throttles_docstring().c_str())
-//        .def("compute_mismatch_constraints", &kep3::leg::sims_flanagan::compute_mismatch_constraints,
-//             pykep::leg_sf_m_con_docstring().c_str())
-//        .def("compute_throttle_constraints", &kep3::leg::sims_flanagan::compute_throttle_constraints,
-//             pykep::leg_sf_t_con_docstring().c_str());
-//
-//#define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
-//    sims_flanagan.def_property(#name, &kep3::leg::sims_flanagan::get_##name, &kep3::leg::sims_flanagan::set_##name,    \
-//                               pykep::leg_sf_##name##_docstring().c_str());
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvs);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(ms);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvf);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
-//    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
+    py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());
+    sims_flanagan
+        .def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
+                      const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
+             py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
+             py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
+             py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
+             py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
+             py::arg("cut") = 0.5)
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan>)
+        // Copy and deepcopy.
+        .def("__copy__", &pykep::generic_copy_wrapper<kep3::leg::sims_flanagan>)
+        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan>)
+        // Pickle support.
+        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan>,
+                        &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan>))
+        // The rest
+        .def_property(
+            "throttles", &kep3::leg::sims_flanagan::get_throttles,
+            [](kep3::leg::sims_flanagan &sf, const std::vector<double> &throttles) {
+                return sf.set_throttles(throttles);
+            },
+            pykep::leg_sf_throttles_docstring().c_str())
+        .def("compute_mismatch_constraints", &kep3::leg::sims_flanagan::compute_mismatch_constraints,
+             pykep::leg_sf_m_con_docstring().c_str())
+        .def("compute_throttle_constraints", &kep3::leg::sims_flanagan::compute_throttle_constraints,
+             pykep::leg_sf_t_con_docstring().c_str());
+
+#define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
+    sims_flanagan.def_property(#name, &kep3::leg::sims_flanagan::get_##name, &kep3::leg::sims_flanagan::set_##name,    \
+                               pykep::leg_sf_##name##_docstring().c_str());
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
 }
