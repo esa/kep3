@@ -220,3 +220,30 @@ TEST_CASE("compute_mismatch_constraints_test")
         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never converged to a feasible solution.
     }
 }
+
+TEST_CASE("serialization_test")
+{
+    // Instantiate a generic lambert problem
+    std::array<std::array<double, 3>, 2> rvs{{{-1, -1, -1}, {-1, -1, -1}}};
+    std::array<std::array<double, 3>, 2> rvf{{{0.1, 1.1, 0.1}, {-1.1, 0.1, 0.1}}};
+    kep3::leg::sims_flanagan sf1{rvs, 12., {1,2,3,4,5,6}, rvf, 10,2.3,2.3,2.3,1.1,0.2};
+    
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(sf1);
+    // Now serialize
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << sf1;
+    }
+    // Deserialize
+    // Create a new lambert problem object
+    kep3::leg::sims_flanagan sf2{};
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> sf2;
+    }
+    auto after = boost::lexical_cast<std::string>(sf2);
+    // Compare the string represetation
+    REQUIRE(before == after);
+}
