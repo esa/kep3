@@ -10,12 +10,12 @@
 #ifndef kep3_LEG_SIMS_SLANAGAN_H
 #define kep3_LEG_SIMS_SLANAGAN_H
 
-#include "kep3/core_astro/constants.hpp"
 #include <array>
 #include <vector>
 
 #include <fmt/ostream.h>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 

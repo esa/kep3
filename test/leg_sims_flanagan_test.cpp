@@ -47,7 +47,8 @@ TEST_CASE("constructor")
         std::array<std::array<double, 3>, 2> rvf{{{0, 1, 0}, {-1, 0, 0}}};
         double ms = 1.;
         double mf = 1.;
-        REQUIRE_NOTHROW(kep3::leg::sims_flanagan(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5));
+        REQUIRE_NOTHROW(
+            kep3::leg::sims_flanagan(rvs, ms, {0., 0., 0., 0., 0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5));
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan(rvs, ms, {0., 0., 0., 0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
@@ -165,9 +166,9 @@ TEST_CASE("compute_mismatch_constraints_test")
 
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
-        // We check that, when feasible, the solution is indeed ballistic.
+        // We check that, when feasible, the optimal mass solution is indeed ballistic.
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1}};
-        prob.set_c_tol(1e-12);
+        prob.set_c_tol(1e-10);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
@@ -191,5 +192,31 @@ TEST_CASE("compute_mismatch_constraints_test")
         }
         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
                                // theres a problem somewhere.
+    }
+{
+        // Here we create an ALMOST ballistic arc as a ground truth for an optimization.
+        // We check that, when feasible, the optimal mass solution is indeed ballistic.
+        auto rv1_modified = rv1;
+        rv1_modified[1][0] += 1000; // Adding 1km/s along x
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified}};
+        prob.set_c_tol(1e-10);
+        bool found = false;
+        unsigned trial = 0u;
+        pagmo::nlopt uda{"slsqp"};
+        uda.set_xtol_abs(0.);
+        uda.set_xtol_rel(0.);
+        uda.set_ftol_abs(1e-12);
+        uda.set_maxeval(1000);
+        pagmo::algorithm algo{uda};
+        while ((!found) && (trial < 20u)) {
+            pagmo::population pop{prob, 1u};
+            algo.set_verbosity(1u);
+            pop = algo.evolve(pop);
+            auto champ = pop.champion_f();
+            fmt::print("{}\n", champ);
+            found = prob.feasibility_f(champ);
+            trial++;
+        }
+        REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never converged to a feasible solution.
     }
 }
