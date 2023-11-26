@@ -12,5 +12,6 @@ dependencies:
   - spdlog
   - xtensor
   - xtensor-blas
+  - pagmo-devel
 
 
