@@ -28,3 +28,6 @@ jpl_lp.__module__ = "udpla"
 vsop2013 = core._vsop2013
 vsop2013.__name__ = "vsop2013"
 vsop2013.__module__ = "udpla"
+
+# Removing core from the list of imported symbols.
+del core

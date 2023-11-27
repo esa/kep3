@@ -27,7 +27,7 @@ cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_
 cmake --build . --target=install --config=Release -- -j 2
 
 # We get out of build as to test the global installation
-cd ../../
+cd /
 python -c "import pykep.test; pykep.test.run_test_suite()"
 
 # Build the documentation.

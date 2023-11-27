@@ -8,3 +8,14 @@
 """
 Various types of interplanetary trajectory legs
 """
+from .. import core
+
+# Renaming cpp legs (we need to create an alias first and then 
+# to fool sphinx into thinking these are not aliases, else the sphinx built docs
+# would report them as aliases and fail to document these classes)
+sims_flanagan = core._sims_flanagan
+sims_flanagan.__name__ = "sims_flanagan"
+sims_flanagan.__module__ = "leg"
+
+# Removing core from the list of imported symbols.
+del core
