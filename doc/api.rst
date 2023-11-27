@@ -9,6 +9,7 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    :maxdepth: 2
    :caption: Contents
 
+   anomalies
    constants
    elements
    epoch
