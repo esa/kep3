@@ -1224,4 +1224,57 @@ std::string propagate_lagrangian_v_docstring()
 )";
 }
 
+std::string leg_sf_docstring()
+{
+    return "";
+};
+std::string leg_sf_rvs_docstring()
+{
+    return "";
+};
+std::string leg_sf_ms_docstring()
+{
+    return "";
+};
+std::string leg_sf_throttles_docstring()
+{
+    return "";
+};
+std::string leg_sf_rvf_docstring()
+{
+    return "";
+};
+std::string leg_sf_mf_docstring()
+{
+    return "";
+};
+std::string leg_sf_tof_docstring()
+{
+    return "";
+};
+std::string leg_sf_max_thrust_docstring()
+{
+    return "";
+};
+std::string leg_sf_isp_docstring()
+{
+    return "";
+};
+std::string leg_sf_mu_docstring()
+{
+    return "";
+};
+std::string leg_sf_cut_docstring()
+{
+    return "";
+};
+std::string leg_sf_m_con_docstring()
+{
+    return "";
+};
+std::string leg_sf_t_con_docstring()
+{
+    return "";
+};
+
 } // namespace pykep

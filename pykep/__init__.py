@@ -34,6 +34,7 @@ if _os.name == "posix":
     try:
         # Importing cpp functionalities
         from .core import *
+        from . import core
     finally:
         # Restore the original dlopen flags whatever
         # happens.
@@ -45,6 +46,8 @@ if _os.name == "posix":
 else:
     # Importing cpp functionalities
     from .core import *
+    from . import core
+
 
 del _os
 
@@ -72,8 +75,8 @@ from . import leg
 # to fool sphinx into thinking these are not aliases, else the sphinx built docs
 # would report them as aliases and fail to document these classes)
 leg.sims_flanagan = core._sims_flanagan
-udpla.sims_flanagan.__name__ = "sims_flanagan"
-udpla.sims_flanagan.__module__ = "leg"
+leg.sims_flanagan.__name__ = "sims_flanagan"
+leg.sims_flanagan.__module__ = "leg"
 
 # Importing the python utils
 from .utils import *
