@@ -2,8 +2,7 @@ import pykep as _pk
 import numpy as _np
 
 def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
-    """
-    Add Lambert's problem solution trajectory to a 3D matplotlib Axes.
+    """Add Lambert's problem solution trajectory to a 3D matplotlib Axes.
 
     Args:
         *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): The 3D Axes object to which the trajectory will be added.
@@ -16,7 +15,7 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
 
         *units* (:class:`float`, optional): The unit conversion factor for plotting. Default is _pk.AU.
 
-        * **kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Raises:
         ValueError: If the specified solution index (sol) is greater than twice the maximum number of revolutions (Nmax).
