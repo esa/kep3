@@ -1112,6 +1112,7 @@ theory (https://en.wikipedia.org/wiki/VSOP_model).
 
 Args:
     *body* (:class:`str`): the name of the solar system planet.
+
     *thresh* (:class:`float`): the truncation threshold for the theory's coefficients.
 
 Examples:
@@ -1226,55 +1227,95 @@ std::string propagate_lagrangian_v_docstring()
 
 std::string leg_sf_docstring()
 {
-    return "";
-};
+    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5)
+
+      This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
+      The low-thrust transfer is described by a sequence of equally spaced impulses as described in:
+
+      Sims, J., Finlayson, P., Rinderle, E., Vavrina, M. and Kowalkowski, T., 2006, August. Implementation of a low-thrust trajectory optimization algorithm for preliminary design. 
+      In AIAA/AAS Astrodynamics specialist conference and exhibit (p. 6746).
+
+      The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
+
+      Args:
+          *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
+
+          *ms* (:class:`float`): initial mass. Defaults to 1.
+
+          *throttles* (1D array-like): the Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....]. Defaults to a ballistic, two segments profile [0,0,0,0,0,0].
+
+          *rvf* (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].
+
+          *mf* (:class:`float`): final mass. Defaults to 1.
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
+
+          *isp* (:class:`float`): specific impulse of the propulasion system. Defaults to 1.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *cut* (:class:`float`): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.
+
+      .. note::
+
+        Units need to be consistent. 
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf = pk.leg.sims_flanagan()
+        >>> sf.compute_mismatch_constraints()
+)";
+}
 std::string leg_sf_rvs_docstring()
 {
-    return "";
+    return "The initial position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].";
 };
 std::string leg_sf_ms_docstring()
 {
-    return "";
+    return "Initial mass.";
 };
 std::string leg_sf_throttles_docstring()
 {
-    return "";
+    return "The Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....].";
 };
 std::string leg_sf_rvf_docstring()
 {
-    return "";
+    return "The final position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].";
 };
 std::string leg_sf_mf_docstring()
 {
-    return "";
+    return "Final mass.";
 };
 std::string leg_sf_tof_docstring()
 {
-    return "";
+    return "Time of flight.";
 };
 std::string leg_sf_max_thrust_docstring()
 {
-    return "";
+    return "Maximum spacecraft thruet.";
 };
 std::string leg_sf_isp_docstring()
 {
-    return "";
+    return "Specific impulse of the propulasion system";
 };
 std::string leg_sf_mu_docstring()
 {
-    return "";
+    return "Central body gravitational parameter.";
 };
 std::string leg_sf_cut_docstring()
 {
-    return "";
+    return "The leg cut: it determines the number of forward and backward segments.";
 };
 std::string leg_sf_m_con_docstring()
 {
-    return "";
+    return "Computes the state mismatch constraints. (equality constraints)";
 };
 std::string leg_sf_t_con_docstring()
 {
-    return "";
+    return "Computes the throttle constraints. (inequality constraints)";
 };
 
 } // namespace pykep

@@ -10,11 +10,11 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    :caption: Contents
 
    constants
-   anomalies
    elements
    epoch
    lambert
+   leg
    planet
-   udplas
-   propagation
    plot
+   propagation
+   udpla

@@ -8,6 +8,7 @@
 
 # Version setup.
 from ._version import __version__
+
 del _version
 
 import os as _os
@@ -34,7 +35,6 @@ if _os.name == "posix":
     try:
         # Importing cpp functionalities
         from .core import *
-        from . import core
     finally:
         # Restore the original dlopen flags whatever
         # happens.
@@ -46,8 +46,6 @@ if _os.name == "posix":
 else:
     # Importing cpp functionalities
     from .core import *
-    from . import core
-
 
 del _os
 
@@ -56,7 +54,6 @@ from . import udpla
 
 # Importing trajectory legs udplas
 from . import leg
-
 
 # Importing the python utils
 from .utils import *
