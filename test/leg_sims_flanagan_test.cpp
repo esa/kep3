@@ -75,34 +75,53 @@ TEST_CASE("constructor")
 
 TEST_CASE("getters_and_setters")
 {
-    kep3::leg::sims_flanagan sf{};
-    std::array<std::array<double, 3>, 2> rvf{{{1, 1, 1}, {1, 1, 1}}};
-    double mass = 123.;
-    sf.set_rvf(rvf);
-    REQUIRE(sf.get_rvf() == rvf);
-    sf.set_ms(mass);
-    REQUIRE(sf.get_ms() == mass);
-    sf.set_rvs(rvf);
-    REQUIRE(sf.get_rvs() == rvf);
-    sf.set_mf(mass);
-    REQUIRE(sf.get_mf() == mass);
-    std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
-    std::vector<double> throttles2{1.1, 2.1, 3.1, 1.1, 2.1, 3.1};
-    sf.set_throttles(throttles);
-    REQUIRE(sf.get_throttles() == throttles);
-    sf.set_throttles(throttles2.begin(), throttles2.end());
-    REQUIRE(sf.get_throttles() == throttles2);
-    REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
-    sf.set_cut(0.333);
-    REQUIRE(sf.get_cut() == 0.333);
-    sf.set_max_thrust(0.333);
-    REQUIRE(sf.get_max_thrust() == 0.333);
-    sf.set_isp(0.333);
-    REQUIRE(sf.get_isp() == 0.333);
-    sf.set_mu(0.333);
-    REQUIRE(sf.get_mu() == 0.333);
-    sf.set_tof(0.333);
-    REQUIRE(sf.get_tof() == 0.333);
+    {
+        kep3::leg::sims_flanagan sf{};
+        std::array<std::array<double, 3>, 2> rvf{{{1, 1, 1}, {1, 1, 1}}};
+        double mass = 123.;
+        sf.set_rvf(rvf);
+        REQUIRE(sf.get_rvf() == rvf);
+        sf.set_ms(mass);
+        REQUIRE(sf.get_ms() == mass);
+        sf.set_rvs(rvf);
+        REQUIRE(sf.get_rvs() == rvf);
+        sf.set_mf(mass);
+        REQUIRE(sf.get_mf() == mass);
+        std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
+        std::vector<double> throttles2{1.1, 2.1, 3.1, 1.1, 2.1, 3.1};
+        sf.set_throttles(throttles);
+        REQUIRE(sf.get_throttles() == throttles);
+        sf.set_throttles(throttles2.begin(), throttles2.end());
+        REQUIRE(sf.get_throttles() == throttles2);
+        REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
+        sf.set_cut(0.333);
+        REQUIRE(sf.get_cut() == 0.333);
+        sf.set_max_thrust(0.333);
+        REQUIRE(sf.get_max_thrust() == 0.333);
+        sf.set_isp(0.333);
+        REQUIRE(sf.get_isp() == 0.333);
+        sf.set_mu(0.333);
+        REQUIRE(sf.get_mu() == 0.333);
+        sf.set_tof(0.333);
+        REQUIRE(sf.get_tof() == 0.333);
+    }
+    {
+        kep3::leg::sims_flanagan sf{};
+        std::array<std::array<double, 3>, 2> rvf{{{1, 1, 1}, {1, 1, 1}}};
+        std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
+
+        sf.set(rvf, 12, throttles, rvf, 12, 4, 4, 4, 4, 0.333);
+        REQUIRE(sf.get_rvs() == rvf);
+        REQUIRE(sf.get_ms() == 12);
+        REQUIRE(sf.get_rvf() == rvf);
+        REQUIRE(sf.get_mf() == 12);
+        REQUIRE(sf.get_throttles() == throttles);
+        REQUIRE(sf.get_cut() == 0.333);
+        REQUIRE(sf.get_max_thrust() == 4);
+        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_mu() == 4);
+        REQUIRE(sf.get_tof() == 4);
+    }
 }
 
 TEST_CASE("compute_throttle_constraints_test")
@@ -193,7 +212,7 @@ TEST_CASE("compute_mismatch_constraints_test")
         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
                                // theres a problem somewhere.
     }
-{
+    {
         // Here we create an ALMOST ballistic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         auto rv1_modified = rv1;
@@ -217,7 +236,8 @@ TEST_CASE("compute_mismatch_constraints_test")
             found = prob.feasibility_f(champ);
             trial++;
         }
-        REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never converged to a feasible solution.
+        REQUIRE_FALSE(
+            !found); // If this does not pass, then the optimization above never converged to a feasible solution.
     }
 }
 
@@ -226,8 +246,8 @@ TEST_CASE("serialization_test")
     // Instantiate a generic lambert problem
     std::array<std::array<double, 3>, 2> rvs{{{-1, -1, -1}, {-1, -1, -1}}};
     std::array<std::array<double, 3>, 2> rvf{{{0.1, 1.1, 0.1}, {-1.1, 0.1, 0.1}}};
-    kep3::leg::sims_flanagan sf1{rvs, 12., {1,2,3,4,5,6}, rvf, 10,2.3,2.3,2.3,1.1,0.2};
-    
+    kep3::leg::sims_flanagan sf1{rvs, 12., {1, 2, 3, 4, 5, 6}, rvf, 10, 2.3, 2.3, 2.3, 1.1, 0.2};
+
     // Store the string representation.
     std::stringstream ss;
     auto before = boost::lexical_cast<std::string>(sf1);
