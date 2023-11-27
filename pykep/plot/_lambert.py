@@ -8,7 +8,7 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
     Args:
         *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): The 3D Axes object to which the trajectory will be added.
 
-        *lp* (:class:`~pykep.lamber_problem`): The Lambert's problem object containing relevant information.
+        *lp* (:class:`~pykep.lambert_problem`): The Lambert's problem object containing relevant information.
 
         *N* (:class:`int`, optional): The number of points to generate along the trajectory. Default is 60.
 

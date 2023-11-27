@@ -142,7 +142,8 @@ void sims_flanagan::set_cut(double cut)
     _check_cut(cut);
     m_cut = cut;
 }
-void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double>& throttles,
+void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
+                        const std::vector<double> &throttles,
                         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                         const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                         double isp, double mu, double cut)
@@ -256,9 +257,9 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     // where we propagate for -dt/2).
     for (decltype(m_throttles.size()) i = 0u; i < n_seg_bck; ++i) {
         // We compute the the dv
-        dv[0] = max_thrust / mass_bck * dt * m_throttles[3 * (i + n_seg_fwd)];
-        dv[1] = max_thrust / mass_bck * dt * m_throttles[3 * (i + n_seg_fwd) + 1];
-        dv[2] = max_thrust / mass_bck * dt * m_throttles[3 * (i + n_seg_fwd) + 2];
+        dv[0] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 2];
+        dv[1] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 1];
+        dv[2] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i];
         // Subtract it (remember we are going backward) to the current spacecraft velocity
         rv_bck[1][0] -= dv[0];
         rv_bck[1][1] -= dv[1];
