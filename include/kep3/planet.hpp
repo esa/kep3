@@ -31,17 +31,20 @@
 
 #undef TANUKI_WITH_BOOST_S11N
 
-namespace kep3::detail
+namespace kep3
+{
+
+namespace detail
 {
 
 // Concepts to detect whether user classes have certain methods implemented.
 #define KEP3_UDPLA_CONCEPT_HAS_GET(name, type)                                                                         \
     template <typename T>                                                                                              \
     concept udpla_has_get_##name = requires(const T &p) {                                                              \
-                                       {                                                                               \
-                                           p.get_##name()                                                              \
-                                           } -> std::same_as<type>;                                                    \
-                                   }
+        {                                                                                                              \
+            p.get_##name()                                                                                             \
+        } -> std::same_as<type>;                                                                                       \
+    }
 
 KEP3_UDPLA_CONCEPT_HAS_GET(mu_central_body, double);
 KEP3_UDPLA_CONCEPT_HAS_GET(mu_self, double);
@@ -54,31 +57,31 @@ KEP3_UDPLA_CONCEPT_HAS_GET(extra_info, std::string);
 
 template <typename T>
 concept udpla_has_eph = requires(const T &p, double mjd2000) {
-                            {
-                                p.eph(mjd2000)
-                                } -> std::same_as<std::array<std::array<double, 3>, 2>>;
-                        };
+    {
+        p.eph(mjd2000)
+    } -> std::same_as<std::array<std::array<double, 3>, 2>>;
+};
 
 template <typename T>
 concept udpla_has_eph_v = requires(const T &p, const std::vector<double> &mjd2000) {
-                              {
-                                  p.eph_v(mjd2000)
-                                  } -> std::same_as<std::vector<double>>;
-                          };
+    {
+        p.eph_v(mjd2000)
+    } -> std::same_as<std::vector<double>>;
+};
 
 template <typename T>
 concept udpla_has_period = requires(const T &p, double mjd2000) {
-                               {
-                                   p.period(mjd2000)
-                                   } -> std::same_as<double>;
-                           };
+    {
+        p.period(mjd2000)
+    } -> std::same_as<double>;
+};
 
 template <typename T>
 concept udpla_has_elements = requires(const T &p, double mjd2000, kep3::elements_type el_t) {
-                                 {
-                                     p.elements(mjd2000, el_t)
-                                     } -> std::same_as<std::array<double, 6>>;
-                             };
+    {
+        p.elements(mjd2000, el_t)
+    } -> std::same_as<std::array<double, 6>>;
+};
 
 // Concept detecting if the type T can be used as a udpla.
 template <typename T>
@@ -246,17 +249,9 @@ private:
     void serialize(Archive &, unsigned){};
 };
 
-} // namespace kep3::detail
-
-// Make a def-constructed planet serialisable.
-TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
-
-namespace tanuki
-{
-
-// Implement the reference interface for the planet class.
+// Reference interface for the planet class.
 template <typename Wrap>
-struct ref_iface<Wrap, kep3::detail::planet_iface> {
+struct planet_ref_iface {
     TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
     TANUKI_REF_IFACE_MEMFUN(get_mu_self)
     TANUKI_REF_IFACE_MEMFUN(get_radius)
@@ -276,10 +271,7 @@ struct ref_iface<Wrap, kep3::detail::planet_iface> {
     }
 };
 
-} // namespace tanuki
-
-namespace kep3
-{
+} // namespace detail
 
 #if defined(__GNUC__)
 
@@ -289,7 +281,8 @@ namespace kep3
 #endif
 
 // Definition of the planet class.
-using planet = tanuki::wrap<detail::planet_iface, tanuki::config<detail::null_udpla>{.pointer_interface = false}>;
+using planet = tanuki::wrap<detail::planet_iface,
+                            tanuki::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
 
 #if defined(__GNUC__)
 
@@ -311,4 +304,7 @@ template <>
 struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
 };
 
+// Make a def-constructed planet serialisable.
+TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
 #endif // kep3_UDPLA_H
+
