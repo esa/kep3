@@ -71,6 +71,9 @@ public:
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
 
+    // Compute gradients (w.r.t. rvm state and w.r.t. throttles, tof)
+    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>> compute_mc_grad() const;
+
 private:
     friend class boost::serialization::access;
     template <class Archive>

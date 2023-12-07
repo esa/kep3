@@ -22,54 +22,24 @@
 #include <kep3/core_astro/kepler_equations.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/core_astro/stm.hpp>
-
-using xt::linalg::inv;
-using mat31 = xt::xtensor_fixed<double, xt::xshape<3, 1>>;
-using mat13 = xt::xtensor_fixed<double, xt::xshape<1, 3>>;
-using mat33 = xt::xtensor_fixed<double, xt::xshape<3, 3>>;
-using mat36 = xt::xtensor_fixed<double, xt::xshape<3, 6>>;
-using mat66 = xt::xtensor_fixed<double, xt::xshape<6, 6>>;
-using mat32 = xt::xtensor_fixed<double, xt::xshape<3, 2>>;
-using mat62 = xt::xtensor_fixed<double, xt::xshape<6, 2>>;
-using mat61 = xt::xtensor_fixed<double, xt::xshape<6, 1>>;
-using mat16 = xt::xtensor_fixed<double, xt::xshape<1, 6>>;
-using mat63 = xt::xtensor_fixed<double, xt::xshape<6, 3>>;
+#include <kep3/linalg.hpp>
 
 namespace kep3
 {
 
-// Linear algebra helpers to speed up xtensor when, small, fixed size matrices and vectors are involved
-// TODO(whoever): move somewhere else
-// ---------------------------------------------------------------------------------------
-template <std::size_t m, std::size_t k, std::size_t n>
-xt::xtensor_fixed<double, xt::xshape<m, n>> _dot(const xt::xtensor_fixed<double, xt::xshape<m, k>> &A,
-                                                 const xt::xtensor_fixed<double, xt::xshape<k, n>> &B)
-{
-    xt::xtensor_fixed<double, xt::xshape<m, n>> C{};
-    for (decltype(m) i = 0u; i < m; ++i) {
-        for (decltype(n) j = 0u; j < n; ++j) {
-            C(i, j) = 0;
-            for (decltype(k) l = 0u; l < k; ++l) {
-                {
-                    C(i, j) += A(i, l) * B(l, j);
-                }
-            }
-        }
-    }
-    return C;
-}
-
-mat33 _skew(const mat31 &v)
-{
-    return {{0., -v(2, 0), v(1, 0)}, {v(2, 0), 0., -v(0, 0)}, {-v(1, 0), v(0, 0), 0.}};
-}
-
-mat31 _cross(const mat31 &v1, const mat31 &v2)
-{
-    return {{v1(1, 0) * v2(2, 0) - v2(1, 0) * v1(2, 0), v2(0, 0) * v1(2, 0) - v1(0, 0) * v2(2, 0),
-             v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
-}
-// ---------------------------------------------------------------------------------------
+using xt::linalg::inv;
+using kep3::linalg::mat36;
+using kep3::linalg::mat16;
+using kep3::linalg::mat31;
+using kep3::linalg::mat66;
+using kep3::linalg::mat63;
+using kep3::linalg::mat32;
+using kep3::linalg::mat62;
+using kep3::linalg::mat61;
+using kep3::linalg::mat13;
+using kep3::linalg::_dot;
+using kep3::linalg::_cross;
+using kep3::linalg::_skew;
 
 // Here we take the lagrangian coefficient expressions for rf and vf as function of r0 and v0, and manually,
 // differentiate it to obtain the state transition matrix.

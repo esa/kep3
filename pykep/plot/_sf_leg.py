@@ -47,10 +47,10 @@ def add_sf_leg(
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
     """
     # We extract the number of segments from the leg.
-    n_seg = int(len(sf.throttles) / 3)
-    dt = sf.tof / n_seg
-    n_seg_fwd = int(n_seg * sf.cut)
-    n_seg_bck = n_seg - n_seg_fwd
+    nseg = int(len(sf.throttles) / 3)
+    dt = sf.tof / nseg
+    nseg_fwd = int(nseg * sf.cut)
+    nseg_bck = nseg - nseg_fwd
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     pos_fwd = []
@@ -61,7 +61,7 @@ def add_sf_leg(
     # Append to plotting  data
     pos_fwd.append(rv[0])
 
-    for i in range(n_seg_fwd):
+    for i in range(nseg_fwd):
         # compute the dv (first non dimensional)
         dv_vec = sf.throttles[3 * i : 3 * i + 3]
         throttles_fwd.append(dv_vec)
@@ -116,9 +116,9 @@ def add_sf_leg(
     # Append to plotting  data
     pos_bck.append(rv[0])
 
-    for i in range(n_seg_bck):
+    for i in range(nseg_bck):
         # compute the dv (first non dimensional)
-        dv_vec = sf.throttles[n_seg_fwd * 3 + 3 * i : n_seg_fwd * 3 + 3 * i + 3]
+        dv_vec = sf.throttles[nseg_fwd * 3 + 3 * i : nseg_fwd * 3 + 3 * i + 3]
         throttles_bck.append(dv_vec)
         dv = _np.linalg.norm(dv_vec)
         # plot it in a color that is proportional to the strength

@@ -15,13 +15,19 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
+#include <xtensor/xadapt.hpp>
+
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
+#include <kep3/linalg.hpp>
 
 namespace kep3::leg
 {
+
+//using kep3::linalg::_dot;
+
 void _check_tof(double tof)
 {
     if (tof < 0.) {
@@ -207,9 +213,9 @@ double sims_flanagan::get_cut() const
 std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 {
     // We start defining the number of forward and backward segments.
-    auto n_seg = m_throttles.size() / 3u;
-    auto n_seg_fwd = static_cast<unsigned>(static_cast<double>(n_seg) * m_cut);
-    auto n_seg_bck = n_seg - n_seg_fwd;
+    auto nseg = m_throttles.size() / 3u;
+    auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
+    auto nseg_bck = nseg - nseg_fwd;
 
     // We introduce some convenience variables
     double max_thrust = get_max_thrust();
@@ -221,14 +227,14 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     // Initial state
     std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
     double mass_fwd = get_mf();
-    double dt = m_tof / static_cast<double>(n_seg);
+    double dt = m_tof / static_cast<double>(nseg);
     // We propagate for a first dt/2 (only if there is at least one forward segment)
-    if (n_seg_fwd > 0) {
+    if (nseg_fwd > 0) {
         rv_fwd = propagate_lagrangian(rv_fwd, dt / 2, mu, false).first;
     }
     // We now loop through the forward segments and 1) add a dv + 2) propagate for dt (except on the last segment, where
     // we propagate for dt/2).
-    for (decltype(m_throttles.size()) i = 0u; i < n_seg_fwd; ++i) {
+    for (decltype(m_throttles.size()) i = 0u; i < nseg_fwd; ++i) {
         // We compute the the dv
         dv[0] = max_thrust / mass_fwd * dt * m_throttles[3 * i];
         dv[1] = max_thrust / mass_fwd * dt * m_throttles[3 * i + 1];
@@ -241,7 +247,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
         mass_fwd *= std::exp(-norm_dv / isp / kep3::G0);
         // Perform the propagation
-        double prop_duration = (i == n_seg_fwd - 1) ? dt / 2 : dt;
+        double prop_duration = (i == nseg_fwd - 1) ? dt / 2 : dt;
         rv_fwd = propagate_lagrangian(rv_fwd, prop_duration, mu, false).first;
     }
 
@@ -250,12 +256,12 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     std::array<std::array<double, 3>, 2> rv_bck(get_rvf());
     double mass_bck = get_mf();
     // We propagate for a first dt/2 (only if there is at least one backward segment)
-    if (n_seg_bck > 0) {
+    if (nseg_bck > 0) {
         rv_bck = propagate_lagrangian(rv_bck, -dt / 2, mu, false).first;
     }
     // We now loop through the backward segments and 1) add a dv + 2) propagate for -dt (except on the last segment,
     // where we propagate for -dt/2).
-    for (decltype(m_throttles.size()) i = 0u; i < n_seg_bck; ++i) {
+    for (decltype(m_throttles.size()) i = 0u; i < nseg_bck; ++i) {
         // We compute the the dv
         dv[0] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 2];
         dv[1] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 1];
@@ -268,7 +274,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
         mass_bck *= std::exp(norm_dv / isp / kep3::G0);
         // Perform the propagation
-        double prop_duration = (i == n_seg_bck - 1) ? -dt / 2 : -dt;
+        double prop_duration = (i == nseg_bck - 1) ? -dt / 2 : -dt;
         rv_bck = propagate_lagrangian(rv_bck, prop_duration, mu, false).first;
     }
     return {rv_fwd[0][0] - rv_bck[0][0], rv_fwd[0][1] - rv_bck[0][1], rv_fwd[0][2] - rv_bck[0][2],
@@ -278,23 +284,40 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 
 std::vector<double> sims_flanagan::compute_throttle_constraints() const
 {
-    auto n_seg = m_throttles.size() / 3u;
-    std::vector<double> retval(n_seg);
-    for (decltype(m_throttles.size()) i = 0u; i < n_seg; ++i) {
+    auto nseg = m_throttles.size() / 3u;
+
+    std::vector<double> retval(nseg);
+    for (decltype(m_throttles.size()) i = 0u; i < nseg; ++i) {
         retval[i] = m_throttles[3 * i] * m_throttles[3 * i] + m_throttles[3 * i + 1] * m_throttles[3 * i + 1]
                     + m_throttles[3 * i + 2] * m_throttles[3 * i + 2] - 1.;
     }
     return retval;
 }
 
+std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
+{
+    // Preliminaries
+    auto nseg = m_throttles.size() / 3u;
+    //auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
+    //auto nseg_bck = nseg - nseg_fwd;
+    //auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
+    //auto a = 1. / m_isp / kep3::G0;                            // 1/veff
+    //auto dt = m_tof / static_cast<double>(nseg);               // dt
+
+    // Allocate the return values
+    std::array<double, 49> grad_rvm{};          // The mismatch constraints gradient w.r.t. extended state r,v,m
+    std::vector<double> grad(nseg * 3 + 1, 0.); // The mismatch constraints gradient w.r.t. throttles and tof
+    return {grad_rvm, grad};
+}
+
 std::ostream &operator<<(std::ostream &s, const sims_flanagan &sf)
 {
-    auto n_seg = sf.get_throttles().size() / 3u;
-    auto n_seg_fwd = static_cast<unsigned>(static_cast<double>(n_seg) * sf.get_cut());
-    auto n_seg_bck = n_seg - n_seg_fwd;
-    s << fmt::format("Number of segments: {}\n", n_seg);
-    s << fmt::format("Number of fwd segments: {}\n", n_seg_fwd);
-    s << fmt::format("Number of bck segments: {}\n", n_seg_bck);
+    auto nseg = sf.get_throttles().size() / 3u;
+    auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * sf.get_cut());
+    auto nseg_bck = nseg - nseg_fwd;
+    s << fmt::format("Number of segments: {}\n", nseg);
+    s << fmt::format("Number of fwd segments: {}\n", nseg_fwd);
+    s << fmt::format("Number of bck segments: {}\n", nseg_bck);
     s << fmt::format("Maximum thrust: {}\n", sf.get_max_thrust());
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
     s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());
