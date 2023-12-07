@@ -241,6 +241,20 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
+TEST_CASE("grad_test")
+{
+    std::array<std::array<double, 3>, 2> rvs{
+        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
+         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+    std::array<std::array<double, 3>, 2> rvf{
+        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
+         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+    kep3::leg::sims_flanagan sf(
+        rvs, 1500., {0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01}, rvf,
+        1500, 27993600.0, 0.01, 3000, kep3::MU_SUN, 1.);
+    sf.compute_mc_grad();
+}
+
 TEST_CASE("serialization_test")
 {
     // Instantiate a generic lambert problem

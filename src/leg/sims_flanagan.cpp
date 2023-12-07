@@ -16,6 +16,10 @@
 #include <fmt/ranges.h>
 
 #include <xtensor/xadapt.hpp>
+#include <xtensor/xarray.hpp>
+#include <xtensor/xbuilder.hpp>
+#include <xtensor/xio.hpp>
+#include <xtensor/xmath.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
@@ -26,7 +30,10 @@
 namespace kep3::leg
 {
 
-//using kep3::linalg::_dot;
+using kep3::linalg::_dot;
+using kep3::linalg::mat13;
+using kep3::linalg::mat61;
+using kep3::linalg::mat66;
 
 void _check_tof(double tof)
 {
@@ -294,15 +301,86 @@ std::vector<double> sims_flanagan::compute_throttle_constraints() const
     return retval;
 }
 
+mat61 _dyn(std::array<std::array<double, 3>, 2> rv, double mu)
+{
+    mat61 retval;
+    auto R3 = std::pow(rv[0][0] * rv[0][0] + rv[0][1] * rv[0][1] + rv[0][2] * rv[0][2], 1.5);
+    retval(0, 0) = rv[1][0];
+    retval(1, 0) = rv[1][1];
+    retval(2, 0) = rv[1][2];
+    retval(3, 0) = -mu / R3 * rv[0][0];
+    retval(4, 0) = -mu / R3 * rv[0][1];
+    retval(5, 0) = -mu / R3 * rv[0][2];
+    return retval;
+}
+
 std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
     auto nseg = m_throttles.size() / 3u;
-    //auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
-    //auto nseg_bck = nseg - nseg_fwd;
-    //auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
-    //auto a = 1. / m_isp / kep3::G0;                            // 1/veff
-    //auto dt = m_tof / static_cast<double>(nseg);               // dt
+    const auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
+    const auto nseg_bck = nseg - nseg_fwd;
+    const auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
+    const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
+    const auto dt = m_tof / static_cast<double>(nseg);               // dt
+
+    // Forward computation
+    // Allocate memory.
+    std::vector<mat13> u(nseg_fwd);
+    std::vector<xt::xarray<double>> du(nseg_fwd, xt::zeros<double>({3u, nseg_fwd * 3u + 2u}));
+    std::vector<double> m(nseg_fwd + 1, 0.);
+    std::vector<xt::xarray<double>> dm(nseg_fwd + 1u, xt::zeros<double>({1u, nseg_fwd * 3u + 2u}));
+    xt::xarray<double> dtof = xt::zeros<double>({1u, nseg_fwd * 3u + 2u});
+    std::vector<mat13> Dv(nseg_fwd);
+    std::vector<xt::xarray<double>> dDv(nseg_fwd, xt::zeros<double>({3u, nseg_fwd * 3u + 2u}));
+    std::vector<mat66> M(nseg_fwd+1);
+    std::vector<mat61> f(nseg_fwd + 1, xt::zeros<double>({6u, 1u}));
+    // Initialize values
+    m[0] = m_ms;
+    for (decltype(m_throttles.size()) i = 0; i < nseg_fwd; ++i) {
+        u[i](0, 0) = m_throttles[3 * i];
+        u[i](0, 1) = m_throttles[3lu * i + 1lu];
+        u[i](0, 2) = m_throttles[3lu * i + 2lu];
+        du[i](0, 3 * i) = 1.;
+        du[i](1, 3 * i + 1) = 1.;
+        du[i](2, 3 * i + 2) = 1.;
+    }
+    dm[0](0, nseg_fwd * 3u) = 1.;
+    dtof(0, nseg_fwd * 3u + 1) = 1.;
+    // We compute the mass schedule and related quantities
+    for (decltype(m_throttles.size()) i = 0; i < nseg_fwd; ++i) {
+        Dv[i] = c / m[i] * u[i];
+        double un = std::sqrt(u[i](0, 0) * u[i](0, 0) + u[i](0, 1) * u[i](0, 1) + u[i](0, 2) * u[i](0, 2));
+        double Dvn = c / m[i] * un;
+        dDv[i] = c / m[i] * du[i] - c / m[i] / m[i] * xt::linalg::dot(xt::transpose(u[i]), dm[i])
+                 + m_max_thrust / m[i] * xt::linalg::dot(xt::transpose(u[i]), dtof) / nseg_fwd;
+        auto dDvn = c / m[i] / un * xt::linalg::dot(u[i], du[i]) - c / m[i] / m[i] * un * dm[i]
+                    + m_max_thrust / m[i] * un * dtof / nseg_fwd;
+        m[i + 1] = m[i] * std::exp(-Dvn * a);
+        dm[i + 1] = -m[i + 1] * a * dDvn + std::exp(-Dvn * a) * dm[i];
+    }
+    // We compute the various STMs
+    std::array<std::array<double, 3>, 2> rv_it(get_rvs());
+    fmt::print("{}", dt);
+    std::optional<std::array<double, 36>> M_it;
+    for (decltype(m_throttles.size()) i = 0; i < nseg_fwd + 1; ++i) {
+        auto dur = dt;
+        if (i==0 || i==nseg_fwd) {
+            dur=dt/2;
+        }
+        std::tie(rv_it, M_it) = kep3::propagate_lagrangian(rv_it, dur, m_mu, true);
+        // Now we have the STM in M_it, but its a vector, we must operate on an xtensor object instead.
+        assert(M_it);
+        // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+        M[i] = xt::adapt(*M_it, {6, 6});
+        f[i] = _dyn(rv_it, m_mu);
+        // And add the impulse if needed
+        if (i < nseg_fwd) {
+            rv_it[1][0] += Dv[i](0, 0);
+            rv_it[1][1] += Dv[i](0, 1);
+            rv_it[1][2] += Dv[i](0, 2);
+        }
+    }
 
     // Allocate the return values
     std::array<double, 49> grad_rvm{};          // The mismatch constraints gradient w.r.t. extended state r,v,m
