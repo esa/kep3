@@ -73,8 +73,14 @@ public:
 
     // Compute gradients (w.r.t. rvm state and w.r.t. throttles, tof)
     [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>> compute_mc_grad() const;
+    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>> compute_mc_grad2() const;
 
 private:
+    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
+    _single_shooting(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                     const std::array<std::array<double, 3>, 2> &rvs, double ms, unsigned nseg, double c, double a,
+                     double dt) const;
+
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)

@@ -250,9 +250,11 @@ TEST_CASE("grad_test")
         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
     kep3::leg::sims_flanagan sf(
-        rvs, 1500., {0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01}, rvf,
+        rvs, 1500., {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024}, rvf,
         1500, 27993600.0, 0.01, 3000, kep3::MU_SUN, 1.);
     sf.compute_mc_grad();
+    sf.compute_mc_grad();
+
 }
 
 TEST_CASE("serialization_test")

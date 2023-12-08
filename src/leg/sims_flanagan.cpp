@@ -8,9 +8,12 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <array>
+#include <functional>
 #include <iomanip>
 #include <iterator>
 #include <vector>
+
+#include <boost/range/algorithm.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -316,12 +319,169 @@ mat61 _dyn(std::array<std::array<double, 3>, 2> rv, double mu)
     return retval;
 }
 
+// Performs the state updates for nseg sarting from rvs, ms. Computes all gradient information
+std::pair<std::array<double, 49>, std::vector<double>>
+sims_flanagan::_single_shooting(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                const std::array<std::array<double, 3>, 2> &rvs, double ms, unsigned nseg, double c,
+                                double a, double dt) const
+{
+    assert(std::distance(th1, th2) / 3 == nseg);
+
+    // Allocate memory.
+    std::vector<mat13> u(nseg);
+    std::vector<xt::xarray<double>> du(nseg, xt::zeros<double>({3u, nseg * 3u + 2u}));
+    std::vector<double> m(nseg + 1, 0.);
+    std::vector<xt::xarray<double>> dm(nseg + 1u, xt::zeros<double>({1u, nseg * 3u + 2u}));
+    xt::xarray<double> dtof = xt::zeros<double>({1u, nseg * 3u + 2u});
+    std::vector<mat13> Dv(nseg);
+    std::vector<xt::xarray<double>> dDv(nseg, xt::zeros<double>({3u, nseg * 3u + 2u}));
+    std::vector<mat66> M(nseg + 1);  // The STMs
+    std::vector<mat66> Mc(nseg + 1); // Mc will contain [Mn@..@M0,Mn@..@M1, Mn]
+    std::vector<mat61> f(nseg + 1, xt::zeros<double>({6u, 1u}));
+    // Initialize values
+    m[0] = ms;
+    unsigned i = 0u;
+    for (auto it = th1; it != th2; it += 3) {
+        u[i](0, 0) = *it;
+        u[i](0, 1) = *(it + 1);
+        u[i](0, 2) = *(it + 2);
+        du[i](0, 3 * i) = 1.;
+        du[i](1, 3 * i + 1) = 1.;
+        du[i](2, 3 * i + 2) = 1.;
+        i++;
+    }
+    dm[0](0, nseg * 3u) = 1.;
+    dtof(0, nseg * 3u + 1) = 1.;
+    // 1 - We compute the mass schedule and related gradients
+    for (decltype(nseg) i = 0; i < nseg; ++i) {
+        Dv[i] = c / m[i] * u[i];
+        double un = std::sqrt(u[i](0, 0) * u[i](0, 0) + u[i](0, 1) * u[i](0, 1) + u[i](0, 2) * u[i](0, 2));
+        double Dvn = c / m[i] * un;
+        dDv[i] = c / m[i] * du[i] - c / m[i] / m[i] * xt::linalg::dot(xt::transpose(u[i]), dm[i])
+                 + m_max_thrust / m[i] * xt::linalg::dot(xt::transpose(u[i]), dtof) / nseg;
+        auto dDvn = c / m[i] / un * xt::linalg::dot(u[i], du[i]) - c / m[i] / m[i] * un * dm[i]
+                    + m_max_thrust / m[i] * un * dtof / nseg;
+        m[i + 1] = m[i] * std::exp(-Dvn * a);
+        dm[i + 1] = -m[i + 1] * a * dDvn + std::exp(-Dvn * a) * dm[i];
+    }
+    // 2 - We compute the various STMs
+    std::array<std::array<double, 3>, 2> rv_it(rvs);
+    std::optional<std::array<double, 36>> M_it;
+    for (decltype(nseg) i = 0; i < nseg + 1; ++i) {
+        auto dur = dt;
+        if (i == 0 || i == nseg) {
+            dur = dt / 2;
+        }
+        std::tie(rv_it, M_it) = kep3::propagate_lagrangian(rv_it, dur, m_mu, true);
+        // Now we have the STM in M_it, but its a vector, we must operate on an xtensor object instead.
+        assert(M_it);
+        // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+        M[i] = xt::adapt(*M_it, {6, 6});
+        f[i] = _dyn(rv_it, m_mu);
+        // And add the impulse if needed
+        if (i < nseg) {
+            rv_it[1][0] += Dv[i](0, 0);
+            rv_it[1][1] += Dv[i](0, 1);
+            rv_it[1][2] += Dv[i](0, 2);
+        }
+    }
+    // 3 - We now need to apply the chain rule to assemble the gradients we want (i.e. not w.r.t DV but w.r.t. u etc...)
+    mat63 Iv = xt::zeros<double>({6u, 3u}); // This is the gradient of x (rv) w.r.t. v
+    Iv(3, 0) = 1.;
+    Iv(4, 1) = 1.;
+    Iv(5, 2) = 1.;
+    Mc[nseg] = M[nseg]; // Mc will contain [Mn@..@M0,Mn@..@M1, Mn]
+    for (decltype(nseg) i = 1; i < nseg + 1; ++i) {
+        Mc[nseg - i] = _dot(Mc[nseg - i + 1], M[nseg - i]);
+    }
+    // grad_tof./
+    // First the d/dtof term - example: (0.5 * f3 + M3 @ f2 + M3 @ M2 @ f1 + 0.5 * M3 @ M2 @ M1 @ f0) / N
+    mat61 grad_tof = 0.5 * f[nseg];
+    for (decltype(nseg) i = 0; i < nseg - 1; ++i) {
+        grad_tof += _dot(Mc[i + 2], f[i + 1]);
+    }
+    grad_tof += 0.5 * _dot(Mc[1], f[0]);
+    grad_tof /= nseg;
+    // Then we add the d/Dvi * dDvi/dtof - example: M3 @ Iv @ dDv2 + M3 @ M2 @ Iv @ dDv1 + M3 @ M2 @ M1 @ Iv @ dDv0
+    for (decltype(nseg) i = 0; i < nseg; ++i) {
+        grad_tof += xt::linalg::dot(_dot(Mc[i + 1], Iv),
+                                    xt::eval(xt::view(dDv[i], xt::all(), xt::range(nseg * 3 + 1, nseg * 3 + 2))));
+    }
+    // grad_u
+    xt::xarray<double> grad_u = xt::zeros<double>({6u, nseg * 3u});
+    for (decltype(nseg) i = 0u; i < nseg; ++i) {
+        grad_u += xt::linalg::dot(_dot(Mc[i + 1], Iv), xt::eval(xt::view(dDv[i], xt::all(), xt::range(0, nseg * 3))));
+    }
+    // grad_ms
+    xt::xarray<double> grad_ms = xt::zeros<double>({6u, 1u});
+    for (decltype(nseg) i = 0u; i < nseg; ++i) {
+        grad_ms += xt::linalg::dot(_dot(Mc[i + 1], Iv),
+                                   xt::eval(xt::view(dDv[i], xt::all(), xt::range(nseg * 3, nseg * 3 + 1))));
+    }
+    // grad_xs
+    mat66 grad_xs = Mc[0];
+
+    // Allocate the return values
+    std::array<double, 49> grad_rvm{}; // The mismatch constraints gradient w.r.t. extended state r,v,m
+    std::vector<double> grad((nseg * 3lu + 1) * 7,
+                             0.); // The mismatch constraints gradient w.r.t. throttles and tof
+    // Copying in the computed derivatives
+    // a) xgrad (the xtensof gradient w.r.t. throttles and tof)
+    auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
+    auto xgrad = xt::adapt(grad, {7u, nseg * 3 + 1u});
+    xt::view(xgrad, xt::range(0u, 6u), xt::range(0u, nseg * 3u)) = grad_u;
+    xt::view(xgrad, xt::range(0u, 6u), xt::range(nseg * 3, nseg * 3 + 1)) = grad_tof;
+    xt::view(xgrad, xt::range(6u, 7u), xt::all()) = xt::view(dm[nseg], xt::all(), xt::range(0u, nseg * 3 + 1));
+    // At this point since the variable order is u,m,tof we have put dmf/dms in rather than dms/dtof. So we fix this.
+    xgrad(6u, nseg * 3) = dm[nseg](0, nseg * 3 + 1);
+    // b) xgrad_rvm (the xtensor gradient w.r.t. the initial conditions)
+    xt::view(xgrad_rvm, xt::range(0, 6), xt::range(0, 6)) = grad_xs;
+    xt::view(xgrad_rvm, xt::range(0, 6), xt::range(6, 7)) = grad_ms;
+    xgrad_rvm(6, 6) = dm[nseg](0, nseg * 3);
+    xt::print_options::set_precision(12);
+    std::cout << xgrad_rvm << std::endl;
+    return {grad_rvm, grad};
+}
+
 std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
     auto nseg = m_throttles.size() / 3u;
     const auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
-    const auto nseg_bck = nseg - nseg_fwd;
+    const auto nseg_bck = static_cast<unsigned>(nseg - nseg_fwd);
+    const auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
+    const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
+    const auto dt = m_tof / static_cast<double>(nseg);               // dt
+
+    // We perform the computation forward in time
+    auto retval_fwd = _single_shooting(m_throttles.begin(), m_throttles.begin() + static_cast<unsigned>(3 * nseg_fwd),
+                                       get_rvs(), get_ms(), nseg_fwd, c, a, dt);
+
+    // For the backward computations we assume a forward computation from mf, inverting 1) the starting velocity, 2) the
+    // various DVs, 3) the Isp Lets start changing the velocity
+    auto rvf = get_rvf();
+    rvf[1][0] = -rvf[1][0];
+    rvf[1][1] = -rvf[1][1];
+    rvf[1][1] = -rvf[1][1];
+    // Then the throttles
+    std::vector<double> reversed_throttles(get_throttles().size());
+    std::reverse_copy(std::begin(get_throttles()), std::end(get_throttles()), std::begin(reversed_throttles));
+    std::transform(reversed_throttles.cbegin(), reversed_throttles.cend(), reversed_throttles.begin(),
+                   std::negate<double>());
+    auto retval_bck
+        = _single_shooting(reversed_throttles.begin(), reversed_throttles.begin() + static_cast<unsigned>(3 * nseg_bck),
+                           rvf, get_mf(), nseg_bck, c, -a, dt);
+    // TODO(darioizzo) subtract retval_bck and return
+    return retval_fwd;
+}
+
+std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad2() const
+{
+    // Preliminaries
+    auto nseg = m_throttles.size() / 3u;
+    const auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
+    const auto nseg_bck = static_cast<unsigned>(nseg - nseg_fwd);
     const auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
     const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
     const auto dt = m_tof / static_cast<double>(nseg);               // dt
@@ -362,6 +522,7 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc
         m[i + 1] = m[i] * std::exp(-Dvn * a);
         dm[i + 1] = -m[i + 1] * a * dDvn + std::exp(-Dvn * a) * dm[i];
     }
+    std::cout << dm[5] << std::endl;
     // 2 - We compute the various STMs
     std::array<std::array<double, 3>, 2> rv_it(get_rvs());
     fmt::print("{}", dt);
@@ -393,7 +554,7 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc
     for (decltype(m_throttles.size()) i = 1; i < nseg_fwd + 1; ++i) {
         Mc[nseg_fwd - i] = _dot(Mc[nseg_fwd - i + 1], M[nseg_fwd - i]);
     }
-    // grad_tof
+    // grad_tof./
     // First the d/dtof term - example: (0.5 * f3 + M3 @ f2 + M3 @ M2 @ f1 + 0.5 * M3 @ M2 @ M1 @ f0) / N
     mat61 grad_tof = 0.5 * f[nseg_fwd];
     for (decltype(m_throttles.size()) i = 0; i < nseg_fwd - 1; ++i) {
@@ -438,6 +599,8 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc
     xt::view(xgrad_rvm, xt::range(0, 6), xt::range(0, 6)) = grad_xs;
     xt::view(xgrad_rvm, xt::range(0, 6), xt::range(6, 7)) = grad_ms;
     xgrad_rvm(6, 6) = dm[nseg_fwd](0, nseg_fwd * 3);
+    xt::print_options::set_precision(12);
+    std::cout << xgrad_rvm << std::endl;
     return {grad_rvm, grad};
 }
 
