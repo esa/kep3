@@ -11,7 +11,7 @@
 #include <functional>
 #include <iomanip>
 #include <iterator>
-#include <vector>
+#include <vector> 
 
 #include <boost/range/algorithm.hpp>
 
@@ -238,7 +238,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     // Forward pass
     // Initial state
     std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
-    double mass_fwd = get_mf();
+    double mass_fwd = get_ms();
     double dt = m_tof / static_cast<double>(nseg);
     // We propagate for a first dt/2 (only if there is at least one forward segment)
     if (nseg_fwd > 0) {
@@ -439,7 +439,7 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::gradients_
     std::vector<double> grad((nseg * 3lu + 1) * 7,
                              0.); // The mismatch constraints gradient w.r.t. throttles and tof
     // Copying in the computed derivatives
-    // a) xgrad (the xtensof gradient w.r.t. throttles and tof)
+    // a) xgrad (the xtensor gradient w.r.t. throttles and tof)
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
     auto xgrad = xt::adapt(grad, {7u, nseg * 3 + 1u});
     xt::view(xgrad, xt::range(0u, 6u), xt::range(0u, nseg * 3u)) = grad_u;

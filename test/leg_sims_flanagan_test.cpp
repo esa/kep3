@@ -9,7 +9,7 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <utility>
+#include <utility> 
 #include <vector>
 
 #include <fmt/core.h>
@@ -143,7 +143,7 @@ std::array<double, 7> normalize_con(std::array<double, 7> con)
     con[3] /= kep3::EARTH_VELOCITY;
     con[4] /= kep3::EARTH_VELOCITY;
     con[5] /= kep3::EARTH_VELOCITY;
-    con[6] /= 1.;
+    con[6] /= 1000;
     return con;
 }
 
@@ -201,7 +201,7 @@ TEST_CASE("compute_mismatch_constraints_test")
             algo.set_verbosity(1u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
-
+            fmt::print("{}\n", champ);
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
@@ -232,8 +232,10 @@ TEST_CASE("compute_mismatch_constraints_test")
             algo.set_verbosity(1u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
-            fmt::print("{}\n", champ);
             found = prob.feasibility_f(champ);
+            if (found) {
+                fmt::print("{}\n", champ);
+            }
             trial++;
         }
         REQUIRE_FALSE(
@@ -250,15 +252,12 @@ TEST_CASE("grad_test")
     std::array<std::array<double, 3>, 2> rvf{
         {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
          {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
-   
-    std::vector<double> throttles = {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024};
-    kep3::leg::sims_flanagan sf(
-        rvs, 1500., throttles, rvf,
-        1300, 324.0 * kep3::DAY2SEC, 0.01, 3000, kep3::MU_SUN, 0.6);
-        
-    auto retval = sf.compute_mc_grad();
-    
 
+    std::vector<double> throttles
+        = {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024};
+    kep3::leg::sims_flanagan sf(rvs, 1500., throttles, rvf, 1300, 324.0 * kep3::DAY2SEC, 0.01, 3000, kep3::MU_SUN, 0.6);
+
+    auto retval = sf.compute_mc_grad();
 }
 
 TEST_CASE("serialization_test")
