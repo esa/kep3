@@ -10,6 +10,7 @@
 #ifndef kep3_TEST_LEG_SIMS_FLANAGAN_UDP_H
 #define kep3_TEST_LEG_SIMS_FLANAGAN_UDP_H
 
+#include "kep3/core_astro/constants.hpp"
 #include <array>
 #include <vector>
 
@@ -28,25 +29,25 @@ struct sf_test_udp {
 
     [[nodiscard]] std::vector<double> fitness(const std::vector<double> &x) const
     {
-        // x = [tof (in days), mf (in kg), throttles]
+        // x = [throttles, tof (in days)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, m_ms,
-                                     x[0] * kep3::DAY2SEC, m_max_thrust, m_isp, kep3::MU_SUN);
+                                     x[m_nseg * 3] * kep3::DAY2SEC, m_max_thrust, m_isp, kep3::MU_SUN);
         // We compute segments and dt
         std::size_t nseg = leg.get_throttles().size() / 3u;
         double dt = leg.get_tof() / static_cast<double>(nseg);
         // We set the throttles
-        leg.set_throttles(x.begin() + 1, x.end());
+        leg.set_throttles(x.begin(), x.end() - 1);
         // We compute the mass schedule
         double mass = m_ms;
 
         for (decltype(leg.get_throttles().size()) i = 0u; i < nseg; ++i) {
             // We compute the dv
-            double dv0 = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i];
-            double dv1 = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i + 1];
-            double dv2 = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i + 2];
+            double dvx = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i];
+            double dvy = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i + 1];
+            double dvz = leg.get_max_thrust() / mass * dt * leg.get_throttles()[3 * i + 2];
             // Update the mass
-            double norm_dv = std::sqrt(dv0 * dv0 + dv1 * dv1 + dv2 * dv2);
+            double norm_dv = std::sqrt(dvx * dvx + dvy * dvy + dvz * dvz);
             mass *= std::exp(-norm_dv / leg.get_isp() / kep3::G0);
         }
         leg.set_mf(mass);
@@ -74,13 +75,45 @@ struct sf_test_udp {
         return pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x);
     }
 
+    //[[nodiscard]] std::vector<double> gradient_analytical(const std::vector<double> &x) const
+    //{
+    //    // We build the leg
+    //    kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, m_ms,
+    //                                 x[0] * kep3::DAY2SEC, m_max_thrust, m_isp, kep3::MU_SUN);
+    //    std::size_t nseg = leg.get_throttles().size() / 3u;
+    //    double dt = leg.get_tof() / static_cast<double>(nseg);
+//
+    //    // We compute the gradients
+    //    auto grad_mc = leg.compute_mc_grad();
+    //    auto grad_tc = leg.compute_tc_grad();
+//
+    //    // We need to compute here manually the derivatives of the objective (i.e. final mass) w.r.t. throttles and tof
+    //    auto grad_obj = std::vector<double>(m_nseg * 3 + 1, 0.);
+    //    double veff = m_isp * kep3::G0;
+    //    double mf = m_ms;
+    //    double DVtot = 0;
+    //    for (decltype(leg.get_throttles().size()) i = 0u; i < nseg; ++i) {
+    //        // We compute the dv
+    //        double dvx = leg.get_max_thrust() / mf * dt * leg.get_throttles()[3 * i];
+    //        double dvy = leg.get_max_thrust() / mf * dt * leg.get_throttles()[3 * i + 1];
+    //        double dvz = leg.get_max_thrust() / mf * dt * leg.get_throttles()[3 * i + 2];
+    //        // Update the mass
+    //        double norm_dv = std::sqrt(dvx * dvx + dvy * dvy + dvz * dvz);
+    //        DVtot += norm_dv;
+    //        mf *= std::exp(-norm_dv / leg.get_isp() / kep3::G0);
+    //    }
+    //    double coeff = -mf * DVtot / veff;
+//
+    //    // We assemble the final
+    //}
+
     [[nodiscard]] std::pair<std::vector<double>, std::vector<double>> get_bounds() const
     {
         // x = [tof (in days), mf (in kg), throttles]
         std::vector<double> lb(m_nseg * 3 + 1, -1.);
         std::vector<double> ub(m_nseg * 3 + 1, +1.);
-        lb[0] = 1.;    // days
-        ub[0] = 2500.; // days
+        lb[m_nseg * 3] = 1.;    // days
+        ub[m_nseg * 3] = 2500.; // days
         return {lb, ub};
     }
 

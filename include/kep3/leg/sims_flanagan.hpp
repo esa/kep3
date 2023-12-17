@@ -11,7 +11,7 @@
 #define kep3_LEG_SIMS_SLANAGAN_H
 
 #include <array>
-#include <ranges>
+#include <tuple>
 #include <vector>
 
 #include <fmt/ostream.h>
@@ -72,15 +72,29 @@ public:
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
 
-    // Compute gradients (w.r.t. rvm state and w.r.t. throttles, tof)
-    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>> compute_mc_grad() const;
+    // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles, tof)
+    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+    compute_mc_grad() const;
+
+    // Compute throttle constraint gradients
+    [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
 private:
     [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
-    _single_shooting(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                     const std::array<std::array<double, 3>, 2> &rvs, double ms, unsigned nseg, double c, double a,
-                     double dt) const;
+    gradients_multiple_impulses(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a,
+                                double dt) const;
+
+    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
+    gradients_fwd(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                  const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a, double dt) const;
+
+    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
+    gradients_bck(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                  const std::array<std::array<double, 3>, 2> &rvf_orig, double mf, double c, double a, double dt) const;
 
     friend class boost::serialization::access;
     template <class Archive>

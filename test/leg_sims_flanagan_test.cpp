@@ -246,13 +246,18 @@ TEST_CASE("grad_test")
     std::array<std::array<double, 3>, 2> rvs{
         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+
     std::array<std::array<double, 3>, 2> rvf{
-        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+        {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
+         {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+   
+    std::vector<double> throttles = {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024};
     kep3::leg::sims_flanagan sf(
-        rvs, 1500., {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024}, rvf,
-        1500, 27993600.0, 0.01, 3000, kep3::MU_SUN, 0.);
-    sf.compute_mc_grad();
+        rvs, 1500., throttles, rvf,
+        1300, 324.0 * kep3::DAY2SEC, 0.01, 3000, kep3::MU_SUN, 0.6);
+        
+    auto retval = sf.compute_mc_grad();
+    
 
 }
 
