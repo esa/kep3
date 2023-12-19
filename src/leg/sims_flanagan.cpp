@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <array>
+#include <cstddef>
 #include <functional>
 #include <iomanip>
 #include <iterator>
@@ -101,7 +102,8 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                              double isp, double mu, double cut)
     : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
-      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut)
+      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(m_throttles.size() / 3u),
+      m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
 }
@@ -124,13 +126,20 @@ void sims_flanagan::set_throttles(std::vector<double> throttles)
 {
     _check_throttles(throttles);
     m_throttles = std::move(throttles);
+    m_nseg = m_throttles.size() / 3u;
+    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
+    m_nseg_bck = m_nseg - m_nseg_fwd;
 }
 void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
 {
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error("The throttles of a sims_flanagan leg are being set with invalid iterators.");
     }
+    m_throttles.resize(std::distance(it1, it2));
     std::copy(it1, it2, m_throttles.begin());
+    m_nseg = m_throttles.size() / 3u;
+    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
+    m_nseg_bck = m_nseg - m_nseg_fwd;
 }
 void sims_flanagan::set_rvf(std::array<std::array<double, 3>, 2> rv)
 {
@@ -159,6 +168,8 @@ void sims_flanagan::set_cut(double cut)
 {
     _check_cut(cut);
     m_cut = cut;
+    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
+    m_nseg_bck = m_nseg - m_nseg_fwd;
 }
 void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
                         const std::vector<double> &throttles,
@@ -177,6 +188,9 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
     m_isp = isp;
     m_mu = mu;
     m_cut = cut;
+    m_nseg = m_throttles.size() / 3u;
+    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
+    m_nseg_bck = m_nseg - m_nseg_fwd;
 }
 
 // Getters
@@ -224,43 +238,37 @@ double sims_flanagan::get_cut() const
 // The core routines
 std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 {
-    // We start defining the number of forward and backward segments.
-    auto nseg = m_throttles.size() / 3u;
-    auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
-    auto nseg_bck = nseg - nseg_fwd;
-
     // We introduce some convenience variables
-    double max_thrust = get_max_thrust();
-    double isp = get_isp();
-    double mu = get_mu();
     std::array<double, 3> dv{};
+    double veff = m_isp * kep3::G0;
+    double dt = m_tof / static_cast<double>(m_nseg);
+    double c = m_max_thrust * c;
 
     // Forward pass
     // Initial state
     std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
     double mass_fwd = get_ms();
-    double dt = m_tof / static_cast<double>(nseg);
     // We propagate for a first dt/2 (only if there is at least one forward segment)
-    if (nseg_fwd > 0) {
-        rv_fwd = propagate_lagrangian(rv_fwd, dt / 2, mu, false).first;
+    if (m_nseg_fwd > 0) {
+        rv_fwd = propagate_lagrangian(rv_fwd, dt / 2, m_mu, false).first;
     }
     // We now loop through the forward segments and 1) add a dv + 2) propagate for dt (except on the last segment, where
     // we propagate for dt/2).
-    for (decltype(m_throttles.size()) i = 0u; i < nseg_fwd; ++i) {
+    for (decltype(m_throttles.size()) i = 0u; i < m_nseg_fwd; ++i) {
         // We compute the the dv
-        dv[0] = max_thrust / mass_fwd * dt * m_throttles[3 * i];
-        dv[1] = max_thrust / mass_fwd * dt * m_throttles[3 * i + 1];
-        dv[2] = max_thrust / mass_fwd * dt * m_throttles[3 * i + 2];
+        dv[0] = c / mass_fwd * m_throttles[3 * i];
+        dv[1] = c / mass_fwd * m_throttles[3 * i + 1];
+        dv[2] = c / mass_fwd * m_throttles[3 * i + 2];
         // Add it to the current spacecraft velocity
         rv_fwd[1][0] += dv[0];
         rv_fwd[1][1] += dv[1];
         rv_fwd[1][2] += dv[2];
         // Update the mass accordingly
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
-        mass_fwd *= std::exp(-norm_dv / isp / kep3::G0);
+        mass_fwd *= std::exp(-norm_dv / veff);
         // Perform the propagation
-        double prop_duration = (i == nseg_fwd - 1) ? dt / 2 : dt;
-        rv_fwd = propagate_lagrangian(rv_fwd, prop_duration, mu, false).first;
+        double prop_duration = (i == m_nseg_fwd - 1) ? dt / 2 : dt;
+        rv_fwd = propagate_lagrangian(rv_fwd, prop_duration, m_mu, false).first;
     }
 
     // Backward pass
@@ -268,26 +276,26 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     std::array<std::array<double, 3>, 2> rv_bck(get_rvf());
     double mass_bck = get_mf();
     // We propagate for a first dt/2 (only if there is at least one backward segment)
-    if (nseg_bck > 0) {
-        rv_bck = propagate_lagrangian(rv_bck, -dt / 2, mu, false).first;
+    if (m_nseg_bck > 0) {
+        rv_bck = propagate_lagrangian(rv_bck, -dt / 2, m_mu, false).first;
     }
     // We now loop through the backward segments and 1) add a dv + 2) propagate for -dt (except on the last segment,
     // where we propagate for -dt/2).
-    for (decltype(m_throttles.size()) i = 0u; i < nseg_bck; ++i) {
+    for (decltype(m_throttles.size()) i = 0u; i < m_nseg_bck; ++i) {
         // We compute the the dv
-        dv[0] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 2];
-        dv[1] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i - 1];
-        dv[2] = max_thrust / mass_bck * dt * m_throttles[m_throttles.size() - 1 - 3 * i];
+        dv[0] = c / mass_bck * m_throttles[m_throttles.size() - 1 - 3 * i - 2];
+        dv[1] = c / mass_bck * m_throttles[m_throttles.size() - 1 - 3 * i - 1];
+        dv[2] = c / mass_bck * m_throttles[m_throttles.size() - 1 - 3 * i];
         // Subtract it (remember we are going backward) to the current spacecraft velocity
         rv_bck[1][0] -= dv[0];
         rv_bck[1][1] -= dv[1];
         rv_bck[1][2] -= dv[2];
         // Update the mass accordingly (will increase as we go backward)
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
-        mass_bck *= std::exp(norm_dv / isp / kep3::G0);
+        mass_bck *= std::exp(norm_dv / m_isp / kep3::G0);
         // Perform the propagation
-        double prop_duration = (i == nseg_bck - 1) ? -dt / 2 : -dt;
-        rv_bck = propagate_lagrangian(rv_bck, prop_duration, mu, false).first;
+        double prop_duration = (i == m_nseg_bck - 1) ? -dt / 2 : -dt;
+        rv_bck = propagate_lagrangian(rv_bck, prop_duration, m_mu, false).first;
     }
     return {rv_fwd[0][0] - rv_bck[0][0], rv_fwd[0][1] - rv_bck[0][1], rv_fwd[0][2] - rv_bck[0][2],
             rv_fwd[1][0] - rv_bck[1][0], rv_fwd[1][1] - rv_bck[1][1], rv_fwd[1][2] - rv_bck[1][2],
@@ -296,10 +304,8 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 
 std::vector<double> sims_flanagan::compute_throttle_constraints() const
 {
-    auto nseg = m_throttles.size() / 3u;
-
-    std::vector<double> retval(nseg);
-    for (decltype(m_throttles.size()) i = 0u; i < nseg; ++i) {
+    std::vector<double> retval(m_nseg);
+    for (decltype(m_throttles.size()) i = 0u; i < m_nseg; ++i) {
         retval[i] = m_throttles[3 * i] * m_throttles[3 * i] + m_throttles[3 * i + 1] * m_throttles[3 * i + 1]
                     + m_throttles[3 * i + 2] * m_throttles[3 * i + 2] - 1.;
     }
@@ -505,12 +511,11 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
     xt::view(xgrad_rvm, xt::all(), xt::range(3, 6)) *= -1; // vf
     auto xgrad = xt::adapt(grad, {7u, size + 1u});
-    xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;                           // vf
-    xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1;                        // us 
+    xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;    // vf
+    xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1; // us
 
     // Note that the throttles in xgrad are ordered in reverse. Before returning we must restore the forward order
-    xt::view(xgrad, xt::all(), xt::range(0, size))
-        = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, size)), 1);
+    xt::view(xgrad, xt::all(), xt::range(0, size)) = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, size)), 1);
     for (decltype(size) i = 0u; i < size / 3; ++i) {
         xt::view(xgrad, xt::all(), xt::range(3 * i, 3 * i + 3))
             = xt::flip(xt::view(xgrad, xt::all(), xt::range(3 * i, 3 * i + 3)), 1);
@@ -523,49 +528,46 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
 std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
-    auto nseg = m_throttles.size() / 3u;
-    const auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * m_cut);
-    const auto c = m_max_thrust * m_tof / static_cast<double>(nseg); // T*tof/nseg
+    const auto c = m_max_thrust * m_tof / static_cast<double>(m_nseg); // T*tof/nseg
     const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
-    const auto dt = m_tof / static_cast<double>(nseg);               // dt
+    const auto dt = m_tof / static_cast<double>(m_nseg);               // dt
 
     // We compute for the forward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. initial state ant throttles )
     auto [grad_rvm, grad_fwd] = gradients_fwd(
-        m_throttles.begin(), m_throttles.begin() + static_cast<unsigned>(3 * nseg_fwd), get_rvs(), get_ms(), c, a, dt);
+        m_throttles.begin(), m_throttles.begin() + static_cast<unsigned>(3 * m_nseg_fwd), get_rvs(), get_ms(), c, a, dt);
     // We compute for the backward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. final state and throttles )
-    auto [grad_rvm_bck, grad_bck] = gradients_bck(m_throttles.begin() + static_cast<unsigned>(3 * nseg_fwd),
+    auto [grad_rvm_bck, grad_bck] = gradients_bck(m_throttles.begin() + static_cast<unsigned>(3 * m_nseg_fwd),
                                                   m_throttles.end(), get_rvf(), get_mf(), c, a, dt);
 
     // We assemble the final results
-    std::vector<double> grad_final(7u * (nseg * 3u + 1u), 0.);
-    auto xgrad_final = xt::adapt(grad_final, {7u, static_cast<unsigned>(nseg) * 3u + 1u});
-    auto xgrad_fwd = xt::adapt(grad_fwd, {7u, static_cast<unsigned>(nseg_fwd) * 3u + 1u});
-    auto xgrad_bck = xt::adapt(grad_bck, {7u, static_cast<unsigned>(nseg - nseg_fwd) * 3u + 1u});
+    std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
+    auto xgrad_final = xt::adapt(grad_final, {7u, static_cast<unsigned>(m_nseg) * 3u + 1u});
+    auto xgrad_fwd = xt::adapt(grad_fwd, {7u, static_cast<unsigned>(m_nseg_fwd) * 3u + 1u});
+    auto xgrad_bck = xt::adapt(grad_bck, {7u, static_cast<unsigned>(m_nseg - m_nseg_fwd) * 3u + 1u});
 
     // Copy the gradient w.r.t. the forward throttles as is
-    xt::view(xgrad_final, xt::all(), xt::range(0, nseg_fwd * 3))
-        = xt::view(xgrad_fwd, xt::all(), xt::range(0, nseg_fwd * 3));
+    xt::view(xgrad_final, xt::all(), xt::range(0, m_nseg_fwd * 3))
+        = xt::view(xgrad_fwd, xt::all(), xt::range(0, m_nseg_fwd * 3));
 
     // Copy the gradient w.r.t. the backward throttles as is
-    xt::view(xgrad_final, xt::all(), xt::range(nseg_fwd * 3, nseg * 3))
-        = xt::view(xgrad_bck, xt::all(), xt::range(0, (nseg - nseg_fwd) * 3));
+    xt::view(xgrad_final, xt::all(), xt::range(m_nseg_fwd * 3, m_nseg * 3))
+        = xt::view(xgrad_bck, xt::all(), xt::range(0, (m_nseg - m_nseg_fwd) * 3));
 
     // Copy the gradient w.r.t. tof as fwd-bck
-    xt::view(xgrad_final, xt::all(), xt::range(nseg * 3, nseg * 3 + 1))
-        = xt::view(xgrad_fwd, xt::all(), xt::range(nseg_fwd * 3, nseg_fwd * 3 + 1)) / nseg * nseg_fwd
-          - xt::view(xgrad_bck, xt::all(), xt::range((nseg - nseg_fwd) * 3, (nseg - nseg_fwd) * 3 + 1)) / nseg
-                * (nseg - nseg_fwd);
+    xt::view(xgrad_final, xt::all(), xt::range(m_nseg * 3, m_nseg * 3 + 1))
+        = xt::view(xgrad_fwd, xt::all(), xt::range(m_nseg_fwd * 3, m_nseg_fwd * 3 + 1)) / m_nseg * m_nseg_fwd
+          - xt::view(xgrad_bck, xt::all(), xt::range((m_nseg - m_nseg_fwd) * 3, (m_nseg - m_nseg_fwd) * 3 + 1)) / m_nseg
+                * (m_nseg - m_nseg_fwd);
     return {grad_rvm, grad_rvm_bck, std::move(grad_final)};
 }
 
 std::vector<double> sims_flanagan::compute_tc_grad() const
 {
-    auto nseg = m_throttles.size() / 3u;
-    std::vector<double> retval(nseg * nseg * 3, 0);
-    for (decltype(nseg) i = 0u; i < nseg; ++i) {
-        retval[i * nseg * 3 + 3 * i] = 2 * m_throttles[3 * i];
-        retval[i * nseg * 3 + 3 * i + 1] = 2 * m_throttles[3 * i + 1];
-        retval[i * nseg * 3 + 3 * i + 2] = 2 * m_throttles[3 * i + 2];
+    std::vector<double> retval(static_cast<size_t>(m_nseg) * m_nseg * 3u, 0);
+    for (decltype(m_throttles.size()) i = 0u; i < m_nseg; ++i) {
+        retval[i * m_nseg * 3 + 3 * i] = 2 * m_throttles[3 * i];
+        retval[i * m_nseg * 3 + 3 * i + 1] = 2 * m_throttles[3 * i + 1];
+        retval[i * m_nseg * 3 + 3 * i + 2] = 2 * m_throttles[3 * i + 2];
     }
     return retval;
 }

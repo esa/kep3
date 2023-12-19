@@ -110,6 +110,9 @@ private:
         ar &m_isp;
         ar &m_mu;
         ar &m_cut;
+        ar &m_nseg;
+        ar &m_nseg_fwd;
+        ar &m_nseg_bck;
     }
 
     // Initial spacecraft state.
@@ -130,6 +133,10 @@ private:
     double m_mu{1.};
     // The cut parameter
     double m_cut = 0.5;
+    // Segment sizes
+    unsigned m_nseg = 6u;
+    unsigned m_nseg_fwd = 3u;
+    unsigned m_nseg_bck = 3u;
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.

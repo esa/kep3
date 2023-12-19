@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_UDPLA_H
-#define kep3_UDPLA_H
+#ifndef kep3_PLANET_H
+#define kep3_PLANET_H
 
 #include <concepts>
 #include <string>
@@ -306,5 +306,4 @@ struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
 
 // Make a def-constructed planet serialisable.
 TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
-#endif // kep3_UDPLA_H
-
+#endif // kep3_PLANET_H

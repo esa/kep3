@@ -19,7 +19,6 @@
 #include <fmt/ranges.h>
 
 #include <pagmo/algorithm.hpp>
-#include <pagmo/algorithms/ipopt.hpp>
 #include <pagmo/algorithms/nlopt.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
