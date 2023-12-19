@@ -134,9 +134,9 @@ private:
     // The cut parameter
     double m_cut = 0.5;
     // Segment sizes
-    unsigned m_nseg = 6u;
-    unsigned m_nseg_fwd = 3u;
-    unsigned m_nseg_bck = 3u;
+    unsigned m_nseg = 2u;
+    unsigned m_nseg_fwd = 1u;
+    unsigned m_nseg_bck = 1u;
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.

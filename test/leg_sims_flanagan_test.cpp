@@ -136,7 +136,7 @@ TEST_CASE("compute_throttle_constraints_test")
     REQUIRE(tc[1] == 2.);
     REQUIRE(tc[2] == 1.);
 }
-
+//
 std::array<double, 7> normalize_con(std::array<double, 7> con)
 {
     con[0] /= kep3::AU;
@@ -193,17 +193,16 @@ TEST_CASE("compute_mismatch_constraints_test")
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
-        uda.set_xtol_abs(1e-8);
-        uda.set_xtol_rel(1e-8);
-        uda.set_ftol_abs(1e-8);
+        uda.set_xtol_abs(1e-10);
+        uda.set_xtol_rel(1e-10);
+        uda.set_ftol_abs(0);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
             pagmo::population pop{prob, 1u};
-            algo.set_verbosity(1u);
+            algo.set_verbosity(10u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
-            fmt::print("{}\n", champ);
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
@@ -224,14 +223,14 @@ TEST_CASE("compute_mismatch_constraints_test")
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
-        uda.set_xtol_abs(1e-8);
-        uda.set_xtol_rel(1e-8);
-        uda.set_ftol_abs(1e-8);
+        uda.set_xtol_abs(1e-10);
+        uda.set_xtol_rel(1e-10);
+        uda.set_ftol_abs(0);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
             pagmo::population pop{prob, 1u};
-            algo.set_verbosity(1u);
+            algo.set_verbosity(10u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
             found = prob.feasibility_f(champ);
@@ -240,29 +239,38 @@ TEST_CASE("compute_mismatch_constraints_test")
             }
             trial++;
         }
-        REQUIRE_FALSE(
-            !found); // If this does not pass, then the optimization above never converged to a feasible solution.
+        // If this does not pass, then the optimization above never converged to a feasible solution.
+        REQUIRE_FALSE(!found);
     }
 }
 
-// TEST_CASE("grad_test2")
-//{
-//     std::array<std::array<double, 3>, 2> rvs{
-//         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-//          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
-//
-//     std::array<std::array<double, 3>, 2> rvf{
-//         {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
-//          {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
-//
-//     double ms = 1500.;
-//     double mf = 1300.;
-//     std::vector<double> throttles
-//          = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18,0.19, 0.2,  0.21, 0.22, 0.23, 0.24};
-//     kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.6);
-//     auto retval = sf.compute_mismatch_constraints();
-//     //fmt::print("{}", retval);
-// }
+TEST_CASE("mismatch_constraints_test2")
+{
+    // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with a different program)
+    std::array<std::array<double, 3>, 2> rvs{
+        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
+         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+
+    std::array<std::array<double, 3>, 2> rvf{
+        {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
+         {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+
+    double ms = 1500.;
+    double mf = 1300.;
+    std::vector<double> throttles
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
+    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.6);
+    auto retval = sf.compute_mismatch_constraints();
+    std::vector<double> ground_truth
+        = {-1.9701274809621304e+11, 4.6965044246848071e+11, -1.5007523306033661e+11, -2.9975151466948650e+04,
+           -2.8264916164742666e+04, 1.0264806797549732e+04, -8.2807673427721159e+02};
+    REQUIRE(std::abs((retval[0] - ground_truth[0]) / retval[0]) < 1e-13);
+    REQUIRE(std::abs((retval[1] - ground_truth[1]) / retval[1]) < 1e-13);
+    REQUIRE(std::abs((retval[2] - ground_truth[2]) / retval[2]) < 1e-13);
+    REQUIRE(std::abs((retval[3] - ground_truth[3]) / retval[3]) < 1e-13);
+    REQUIRE(std::abs((retval[4] - ground_truth[4]) / retval[4]) < 1e-13);
+    REQUIRE(std::abs((retval[5] - ground_truth[5]) / retval[5]) < 1e-13);
+}
 
 TEST_CASE("grad_test")
 {

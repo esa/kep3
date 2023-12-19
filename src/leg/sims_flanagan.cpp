@@ -242,8 +242,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
     std::array<double, 3> dv{};
     double veff = m_isp * kep3::G0;
     double dt = m_tof / static_cast<double>(m_nseg);
-    double c = m_max_thrust * c;
-
+    double c = m_max_thrust * dt;
     // Forward pass
     // Initial state
     std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
@@ -292,11 +291,12 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
         rv_bck[1][2] -= dv[2];
         // Update the mass accordingly (will increase as we go backward)
         double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
-        mass_bck *= std::exp(norm_dv / m_isp / kep3::G0);
+        mass_bck *= std::exp(norm_dv / veff);
         // Perform the propagation
         double prop_duration = (i == m_nseg_bck - 1) ? -dt / 2 : -dt;
         rv_bck = propagate_lagrangian(rv_bck, prop_duration, m_mu, false).first;
     }
+
     return {rv_fwd[0][0] - rv_bck[0][0], rv_fwd[0][1] - rv_bck[0][1], rv_fwd[0][2] - rv_bck[0][2],
             rv_fwd[1][0] - rv_bck[1][0], rv_fwd[1][1] - rv_bck[1][1], rv_fwd[1][2] - rv_bck[1][2],
             mass_fwd - mass_bck};
@@ -528,9 +528,9 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
 std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
-    const auto c = m_max_thrust * m_tof / static_cast<double>(m_nseg); // T*tof/nseg
-    const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
     const auto dt = m_tof / static_cast<double>(m_nseg);               // dt
+    const auto c = m_max_thrust * dt; // T*tof/nseg
+    const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
 
     // We compute for the forward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. initial state ant throttles )
     auto [grad_rvm, grad_fwd] = gradients_fwd(
