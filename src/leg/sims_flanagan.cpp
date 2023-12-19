@@ -11,7 +11,7 @@
 #include <functional>
 #include <iomanip>
 #include <iterator>
-#include <vector> 
+#include <vector>
 
 #include <boost/range/algorithm.hpp>
 
@@ -471,9 +471,8 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
 {
     // For the backward computations we invert:
     // 1) the starting velocity. vs
-    // 2) the various DVs. us
-    // 3) the Isp.
-    // 4) the final velocity obtained. vf
+    // 2) the Isp.
+    // 3) the final velocity obtained. vf
 
     // 1) the starting velocity.
     auto rvf = rvf_orig;
@@ -481,7 +480,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     rvf[1][1] = -rvf[1][1];
     rvf[1][2] = -rvf[1][2];
 
-    // 2) the various DVs.
+    // 1) the throttles must be reversed
     auto size = std::distance(th1, th2);
     // Create a new vector to store the reversed values three by three.
     // Here we allocate a vector. Might be not necessary using the C++ range library?
@@ -493,10 +492,8 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
         reversed_throttles[j - 1] = *(th1 + i + 1);
         reversed_throttles[j] = *(th1 + i + 2);
     }
-    // Change the sign
-    std::transform(reversed_throttles.cbegin(), reversed_throttles.cend(), reversed_throttles.begin(),
-                   std::negate<double>());
-    // 3) the Isp. (the sign change in a)
+
+    // 2) the Isp. (the sign change in a)
     a = -a;
 
     // We then compute as if it was a forward leg
@@ -507,13 +504,13 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
     xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
     xt::view(xgrad_rvm, xt::all(), xt::range(3, 6)) *= -1; // vf
-
     auto xgrad = xt::adapt(grad, {7u, static_cast<unsigned>(size) + 1u});
-    xt::view(xgrad, xt::all(), xt::range(0, static_cast<unsigned>(size))) *= -1; // u
     xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;                           // vf
+    xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1;                        // us 
+
     // Note that the throttles in xgrad are ordered in reverse. Before returning we must restore the forward order
-    xt::view(xgrad, xt::all(), xt::range(0, static_cast<unsigned>(size)))
-        = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, static_cast<unsigned>(size))), 1);
+    xt::view(xgrad, xt::all(), xt::range(0, size))
+        = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, size)), 1);
     for (decltype(size) i = 0u; i < size / 3; ++i) {
         xt::view(xgrad, xt::all(), xt::range(3 * i, 3 * i + 3))
             = xt::flip(xt::view(xgrad, xt::all(), xt::range(3 * i, 3 * i + 3)), 1);
@@ -522,6 +519,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     return std::make_pair(grad_rvm, std::move(grad));
 }
 
+// Computes the gradient of the mismatch constraints w.r.t. xs, xf and [throttles, tof]
 std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
@@ -544,12 +542,15 @@ std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> 
     auto xgrad_fwd = xt::adapt(grad_fwd, {7u, static_cast<unsigned>(nseg_fwd) * 3u + 1u});
     auto xgrad_bck = xt::adapt(grad_bck, {7u, static_cast<unsigned>(nseg - nseg_fwd) * 3u + 1u});
 
+    // Copy the gradient w.r.t. the forward throttles as is
     xt::view(xgrad_final, xt::all(), xt::range(0, nseg_fwd * 3))
         = xt::view(xgrad_fwd, xt::all(), xt::range(0, nseg_fwd * 3));
 
+    // Copy the gradient w.r.t. the backward throttles as is
     xt::view(xgrad_final, xt::all(), xt::range(nseg_fwd * 3, nseg * 3))
-        = -xt::view(xgrad_bck, xt::all(), xt::range(0, (nseg - nseg_fwd) * 3));
+        = xt::view(xgrad_bck, xt::all(), xt::range(0, (nseg - nseg_fwd) * 3));
 
+    // Copy the gradient w.r.t. tof as fwd-bck
     xt::view(xgrad_final, xt::all(), xt::range(nseg * 3, nseg * 3 + 1))
         = xt::view(xgrad_fwd, xt::all(), xt::range(nseg_fwd * 3, nseg_fwd * 3 + 1)) / nseg * nseg_fwd
           - xt::view(xgrad_bck, xt::all(), xt::range((nseg - nseg_fwd) * 3, (nseg - nseg_fwd) * 3 + 1)) / nseg
@@ -562,9 +563,9 @@ std::vector<double> sims_flanagan::compute_tc_grad() const
     auto nseg = m_throttles.size() / 3u;
     std::vector<double> retval(nseg * nseg * 3, 0);
     for (decltype(nseg) i = 0u; i < nseg; ++i) {
-        retval[i * nseg + 3 * i] = 2 * m_throttles[3 * i];
-        retval[i * nseg + 3 * i + 1] = 2 * m_throttles[3 * i + 1];
-        retval[i * nseg + 3 * i + 2] = 2 * m_throttles[3 * i + 2];
+        retval[i * nseg * 3 + 3 * i] = 2 * m_throttles[3 * i];
+        retval[i * nseg * 3 + 3 * i + 1] = 2 * m_throttles[3 * i + 1];
+        retval[i * nseg * 3 + 3 * i + 2] = 2 * m_throttles[3 * i + 2];
     }
     return retval;
 }

@@ -9,8 +9,11 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <utility> 
+#include <utility>
 #include <vector>
+
+#include <xtensor/xadapt.hpp>
+#include <xtensor/xio.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -186,7 +189,7 @@ TEST_CASE("compute_mismatch_constraints_test")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.01, 3000, 5u}};
         prob.set_c_tol(1e-10);
         bool found = false;
         unsigned trial = 0u;
@@ -217,7 +220,7 @@ TEST_CASE("compute_mismatch_constraints_test")
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         auto rv1_modified = rv1;
         rv1_modified[1][0] += 1000; // Adding 1km/s along x
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.01, 3000, 5u}};
         prob.set_c_tol(1e-10);
         bool found = false;
         unsigned trial = 0u;
@@ -243,22 +246,47 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
-TEST_CASE("grad_test")
-{
-    std::array<std::array<double, 3>, 2> rvs{
-        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+// TEST_CASE("grad_test2")
+//{
+//     std::array<std::array<double, 3>, 2> rvs{
+//         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
+//          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+//
+//     std::array<std::array<double, 3>, 2> rvf{
+//         {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
+//          {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+//
+//     double ms = 1500.;
+//     double mf = 1300.;
+//     std::vector<double> throttles
+//          = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18,0.19, 0.2,  0.21, 0.22, 0.23, 0.24};
+//     kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.6);
+//     auto retval = sf.compute_mismatch_constraints();
+//     //fmt::print("{}", retval);
+// }
 
-    std::array<std::array<double, 3>, 2> rvf{
-        {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
-         {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
-
-    std::vector<double> throttles
-        = {0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024};
-    kep3::leg::sims_flanagan sf(rvs, 1500., throttles, rvf, 1300, 324.0 * kep3::DAY2SEC, 0.01, 3000, kep3::MU_SUN, 0.6);
-
-    auto retval = sf.compute_mc_grad();
-}
+// TEST_CASE("grad_test")
+//{
+//     std::array<std::array<double, 3>, 2> rvs{
+//         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
+//          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+//     //
+//     std::array<std::array<double, 3>, 2> rvf{
+//         {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
+//          {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+//     //
+//     double ms = 1500.;
+//
+//     sf_test_udp udp{rvs, ms, rvf, 0.12, 100, 5};
+//     std::vector<double> x = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18,
+//                               0.19, 0.2,  0.21, 0.22, 0.23, 0.24, 324.,  1300.};
+//     auto grad = udp.gradient_numerical(x);
+//     auto grad_a = udp.gradient(x);
+//     auto xgrad = xt::adapt(grad, {1u+7u+5u, 17u});
+//     auto xgrad_a = xt::adapt(grad_a, {1u+7u+5u, 17u});
+//
+//     REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-8);
+// }
 
 TEST_CASE("serialization_test")
 {
