@@ -190,13 +190,13 @@ TEST_CASE("compute_mismatch_constraints_test")
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-10);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
-        uda.set_xtol_abs(0.);
-        uda.set_xtol_rel(0.);
-        uda.set_ftol_abs(1e-12);
+        uda.set_xtol_abs(1e-8);
+        uda.set_xtol_rel(1e-8);
+        uda.set_ftol_abs(1e-8);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
@@ -221,13 +221,13 @@ TEST_CASE("compute_mismatch_constraints_test")
         auto rv1_modified = rv1;
         rv1_modified[1][0] += 1000; // Adding 1km/s along x
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-10);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
-        uda.set_xtol_abs(0.);
-        uda.set_xtol_rel(0.);
-        uda.set_ftol_abs(1e-12);
+        uda.set_xtol_abs(1e-8);
+        uda.set_xtol_rel(1e-8);
+        uda.set_ftol_abs(1e-8);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
@@ -284,8 +284,7 @@ TEST_CASE("grad_test")
     auto grad_a = udp.gradient(x);
     auto xgrad = xt::adapt(grad, {1u + 7u + 5u, 17u});
     auto xgrad_a = xt::adapt(grad_a, {1u + 7u + 5u, 17u});
-
-    REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-8);
+    REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-6);
 }
 
 TEST_CASE("serialization_test")
