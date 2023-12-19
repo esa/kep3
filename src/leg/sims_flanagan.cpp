@@ -349,15 +349,15 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::gradients_
     std::vector<mat61> f(nseg + 1, xt::zeros<double>({6u, 1u}));
     // Initialize values
     m[0] = ms;
-    unsigned i = 0u;
+    unsigned i_tmp = 0u;
     for (auto it = th1; it != th2; it += 3) {
-        u[i](0, 0) = *it;
-        u[i](0, 1) = *(it + 1);
-        u[i](0, 2) = *(it + 2);
-        du[i](0, 3 * i) = 1.;
-        du[i](1, 3 * i + 1) = 1.;
-        du[i](2, 3 * i + 2) = 1.;
-        i++;
+        u[i_tmp](0, 0) = *it;
+        u[i_tmp](0, 1) = *(it + 1);
+        u[i_tmp](0, 2) = *(it + 2);
+        du[i_tmp](0, 3 * i_tmp) = 1.;
+        du[i_tmp](1, 3 * i_tmp + 1) = 1.;
+        du[i_tmp](2, 3 * i_tmp + 2) = 1.;
+        i_tmp++;
     }
     dm[0](0, nseg * 3u) = 1.;
     dtof(0, nseg * 3u + 1) = 1.;
@@ -481,7 +481,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     rvf[1][2] = -rvf[1][2];
 
     // 1) the throttles must be reversed
-    auto size = std::distance(th1, th2);
+    auto size = static_cast<unsigned>(std::distance(th1, th2));
     // Create a new vector to store the reversed values three by three.
     // Here we allocate a vector. Might be not necessary using the C++ range library?
     std::vector<double> reversed_throttles(size);
@@ -504,7 +504,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
     xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
     xt::view(xgrad_rvm, xt::all(), xt::range(3, 6)) *= -1; // vf
-    auto xgrad = xt::adapt(grad, {7u, static_cast<unsigned>(size) + 1u});
+    auto xgrad = xt::adapt(grad, {7u, size + 1u});
     xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;                           // vf
     xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1;                        // us 
 
