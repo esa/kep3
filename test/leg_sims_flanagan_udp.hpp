@@ -38,7 +38,7 @@ struct sf_test_udp {
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN, 0.6);
+                                     m_isp, kep3::MU_SUN);
 
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
@@ -61,19 +61,19 @@ struct sf_test_udp {
         return retval;
     }
 
-    [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const
+    [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
     {
-        return pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+        return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x);
     }
 
-    [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
+    [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const
     {
         // x = [throttles, tof (in days), mf (in kg)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN, 0.6);
+                                     m_isp, kep3::MU_SUN);
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 
