@@ -102,7 +102,8 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                              double isp, double mu, double cut)
     : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
-      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
+      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut),
+      m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
@@ -233,6 +234,18 @@ double sims_flanagan::get_mu() const
 double sims_flanagan::get_cut() const
 {
     return m_cut;
+}
+unsigned sims_flanagan::get_nseg() const
+{
+    return m_nseg;
+}
+unsigned sims_flanagan::get_nseg_fwd() const
+{
+    return m_nseg_fwd;
+}
+unsigned sims_flanagan::get_nseg_bck() const
+{
+    return m_nseg_bck;
 }
 
 // The core routines
@@ -475,18 +488,13 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
                              const std::array<std::array<double, 3>, 2> &rvf_orig, double mf, double c, double a,
                              double dt) const
 {
-    // For the backward computations we invert:
-    // 1) the starting velocity. vs
-    // 2) the Isp.
-    // 3) the final velocity obtained. vf
-
-    // 1) the starting velocity.
+    // 1) we invert the starting velocity.
     auto rvf = rvf_orig;
     rvf[1][0] = -rvf[1][0];
     rvf[1][1] = -rvf[1][1];
     rvf[1][2] = -rvf[1][2];
 
-    // 1) the throttles must be reversed
+    // 2) we reverse the throttles ([1,2,3,4,5,6] -> [4,5,6,1,2,3])
     auto size = static_cast<unsigned>(std::distance(th1, th2));
     // Create a new vector to store the reversed values three by three.
     // Here we allocate a vector. Might be not necessary using the C++ range library?
@@ -499,13 +507,13 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
         reversed_throttles[j] = *(th1 + i + 2);
     }
 
-    // 2) the Isp. (the sign change in a)
+    // 3) We reverse the Isp, hence veff (a = 1/veff)
     a = -a;
 
-    // We then compute as if it was a forward leg
+    // 4) We then compute gradients as if this was a forward leg
     auto [grad_rvm, grad]
         = gradients_multiple_impulses(reversed_throttles.begin(), reversed_throttles.end(), rvf, mf, c, a, dt);
-    // We have computed dxf/dxs and dxf/dus, but the initial and final velocites as well as the us had their sign
+    // 5) We have computed dxf/dxs and dxf/dus, but the initial and final velocites (and us) had their sign
     // inverted! We thus need to account for that and change sign once again of the relevant entries.
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
     xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
@@ -514,7 +522,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;    // vf
     xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1; // us
 
-    // Note that the throttles in xgrad are ordered in reverse. Before returning we must restore the forward order
+    // 6) Note that the throttles in xgrad are ordered in reverse. Before returning we must restore the forward order
     xt::view(xgrad, xt::all(), xt::range(0, size)) = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, size)), 1);
     for (decltype(size) i = 0u; i < size / 3; ++i) {
         xt::view(xgrad, xt::all(), xt::range(3 * i, 3 * i + 3))
@@ -528,13 +536,14 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
 std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan::compute_mc_grad() const
 {
     // Preliminaries
-    const auto dt = m_tof / static_cast<double>(m_nseg);               // dt
-    const auto c = m_max_thrust * dt; // T*tof/nseg
-    const auto a = 1. / m_isp / kep3::G0;                            // 1/veff
+    const auto dt = m_tof / static_cast<double>(m_nseg); // dt
+    const auto c = m_max_thrust * dt;                    // T*tof/nseg
+    const auto a = 1. / m_isp / kep3::G0;                // 1/veff
 
     // We compute for the forward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. initial state ant throttles )
-    auto [grad_rvm, grad_fwd] = gradients_fwd(
-        m_throttles.begin(), m_throttles.begin() + static_cast<unsigned>(3 * m_nseg_fwd), get_rvs(), get_ms(), c, a, dt);
+    auto [grad_rvm, grad_fwd]
+        = gradients_fwd(m_throttles.begin(), m_throttles.begin() + static_cast<unsigned>(3 * m_nseg_fwd), get_rvs(),
+                        get_ms(), c, a, dt);
     // We compute for the backward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. final state and throttles )
     auto [grad_rvm_bck, grad_bck] = gradients_bck(m_throttles.begin() + static_cast<unsigned>(3 * m_nseg_fwd),
                                                   m_throttles.end(), get_rvf(), get_mf(), c, a, dt);
@@ -574,12 +583,9 @@ std::vector<double> sims_flanagan::compute_tc_grad() const
 
 std::ostream &operator<<(std::ostream &s, const sims_flanagan &sf)
 {
-    auto nseg = sf.get_throttles().size() / 3u;
-    auto nseg_fwd = static_cast<unsigned>(static_cast<double>(nseg) * sf.get_cut());
-    auto nseg_bck = nseg - nseg_fwd;
-    s << fmt::format("Number of segments: {}\n", nseg);
-    s << fmt::format("Number of fwd segments: {}\n", nseg_fwd);
-    s << fmt::format("Number of bck segments: {}\n", nseg_bck);
+    s << fmt::format("Number of segments: {}\n", sf.get_nseg());
+    s << fmt::format("Number of fwd segments: {}\n", sf.get_nseg_fwd());
+    s << fmt::format("Number of bck segments: {}\n", sf.get_nseg_bck());
     s << fmt::format("Maximum thrust: {}\n", sf.get_max_thrust());
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
     s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());

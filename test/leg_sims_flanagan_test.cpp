@@ -274,6 +274,7 @@ TEST_CASE("mismatch_constraints_test2")
 
 TEST_CASE("grad_test")
 {
+    // Here we test the analytical gradient against an equivalent numerical one. We do so through the udp "sf_test_udp"
     std::array<std::array<double, 3>, 2> rvs{
         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
@@ -291,7 +292,7 @@ TEST_CASE("grad_test")
     auto grad_a = udp.gradient(x);
     auto xgrad = xt::adapt(grad, {1u + 7u + 5u, 17u});
     auto xgrad_a = xt::adapt(grad_a, {1u + 7u + 5u, 17u});
-    REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-6);
+    REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-8); // With the high fidelity gradient this is still the best we can achieve
 }
 
 TEST_CASE("serialization_test")

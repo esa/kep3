@@ -63,7 +63,7 @@ struct sf_test_udp {
 
     [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
     {
-        return pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+        return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x);
     }
 
     [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const

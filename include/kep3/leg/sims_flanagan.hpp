@@ -67,6 +67,10 @@ public:
     [[nodiscard]] double get_isp() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
+    [[nodiscard]] unsigned get_nseg() const;
+    [[nodiscard]] unsigned get_nseg_fwd() const;
+    [[nodiscard]] unsigned get_nseg_bck() const;
+
 
     // Compute constraints
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
