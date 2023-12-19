@@ -102,7 +102,7 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                              double isp, double mu, double cut)
     : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
-      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(m_throttles.size() / 3u),
+      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
@@ -126,7 +126,7 @@ void sims_flanagan::set_throttles(std::vector<double> throttles)
 {
     _check_throttles(throttles);
     m_throttles = std::move(throttles);
-    m_nseg = m_throttles.size() / 3u;
+    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
@@ -135,9 +135,9 @@ void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error("The throttles of a sims_flanagan leg are being set with invalid iterators.");
     }
-    m_throttles.resize(std::distance(it1, it2));
+    m_throttles.resize(static_cast<size_t>(std::distance(it1, it2)));
     std::copy(it1, it2, m_throttles.begin());
-    m_nseg = m_throttles.size() / 3u;
+    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
@@ -188,7 +188,7 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
     m_isp = isp;
     m_mu = mu;
     m_cut = cut;
-    m_nseg = m_throttles.size() / 3u;
+    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
