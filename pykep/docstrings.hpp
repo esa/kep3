@@ -85,6 +85,27 @@ std::string lambert_problem_docstring();
 std::string propagate_lagrangian_docstring();
 std::string propagate_lagrangian_v_docstring();
 
+// LEG
+// Sims Flanagan
+std::string leg_sf_docstring();
+std::string leg_sf_rvs_docstring();
+std::string leg_sf_ms_docstring();
+std::string leg_sf_throttles_docstring();
+std::string leg_sf_rvf_docstring();
+std::string leg_sf_mf_docstring();
+std::string leg_sf_tof_docstring();
+std::string leg_sf_max_thrust_docstring();
+std::string leg_sf_isp_docstring();
+std::string leg_sf_mu_docstring();
+std::string leg_sf_cut_docstring();
+std::string leg_sf_mc_docstring();
+std::string leg_sf_tc_docstring();
+std::string leg_sf_mc_grad_docstring();
+std::string leg_sf_tc_grad_docstring();
+std::string leg_sf_nseg_docstring();
+std::string leg_sf_nseg_fwd_docstring();
+std::string leg_sf_nseg_bck_docstring();
+
 } // namespace pykep
 
 #endif

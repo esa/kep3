@@ -18,7 +18,7 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 
-#include "kep3/epoch.hpp"
+#include <kep3/epoch.hpp>
 
 namespace kep3
 {

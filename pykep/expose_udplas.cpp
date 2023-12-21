@@ -12,9 +12,9 @@
 #include <pybind11/pybind11.h>
 
 #include <kep3/planet.hpp>
-#include <kep3/planets/jpl_lp.hpp>
-#include <kep3/planets/keplerian.hpp>
-#include <kep3/planets/vsop2013.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
+#include <kep3/udpla/keplerian.hpp>
+#include <kep3/udpla/vsop2013.hpp>
 
 #include "common_utils.hpp"
 #include "docstrings.hpp"

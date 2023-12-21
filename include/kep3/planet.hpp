@@ -300,7 +300,10 @@ kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const planet &);
 
 } // namespace kep3
 
+template <>
+struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
+};
+
 // Make a def-constructed planet serialisable.
 TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
-
 #endif // kep3_PLANET_H

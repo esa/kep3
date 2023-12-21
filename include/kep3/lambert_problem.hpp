@@ -14,6 +14,8 @@
 #include <cmath>
 #include <vector>
 
+#include <fmt/ostream.h>
+
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/detail/visibility.hpp>
@@ -110,5 +112,9 @@ private:
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
 
 } // namespace kep3
+
+template <>
+struct fmt::formatter<kep3::lambert_problem> : fmt::ostream_formatter {
+};
 
 #endif // kep3_LAMBERT_PROBLEM_H

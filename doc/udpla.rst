@@ -1,4 +1,4 @@
-.. _udplas:
+.. _udpla:
 
 List of user implemented planets (UDPLAs)
 =========================================
@@ -12,6 +12,9 @@ List of user implemented planets (UDPLAs)
    :members:
 
 .. autoclass:: jpl_lp
+   :members:
+
+.. autoclass:: vsop2013
    :members:
 
 .. autoclass:: tle

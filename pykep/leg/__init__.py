@@ -6,28 +6,16 @@
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
-User defined planets that can construct a pykep.planet
+Various types of interplanetary trajectory legs
 """
-
-from ._tle import tle
-from ._spice import spice, de440s
 from .. import core as _core
 
-# Renaming cpp udplas (we need to create an alias first and then 
+# Renaming cpp legs (we need to create an alias first and then 
 # to fool sphinx into thinking these are not aliases, else the sphinx built docs
 # would report them as aliases and fail to document these classes)
-keplerian = _core._keplerian
-keplerian.__name__ = "keplerian"
-keplerian.__module__ = "udpla"
-null_udpla = _core._null_udpla
-null_udpla.__name__ = "null_udpla"
-null_udpla.__module__ = "udpla"
-jpl_lp = _core._jpl_lp
-jpl_lp.__name__ = "jpl_lp"
-jpl_lp.__module__ = "udpla"
-vsop2013 = _core._vsop2013
-vsop2013.__name__ = "vsop2013"
-vsop2013.__module__ = "udpla"
+sims_flanagan = _core._sims_flanagan
+sims_flanagan.__name__ = "sims_flanagan"
+sims_flanagan.__module__ = "leg"
 
 # Removing core from the list of imported symbols.
 del _core
