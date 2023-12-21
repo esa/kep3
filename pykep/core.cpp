@@ -349,9 +349,82 @@ PYBIND11_MODULE(core, m)
             },
             pykep::leg_sf_throttles_docstring().c_str())
         .def("compute_mismatch_constraints", &kep3::leg::sims_flanagan::compute_mismatch_constraints,
-             pykep::leg_sf_m_con_docstring().c_str())
+             pykep::leg_sf_mc_docstring().c_str())
         .def("compute_throttle_constraints", &kep3::leg::sims_flanagan::compute_throttle_constraints,
-             pykep::leg_sf_t_con_docstring().c_str());
+             pykep::leg_sf_tc_docstring().c_str())
+        .def(
+            "compute_mc_grad",
+            [](const kep3::leg::sims_flanagan &leg) {
+                auto tc_cpp = leg.compute_mc_grad();
+                // Lets transfer ownership to python of the three
+                std::array<double, 49> &rs_addr = std::get<0>(tc_cpp);
+                std::array<double, 49> &rf_addr = std::get<1>(tc_cpp);
+                std::vector<double> &th_addr = std::get<2>(tc_cpp);
+
+                // We create three separate capsules for the py::array_t to manage ownership change.
+                auto vec_ptr_rs = std::make_unique<std::array<double, 49>>(rs_addr);
+                py::capsule vec_caps_rs(vec_ptr_rs.get(), [](void *ptr) {
+                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                });
+                auto vec_ptr_rf = std::make_unique<std::array<double, 49>>(rf_addr);
+                py::capsule vec_caps_rf(vec_ptr_rf.get(), [](void *ptr) {
+                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                });
+                auto vec_ptr_th = std::make_unique<std::vector<double>>(th_addr);
+                py::capsule vec_caps_th(vec_ptr_th.get(), [](void *ptr) {
+                    std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+                });
+                // NOTE: at this point, the capsules have been created successfully (including
+                // the registration of the destructor). We can thus release ownership from vec_ptr_xx,
+                // as now the capsules are responsible for destroying its contents. 
+                auto *ptr_rs = vec_ptr_rs.release();
+                auto *ptr_rf = vec_ptr_rf.release();
+                auto *ptr_th = vec_ptr_th.release();
+                auto rs_python = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7),
+                                              static_cast<py::ssize_t>(7)}, // shape
+                    ptr_rs->data(), std::move(vec_caps_rs));
+                auto rf_python = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7),
+                                              static_cast<py::ssize_t>(7)}, // shape
+                    ptr_rf->data(), std::move(vec_caps_rf));
+                auto th_python = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7),
+                                              static_cast<py::ssize_t>(leg.get_nseg()*3+1u)}, // shape
+                    ptr_th->data(), std::move(vec_caps_th));
+                return py::make_tuple(rs_python, rf_python, th_python);
+            },
+            pykep::leg_sf_mc_grad_docstring().c_str())
+        .def(
+            "compute_tc_grad",
+            [](const kep3::leg::sims_flanagan &leg) {
+                std::vector<double> tc_cpp = leg.compute_tc_grad();
+                // Lets transfer ownership to python
+                std::vector<double> &tc_cpp_addr = tc_cpp;
+                // We create a capsule for the py::array_t to manage ownership change.
+                auto vec_ptr = std::make_unique<std::vector<double>>(tc_cpp_addr);
+                py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                    std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+                });
+                // NOTE: at this point, the capsule has been created successfully (including
+                // the registration of the destructor). We can thus release ownership from vec_ptr,
+                // as now the capsule is responsible for destroying its contents. If the capsule constructor
+                // throws, the destructor function is not registered/invoked, and the destructor
+                // of vec_ptr will take care of cleaning up.
+                auto *ptr = vec_ptr.release();
+
+                auto tc_python = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(leg.get_nseg()),
+                                              static_cast<py::ssize_t>(leg.get_nseg() * 3)}, // shape
+                    ptr->data(), std::move(vec_caps));
+                return tc_python;
+            },
+            pykep::leg_sf_tc_grad_docstring().c_str())
+        .def_property_readonly("nseg", &kep3::leg::sims_flanagan::get_nseg, pykep::leg_sf_nseg_docstring().c_str())
+        .def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan::get_nseg_fwd,
+                               pykep::leg_sf_nseg_fwd_docstring().c_str())
+        .def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan::get_nseg_bck,
+                               pykep::leg_sf_nseg_bck_docstring().c_str());
 
 #define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
     sims_flanagan.def_property(#name, &kep3::leg::sims_flanagan::get_##name, &kep3::leg::sims_flanagan::set_##name,    \

@@ -1266,7 +1266,6 @@ std::string leg_sf_docstring()
         >>> import pykep as pk
         >>> import numpy as np
         >>> sf = pk.leg.sims_flanagan()
-        >>> sf.compute_mismatch_constraints()
 )";
 }
 std::string leg_sf_rvs_docstring()
@@ -1309,13 +1308,105 @@ std::string leg_sf_cut_docstring()
 {
     return "The leg cut: it determines the number of forward and backward segments.";
 };
-std::string leg_sf_m_con_docstring()
+std::string leg_sf_nseg_docstring()
 {
-    return "Computes the state mismatch constraints. (equality constraints)";
+    return "The total number of segments";
 };
-std::string leg_sf_t_con_docstring()
+std::string leg_sf_nseg_bck_docstring()
 {
-    return "Computes the throttle constraints. (inequality constraints)";
+    return "The total number of backward segments";
+};
+std::string leg_sf_nseg_fwd_docstring()
+{
+    return "The total number of forward segments";
+};
+std::string leg_sf_mc_docstring()
+{
+    return R"(compute_mismatch_constraints()
+
+      In the Sims-Flanagan trajectory leg model, a forward propagation is performed from the starting state as well as a backward from the final state.
+      The state values thus computed need to match in some middle control point. This is typically imposed as 7 independent constraints called mismatch-constraints
+      computed by this method. 
+
+      Returns:
+          :class:`list` [:class:`float`]: The seven mismatch constraints in the same units used to construct the leg.
+      
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf = pk.leg.sims_flanagan()
+        >>> sf.compute_mismatch_constraints()
+)";
+};
+std::string leg_sf_tc_docstring()
+{
+    return R"(compute_throttle_constraints()
+
+      In the Sims-Flanagan trajectory leg model implemented in pykep, we introduce the concept of throttles. Each throttle is defined by three numbers
+      :math:`[u_x, u_y, u_z] \in [0,1]` indicating that a certain component of the thrust vector has reached a fraction of its maximum allowed value. 
+      As a consequence, along the segment along which the throttle is applied, the constraint  :math:`u_x ^2 + u_y ^2 + u_z^2 = 1`, called a throttle constraint,
+      has to be met. 
+
+      Returns:
+          :class:`list` [:class:`float`]: The throttle constraints.
+      
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf = pk.leg.sims_flanagan()
+        >>  sf.throttles = [0.8]*3
+        >>> sf.compute_throttle_constraints()
+)";
+};
+std::string leg_sf_mc_grad_docstring()
+{
+    return R"(compute_mc_grad()
+
+Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]`, the
+final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`, the total time of flight with :math:`T` and the introducing the augmented throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradients:
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_s}
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_f}
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf u}
+
+Returns:
+    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3)
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> sf = pk.leg.sims_flanagan()
+  >>  sf.throttles = [0.8]*3
+  >>> sf.compute_mc_grad()
+)";
+};
+
+std::string leg_sf_tc_grad_docstring()
+{
+    return R"(compute_tc_grad()
+
+Computes the gradients of the throttles constraints. Indicating the total time of flight with :math:`T` and introducing the augmented throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradient:
+
+.. math::
+  \frac{\partial \mathbf {tc}}{\partial \mathbf u}
+
+Returns:
+    :class:`tuple` [:class:`numpy.ndarray`]: The gradient. Size will be (nseg,nseg*3).
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> sf = pk.leg.sims_flanagan()
+  >>  sf.throttles = [0.8]*3
+  >>> sf.compute_tc_grad()
+)";
 };
 
 } // namespace pykep

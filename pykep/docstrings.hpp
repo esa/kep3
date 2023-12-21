@@ -98,8 +98,14 @@ std::string leg_sf_max_thrust_docstring();
 std::string leg_sf_isp_docstring();
 std::string leg_sf_mu_docstring();
 std::string leg_sf_cut_docstring();
-std::string leg_sf_m_con_docstring();
-std::string leg_sf_t_con_docstring();
+std::string leg_sf_mc_docstring();
+std::string leg_sf_tc_docstring();
+std::string leg_sf_mc_grad_docstring();
+std::string leg_sf_tc_grad_docstring();
+std::string leg_sf_nseg_docstring();
+std::string leg_sf_nseg_fwd_docstring();
+std::string leg_sf_nseg_bck_docstring();
+
 } // namespace pykep
 
 #endif

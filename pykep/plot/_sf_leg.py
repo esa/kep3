@@ -16,35 +16,35 @@ def add_sf_leg(
     **kwargs
 ):
     """
-        Add a trajectory leg of Sims-Flanagan problem to a 3D matplotlib Axes.
+    Add a trajectory leg of Sims-Flanagan problem to a 3D matplotlib Axes.
 
-        Args:
-            *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): The 3D Axes object to which the trajectory leg will be added.
+    Args:
+        *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): The 3D Axes object to which the trajectory leg will be added.
 
-            *sf* (:class:`~pykep.leg.sims_flanagan`): The Sims-Flanagan object containing relevant information.
+        *sf* (:class:`~pykep.leg.sims_flanagan`): The Sims-Flanagan object containing relevant information.
 
-            *units* (:class:`float`, optional): The unit conversion factor for plotting. Default is pk.AU.
+        *units* (:class:`float`, optional): The unit conversion factor for plotting. Default is pk.AU.
 
-            *N* (:class:`int`, optional): The number of points to generate along each segment of the trajectory. Default is 10.
+        *N* (:class:`int`, optional): The number of points to generate along each segment of the trajectory. Default is 10.
 
-            *show_midpoints* (:class:`bool`, optional): If True, midpoints of each segment are shown. Default is False.
+        *show_midpoints* (:class:`bool`, optional): If True, midpoints of each segment are shown. Default is False.
 
-            *show_gridpoints* (:class:`bool`, optional): If True, gridpoints of the trajectory are shown. Default is False.
+        *show_gridpoints* (:class:`bool`, optional): If True, gridpoints of the trajectory are shown. Default is False.
 
-            *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
+        *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
 
-            *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
+        *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
 
-            *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
+        *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
 
-            *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
-        Notes:
-            - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
-            - Midpoints, gridpoints, and thrust vectors can be optionally shown based on the provided parameters.
+    Notes:
+        - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
+        - Midpoints, gridpoints, and thrust vectors can be optionally shown based on the provided parameters.
 
-        Returns:
-            :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
+    Returns:
+        :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
     """
     # We extract the number of segments from the leg.
     nseg = int(len(sf.throttles) / 3)
@@ -67,7 +67,11 @@ def add_sf_leg(
         throttles_fwd.append(dv_vec)
         dv = _np.linalg.norm(dv_vec)
         # plot it in a color that is proportional to the strength from royalblue to indianred
-        color = (0.25 + (0.80-0.25) * min(1., dv),0.41 + (0.36-0.41) * min(1., dv), 0.88 + (0.36-.88) * min(1., dv))
+        color = (
+            0.25 + (0.80 - 0.25) * min(1.0, dv),
+            0.41 + (0.36 - 0.41) * min(1.0, dv),
+            0.88 + (0.36 - 0.88) * min(1.0, dv),
+        )
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
         )
@@ -91,14 +95,21 @@ def add_sf_leg(
 
     # We plot optionally gridpoints, the low-thrust or the mid points
     if show_gridpoints:
-        ax.plot(pos_fwd[:, 0], pos_fwd[:, 1], pos_fwd[:, 2], ".")
+        ax.plot(
+            pos_fwd[:, 0] / units, pos_fwd[:, 1] / units, pos_fwd[:, 2] / units, "."
+        )
     if show_midpoints:
-        ax.plot(pos_m_fwd[:, 0], pos_m_fwd[:, 1], pos_m_fwd[:, 2], "kx")
+        ax.plot(
+            pos_m_fwd[:, 0] / units,
+            pos_m_fwd[:, 1] / units,
+            pos_m_fwd[:, 2] / units,
+            "kx",
+        )
     if show_throttles:
         ax.quiver(
-            pos_m_fwd[:, 0],
-            pos_m_fwd[:, 1],
-            pos_m_fwd[:, 2],
+            pos_m_fwd[:, 0] / units,
+            pos_m_fwd[:, 1] / units,
+            pos_m_fwd[:, 2] / units,
             throttles_fwd[:, 0],
             throttles_fwd[:, 1],
             throttles_fwd[:, 2],
@@ -122,7 +133,11 @@ def add_sf_leg(
         throttles_bck.append(dv_vec)
         dv = _np.linalg.norm(dv_vec)
         # plot it in a color that is proportional to the strength
-        color = (0.25 + (0.80-0.25) * min(1., dv),0.41 + (0.36-0.41) * min(1., dv), 0.88 + (0.36-.88) * min(1., dv))
+        color = (
+            0.25 + (0.80 - 0.25) * min(1.0, dv),
+            0.41 + (0.36 - 0.41) * min(1.0, dv),
+            0.88 + (0.36 - 0.88) * min(1.0, dv),
+        )
         _pk.plot.add_ballistic_arc(
             ax, rv, -dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
         )
@@ -146,14 +161,21 @@ def add_sf_leg(
 
     # We plot optionally gridpoints, the low-thrust or the mid points
     if show_gridpoints:
-        ax.plot(pos_bck[:, 0], pos_bck[:, 1], pos_bck[:, 2], ".")
+        ax.plot(
+            pos_bck[:, 0] / units, pos_bck[:, 1] / units, pos_bck[:, 2] / units, "."
+        )
     if show_midpoints:
-        ax.plot(pos_bck_m[:, 0], pos_bck_m[:, 1], pos_bck_m[:, 2], "kx")
+        ax.plot(
+            pos_bck_m[:, 0] / units,
+            pos_bck_m[:, 1] / units,
+            pos_bck_m[:, 2] / units,
+            "kx",
+        )
     if show_throttles:
         ax.quiver(
-            pos_bck_m[:, 0],
-            pos_bck_m[:, 1],
-            pos_bck_m[:, 2],
+            pos_bck_m[:, 0] / units,
+            pos_bck_m[:, 1] / units,
+            pos_bck_m[:, 2] / units,
             throttles_bck[:, 0],
             throttles_bck[:, 1],
             throttles_bck[:, 2],

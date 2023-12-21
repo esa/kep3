@@ -197,9 +197,9 @@ int main()
 {
     // performing tests
     fmt::print("\nSolves the same optimization problems with and without analytical gradients:");
-    //perform_test_convergence(200, 5);
-    //perform_test_convergence(200, 10);
-    //perform_test_convergence(200, 15);
+    perform_test_convergence(200, 5);
+    perform_test_convergence(200, 10);
+    perform_test_convergence(200, 15);
 
     fmt::print("\nComputes the same analytical and numerical gradients and tests for speed:");
     perform_test_speed(100, 5, 10);
@@ -207,8 +207,6 @@ int main()
     perform_test_speed(100, 15, 10);
     perform_test_speed(100, 20, 10);
     perform_test_speed(100, 70, 10);
-
-
     fmt::print("\n");
 
 }
