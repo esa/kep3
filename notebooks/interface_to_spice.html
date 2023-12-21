@@ -146,16 +146,17 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../udpla.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
@@ -168,6 +169,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </li>
@@ -470,7 +472,7 @@ to observations, simulations or historical data and encapsulated into <a class="
 </div>
 </div>
 <p>This is done only once and we can now forget about it (unless memory is an issue and we want to unload the data, in which case we provide a corresponding <code class="xref py py-func docutils literal notranslate"><span class="pre">unload_spice_kernels()</span></code> function).</p>
-<p>We now instantiate a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> form the UDPLA <a class="reference internal" href="../udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
+<p>We now instantiate a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> form the UDPLA <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">spice</span><span class="p">(</span><span class="s2">&quot;JUPITER BARYCENTER&quot;</span><span class="p">,</span> <span class="s2">&quot;ECLIPJ2000&quot;</span><span class="p">,</span> <span class="s2">&quot;SSB&quot;</span><span class="p">)</span>
@@ -512,7 +514,7 @@ Reference Frame: ECLIPJ2000
 </div>
 </div>
 </div>
-<p>Note how many physical parameters of the body are not defined, as for this particular UDPLA (the <a class="reference internal" href="../udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>), the ephemerides computations are interpolated from tables and hence do not require any physical parameters. The user can always define them if needed.</p>
+<p>Note how many physical parameters of the body are not defined, as for this particular UDPLA (the <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>), the ephemerides computations are interpolated from tables and hence do not require any physical parameters. The user can always define them if needed.</p>
 <section id="id1">
 <h2><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 </section>
@@ -527,7 +529,7 @@ Reference Frame: ECLIPJ2000
 </div>
 </div>
 </div>
-<p>The UDPLA <a class="reference internal" href="../udplas.html#pykep.udpla.de440s" title="pykep.udpla.de440s"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.de440s</span></code></a> automatically loads the correct kernel shipped with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> module.</p>
+<p>The UDPLA <a class="reference internal" href="../udpla.html#pykep.udpla.de440s" title="pykep.udpla.de440s"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.de440s</span></code></a> automatically loads the correct kernel shipped with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> module.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">de440s</span><span class="p">(</span><span class="s2">&quot;JUPITER BARYCENTER&quot;</span><span class="p">,</span> <span class="s2">&quot;ECLIPJ2000&quot;</span><span class="p">,</span> <span class="s2">&quot;SSB&quot;</span><span class="p">)</span>
@@ -545,7 +547,7 @@ Velocity (m/s): [-12935.993235030832, 3306.5234815642566, 275.73217606979927]
 </div>
 </div>
 </div>
-<p>What if we wanted a different reference frame? Well then we may either instantiate a different <a class="reference internal" href="../udplas.html#pykep.udpla.de440s" title="pykep.udpla.de440s"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.de440s</span></code></a> with a different frame, and/or observer, or perform the transformation ourselves. If we want to perform the transformation ourselves, we need a rotation matrix, and we would then get it as follow:</p>
+<p>What if we wanted a different reference frame? Well then we may either instantiate a different <a class="reference internal" href="../udpla.html#pykep.udpla.de440s" title="pykep.udpla.de440s"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.de440s</span></code></a> with a different frame, and/or observer, or perform the transformation ourselves. If we want to perform the transformation ourselves, we need a rotation matrix, and we would then get it as follow:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="s2">&quot;ECLIPJ2000&quot;</span><span class="p">,</span> <span class="s2">&quot;J2000&quot;</span><span class="p">)</span>

@@ -1,0 +1,726 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Interplanetary transfer legs &#8212; pykep 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'leg';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Planet class" href="planet.html" />
+    <link rel="prev" title="Lambert class" href="lambert.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/pykep_logo.png" class="logo__image only-light" alt="pykep 0.0.1 documentation - Home"/>
+    <script>document.write(`<img src="_static/pykep_logo.png" class="logo__image only-dark" alt="pykep 0.0.1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="api.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Interplanetary transfer legs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Basic</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/esa/kep3" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fleg.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/leg.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Interplanetary transfer legs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan"><code class="docutils literal notranslate"><span class="pre">sims_flanagan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_mc_grad"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_mc_grad()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_mismatch_constraints"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_mismatch_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_tc_grad"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_tc_grad()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_throttle_constraints"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_throttle_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.cut"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.cut</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.isp"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.isp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.max_thrust"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.max_thrust</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.mf"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.mf</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.ms"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.ms</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.mu"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.mu</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg_bck"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg_bck</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg_fwd"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg_fwd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.rvf"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.rvf</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.rvs"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.rvs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.throttles"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.throttles</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.tof"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.tof</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="interplanetary-transfer-legs">
+<span id="leg"></span><h1>Interplanetary transfer legs<a class="headerlink" href="#interplanetary-transfer-legs" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.leg.</span></span><span class="sig-name descname"><span class="pre">sims_flanagan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[1,</span> <span class="pre">0,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">throttles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[0,</span> <span class="pre">1,</span> <span class="pre">0],</span> <span class="pre">[-1,</span> <span class="pre">0,</span> <span class="pre">0]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_thrust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.sims_flanagan" title="Permalink to this definition">#</a></dt>
+<dd><p>This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space <span class="math notranslate nohighlight">\([\mathbf r, \mathbf v, m]\)</span>.
+The low-thrust transfer is described by a sequence of equally spaced impulses as described in:</p>
+<p>Sims, J., Finlayson, P., Rinderle, E., Vavrina, M. and Kowalkowski, T., 2006, August. Implementation of a low-thrust trajectory optimization algorithm for preliminary design. 
+In AIAA/AAS Astrodynamics specialist conference and exhibit (p. 6746).</p>
+<p>The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>rvs</em> (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].</p>
+<p><em>ms</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): initial mass. Defaults to 1.</p>
+<p><em>throttles</em> (1D array-like): the Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, …..]. Defaults to a ballistic, two segments profile [0,0,0,0,0,0].</p>
+<p><em>rvf</em> (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].</p>
+<p><em>mf</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): final mass. Defaults to 1.</p>
+<p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight. Defaults to <span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>.</p>
+<p><em>max_thrust</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): maximum level for the spacecraft thrust. Defaults to 1.</p>
+<p><em>isp</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): specific impulse of the propulasion system. Defaults to 1.</p>
+<p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
+<p><em>cut</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Units need to be consistent.</p>
+</div>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.compute_mc_grad">
+<span class="sig-name descname"><span class="pre">compute_mc_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.sims_flanagan.compute_mc_grad" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the gradients of the mismatch constraints. Indicating the initial augmented state with <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, the
+final augmented state with <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span>, the total time of flight with <span class="math notranslate nohighlight">\(T\)</span> and the introducing the augmented throttle vector
+<span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]\)</span> (note the time of flight at the end), this method computes the following gradients:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \mathbf {mc}}{\partial \mathbf x_s}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \mathbf {mc}}{\partial \mathbf x_f}\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \mathbf {mc}}{\partial \mathbf u}\]</div>
+<dl>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> [<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3)</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+<span class="go">&gt;&gt;  sf.throttles = [0.8]*3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">compute_mc_grad</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.compute_mismatch_constraints">
+<span class="sig-name descname"><span class="pre">compute_mismatch_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.sims_flanagan.compute_mismatch_constraints" title="Permalink to this definition">#</a></dt>
+<dd><p>In the Sims-Flanagan trajectory leg model, a forward propagation is performed from the starting state as well as a backward from the final state.
+The state values thus computed need to match in some middle control point. This is typically imposed as 7 independent constraints called mismatch-constraints
+computed by this method.</p>
+<dl>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]: The seven mismatch constraints in the same units used to construct the leg.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">compute_mismatch_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.compute_tc_grad">
+<span class="sig-name descname"><span class="pre">compute_tc_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.sims_flanagan.compute_tc_grad" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the gradients of the throttles constraints. Indicating the total time of flight with <span class="math notranslate nohighlight">\(T\)</span> and introducing the augmented throttle vector
+<span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]\)</span> (note the time of flight at the end), this method computes the following gradient:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \mathbf {tc}}{\partial \mathbf u}\]</div>
+<dl>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> [<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>]: The gradient. Size will be (nseg,nseg*3).</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+<span class="go">&gt;&gt;  sf.throttles = [0.8]*3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">compute_tc_grad</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.compute_throttle_constraints">
+<span class="sig-name descname"><span class="pre">compute_throttle_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.sims_flanagan.compute_throttle_constraints" title="Permalink to this definition">#</a></dt>
+<dd><p>In the Sims-Flanagan trajectory leg model implemented in pykep, we introduce the concept of throttles. Each throttle is defined by three numbers
+<span class="math notranslate nohighlight">\([u_x, u_y, u_z] \in [0,1]\)</span> indicating that a certain component of the thrust vector has reached a fraction of its maximum allowed value. 
+As a consequence, along the segment along which the throttle is applied, the constraint  <span class="math notranslate nohighlight">\(u_x ^2 + u_y ^2 + u_z^2 = 1\)</span>, called a throttle constraint,
+has to be met.</p>
+<dl>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]: The throttle constraints.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+<span class="go">&gt;&gt;  sf.throttles = [0.8]*3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">compute_throttle_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.cut">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cut</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.cut" title="Permalink to this definition">#</a></dt>
+<dd><p>The leg cut: it determines the number of forward and backward segments.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.isp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isp</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.isp" title="Permalink to this definition">#</a></dt>
+<dd><p>Specific impulse of the propulasion system</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.max_thrust">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_thrust</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.max_thrust" title="Permalink to this definition">#</a></dt>
+<dd><p>Maximum spacecraft thruet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.mf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mf</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.mf" title="Permalink to this definition">#</a></dt>
+<dd><p>Final mass.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.ms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ms</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.ms" title="Permalink to this definition">#</a></dt>
+<dd><p>Initial mass.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.mu">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.mu" title="Permalink to this definition">#</a></dt>
+<dd><p>Central body gravitational parameter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.nseg">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nseg</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.nseg" title="Permalink to this definition">#</a></dt>
+<dd><p>The total number of segments</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.nseg_bck">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nseg_bck</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.nseg_bck" title="Permalink to this definition">#</a></dt>
+<dd><p>The total number of backward segments</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.nseg_fwd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nseg_fwd</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.nseg_fwd" title="Permalink to this definition">#</a></dt>
+<dd><p>The total number of forward segments</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.rvf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rvf</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.rvf" title="Permalink to this definition">#</a></dt>
+<dd><p>The final position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.rvs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rvs</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.rvs" title="Permalink to this definition">#</a></dt>
+<dd><p>The initial position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.throttles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">throttles</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.throttles" title="Permalink to this definition">#</a></dt>
+<dd><p>The Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, …..].</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.leg.sims_flanagan.tof">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tof</span></span><a class="headerlink" href="#pykep.leg.sims_flanagan.tof" title="Permalink to this definition">#</a></dt>
+<dd><p>Time of flight.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="lambert.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lambert class</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="planet.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Planet class</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan"><code class="docutils literal notranslate"><span class="pre">sims_flanagan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_mc_grad"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_mc_grad()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_mismatch_constraints"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_mismatch_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_tc_grad"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_tc_grad()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.compute_throttle_constraints"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.compute_throttle_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.cut"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.cut</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.isp"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.isp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.max_thrust"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.max_thrust</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.mf"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.mf</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.ms"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.ms</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.mu"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.mu</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg_bck"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg_bck</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.nseg_fwd"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.nseg_fwd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.rvf"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.rvf</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.rvs"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.rvs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.throttles"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.throttles</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.leg.sims_flanagan.tof"><code class="docutils literal notranslate"><span class="pre">sims_flanagan.tof</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dario Izzo and Francesco Biscani
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023, 2024, Dario Izzo and Francesco Biscani.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

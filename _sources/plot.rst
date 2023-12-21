@@ -21,3 +21,15 @@ Plotting planets
 
 .. autofunction:: add_solar_system
 
+Plotting trajectories
+----------------------------------
+
+.. autofunction:: add_lambert
+
+.. autofunction:: add_ballistic_arc
+
+.. autofunction:: add_sf_leg
+
+
+
+

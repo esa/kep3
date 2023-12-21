@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>The various anomalies in pykep &#8212; pykep 0.0.1 documentation</title>
+    <title>The Sims-Flanagan trajectory leg &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/anomalies';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/sims_flanagan_leg';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Epochs and Julian Dates" href="epochs.html" />
-    <link rel="prev" title="Basic" href="../tutorials.html" />
+    <link rel="next" title="Plotting" href="plotting.html" />
+    <link rel="prev" title="Lagrange Propagation" href="propagate_lagrangian.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -166,12 +166,12 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials.html">Basic</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">The various anomalies in pykep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </li>
@@ -229,7 +229,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/anomalies.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/sims_flanagan_leg.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch onBinder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -277,7 +277,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/anomalies.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/sims_flanagan_leg.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -307,7 +307,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/anomalies.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/sims_flanagan_leg.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -389,7 +389,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>The various anomalies in pykep</h1>
+    <h1>The Sims-Flanagan trajectory leg</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -403,90 +403,88 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="the-various-anomalies-in-pykep">
-<h1>The various anomalies in pykep<a class="headerlink" href="#the-various-anomalies-in-pykep" title="Permalink to this heading">#</a></h1>
-<p>A number of anomalies are typically of use in space-flight mechanics and its useful to define the various symbols used to indicate them. Throughout pykep code and documentation we mostly use:</p>
-<p><span class="math notranslate nohighlight">\(f\)</span>: True, <span class="math notranslate nohighlight">\(M\)</span>: Mean,  <span class="math notranslate nohighlight">\(E\)</span>: Eccentric, <span class="math notranslate nohighlight">\(N\)</span>: Hyperbolic Mean, <span class="math notranslate nohighlight">\(H\)</span>: Hyperbolic, <span class="math notranslate nohighlight">\(\zeta\)</span>: Gudermannian, <span class="math notranslate nohighlight">\(L\)</span>: True longitude, <span class="math notranslate nohighlight">\(\lambda\)</span>: Mean longitude.</p>
-<p>To keep the various function name consistent with our naming scheme we do not use there capitalized letters so that, for example,  <a class="reference internal" href="../anomalies.html#pykep.n2h" title="pykep.n2h"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.n2h()</span></code></a>
-is the name indicating a function transforming N to H. At times we also must avoid the use of single letter variables so that for example we may write, for example, <strong>mean</strong> if necessary to indicate <span class="math notranslate nohighlight">\(M\)</span>.</p>
-<p>All anomalies are linked with each other through algebraic explicit and implicit equations such as the most famous Kepler’s equation:</p>
-<div class="math notranslate nohighlight">
-\[
-M = E - e \sin E
-\]</div>
-<p>and can be mostly converted to / from using dedicated functions here briefly showcased.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="the-sims-flanagan-trajectory-leg">
+<h1>The Sims-Flanagan trajectory leg<a class="headerlink" href="#the-sims-flanagan-trajectory-leg" title="Permalink to this heading">#</a></h1>
+<p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan" title="pykep.leg.sims_flanagan"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan</span></code></a>. The leg can be used to describe efficiently a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
+and approximates the continuous thrust via a sequence of impulsive, equally-spaced manouvres. The leg is defined by a starting position <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, an arrival position <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span> and a time of flight <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p>A sequence of throttles <span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, u_{x2}, u_{y2}, u_{z2}, ... ]\)</span> define an equal number of impulsive <span class="math notranslate nohighlight">\(\Delta \mathbf V\)</span> applied in the middle of the leg’s <span class="math notranslate nohighlight">\(n\)</span> segments (i.e. trajectory parts of equal temporal length <span class="math notranslate nohighlight">\(\frac Tn\)</span>).</p>
+<p>In this tutorial we show the basic API to interface with the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan" title="pykep.leg.sims_flanagan"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan</span></code></a> efficiently.</p>
+<p>We start with some imports:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">time</span>
+
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits</span> <span class="kn">import</span> <span class="n">mplot3d</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
 </div>
 </div>
-<p>We start considering a satellite on an elliptical orbit having a low eccentricity <span class="math notranslate nohighlight">\(e=0.1\)</span>. The relation between its True anomaly <span class="math notranslate nohighlight">\(f\)</span> and the eccentric anomaly <span class="math notranslate nohighlight">\(E\)</span> is relatively simple:</p>
+<p>We then define the spacecraft propulsion system and the initial and final state. In this case they are not related to any orbital mechanics and are chosen arbitrarily for the purpose of clearlyshowing the API.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ecc</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">M</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Eccentric Anomaly: &quot;</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">ecc</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem data</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.12</span>
+<span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="c1"># Initial state</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
+<span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
+
+<span class="c1"># Final state</span>
+<span class="n">mf</span> <span class="o">=</span> <span class="mf">1300.0</span>
+<span class="n">rf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
+<span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.023</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
+
+<span class="c1"># Throttles and tof</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span><span class="o">*</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">324.0</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We are now ready to instantiate a leg</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">(</span><span class="n">rvs</span> <span class="o">=</span> <span class="p">[</span><span class="n">rs</span><span class="p">,</span> <span class="n">vs</span><span class="p">],</span> <span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span><span class="p">,</span> <span class="n">throttles</span> <span class="o">=</span> <span class="n">throttles</span><span class="p">,</span> <span class="n">rvf</span> <span class="o">=</span> <span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span> <span class="n">mf</span> <span class="o">=</span> <span class="n">mf</span><span class="p">,</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">tof</span><span class="p">,</span> <span class="n">max_thrust</span> <span class="o">=</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">isp</span> <span class="o">=</span> <span class="n">isp</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the axis</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="c1"># Adding the Sun Earth and the boundary states</span>
+<span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;EARTH&quot;</span><span class="p">)</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sun</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet_orbit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">earth</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Plotting the trajctory leg</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sf_leg</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">show_throttles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">show_midpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># Making the axis nicer</span>
+<span class="n">D</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="n">D</span><span class="p">,</span><span class="n">D</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">D</span><span class="o">*</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Eccentric Anomaly:  0.39017524962497735
-</pre></div>
-</div>
-</div>
-</div>
-<p>We may have a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of True Anomalies (or eccentricities), in which case we can use the vectorized version of the same function (note the subscript):</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">Es</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e_v</span><span class="p">(</span><span class="n">Ms</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Es</span><span class="p">,</span><span class="n">Ms</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Eccentric Anomaly&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Mean Anomaly&quot;</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/ab3f16a2c38564afd1b4a76449d92101f0cbd363e3b5be4901ebbd5f9b3e8b24.png" src="../_images/ab3f16a2c38564afd1b4a76449d92101f0cbd363e3b5be4901ebbd5f9b3e8b24.png" />
-</div>
-</div>
-<p>and do the same for, e.g. the True Anomaly relation to <span class="math notranslate nohighlight">\(M\)</span></p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">Ms</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">f2m_v</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span><span class="n">Ms</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;True Anomaly&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Mean Anomaly&quot;</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/2786eff5279f3efbb94bdadcd42a566c0b9e352bbe2a0176883628aa36dff59e.png" src="../_images/2786eff5279f3efbb94bdadcd42a566c0b9e352bbe2a0176883628aa36dff59e.png" />
-</div>
-</div>
-<p>Finally we may want to know about the comutational speed of these functions. Let us compute 100000 times 100 Eccentric anomalies from the Mean anomaly (i.e. solve 1e7 times Kepler’s equation):</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100000</span><span class="p">):</span>
-    <span class="n">Es</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">m2e_v</span><span class="p">(</span><span class="n">Ms</span><span class="p">,</span> <span class="n">ecc</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We solve </span><span class="si">{</span><span class="mf">1e7</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="si">:</span><span class="s2">1.0f</span><span class="si">}</span><span class="s2"> Kepler&#39;s Equations each second.&quot;</span> <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 5758687 Kepler&#39;s Equations each second.
-</pre></div>
-</div>
+<img alt="../_images/30146217e66fd8517665ed1dcfd6e0fd912d520007e5eeafaca173a971ca771b.png" src="../_images/30146217e66fd8517665ed1dcfd6e0fd912d520007e5eeafaca173a971ca771b.png" />
 </div>
 </div>
 </section>
@@ -503,20 +501,20 @@ M = E - e \sin E
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../tutorials.html"
+       href="propagate_lagrangian.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Basic</p>
+        <p class="prev-next-title">Lagrange Propagation</p>
       </div>
     </a>
     <a class="right-next"
-       href="epochs.html"
+       href="plotting.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Epochs and Julian Dates</p>
+        <p class="prev-next-title">Plotting</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

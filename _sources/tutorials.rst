@@ -33,6 +33,7 @@ astrodynamical notation and computations.
   notebooks/planet
   notebooks/interface_to_spice
   notebooks/propagate_lagrangian
+  notebooks/sims_flanagan_leg
   notebooks/plotting
 
 

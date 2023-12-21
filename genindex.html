@@ -143,16 +143,17 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
@@ -165,6 +166,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </li>
@@ -323,6 +325,7 @@ document.write(`
 <div class="genindex-jumpbox">
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
@@ -346,12 +349,18 @@ document.write(`
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="plot.html#pykep.plot.add_planet">add_planet() (in module pykep.plot)</a>
+      <li><a href="plot.html#pykep.plot.add_ballistic_arc">add_ballistic_arc() (in module pykep.plot)</a>
 </li>
-      <li><a href="plot.html#pykep.plot.add_planet_orbit">add_planet_orbit() (in module pykep.plot)</a>
+      <li><a href="plot.html#pykep.plot.add_lambert">add_lambert() (in module pykep.plot)</a>
+</li>
+      <li><a href="plot.html#pykep.plot.add_planet">add_planet() (in module pykep.plot)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="plot.html#pykep.plot.add_planet_orbit">add_planet_orbit() (in module pykep.plot)</a>
+</li>
+      <li><a href="plot.html#pykep.plot.add_sf_leg">add_sf_leg() (in module pykep.plot)</a>
+</li>
       <li><a href="plot.html#pykep.plot.add_solar_system">add_solar_system() (in module pykep.plot)</a>
 </li>
       <li><a href="plot.html#pykep.plot.add_sun">add_sun() (in module pykep.plot)</a>
@@ -362,7 +371,25 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.de440s.body_list">body_list() (pykep.udpla.de440s method)</a>
+      <li><a href="udpla.html#pykep.udpla.de440s.body_list">body_list() (pykep.udpla.de440s method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mc_grad">compute_mc_grad() (pykep.leg.sims_flanagan method)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mismatch_constraints">compute_mismatch_constraints() (pykep.leg.sims_flanagan method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_tc_grad">compute_tc_grad() (pykep.leg.sims_flanagan method)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_throttle_constraints">compute_throttle_constraints() (pykep.leg.sims_flanagan method)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.cut">cut (pykep.leg.sims_flanagan property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -370,7 +397,7 @@ document.write(`
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.de440s">de440s (class in pykep.udpla)</a>
+      <li><a href="udpla.html#pykep.udpla.de440s">de440s (class in pykep.udpla)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -393,9 +420,9 @@ document.write(`
       <li><a href="planet.html#pykep.planet.eph">eph() (pykep.planet method)</a>
 
       <ul>
-        <li><a href="udplas.html#pykep.udpla.spice.eph">(pykep.udpla.spice method)</a>
+        <li><a href="udpla.html#pykep.udpla.spice.eph">(pykep.udpla.spice method)</a>
 </li>
-        <li><a href="udplas.html#pykep.udpla.tle.eph">(pykep.udpla.tle method)</a>
+        <li><a href="udpla.html#pykep.udpla.tle.eph">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -403,7 +430,7 @@ document.write(`
       <li><a href="planet.html#pykep.planet.eph_v">eph_v() (pykep.planet method)</a>
 
       <ul>
-        <li><a href="udplas.html#pykep.udpla.tle.eph_v">(pykep.udpla.tle method)</a>
+        <li><a href="udpla.html#pykep.udpla.tle.eph_v">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
       <li><a href="epoch.html#pykep.epoch">epoch (class in pykep)</a>
@@ -455,15 +482,15 @@ document.write(`
       <li><a href="planet.html#pykep.planet.get_extra_info">get_extra_info() (pykep.planet method)</a>
 
       <ul>
-        <li><a href="udplas.html#pykep.udpla.spice.get_extra_info">(pykep.udpla.spice method)</a>
+        <li><a href="udpla.html#pykep.udpla.spice.get_extra_info">(pykep.udpla.spice method)</a>
 </li>
-        <li><a href="udplas.html#pykep.udpla.tle.get_extra_info">(pykep.udpla.tle method)</a>
+        <li><a href="udpla.html#pykep.udpla.tle.get_extra_info">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
       <li><a href="planet.html#pykep.planet.get_mu_central_body">get_mu_central_body() (pykep.planet method)</a>
 
       <ul>
-        <li><a href="udplas.html#pykep.udpla.tle.get_mu_central_body">(pykep.udpla.tle method)</a>
+        <li><a href="udpla.html#pykep.udpla.tle.get_mu_central_body">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
       <li><a href="planet.html#pykep.planet.get_mu_self">get_mu_self() (pykep.planet method)</a>
@@ -473,11 +500,11 @@ document.write(`
       <li><a href="planet.html#pykep.planet.get_name">get_name() (pykep.planet method)</a>
 
       <ul>
-        <li><a href="udplas.html#pykep.udpla.de440s.get_name">(pykep.udpla.de440s method)</a>
+        <li><a href="udpla.html#pykep.udpla.de440s.get_name">(pykep.udpla.de440s method)</a>
 </li>
-        <li><a href="udplas.html#pykep.udpla.spice.get_name">(pykep.udpla.spice method)</a>
+        <li><a href="udpla.html#pykep.udpla.spice.get_name">(pykep.udpla.spice method)</a>
 </li>
-        <li><a href="udplas.html#pykep.udpla.tle.get_name">(pykep.udpla.tle method)</a>
+        <li><a href="udpla.html#pykep.udpla.tle.get_name">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
       <li><a href="planet.html#pykep.planet.get_radius">get_radius() (pykep.planet method)</a>
@@ -514,6 +541,8 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="planet.html#pykep.planet.is_">is_() (pykep.planet method)</a>
 </li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.isp">isp (pykep.leg.sims_flanagan property)</a>
+</li>
       <li><a href="lambert.html#pykep.lambert_problem.iters">iters (pykep.lambert_problem property)</a>
 </li>
   </ul></td>
@@ -526,7 +555,7 @@ document.write(`
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.jpl_lp">jpl_lp (class in pykep.udpla)</a>
+      <li><a href="udpla.html#pykep.udpla.jpl_lp">jpl_lp (class in pykep.udpla)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -534,11 +563,11 @@ document.write(`
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.keplerian">keplerian (class in pykep.udpla)</a>
+      <li><a href="udpla.html#pykep.udpla.keplerian">keplerian (class in pykep.udpla)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.de440s.kernel_file">kernel_file() (pykep.udpla.de440s method)</a>
+      <li><a href="udpla.html#pykep.udpla.de440s.kernel_file">kernel_file() (pykep.udpla.de440s method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -562,16 +591,26 @@ document.write(`
 </li>
       <li><a href="anomalies.html#pykep.m2f_v">m2f_v() (in module pykep)</a>
 </li>
+      <li><a href="plot.html#pykep.plot.make_3Daxis">make_3Daxis() (in module pykep.plot)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.max_thrust">max_thrust (pykep.leg.sims_flanagan property)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="plot.html#pykep.plot.make_3Daxis">make_3Daxis() (in module pykep.plot)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.mf">mf (pykep.leg.sims_flanagan property)</a>
 </li>
       <li><a href="epoch.html#pykep.epoch.mjd">mjd (pykep.epoch property)</a>
 </li>
       <li><a href="epoch.html#pykep.epoch.mjd2000">mjd2000 (pykep.epoch property)</a>
 </li>
-      <li><a href="lambert.html#pykep.lambert_problem.mu">mu (pykep.lambert_problem property)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.ms">ms (pykep.leg.sims_flanagan property)</a>
 </li>
+      <li><a href="lambert.html#pykep.lambert_problem.mu">mu (pykep.lambert_problem property)</a>
+
+      <ul>
+        <li><a href="leg.html#pykep.leg.sims_flanagan.mu">(pykep.leg.sims_flanagan property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -584,15 +623,21 @@ document.write(`
 </li>
       <li><a href="anomalies.html#pykep.n2h">n2h() (in module pykep)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="anomalies.html#pykep.n2h_v">n2h_v() (in module pykep)</a>
 </li>
       <li><a href="lambert.html#pykep.lambert_problem.Nmax">Nmax (pykep.lambert_problem property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="epoch.html#pykep.epoch.now">now() (pykep.epoch static method)</a>
 </li>
-      <li><a href="udplas.html#pykep.udpla.null_udpla">null_udpla (class in pykep.udpla)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.nseg">nseg (pykep.leg.sims_flanagan property)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.nseg_bck">nseg_bck (pykep.leg.sims_flanagan property)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.nseg_fwd">nseg_fwd (pykep.leg.sims_flanagan property)</a>
+</li>
+      <li><a href="udpla.html#pykep.udpla.null_udpla">null_udpla (class in pykep.udpla)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -622,9 +667,13 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lambert.html#pykep.lambert_problem.r0">r0 (pykep.lambert_problem property)</a>
 </li>
+      <li><a href="lambert.html#pykep.lambert_problem.r1">r1 (pykep.lambert_problem property)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="lambert.html#pykep.lambert_problem.r1">r1 (pykep.lambert_problem property)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.rvf">rvf (pykep.leg.sims_flanagan property)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.rvs">rvs (pykep.leg.sims_flanagan property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -632,7 +681,11 @@ document.write(`
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="udpla.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -640,12 +693,18 @@ document.write(`
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udplas.html#pykep.udpla.tle">tle (class in pykep.udpla)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.throttles">throttles (pykep.leg.sims_flanagan property)</a>
+</li>
+      <li><a href="udpla.html#pykep.udpla.tle">tle (class in pykep.udpla)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lambert.html#pykep.lambert_problem.tof">tof (pykep.lambert_problem property)</a>
+
+      <ul>
+        <li><a href="leg.html#pykep.leg.sims_flanagan.tof">(pykep.leg.sims_flanagan property)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -657,6 +716,8 @@ document.write(`
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lambert.html#pykep.lambert_problem.v1">v1 (pykep.lambert_problem property)</a>
+</li>
+      <li><a href="udpla.html#pykep.udpla.vsop2013">vsop2013 (class in pykep.udpla)</a>
 </li>
   </ul></td>
 </tr></table>

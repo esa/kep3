@@ -48,7 +48,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Global constants" href="constants.html" />
+    <link rel="next" title="Anomalies Conversions" href="anomalies.html" />
     <link rel="prev" title="Welcome to pykep’s documentation!" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,16 +146,17 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
@@ -168,6 +169,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </li>
@@ -374,12 +376,12 @@ document.write(`
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html#normal">Normal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html#vectorized">Vectorized</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elements.html">Orbital Elements</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.el_type"><code class="docutils literal notranslate"><span class="pre">el_type</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html#pykep.ic2par"><code class="docutils literal notranslate"><span class="pre">ic2par()</span></code></a></li>
@@ -398,17 +400,18 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="lambert.html#pykep.lambert_problem"><code class="docutils literal notranslate"><span class="pre">lambert_problem</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="leg.html#pykep.leg.sims_flanagan"><code class="docutils literal notranslate"><span class="pre">sims_flanagan</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="planet.html">Planet class</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="planet.html#pykep.planet"><code class="docutils literal notranslate"><span class="pre">planet</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.spice"><code class="docutils literal notranslate"><span class="pre">spice</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html#pykep.udpla.de440s"><code class="docutils literal notranslate"><span class="pre">de440s</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">The plot module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#common-utils">Common utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-planets">Plotting planets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-trajectories">Plotting trajectories</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
@@ -417,9 +420,14 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="propagation.html#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">The plot module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#common-utils">Common utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#plotting-planets">Plotting planets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.vsop2013"><code class="docutils literal notranslate"><span class="pre">vsop2013</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.spice"><code class="docutils literal notranslate"><span class="pre">spice</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.de440s"><code class="docutils literal notranslate"><span class="pre">de440s</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -447,11 +455,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="constants.html"
+       href="anomalies.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Global constants</p>
+        <p class="prev-next-title">Anomalies Conversions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

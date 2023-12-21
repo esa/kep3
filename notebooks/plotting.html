@@ -45,10 +45,12 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/plotting';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Lagrange Propagation" href="propagate_lagrangian.html" />
+    <link rel="prev" title="The Sims-Flanagan trajectory leg" href="sims_flanagan_leg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -145,16 +147,17 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../udpla.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
@@ -167,6 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Plotting</a></li>
 </ul>
 </li>
@@ -399,6 +403,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-plots">3D Plots</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-planets">Plot planets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-a-lambert-arc">Plot a Lambert arc</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-a-sims-flanagan-trajectory-leg">Plot a Sims-Flanagan trajectory leg.</a></li>
 </ul>
 </li>
 </ul>
@@ -441,7 +446,7 @@ document.write(`
 <img alt="../_images/5fdaa32c8882fb82f3be2ddbf25c1a54288ed86b23b4623c6fd0d3794e858744.png" src="../_images/5fdaa32c8882fb82f3be2ddbf25c1a54288ed86b23b4623c6fd0d3794e858744.png" />
 </div>
 </div>
-<p>We may then add the Sun and a few planets easily … in the code below we will make use of the JPL low precision ephemerides, and thus use the <a class="reference internal" href="../udplas.html#pykep.udpla.jpl_lp" title="pykep.udpla.jpl_lp"><code class="xref py py-class docutils literal notranslate"><span class="pre">jpl_lp</span></code></a> User Defined Planet, but any other udpla would work.</p>
+<p>We may then add the Sun and a few planets easily … in the code below we will make use of the JPL low precision ephemerides, and thus use the <a class="reference internal" href="../udpla.html#pykep.udpla.jpl_lp" title="pykep.udpla.jpl_lp"><code class="xref py py-class docutils literal notranslate"><span class="pre">jpl_lp</span></code></a> User Defined Planet, but any other udpla would work.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Earth</span>
@@ -554,7 +559,7 @@ document.write(`
 <span class="n">tof_days</span> <span class="o">=</span> <span class="mf">1230.22</span>
 <span class="n">r0</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
 <span class="n">r1</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">mars</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="o">+</span><span class="n">tof_days</span><span class="p">)</span>
-<span class="n">lp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">lambert_problem</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span><span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span> <span class="n">tof</span><span class="o">=</span><span class="n">tof_days</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span> <span class="p">)</span>
+<span class="n">lp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">lambert_problem</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span><span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span> <span class="n">tof</span><span class="o">=</span><span class="n">tof_days</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -595,6 +600,50 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="plot-a-sims-flanagan-trajectory-leg">
+<h3>Plot a Sims-Flanagan trajectory leg.<a class="headerlink" href="#plot-a-sims-flanagan-trajectory-leg" title="Permalink to this heading">#</a></h3>
+<p>The class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan" title="pykep.leg.sims_flanagan"><code class="xref py py-class docutils literal notranslate"><span class="pre">sims_flanagan</span></code></a> is used to represent a low-thrust interplanetary trajectory of a spacecraft, modelled using a sequence of impulsive <span class="math notranslate nohighlight">\(\Delta V\)</span>. We can visualize, using the <code class="xref py py-class docutils literal notranslate"><span class="pre">plot</span></code> module, this trajectory and inspect visually the underlying discretization. Clarly the trajectory will only close if the throttle sequence (the low-thrust strategy) results in a feasible trajectory.</p>
+<p>Lets start to instantiate a Sims-Flanagan leg, the default constructor will construct a feasible non-dimensional ballistic transfer (with a rather big maximum thrust):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">()</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">throttles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nseg</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>which we can immediately visualize, together with a random variation produced by randomly initializing the throttle history:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the axis</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Adding the Sun and the Earth for added coolness and reference.</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sun</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet_orbit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">earth</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># And plotting the leg (ballistic)</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sf_leg</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">show_throttles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># And plotting the leg (random thrust)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">throttles</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nseg</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="p">))</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sf_leg</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">show_throttles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="mi">270</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;A ballistic and a random Sims-Flanagan leg&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/b4bff68d4fadb3606b6cddc567983be5ed18e5cc34b04556a1eae8c31a0e6955.png" src="../_images/b4bff68d4fadb3606b6cddc567983be5ed18e5cc34b04556a1eae8c31a0e6955.png" />
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -610,12 +659,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="propagate_lagrangian.html"
+       href="sims_flanagan_leg.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Lagrange Propagation</p>
+        <p class="prev-next-title">The Sims-Flanagan trajectory leg</p>
       </div>
     </a>
 </div>
@@ -636,6 +685,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-plots">3D Plots</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-planets">Plot planets</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-a-lambert-arc">Plot a Lambert arc</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-a-sims-flanagan-trajectory-leg">Plot a Sims-Flanagan trajectory leg.</a></li>
 </ul>
 </li>
 </ul>

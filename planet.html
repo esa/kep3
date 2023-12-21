@@ -50,8 +50,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'planet';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="List of user implemented planets (UDPLAs)" href="udplas.html" />
-    <link rel="prev" title="Lambert class" href="lambert.html" />
+    <link rel="next" title="The plot module" href="plot.html" />
+    <link rel="prev" title="Interplanetary transfer legs" href="leg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -148,16 +148,17 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="api.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udplas.html">List of user implemented planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
@@ -170,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </li>
@@ -505,7 +507,7 @@ in his UDPLA by coding a method having the signature:</p>
    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">mjd2000s</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>see, for example, the python implementation of the UDPLAS <a class="reference internal" href="udplas.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> and <a class="reference internal" href="udplas.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
+<p>see, for example, the python implementation of the UDPLAS <a class="reference internal" href="udpla.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> and <a class="reference internal" href="udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>mjd2000s</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
 </dd>
@@ -689,20 +691,20 @@ equation:</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="lambert.html"
+       href="leg.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Lambert class</p>
+        <p class="prev-next-title">Interplanetary transfer legs</p>
       </div>
     </a>
     <a class="right-next"
-       href="udplas.html"
+       href="plot.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">List of user implemented planets (UDPLAs)</p>
+        <p class="prev-next-title">The plot module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
