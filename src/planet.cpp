@@ -17,6 +17,7 @@
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
 
@@ -70,6 +71,23 @@ std::array<std::array<double, 3>, 2> null_udpla::eph(double)
     std::array<double, 3> pos = {1., 0., 0.};
     std::array<double, 3> vel = {0., 1., 0.};
     return {pos, vel};
+}
+
+planet_iface::~planet_iface() = default;
+
+std::array<std::array<double, 3>, 2> planet_iface::eph(const epoch &ep) const
+{
+    return eph(ep.mjd2000());
+}
+
+std::array<double, 6> planet_iface::elements(const epoch &ep, kep3::elements_type el_type) const
+{
+    return elements(ep.mjd2000(), el_type);
+}
+
+double planet_iface::period(const epoch &ep) const
+{
+    return period(ep.mjd2000());
 }
 
 } // namespace kep3::detail

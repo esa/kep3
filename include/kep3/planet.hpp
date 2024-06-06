@@ -25,11 +25,7 @@
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 
-#define TANUKI_WITH_BOOST_S11N
-
-#include <kep3/detail/tanuki.hpp>
-
-#undef TANUKI_WITH_BOOST_S11N
+#include <heyoka/detail/tanuki.hpp>
 
 namespace kep3
 {
@@ -41,9 +37,7 @@ namespace detail
 #define KEP3_UDPLA_CONCEPT_HAS_GET(name, type)                                                                         \
     template <typename T>                                                                                              \
     concept udpla_has_get_##name = requires(const T &p) {                                                              \
-        {                                                                                                              \
-            p.get_##name()                                                                                             \
-        } -> std::same_as<type>;                                                                                       \
+        { p.get_##name() } -> std::same_as<type>;                                                                      \
     }
 
 KEP3_UDPLA_CONCEPT_HAS_GET(mu_central_body, double);
@@ -57,30 +51,22 @@ KEP3_UDPLA_CONCEPT_HAS_GET(extra_info, std::string);
 
 template <typename T>
 concept udpla_has_eph = requires(const T &p, double mjd2000) {
-    {
-        p.eph(mjd2000)
-    } -> std::same_as<std::array<std::array<double, 3>, 2>>;
+    { p.eph(mjd2000) } -> std::same_as<std::array<std::array<double, 3>, 2>>;
 };
 
 template <typename T>
 concept udpla_has_eph_v = requires(const T &p, const std::vector<double> &mjd2000) {
-    {
-        p.eph_v(mjd2000)
-    } -> std::same_as<std::vector<double>>;
+    { p.eph_v(mjd2000) } -> std::same_as<std::vector<double>>;
 };
 
 template <typename T>
 concept udpla_has_period = requires(const T &p, double mjd2000) {
-    {
-        p.period(mjd2000)
-    } -> std::same_as<double>;
+    { p.period(mjd2000) } -> std::same_as<double>;
 };
 
 template <typename T>
 concept udpla_has_elements = requires(const T &p, double mjd2000, kep3::elements_type el_t) {
-    {
-        p.elements(mjd2000, el_t)
-    } -> std::same_as<std::array<double, 6>>;
+    { p.elements(mjd2000, el_t) } -> std::same_as<std::array<double, 6>>;
 };
 
 // Concept detecting if the type T can be used as a udpla.
@@ -88,15 +74,13 @@ template <typename T>
 concept any_udpla = std::default_initializable<T> && std::copy_constructible<T> && std::move_constructible<T>
                     && std::destructible<T> && udpla_has_eph<T>;
 
-template <typename, typename>
-struct planet_iface {
-};
+// Fwd declaration of the interface implementation.
+template <typename Base, typename Holder, typename T>
+    requires any_udpla<T>
+struct planet_iface_impl;
 
-// Planet interface.
-template <>
-// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions, hicpp-special-member-functions)
-struct planet_iface<void, void> {
-    virtual ~planet_iface() = default;
+struct kep3_DLL_PUBLIC planet_iface {
+    virtual ~planet_iface();
 
     [[nodiscard]] virtual double get_mu_central_body() const = 0;
     [[nodiscard]] virtual double get_mu_self() const = 0;
@@ -115,21 +99,15 @@ struct planet_iface<void, void> {
         = 0;
 
     // Methods that are non virtual, not implementable by the user in udplas, but visible in kep3::planet
-    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const
-    {
-        return eph(ep.mjd2000());
-    }
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
 
-    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep,
-                                                 kep3::elements_type el_type = kep3::elements_type::KEP_F) const
-    {
-        return elements(ep.mjd2000(), el_type);
-    }
+    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &,
+                                                 kep3::elements_type = kep3::elements_type::KEP_F) const;
 
-    [[nodiscard]] double period(const epoch &ep) const
-    {
-        return period(ep.mjd2000());
-    }
+    [[nodiscard]] double period(const epoch &) const;
+
+    template <typename Base, typename Holder, typename T>
+    using impl = planet_iface_impl<Base, Holder, T>;
 };
 
 // Helper macro to implement getters in the planet interface implementation.
@@ -137,7 +115,7 @@ struct planet_iface<void, void> {
     [[nodiscard]] type get_##name() const final                                                                        \
     {                                                                                                                  \
         if constexpr (udpla_has_get_##name<T>) {                                                                       \
-            return this->value().get_##name();                                                                         \
+            return getval<Holder>(this).get_##name();                                                                  \
         } else {                                                                                                       \
             return def_value;                                                                                          \
         }                                                                                                              \
@@ -169,9 +147,9 @@ std::vector<double> default_eph_vectorization(const T *self, const std::vector<d
 }
 
 // Planet interface implementation.
-template <typename Holder, typename T>
+template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
-struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_helper<Holder, T, planet_iface> {
+struct planet_iface_impl : public Base {
     KEP3_UDPLA_IMPLEMENT_GET(mu_central_body, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(mu_self, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(radius, double, -1)
@@ -181,13 +159,13 @@ struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_he
 
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double mjd2000) const final
     {
-        return this->value().eph(mjd2000);
+        return getval<Holder>(this).eph(mjd2000);
     }
 
     [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &mjd2000s) const final
     {
         if constexpr (udpla_has_eph_v<T>) {
-            return this->value().eph_v(mjd2000s);
+            return getval<Holder>(this).eph_v(mjd2000s);
         } else {
             return default_eph_vectorization(this, mjd2000s);
         }
@@ -198,7 +176,7 @@ struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_he
     {
         // If the user provides an efficient way to compute the period, then use it
         if constexpr (udpla_has_period<T>) {
-            return this->value().period(mjd2000);
+            return getval<Holder>(this).period(mjd2000);
         } else if constexpr (udpla_has_get_mu_central_body<T>) {
             // If the user provides the central body parameter, then compute the
             // period from the energy at epoch
@@ -219,7 +197,7 @@ struct planet_iface<Holder, T> : planet_iface<void, void>, tanuki::iface_impl_he
     {
         // If the user provides an efficient way to compute the orbital elements, then use it.
         if constexpr (udpla_has_elements<T>) {
-            return this->value().elements(mjd2000, el_type);
+            return getval<Holder>(this).elements(mjd2000, el_type);
         } else if constexpr (udpla_has_get_mu_central_body<T>) {
             // If the user provides the central body parameter, then compute the
             // elements using posvel computed at ep and converted.
@@ -246,29 +224,31 @@ struct kep3_DLL_PUBLIC null_udpla {
 private:
     friend class boost::serialization::access;
     template <typename Archive>
-    void serialize(Archive &, unsigned){};
+    void serialize(Archive &, unsigned) {};
 };
 
 // Reference interface for the planet class.
-template <typename Wrap>
 struct planet_ref_iface {
-    TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
-    TANUKI_REF_IFACE_MEMFUN(get_mu_self)
-    TANUKI_REF_IFACE_MEMFUN(get_radius)
-    TANUKI_REF_IFACE_MEMFUN(get_safe_radius)
-    TANUKI_REF_IFACE_MEMFUN(get_name)
-    TANUKI_REF_IFACE_MEMFUN(get_extra_info)
-    TANUKI_REF_IFACE_MEMFUN(eph)
-    TANUKI_REF_IFACE_MEMFUN(eph_v)
-    TANUKI_REF_IFACE_MEMFUN(period)
-    TANUKI_REF_IFACE_MEMFUN(elements)
+    template <typename Wrap>
+    struct impl {
+        TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
+        TANUKI_REF_IFACE_MEMFUN(get_mu_self)
+        TANUKI_REF_IFACE_MEMFUN(get_radius)
+        TANUKI_REF_IFACE_MEMFUN(get_safe_radius)
+        TANUKI_REF_IFACE_MEMFUN(get_name)
+        TANUKI_REF_IFACE_MEMFUN(get_extra_info)
+        TANUKI_REF_IFACE_MEMFUN(eph)
+        TANUKI_REF_IFACE_MEMFUN(eph_v)
+        TANUKI_REF_IFACE_MEMFUN(period)
+        TANUKI_REF_IFACE_MEMFUN(elements)
 
-    // Implement the extract functionality.
-    template <typename T>
-    T *extract()
-    {
-        return value_ptr<T>(*static_cast<Wrap *>(this));
-    }
+        // Implement the extract functionality.
+        template <typename T>
+        T *extract()
+        {
+            return value_ptr<T>(*static_cast<Wrap *>(this));
+        }
+    };
 };
 
 } // namespace detail
