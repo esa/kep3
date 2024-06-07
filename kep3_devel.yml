@@ -13,5 +13,9 @@ dependencies:
   - xtensor
   - xtensor-blas
   - pagmo-devel
+  - pybind11
+  - sgp4
+  - spiceypy
+  - matplotlib
 
 

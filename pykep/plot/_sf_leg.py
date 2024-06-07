@@ -37,7 +37,7 @@ def add_sf_leg(
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
 
-        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Notes:
         - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
