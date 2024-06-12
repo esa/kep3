@@ -515,9 +515,11 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
         = gradients_multiple_impulses(reversed_throttles.begin(), reversed_throttles.end(), rvf, mf, c, a, dt);
     // 5) We have computed dxf/dxs and dxf/dus, but the initial and final velocites (and us) had their sign
     // inverted! We thus need to account for that and change sign once again of the relevant entries.
+    // We also must account for changes in the mass equation (now -a)
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
     xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
-    xt::view(xgrad_rvm, xt::all(), xt::range(3, 6)) *= -1; // vf
+    xt::view(xgrad_rvm, xt::all(), xt::range(3, 7)) *= -1; // vf, mf
+
     auto xgrad = xt::adapt(grad, {7u, size + 1u});
     xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;    // vf
     xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1; // us

@@ -110,13 +110,13 @@ struct sf_test_udp {
 
         // [1:4,-1] - fitness gradient, position mismatch w.r.t. mf
         xt::view(xgradient, xt::range(1u, 4u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = -xt::view(xgrad_mc_xf, xt::range(0u, 3u), xt::range(6u, 7u)) / kep3::AU; // mf
+            = xt::view(xgrad_mc_xf, xt::range(0u, 3u), xt::range(6u, 7u)) / kep3::AU; // mf
         // [4:7,-1] - fitness gradient - velocity mismatch w.r.t. mf
         xt::view(xgradient, xt::range(4u, 7u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = -xt::view(xgrad_mc_xf, xt::range(3u, 6u), xt::range(6u, 7u)) / kep3::EARTH_VELOCITY; // mf
+            = xt::view(xgrad_mc_xf, xt::range(3u, 6u), xt::range(6u, 7u)) / kep3::EARTH_VELOCITY; // mf
         // [7:8,-1] - fitness gradient - mass mismatch w.r.t. mf
         xt::view(xgradient, xt::range(7u, 8u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = -xt::view(xgrad_mc_xf, xt::range(6u, 7u), xt::range(6u, 7u)) / 1e8; // mf
+            = xt::view(xgrad_mc_xf, xt::range(6u, 7u), xt::range(6u, 7u)) / 1e8; // mf
 
         // Units for the tof
         xt::view(xgradient, xt::all(), xt::range(m_nseg * 3u, m_nseg * 3u + 1u)) *= kep3::DAY2SEC;
