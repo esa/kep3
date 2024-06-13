@@ -52,7 +52,7 @@ del _os
 # Importing user defined planets
 from . import udpla
 
-# Importing trajectory legs udplas
+# Importing trajectory legs
 from . import leg
 
 # Importing the python utils

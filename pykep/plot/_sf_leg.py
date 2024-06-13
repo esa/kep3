@@ -49,6 +49,7 @@ def add_sf_leg(
     # We extract the number of segments from the leg.
     nseg = int(len(sf.throttles) / 3)
     dt = sf.tof / nseg
+    c = sf.max_thrust * dt
     nseg_fwd = int(nseg * sf.cut)
     nseg_bck = nseg - nseg_fwd
 
@@ -62,15 +63,15 @@ def add_sf_leg(
     pos_fwd.append(rv[0])
 
     for i in range(nseg_fwd):
-        # compute the dv (first non dimensional)
-        dv_vec = sf.throttles[3 * i : 3 * i + 3]
-        throttles_fwd.append(dv_vec)
-        dv = _np.linalg.norm(dv_vec)
+        # compute the dv
+        throttles = sf.throttles[3 * i : 3 * i + 3]
+        throttles_fwd.append(throttles)
+        dv = _np.linalg.norm(throttles) * c / mass_fwd
         # plot it in a color that is proportional to the strength from royalblue to indianred
         color = (
-            0.25 + (0.80 - 0.25) * min(1.0, dv),
-            0.41 + (0.36 - 0.41) * min(1.0, dv),
-            0.88 + (0.36 - 0.88) * min(1.0, dv),
+            0.25 + (0.80 - 0.25) * min(1.0,  _np.linalg.norm(throttles)),
+            0.41 + (0.36 - 0.41) * min(1.0,  _np.linalg.norm(throttles)),
+            0.88 + (0.36 - 0.88) * min(1.0,  _np.linalg.norm(throttles)),
         )
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
@@ -79,9 +80,9 @@ def add_sf_leg(
         rv = list(_pk.propagate_lagrangian(rv, tof=dt / 2, mu=sf.mu, stm=False))
         # register the position as a mid-point state
         pos_m_fwd.append(rv[0])
-        # add it to the state (now dimensional)
-        rv[1] = [a + b * sf.max_thrust / mass_fwd * dt for a, b in zip(rv[1], dv_vec)]
-        # update the mass
+        # add dv to the state (now dimensional)
+        rv[1] = [a + b * c / mass_fwd for a, b in zip(rv[1], throttles)]
+        # update the mass (increases)
         mass_fwd *= _np.exp(-dv / sf.isp / _pk.G0)
         # 2 - propagate for dt/2
         _pk.plot.add_ballistic_arc(
@@ -129,14 +130,14 @@ def add_sf_leg(
 
     for i in range(nseg_bck):
         # compute the dv (first non dimensional)
-        dv_vec = sf.throttles[nseg_fwd * 3 + 3 * i : nseg_fwd * 3 + 3 * i + 3]
-        throttles_bck.append(dv_vec)
-        dv = _np.linalg.norm(dv_vec)
+        throttles = sf.throttles[nseg*3-3-3*i:nseg*3-3*i]
+        throttles_bck.append(throttles)
+        dv = _np.linalg.norm(throttles) * c / mass_bck
         # plot it in a color that is proportional to the strength
         color = (
-            0.25 + (0.80 - 0.25) * min(1.0, dv),
-            0.41 + (0.36 - 0.41) * min(1.0, dv),
-            0.88 + (0.36 - 0.88) * min(1.0, dv),
+            0.25 + (0.80 - 0.25) * min(1.0, _np.linalg.norm(throttles)),
+            0.41 + (0.36 - 0.41) * min(1.0, _np.linalg.norm(throttles)),
+            0.88 + (0.36 - 0.88) * min(1.0, _np.linalg.norm(throttles)),
         )
         _pk.plot.add_ballistic_arc(
             ax, rv, -dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
@@ -146,7 +147,7 @@ def add_sf_leg(
         # register the position as a mid-point state
         pos_bck_m.append(rv[0])
         # add it to the state (now dimensional)
-        rv[1] = [a - b * sf.max_thrust / mass_fwd * dt for a, b in zip(rv[1], dv_vec)]
+        rv[1] = [a - b * c / mass_bck for a, b in zip(rv[1], throttles)]
         # update the mass
         mass_bck *= _np.exp(dv / sf.isp / _pk.G0)
         # 2 - propagate for dt/2
@@ -183,4 +184,7 @@ def add_sf_leg(
             color="indianred",
             arrow_length_ratio=arrow_length_ratio,
         )
+    print(f"Mismatch on pos: {pos_fwd[-1,:] / units - pos_bck[-1,:] / units}")
+    print(f"Mismatch on mass: {mass_bck-mass_fwd}")
+
     return ax
