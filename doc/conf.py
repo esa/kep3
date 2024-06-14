@@ -71,7 +71,9 @@ html_theme_options = {
 
 nb_execution_mode = "force"
 
-nb_execution_excludepatterns = []
+nb_execution_excludepatterns = [
+    "udp_point2point*",
+]
 
 latex_engine = "xelatex"
 

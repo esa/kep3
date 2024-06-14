@@ -18,7 +18,7 @@ def add_ballistic_arc(ax, rv0, tof, mu, units=_pk.AU, N=60, **kwargs):
 
         *N* (:class:`int`): The number of points to generate along the ballistic arc. Default is 60.
 
-        *kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Notes:
         - This function visualizes a ballistic trajectory arc on the provided 3D Axes object.

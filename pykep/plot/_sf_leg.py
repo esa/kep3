@@ -37,7 +37,7 @@ def add_sf_leg(
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
 
-        *kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Notes:
         - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
@@ -69,9 +69,9 @@ def add_sf_leg(
         dv = _np.linalg.norm(throttles) * c / mass_fwd
         # plot it in a color that is proportional to the strength from royalblue to indianred
         color = (
-            0.25 + (0.80 - 0.25) * min(1.0,  _np.linalg.norm(throttles)),
-            0.41 + (0.36 - 0.41) * min(1.0,  _np.linalg.norm(throttles)),
-            0.88 + (0.36 - 0.88) * min(1.0,  _np.linalg.norm(throttles)),
+            0.25 + (0.80 - 0.25) * min(1.0, _np.linalg.norm(throttles)),
+            0.41 + (0.36 - 0.41) * min(1.0, _np.linalg.norm(throttles)),
+            0.88 + (0.36 - 0.88) * min(1.0, _np.linalg.norm(throttles)),
         )
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
@@ -97,7 +97,7 @@ def add_sf_leg(
     # We plot optionally gridpoints, the low-thrust or the mid points
     if show_gridpoints:
         ax.plot(
-            pos_fwd[:, 0] / units, pos_fwd[:, 1] / units, pos_fwd[:, 2] / units, "."
+            pos_fwd[:, 0] / units, pos_fwd[:, 1] / units, pos_fwd[:, 2] / units, "k."
         )
     if show_midpoints:
         ax.plot(
@@ -163,7 +163,7 @@ def add_sf_leg(
     # We plot optionally gridpoints, the low-thrust or the mid points
     if show_gridpoints:
         ax.plot(
-            pos_bck[:, 0] / units, pos_bck[:, 1] / units, pos_bck[:, 2] / units, "."
+            pos_bck[:, 0] / units, pos_bck[:, 1] / units, pos_bck[:, 2] / units, "k."
         )
     if show_midpoints:
         ax.plot(
