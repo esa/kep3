@@ -5,10 +5,10 @@ import pykep as _pk
 class direct_point2point:
     """Represents the optimal low-thrust transfer between two fixed points using a direct method.
 
-    This problem works internally using a :class:`~pykep.leg.sims_flanagan` and manipulates its transfer time T, final mass mf and the controls as to
+    This problem works internally using the :class:`~pykep.leg.sims_flanagan` and manipulates its transfer time T, final mass mf and the controls as to
     link two fixed points in space with a low-thrust trajectory.
-    
-    It can be used to better profile and unsderstand performances of optimizers on this type of direct approach, but has a limited use
+
+    It can be used to better profile and understand performances of optimizers on this type of direct approach, but has a limited use
     in the design of interplanetary trajectories as per the fixed point limitation.
 
     The decision vector is::
@@ -16,7 +16,6 @@ class direct_point2point:
         z = [mf, throttles, tof]
 
     where throttles is a vector of throttles structures as [u0x, u0y,u0z, ...]
-
     """
 
     def __init__(
@@ -44,69 +43,67 @@ class direct_point2point:
     ):
         """
         Initializes the direct_point2point instance with given parameters.
-        
+
         Args:
             *rvs* (:class:`list`): Initial position and velocity vectors. Defaults to two vectors scaled by :class:`~pykep.AU` and Earth's velocity.
-            
+
             *rvf* (:class:`list`): Final position and velocity vectors. Defaults to two vectors scaled by :class:`~pykep.AU` and Earth's velocity.
-            
+
             *ms* (:class:`float`): Initial spacecraft mass in kg. Defaults to 1000 kg.
-            
+
             *mu* (:class:`float`): Gravitational parameter, default is for the Sun (:class:`~pykep.MU_SUN`).
-            
+
             *max_thrust* (:class:`float`): Maximum thrust in Newtons. Defaults to 0.12 N.
-            
+
             *isp* (:class:`float`): Specific impulse in seconds. Defaults to 3000 s.
-            
+
             *tof_bounds* (:class:`list`): Bounds for time of flight in days. Defaults to [0, 400] days.
-            
+
             *mf_bounds* (:class:`list`): Bounds for final mass in kg. Defaults to [200.0, 1000.0] kg.
-            
+
             *nseg* (:class:`int`): Number of segments for the trajectory. Defaults to 10.
-            
+
             *cut* (:class:`float`): Cut parameter for the :class:`~pykep.leg.sims_flanagan`. Defaults to 0.6.
-            
+
             *mass_scaling* (:class:`float`): Scaling factor for mass (used to scale constraints). Defaults to 1000.
-            
+
             *r_scaling* (:class:`float`): Scaling factor for distance, (used to scale constraints). Defaults AU (:class:`~pykep.AU`).
-            
+
             *v_scaling* (:class:`float`): Scaling factor for velocity (used to scale constraints). Defaults the Earth's velocity (:class:`~pykep.EARTH_VELOCITY`).
-            
+
             *with_gradient* (:class:`bool`): Indicates if gradient information should be used. Defaults True.
 
         """
-        # We add as data member one single Sims-Flanagan leg using the problem data
-        # and some temporary (and unused, thus irrelelvant) values for the to-be-optimzed parameters throttles, tof and mf.
-        throttles = _np.random.uniform(-1, 1, size=(nseg * 3))
-        self.leg = _pk.leg.sims_flanagan(
-            rvs=rvs,
-            ms=ms,
-            throttles=throttles,
-            rvf=rvf,
-            mf=_np.mean(mf_bounds),
-            tof=_np.mean(tof_bounds) * _pk.DAY2SEC,
-            max_thrust=max_thrust,
-            isp=isp,
-            mu=mu,
-            cut=cut,
-        )
+        # We add as data member one single Sims-Flanagan leg and set it using problem data
+        self.leg = _pk.leg.sims_flanagan()
+        self.leg.rvs = rvs
+        self.leg.ms = ms
+        self.leg.rvf = rvf
+        self.leg.max_thrust = max_thrust
+        self.leg.isp = isp
+        self.leg.mu = mu
+        self.leg.cut = cut
+        
+        # We define some additional datamembers useful later-on
+        self.nseg = nseg
         self.tof_bounds = tof_bounds
         self.mf_bounds = mf_bounds
         self.mass_scaling = mass_scaling
         self.r_scaling = r_scaling
         self.v_scaling = v_scaling
         self.with_gradient = with_gradient
-
-    def get_bounds(self):
-        lb = [self.mf_bounds[0]] + [-1, -1, -1] * self.leg.nseg + [self.tof_bounds[0]]
-        ub = [self.mf_bounds[1]] + [1, 1, 1] * self.leg.nseg + [self.tof_bounds[1]]
-        return (lb, ub)
-
+    
     def _set_leg_from_x(self, x):
-        # We set the leg using data in the decision vector
+        # We set the data in the leg using the decision vector
         self.leg.tof = x[-1] * _pk.DAY2SEC
         self.leg.mf = x[0]
         self.leg.throttles = x[1:-1]
+
+    def get_bounds(self):
+        lb = [self.mf_bounds[0]] + [-1, -1, -1] * self.nseg + [self.tof_bounds[0]]
+        ub = [self.mf_bounds[1]] + [1, 1, 1] * self.nseg + [self.tof_bounds[1]]
+        return (lb, ub)
+
 
     def fitness(self, x):
         # 1 - We set the leg using data in the decision vector
@@ -120,7 +117,7 @@ class direct_point2point:
 
         # 3 - We scale the values in nd units (numerical solvers are sensitive to well-scaled values)
         retval[1:4] /= self.r_scaling
-        retval[4:7] /=  self.v_scaling
+        retval[4:7] /= self.v_scaling
         retval[7] /= self.mass_scaling
 
         return retval
@@ -158,13 +155,13 @@ class direct_point2point:
             retval.extend(mcg_th_tof[i, :] / self.mass_scaling)
             retval[-1] *= _pk.DAY2SEC
         # 3 -  The gradient of the throttle constraints
-        for i in range(self.leg.nseg):
+        for i in range(self.nseg):
             retval.extend(tcg_th[i, 3 * i : 3 * i + 3])
 
         return retval
 
     def gradient_sparsity(self):
-        dim = 2 + 3 * self.leg.nseg
+        dim = 2 + 3 * self.nseg
         # The objective function only depends on the final mass, which is in the chromosome.
         retval = [[0, 0]]
         # The mismatch constraints depend on all variables.
@@ -172,7 +169,7 @@ class direct_point2point:
             for j in range(dim):
                 retval.append([i, j])
         # The throttle constraints only depend on the specific throttles (3).
-        for i in range(self.leg.nseg):
+        for i in range(self.nseg):
             retval.append([8 + i, 3 * i + 1])
             retval.append([8 + i, 3 * i + 2])
             retval.append([8 + i, 3 * i + 3])
@@ -183,8 +180,8 @@ class direct_point2point:
         return 7
 
     def get_nic(self):
-        return self.leg.nseg
-    
+        return self.nseg
+
     def pretty(self, x):
         """
         Prints a detailed representation of the Point to point problem.
@@ -194,28 +191,39 @@ class direct_point2point:
         """
         self._set_leg_from_x(x)
         print(self.leg)
-        
-    def plot(self, x, ax = None, units = _pk.AU, show_midpoints=False,show_gridpoints=False,show_throttles=False,length=0.1,arrow_length_ratio=0.05,**kwargs):
+
+    def plot(
+        self,
+        x,
+        ax=None,
+        units=_pk.AU,
+        show_midpoints=False,
+        show_gridpoints=False,
+        show_throttles=False,
+        length=0.1,
+        arrow_length_ratio=0.05,
+        **kwargs
+    ):
         """
         Plots the trajectory leg  3D axes.
 
         Args:
             *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.
-            
+
             *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`, optional): The 3D axis to plot on. Defaults to None.
-            
+
             *units* (:class:`float`, optional): The unit scale for the plot. Defaults to _pk.AU.
-            
+
             *show_midpoints* (:class:`bool`, optional): Whether to show midpoints on the trajectory. Defaults to False.
-            
+
             *show_gridpoints* (:class:`bool`, optional): Whether to show grid points on the trajectory. Defaults to False.
-            
+
             *show_throttles* (:class:`bool`, optional): Whether to show throttle vectors. Defaults to False.
-            
+
             *length* (:class:`float`, optional): Length of the throttle vectors. Defaults to 0.1.
-            
+
             *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.
-            
+
             *\*\*kwargs*: Additional keyword arguments for the plot.
 
         Returns:
@@ -225,16 +233,24 @@ class direct_point2point:
         sf = self.leg
         # Making the axis
         if ax is None:
-            ax = _pk.plot.make_3Daxis(figsize = (7,7))
+            ax = _pk.plot.make_3Daxis(figsize=(7, 7))
 
         rs, _ = sf.rvs
         rf, _ = sf.rvf
-        ax.scatter(rs[0]/_pk.AU, rs[1]/units, rs[2]/units, c = 'k', s=20)
-        ax.scatter(rf[0]/_pk.AU, rf[1]/units, rf[2]/units, c = 'k', s=20)
+        ax.scatter(rs[0] / _pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
+        ax.scatter(rf[0] / _pk.AU, rf[1] / units, rf[2] / units, c="k", s=20)
 
         # Plotting the trajctory leg
-        ax = _pk.plot.add_sf_leg(ax, sf, units=units, show_throttles=show_throttles, length=length, show_gridpoints=show_gridpoints, show_midpoints=show_midpoints, arrow_length_ratio=arrow_length_ratio, **kwargs)
-        
+        ax = _pk.plot.add_sf_leg(
+            ax,
+            sf,
+            units=units,
+            show_throttles=show_throttles,
+            length=length,
+            show_gridpoints=show_gridpoints,
+            show_midpoints=show_midpoints,
+            arrow_length_ratio=arrow_length_ratio,
+            **kwargs
+        )
+
         return ax
-
-

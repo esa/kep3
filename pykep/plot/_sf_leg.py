@@ -184,7 +184,5 @@ def add_sf_leg(
             color="indianred",
             arrow_length_ratio=arrow_length_ratio,
         )
-    print(f"Mismatch on pos: {pos_fwd[-1,:] / units - pos_bck[-1,:] / units}")
-    print(f"Mismatch on mass: {mass_bck-mass_fwd}")
 
     return ax
