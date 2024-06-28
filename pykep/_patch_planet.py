@@ -16,7 +16,7 @@ def _planet_extract(self, t):
 
     * if the type of the UDPLA is *t*, then a reference to the UDP will be returned,
     * if *t* is :class:`object` and the UDP is a Python object (as opposed to an
-      :ref:`exposed C++ planets`), then a reference to the
+      exposed C++ planet), then a reference to the
       UDPLA will be returned (this allows to extract a Python UDPLA without knowing its type),
     * otherwise, :data:`None` will be returned.
 

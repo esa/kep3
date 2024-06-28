@@ -1,0 +1,2 @@
+set(PYKEP_TRAJOPT_PYTHON_FILES __init__.py _point2point.py)
+install(FILES ${PYKEP_TRAJOPT_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR}/trajopt)

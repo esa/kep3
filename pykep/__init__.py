@@ -52,17 +52,20 @@ del _os
 # Importing user defined planets
 from . import udpla
 
-# Importing trajectory legs udplas
+# Importing trajectory legs
 from . import leg
 
 # Importing the python utils
 from .utils import *
 
-# Patch the problem class.
+# Patch the planet class.
 from . import _patch_planet
 
 # Import the plot module
 from . import plot
+
+# Import the trajopt module
+from . import trajopt
 
 # We import the unit test submodule
 from . import test

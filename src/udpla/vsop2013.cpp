@@ -152,12 +152,12 @@ vsop2013::vsop2013(std::string pl_name, double thresh)
         // NOTE: we use (tm - 0.5) / 365250 as time coordinate because:
         // - VSOP2013 counts time from J2000 and not MJD2000 (they differ by 12 hours),
         // - VSOP2013 measures time in thousands of Julian years.
-        auto v_ex = heyoka::model::vsop2013_cartesian_icrf(pl_index, heyoka::kw::time = (tm - 0.5) / 365250.,
+        auto v_ex = heyoka::model::vsop2013_cartesian_icrf(pl_index, heyoka::kw::time_expr = (tm - 0.5) / 365250.,
                                                            heyoka::kw::thresh = thresh);
 
         // Create the llvm_state and add the compiled function.
         heyoka::llvm_state s;
-        heyoka::add_cfunc<double>(s, "eval_f", v_ex);
+        heyoka::add_cfunc<double>(s, "eval_f", v_ex, {tm});
         s.compile();
 
         // Add the compiled state to the cache.

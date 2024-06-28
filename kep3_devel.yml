@@ -8,10 +8,16 @@ dependencies:
   - cmake >=3.18
   - boost-cpp >=1.73
   - fmt
-  - heyoka =3.*
+  - heyoka = 5*
+  - heyoka.py = 5*
   - spdlog
   - xtensor
   - xtensor-blas
   - pagmo-devel
+  - pybind11
+  - sgp4
+  - spiceypy
+  - matplotlib
+  - pygmo_plugins_nonfree
 
 

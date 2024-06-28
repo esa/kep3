@@ -1,4 +1,4 @@
-.. _tutorials:
+.. _tut_trajopt:
 
 .. only:: html
 
@@ -20,21 +20,13 @@
 
 -------------------------------
 
-Basic
-======
-Start with these tutorials to get the basic gist of how `pykep` works and its conventions when dealing with
-astrodynamical notation and computations.
+Trajectory Optimization
+========================
 
 .. toctree::
   :maxdepth: 1
 
-  notebooks/anomalies
-  notebooks/epochs
-  notebooks/planet
-  notebooks/interface_to_spice
-  notebooks/propagate_lagrangian
-  notebooks/sims_flanagan_leg
-  notebooks/plotting
+  notebooks/udp_point2point
 
 
 
