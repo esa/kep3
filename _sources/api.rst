@@ -19,3 +19,4 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    plot
    propagation
    udpla
+   trajopt

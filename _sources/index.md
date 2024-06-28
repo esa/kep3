@@ -27,5 +27,6 @@ bibliography
 :maxdepth: 2
 :caption: Tutorials
 
-tutorials
+tut_basic
+tut_trajopt
 ```
