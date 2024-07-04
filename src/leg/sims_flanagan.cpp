@@ -253,9 +253,9 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 {
     // We introduce some convenience variables
     std::array<double, 3> dv{};
-    double veff = m_isp * kep3::G0;
-    double dt = m_tof / static_cast<double>(m_nseg);
-    double c = m_max_thrust * dt;
+    const double veff = m_isp * kep3::G0;
+    const double dt = m_tof / static_cast<double>(m_nseg);
+    const double c = m_max_thrust * dt;
     // Forward pass
     // Initial state
     std::array<std::array<double, 3>, 2> rv_fwd(get_rvs());
@@ -276,10 +276,10 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
         rv_fwd[1][1] += dv[1];
         rv_fwd[1][2] += dv[2];
         // Update the mass accordingly
-        double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
+        const double norm_dv = std::sqrt(dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2]);
         mass_fwd *= std::exp(-norm_dv / veff);
         // Perform the propagation
-        double prop_duration = (i == m_nseg_fwd - 1) ? dt / 2 : dt;
+        const double prop_duration = (i == m_nseg_fwd - 1) ? dt / 2 : dt;
         rv_fwd = propagate_lagrangian(rv_fwd, prop_duration, m_mu, false).first;
     }
 
@@ -517,12 +517,13 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
     // inverted! We thus need to account for that and change sign once again of the relevant entries.
     // We also must account for changes in the mass equation (now -a)
     auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
-    xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // vs
-    xt::view(xgrad_rvm, xt::all(), xt::range(3, 7)) *= -1; // vf, mf
+    xt::view(xgrad_rvm, xt::range(3, 6), xt::all()) *= -1; // dvf/dall
+    xt::view(xgrad_rvm, xt::all(), xt::range(0, 3)) *= -1; // dmc/drs
+    xt::view(xgrad_rvm, xt::all(), xt::range(6, 7)) *= -1; // dmc/dmf
 
     auto xgrad = xt::adapt(grad, {7u, size + 1u});
-    xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;    // vf
-    xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1; // us
+    xt::view(xgrad, xt::range(3, 6), xt::all()) *= -1;    // dvf/dall
+    xt::view(xgrad, xt::all(), xt::range(0, size)) *= -1; // dmc/dus
 
     // 6) Note that the throttles in xgrad are ordered in reverse. Before returning we must restore the forward order
     xt::view(xgrad, xt::all(), xt::range(0, size)) = xt::flip(xt::view(xgrad, xt::all(), xt::range(0, size)), 1);
