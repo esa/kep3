@@ -10,4 +10,5 @@ User defined problems (compatible to pagmo) that represent interplanetary optimi
 """
 
 # Direct methods
-from ._point2point import direct_point2point
+from ._direct_point2point import direct_point2point
+from ._direct_pl2pl import direct_pl2pl
