@@ -15,7 +15,7 @@ class direct_point2point:
 
         z = [mf, throttles, tof]
 
-    where throttles is a vector of throttles structures as [u0x, u0y,u0z, ...]
+    where throttles is a vector of throttles structures as [u0x, u0y,u0z, ...]. By throttles we intend non dimensiona thrust levels in [0,1].
     """
 
     def __init__(

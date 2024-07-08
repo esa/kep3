@@ -69,9 +69,9 @@ def add_sf_leg(
         dv = _np.linalg.norm(throttles) * c / mass_fwd
         # plot it in a color that is proportional to the strength from royalblue to indianred
         color = (
-            0.25 + (0.80 - 0.25) * min(1.0, _np.linalg.norm(throttles)),
-            0.41 + (0.36 - 0.41) * min(1.0, _np.linalg.norm(throttles)),
-            0.88 + (0.36 - 0.88) * min(1.0, _np.linalg.norm(throttles)),
+            0.25 + (1. - 0.25) * min(1.0, _np.linalg.norm(throttles)),
+            0.41 + (0. - 0.41) * min(1.0, _np.linalg.norm(throttles)),
+            0.88 + (0. - 0.88) * min(1.0, _np.linalg.norm(throttles)),
         )
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs

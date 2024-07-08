@@ -116,7 +116,7 @@ class planet_test(_ut.TestCase):
     def test_planet_construction(self):
         import pykep as pk
 
-        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
+        udpla_cpp = pk.udpla.keplerian(when = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
         udpla_py = my_udpla()
         pla1 = pk.planet(udpla_cpp)
         pla2 = pk.planet(udpla_py)
@@ -130,7 +130,7 @@ class planet_test(_ut.TestCase):
     def test_udpla_extraction(self):
         import pykep as pk
 
-        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
+        udpla_cpp = pk.udpla.keplerian(when = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.)
         udpla_py = my_udpla()
         pla1 = pk.planet(udpla_cpp)
         pla2 = pk.planet(udpla_py)
@@ -146,7 +146,7 @@ class planet_test(_ut.TestCase):
     def test_udpla_getters(self):
         import pykep as pk
 
-        udpla_cpp = pk.udpla.keplerian(ep = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.56, added_params=[3., 2., 2.1])
+        udpla_cpp = pk.udpla.keplerian(when = pk.epoch(0), elem = [1.,0.,0.,0.,0.,0.], mu_central_body = 1.56, added_params=[3., 2., 2.1])
         udpla_py = my_udpla()
         pla1 = pk.planet(udpla_cpp)
         pla2 = pk.planet(udpla_py)
