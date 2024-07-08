@@ -501,7 +501,7 @@ The decision vector in this class compatible with <span id="id1">[<a class="refe
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Iterations limit&quot;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
@@ -540,7 +540,7 @@ The decision vector in this class compatible with <span id="id1">[<a class="refe
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0293889e5651601087e2954b9b15faa5a96edaa9c0d71dc99ac4336d58cc6488.png" src="../_images/0293889e5651601087e2954b9b15faa5a96edaa9c0d71dc99ac4336d58cc6488.png" />
+<img alt="../_images/42008612a1329165223a9fd1794d68c90873a5096831157c380fcab7c024af13.png" src="../_images/42008612a1329165223a9fd1794d68c90873a5096831157c380fcab7c024af13.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -582,19 +582,17 @@ The decision vector in this class compatible with <span id="id1">[<a class="refe
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/2000 [00:00&lt;?, ?it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 2000/2000 [04:06&lt;00:00,  8.13it/s]
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">10</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">fail_nog</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">)):</span>
-<span class="ne">---&gt; </span><span class="mi">10</span>     <span class="n">pop_nog</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_nog</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span>     <span class="n">pop_g</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pop_nog</span><span class="o">.</span><span class="n">get_x</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 5.6576e-02s
+No Gradient: 5.9454e-02s
 
-<span class="ne">NameError</span>: name &#39;pg&#39; is not defined
+Gradient (n.fails): 208
+No Gradient (n.fails): 206
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -614,7 +612,10 @@ The decision vector in this class compatible with <span id="id1">[<a class="refe
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7b80001d91b87326c24c871092a270c632c04265556c4454fefb4ae4d4182f6c.png" src="../_images/7b80001d91b87326c24c871092a270c632c04265556c4454fefb4ae4d4182f6c.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;N. occurrences&#39;)
+</pre></div>
+</div>
+<img alt="../_images/7243bfe4087b822870d5a18726e2015d293585820184dceef5d55a768a49f971.png" src="../_images/7243bfe4087b822870d5a18726e2015d293585820184dceef5d55a768a49f971.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -625,9 +626,9 @@ The decision vector in this class compatible with <span id="id1">[<a class="refe
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of segments: 4
-Number of fwd segments: 2
-Number of bck segments: 2
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of segments: 2
+Number of fwd segments: 1
+Number of bck segments: 1
 Maximum thrust: 0.22
 Central body gravitational parameter: 1.32712440018e+20
 Specific impulse: 3000
@@ -637,10 +638,10 @@ Initial mass: 1000
 Final mass: 1
 State at departure: [[179517444840, 0, -1495978707], [297.8469183169681, 29784.691831696804, -297.8469183169681]]
 State at arrival: [[149597870700, 0, -0], [297.8469183169681, 32763.161014866488, -0]]
-Throttles values: [-0.5531180194281187, 0.14971757884060444, 0.7940199350920427, 0.028288032565428445, -0.11046018798817858, -0.800424150704127, -0.6581747271243201, -0.5884590126432687, 0.9303693454363375, -0.7082653660632694, 0.3855806880092745, 0.3899050835184499]
+Throttles values: [0, 0, 0, 0, 0, 0]
 
-Mismatch constraints: [29919970440.50476, 38523538.099015325, -1496184052.1450462, -98.7230576541013, -2992.131264375472, -208.49434302739866, 998.99085894998]
-Throttle constraints: [-0.04117744584645111, -0.34631951305277053, 0.6450650999139032, -0.19766173011602817]
+Mismatch constraints: [29919941431.26764, 38529477.27626525, -1496162174.1910896, -6.189427009557562, -2978.469066381742, -297.82577960576987, 999]
+Throttle constraints: [-1, -1]
 </pre></div>
 </div>
 </div>

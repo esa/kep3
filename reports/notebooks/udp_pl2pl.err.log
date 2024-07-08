@@ -18,61 +18,50 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# Problem data
-mu = pk.MU_SUN
-max_thrust = 0.12
-isp = 3000
-
-# Initial state
-ms = 1500.0
-rs = np.array([1.2, 0.0, -0.01]) * pk.AU
-vs = np.array([0.01, 1, -0.01]) * pk.EARTH_VELOCITY
-
-# Final state
-mf = 1300.0
-rf = np.array([1, 0.0, -0.0]) * pk.AU
-vf = np.array([0.01, 1.1, -0.0]) * pk.EARTH_VELOCITY
-
-# Throttles and tof
-nseg = 4
-throttles = np.random.uniform(-1, 1, size=(nseg * 3))
-tof = 2 * np.pi * np.sqrt(pk.AU**3 / pk.MU_SUN) / 4
-
-udp_nog = pk.trajopt.direct_point2point(
-    rvs=[rs, vs],
-    rvf=[rf, vf],
-    mu=pk.MU_SUN,
-    max_thrust=0.22,
-    isp=3000,
-    tof_bounds=[200, 500],
-    mf_bounds=[200.0, 1000.0],
-    nseg=nseg,
-    cut=0.6,
-    with_gradient=False,
-)
-
-udp_g = pk.trajopt.direct_point2point(
-    rvs=[rs, vs],
-    rvf=[rf, vf],
-    mu=pk.MU_SUN,
-    max_thrust=0.22,
-    isp=3000,
-    tof_bounds=[200, 500],
-    mf_bounds=[200.0, 1000.0],
-    nseg=nseg,
-    cut=0.6,
-    with_gradient=True,
-)
+masses = []
+xs = []
+for i in range(10):
+    pop_g = pg.population(prob_g, 1)
+    pop_g = algo.evolve(pop_g)
+    if(prob_g.feasibility_f(pop_g.champion_f)):
+        print(".", end="")
+        masses.append(pop_g.champion_x[1])
+        xs.append(pop_g.champion_x)
+    else:
+        print("x", end ="")
+print("\nBest mass is: ", np.max(masses))
+print("Worst mass is: ", np.min(masses))
+best_idx = np.argmax(masses)
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[3], line 2[0m
-[1;32m      1[0m [38;5;66;03m# Problem data[39;00m
-[0;32m----> 2[0m mu [38;5;241m=[39m [43mpk[49m[38;5;241m.[39mMU_SUN
-[1;32m      3[0m max_thrust [38;5;241m=[39m [38;5;241m0.12[39m
-[1;32m      4[0m isp [38;5;241m=[39m [38;5;241m3000[39m
+[0;31mValueError[0m                                Traceback (most recent call last)
+Cell [0;32mIn[10], line 5[0m
+[1;32m      3[0m [38;5;28;01mfor[39;00m i [38;5;129;01min[39;00m [38;5;28mrange[39m([38;5;241m10[39m):
+[1;32m      4[0m     pop_g [38;5;241m=[39m pg[38;5;241m.[39mpopulation(prob_g, [38;5;241m1[39m)
+[0;32m----> 5[0m     pop_g [38;5;241m=[39m [43malgo[49m[38;5;241;43m.[39;49m[43mevolve[49m[43m([49m[43mpop_g[49m[43m)[49m
+[1;32m      6[0m     [38;5;28;01mif[39;00m(prob_g[38;5;241m.[39mfeasibility_f(pop_g[38;5;241m.[39mchampion_f)):
+[1;32m      7[0m         [38;5;28mprint[39m([38;5;124m"[39m[38;5;124m.[39m[38;5;124m"[39m, end[38;5;241m=[39m[38;5;124m"[39m[38;5;124m"[39m)
 
-[0;31mNameError[0m: name 'pk' is not defined
+[0;31mValueError[0m: 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1712564791372/work/src/snopt7.cpp, 603
+what: 
+An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+a valid shared library?)
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1712564791372/work/src/snopt7.cpp, 553
+what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
+
+
 

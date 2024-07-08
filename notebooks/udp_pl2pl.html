@@ -396,7 +396,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -412,6 +414,16 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-performances-of-the-analytical-gradient">Analytical performances of the analytical gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-low-thrust-transfer">Solving the low-thrust transfer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#graident-vs-no-gradient">Graident vs no gradient</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -423,8 +435,8 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="planet-to-planet-low-thrust-transfer">
 <h1>Planet to planet low-thrust transfer<a class="headerlink" href="#planet-to-planet-low-thrust-transfer" title="Permalink to this heading">#</a></h1>
-<p>In this tutorial we show the use of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl</span></code> to find a low-thrust trajectory connecting two moving planets.</p>
-<p>The decision vector in this class compatible with <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems) is:</p>
+<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.direct_pl2pl" title="pykep.trajopt.direct_pl2pl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl</span></code></a> to find a low-thrust trajectory connecting two moving planets.</p>
+<p>The decision vector for this class, compatible with <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf x = [t_0, m_f, V_{sx}^\infty, V^\infty_{sy}, V^\infty_{sz}, V^\infty_{fx}, V^\infty_{fy}, V^\infty_{fz}, u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, ..., T_{tof}]
@@ -437,8 +449,8 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">_pk</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">pygmo</span> <span class="k">as</span> <span class="nn">pg</span>
 <span class="kn">import</span> <span class="nn">pygmo_plugins_nonfree</span> <span class="k">as</span> <span class="nn">ppnf</span>
@@ -449,387 +461,236 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">_pk</span>
-
-<span class="n">earth</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">_pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;EARTH&quot;</span><span class="p">))</span>
-<span class="n">mars</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">_pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;MARS&quot;</span><span class="p">))</span>
-
-<span class="k">class</span> <span class="nc">direct_pl2pl</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the optimal low-thrust transfer between two :class:`~pykep.planet` using a direct method.</span>
-
-<span class="sd">    This problem works internally using the :class:`~pykep.leg.sims_flanagan` and manipulates its initial and final states, as well as its transfer time T, final mass mf</span>
-<span class="sd">    and the controls as to link the two planets with a low-thrust trajectory.</span>
-
-<span class="sd">    It can be used to better profile and understand performances of optimizers on this type of direct approach, but has a limited use</span>
-<span class="sd">    in the design of interplanetary trajectories as per the fixed point limitation.</span>
-
-<span class="sd">    The decision vector is::</span>
-
-<span class="sd">        z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof]</span>
-
-<span class="sd">    where throttles is a vector of throttles structures as [u0x, u0y,u0z, ...]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
-        <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
-        <span class="n">ms</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-        <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
-        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">],</span>
-        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
-        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">],</span>
-        <span class="n">vinf_dep</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
-        <span class="n">vinf_arr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
-        <span class="n">nseg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-        <span class="n">mass_scaling</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-        <span class="n">r_scaling</span><span class="o">=</span><span class="n">_pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
-        <span class="n">v_scaling</span><span class="o">=</span><span class="n">_pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span><span class="p">,</span>
-        <span class="n">with_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initializes the direct_pl2pl instance with given parameters.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *rvs* (:class:`list`): Initial position and velocity vectors. Defaults to two vectors scaled by :class:`~pykep.AU` and Earth&#39;s velocity.</span>
-
-<span class="sd">            *rvf* (:class:`list`): Final position and velocity vectors. Defaults to two vectors scaled by :class:`~pykep.AU` and Earth&#39;s velocity.</span>
-
-<span class="sd">            *ms* (:class:`float`): Initial spacecraft mass in kg. Defaults to 1000 kg.</span>
-
-<span class="sd">            *mu* (:class:`float`): Gravitational parameter, default is for the Sun (:class:`~pykep.MU_SUN`).</span>
-
-<span class="sd">            *max_thrust* (:class:`float`): Maximum thrust in Newtons. Defaults to 0.12 N.</span>
-
-<span class="sd">            *isp* (:class:`float`): Specific impulse in seconds. Defaults to 3000 s.</span>
-<span class="sd">            </span>
-<span class="sd">            *t0_bounds* (:class:`list`): Bounds for departure epoch in MJD2000. Defaults to [4000, 5000] days.</span>
-
-<span class="sd">            *tof_bounds* (:class:`list`): Bounds for time of flight in days. Defaults to [0, 400] days.</span>
-
-<span class="sd">            *mf_bounds* (:class:`list`): Bounds for final mass in kg. Defaults to [200.0, 1000.0] kg.</span>
-<span class="sd">            </span>
-<span class="sd">            *vinf_dep* (:class:`float`): Allowed magnitude for the departure&#39;s relative velocity in km/s. Defaults to 1e-3.</span>
-
-<span class="sd">            *vinf_arr* (:class:`float`): Allowed magnitude for the arrival&#39;s relative velocity in km/s. Defaults to 1e-3.</span>
-
-<span class="sd">            *nseg* (:class:`int`): Number of segments for the trajectory. Defaults to 10.</span>
-
-<span class="sd">            *cut* (:class:`float`): Cut parameter for the :class:`~pykep.leg.sims_flanagan`. Defaults to 0.6.</span>
-
-<span class="sd">            *mass_scaling* (:class:`float`): Scaling factor for mass (used to scale constraints). Defaults to 1000.</span>
-
-<span class="sd">            *r_scaling* (:class:`float`): Scaling factor for distance, (used to scale constraints). Defaults AU (:class:`~pykep.AU`).</span>
-
-<span class="sd">            *v_scaling* (:class:`float`): Scaling factor for velocity (used to scale constraints). Defaults the Earth&#39;s velocity (:class:`~pykep.EARTH_VELOCITY`).</span>
-
-<span class="sd">            *with_gradient* (:class:`bool`): Indicates if gradient information should be used. Defaults True.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># We add as data member one single Sims-Flanagan leg using the problem data</span>
-        <span class="c1"># and some temporary (and unused, thus irrelelvant) values for the to-be-optimzed parameters throttles, tof and mf.</span>
-        <span class="n">throttles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">leg</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan</span><span class="p">(</span>
-            <span class="n">rvs</span><span class="o">=</span><span class="n">rvs</span><span class="p">,</span>
-            <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
-            <span class="n">throttles</span><span class="o">=</span><span class="n">throttles</span><span class="p">,</span>
-            <span class="n">rvf</span><span class="o">=</span><span class="n">rvf</span><span class="p">,</span>
-            <span class="n">mf</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mf_bounds</span><span class="p">),</span>
-            <span class="n">tof</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tof_bounds</span><span class="p">)</span> <span class="o">*</span> <span class="n">_pk</span><span class="o">.</span><span class="n">DAY2SEC</span><span class="p">,</span>
-            <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-            <span class="n">isp</span><span class="o">=</span><span class="n">isp</span><span class="p">,</span>
-            <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
-            <span class="n">cut</span><span class="o">=</span><span class="n">cut</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tof_bounds</span> <span class="o">=</span> <span class="n">tof_bounds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mf_bounds</span> <span class="o">=</span> <span class="n">mf_bounds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span> <span class="o">=</span> <span class="n">mass_scaling</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">r_scaling</span> <span class="o">=</span> <span class="n">r_scaling</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v_scaling</span> <span class="o">=</span> <span class="n">v_scaling</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">with_gradient</span> <span class="o">=</span> <span class="n">with_gradient</span>
-
-    <span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">lb</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mf_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="n">ub</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mf_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_set_leg_from_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="c1"># We set the leg using data in the decision vector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">tof</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">_pk</span><span class="o">.</span><span class="n">DAY2SEC</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">mf</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">throttles</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="c1"># 1 - We set the leg using data in the decision vector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_leg_from_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span>
-
-        <span class="c1"># 2 - We compute the constraints violations (mismatch+throttle)</span>
-        <span class="n">ceq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">compute_mismatch_constraints</span><span class="p">()</span>
-        <span class="n">cineq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">compute_throttle_constraints</span><span class="p">()</span>
-        <span class="n">retval</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">obj</span><span class="p">]</span> <span class="o">+</span> <span class="n">ceq</span> <span class="o">+</span> <span class="n">cineq</span><span class="p">)</span>  <span class="c1"># here we can sum lists</span>
-
-        <span class="c1"># 3 - We scale the values in nd units (numerical solvers are sensitive to well-scaled values)</span>
-        <span class="n">retval</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_scaling</span>
-        <span class="n">retval</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_scaling</span>
-        <span class="n">retval</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span>
-
-        <span class="k">return</span> <span class="n">retval</span>
-
-    <span class="k">def</span> <span class="nf">has_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gradient</span>
-
-    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_leg_from_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">mcg_xf</span><span class="p">,</span> <span class="n">mcg_th_tof</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">compute_mc_grad</span><span class="p">()</span>
-        <span class="n">tcg_th</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">compute_tc_grad</span><span class="p">()</span>
-
-        <span class="c1"># 1 - The gradient of the objective function (obj = -mf)</span>
-        <span class="n">retval</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span><span class="p">]</span>
-        <span class="c1"># 2 - The gradient of the mismatch contraints (mcg). We divide them in pos, vel mass as they have different scaling units</span>
-        <span class="c1"># pos</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="c1"># First w.r.t. mf</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mcg_xf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_scaling</span><span class="p">)</span>
-            <span class="c1"># Then the [throttles, tof]</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mcg_th_tof</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_scaling</span><span class="p">)</span>
-            <span class="n">retval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">DAY2SEC</span>
-        <span class="c1"># vel</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-            <span class="c1"># First w.r.t. mf</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mcg_xf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_scaling</span><span class="p">)</span>
-            <span class="c1"># Then the [throttles, tof]</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mcg_th_tof</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_scaling</span><span class="p">)</span>
-            <span class="n">retval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">DAY2SEC</span>
-        <span class="c1"># mass</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
-            <span class="c1"># First w.r.t. mf</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mcg_xf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span><span class="p">)</span>
-            <span class="c1"># Then the [throttles, tof]</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mcg_th_tof</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scaling</span><span class="p">)</span>
-            <span class="n">retval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">DAY2SEC</span>
-        <span class="c1"># 3 -  The gradient of the throttle constraints</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span><span class="p">):</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tcg_th</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">retval</span>
-
-    <span class="k">def</span> <span class="nf">gradient_sparsity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">dim</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span>
-        <span class="c1"># The objective function only depends on the final mass, which is in the chromosome.</span>
-        <span class="n">retval</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
-        <span class="c1"># The mismatch constraints depend on all variables.</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-                <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
-        <span class="c1"># The throttle constraints only depend on the specific throttles (3).</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span><span class="p">):</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">8</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">8</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
-            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">8</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">])</span>
-        <span class="c1"># We return the sparsity pattern</span>
-        <span class="k">return</span> <span class="n">retval</span>
-
-    <span class="k">def</span> <span class="nf">get_nec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">7</span>
-
-    <span class="k">def</span> <span class="nf">get_nic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">nseg</span>
-
-    <span class="k">def</span> <span class="nf">pretty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prints a detailed representation of the Point to point problem.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_leg_from_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leg</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">units</span><span class="o">=</span><span class="n">_pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
-        <span class="n">show_midpoints</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">show_gridpoints</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">show_throttles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-        <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plots the trajectory leg  3D axes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.</span>
-
-<span class="sd">            *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`, optional): The 3D axis to plot on. Defaults to None.</span>
-
-<span class="sd">            *units* (:class:`float`, optional): The unit scale for the plot. Defaults to _pk.AU.</span>
-
-<span class="sd">            *show_midpoints* (:class:`bool`, optional): Whether to show midpoints on the trajectory. Defaults to False.</span>
-
-<span class="sd">            *show_gridpoints* (:class:`bool`, optional): Whether to show grid points on the trajectory. Defaults to False.</span>
-
-<span class="sd">            *show_throttles* (:class:`bool`, optional): Whether to show throttle vectors. Defaults to False.</span>
-
-<span class="sd">            *length* (:class:`float`, optional): Length of the throttle vectors. Defaults to 0.1.</span>
-
-<span class="sd">            *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.</span>
-
-<span class="sd">            *\*\*kwargs*: Additional keyword arguments for the plot.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis with the plotted trajectory.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_leg_from_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">sf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leg</span>
-        <span class="c1"># Making the axis</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-
-        <span class="n">rs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">rvs</span>
-        <span class="n">rf</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">rvf</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">_pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">units</span><span class="p">,</span> <span class="n">rs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">units</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">_pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="n">rf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">units</span><span class="p">,</span> <span class="n">rf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">units</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-
-        <span class="c1"># Plotting the trajctory leg</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sf_leg</span><span class="p">(</span>
-            <span class="n">ax</span><span class="p">,</span>
-            <span class="n">sf</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
-            <span class="n">show_throttles</span><span class="o">=</span><span class="n">show_throttles</span><span class="p">,</span>
-            <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-            <span class="n">show_gridpoints</span><span class="o">=</span><span class="n">show_gridpoints</span><span class="p">,</span>
-            <span class="n">show_midpoints</span><span class="o">=</span><span class="n">show_midpoints</span><span class="p">,</span>
-            <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">arrow_length_ratio</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">ax</span>
-</pre></div>
-</div>
-</div>
-</div>
+<p>We start defining the problem data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem data</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.12</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="c1"># Source and destination planets</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
+    <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;EARTH&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">mars</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
+    <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;MARS&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="c1"># Initial state</span>
 <span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
-<span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
 
-<span class="c1"># Final state</span>
-<span class="n">mf</span> <span class="o">=</span> <span class="mf">1300.0</span>
-<span class="n">rf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
-<span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
-
-<span class="c1"># Throttles and tof</span>
-<span class="n">nseg</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">tof</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
-
-<span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_point2point</span><span class="p">(</span>
-    <span class="n">rvs</span><span class="o">=</span><span class="p">[</span><span class="n">rs</span><span class="p">,</span> <span class="n">vs</span><span class="p">],</span>
-    <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
-    <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
-    <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
-    <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
-    <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
-    <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">],</span>
-    <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
-    <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-    <span class="n">with_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="c1"># Number of segments</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We here instantiate two different versions of the same UDP (User Defined Problem), with analytical gradients and without.</p>
+<p>For the purpose of this simple notebook we choose a relatively simple Earth to Mars transfer with an initial <span class="math notranslate nohighlight">\(V_{\infty}\)</span> of 3 km/s.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
+        <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
+        <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
+        <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
+        <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
+        <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
+        <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">6700.0</span><span class="p">,</span> <span class="mf">6800.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">],</span>
+        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1300.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
+        <span class="n">vinfs</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+        <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
+        <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">mass_scaling</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
+        <span class="n">r_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
+        <span class="n">v_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span><span class="p">,</span>
+        <span class="n">with_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_point2point</span><span class="p">(</span>
-    <span class="n">rvs</span><span class="o">=</span><span class="p">[</span><span class="n">rs</span><span class="p">,</span> <span class="n">vs</span><span class="p">],</span>
-    <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
-    <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
-    <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
-    <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
-    <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
-    <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">],</span>
-    <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
-    <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-    <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
+        <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
+        <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
+        <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
+        <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
+        <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
+        <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">6700.0</span><span class="p">,</span> <span class="mf">6800.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">],</span>
+        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1300.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
+        <span class="n">vinfs</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+        <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
+        <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">mass_scaling</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
+        <span class="n">r_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
+        <span class="n">v_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span><span class="p">,</span>
+        <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="analytical-performances-of-the-analytical-gradient">
+<h2>Analytical performances of the analytical gradient<a class="headerlink" href="#analytical-performances-of-the-analytical-gradient" title="Permalink to this heading">#</a></h2>
+<p>And we take a quick look at the performances of the analytical gradient with respect to the numerically computed one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We need to generste a random chromosomes compatible with the UDP where to test the gradient.</span>
+<span class="n">prob_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_g</span><span class="p">)</span>
+<span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>First the analytical gradient:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<span class="n">udp_g</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># Problem data</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.12</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
-
-<span class="ne">NameError</span>: name &#39;pk&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>268 μs ± 843 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
 </div>
+<p>Then a simple numerical gradient based on finite differences:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient</span><span class="p">(</span><span class="n">udp_g</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.66 ms ± 283 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then a higher order numerical gradient:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="n">udp_g</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.48 ms ± 374 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The analytical gradient its exact and faster, seems like a no brainer to use it.</p>
+<p>In reality, the effects on the optimization technique used are not straightforward, making the option to use numerical gradients still interesting in some, albeit rare, cases.</p>
+</section>
+<section id="solving-the-low-thrust-transfer">
+<h2>Solving the low-thrust transfer<a class="headerlink" href="#solving-the-low-thrust-transfer" title="Permalink to this heading">#</a></h2>
+<p>We define (again) the optimization problem, and set a tolerance for <em>pagmo</em> to be able to judge the relative value of two individuals.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This tolerance has a different role from the numerical tolerance set in the particular algorithm chosen to solve the problem and is only used by the <em>pagmo</em> machinery to decide outside the optimizer whether the new proposed indivdual is better than what was the previous <em>champion</em>.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_g</span><span class="p">)</span>
+<span class="n">prob_g</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>… and we define an optimization algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Iterations limit&quot;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major optimality tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">)</span>
+<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-11</span><span class="p">)</span>
 
-<span class="c1"># uda = pg.nlopt(&quot;slsqp&quot;)</span>
+<span class="c1">#uda = pg.nlopt(&quot;slsqp&quot;)</span>
 <span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>We solve the problem from random initial guess ten times and only save the result if a feasible solution is found (as defined by the criterias above)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prob_nog</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_nog</span><span class="p">)</span>
-<span class="n">prob_nog</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="n">prob_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_g</span><span class="p">)</span>
-<span class="n">prob_g</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">pop_g</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_g</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">prob_g</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_f</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pop_g</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_g</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">prob_g</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_f</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best mass is: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">masses</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Worst mass is: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">masses</span><span class="p">))</span>
+<span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[10], line 5
+      3 for i in range(10):
+      4     pop_g = pg.population(prob_g, 1)
+----&gt; 5     pop_g = algo.evolve(pop_g)
+      6     if(prob_g.feasibility_f(pop_g.champion_f)):
+      7         print(&quot;.&quot;, end=&quot;&quot;)
+
+ValueError: 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1712564791372/work/src/snopt7.cpp, 603
+what: 
+An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+a valid shared library?)
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1712564791372/work/src/snopt7.cpp, 553
+what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
+
 </pre></div>
 </div>
 </div>
 </div>
+<p>And we plot the trajectory found:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">udp_nog</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">get_x</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">show_gridpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">udp_g</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">],</span> <span class="n">show_gridpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mismatch on pos: [ 1.57696078e-12  1.61709535e-12 -1.75156764e-13]
-Mismatch on mass: 4.126786734559573e-08
-</pre></div>
-</div>
-<img alt="../_images/c7580ac5663c46303460d6f091cc21b73bc5411a08410629a341127cd023ae44.png" src="../_images/c7580ac5663c46303460d6f091cc21b73bc5411a08410629a341127cd023ae44.png" />
+<img alt="../_images/3dae57626a3b567cad10e9de720686602dd4cc325f35023bee1f01b70102c20e.png" src="../_images/3dae57626a3b567cad10e9de720686602dd4cc325f35023bee1f01b70102c20e.png" />
 </div>
 </div>
+</section>
+<section id="graident-vs-no-gradient">
+<h2>Graident vs no gradient<a class="headerlink" href="#graident-vs-no-gradient" title="Permalink to this heading">#</a></h2>
+<p>We here take a look at the difference in solving the problem using the analytical gradient and not using it.
+To do so we solve the same problem starting from 100 different initial guesses using both versions and compare.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
@@ -840,25 +701,31 @@ Mismatch on mass: 4.126786734559573e-08
 <span class="n">fail_g</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">fail_nog</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">)):</span>
-    <span class="n">pop_nog</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_nog</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">prob_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_g</span><span class="p">)</span>
+<span class="n">prob_nog</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_nog</span><span class="p">)</span>
+<span class="n">prob_g</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">prob_nog</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
 
-    <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">)</span>
-    <span class="n">pop_g</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pop_nog</span><span class="o">.</span><span class="n">get_x</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)):</span>
+    <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pop_nog</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_nog</span><span class="p">)</span>
+    <span class="n">pop_nog</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">pop_g</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_g</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">cpu_g</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">prob_g</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_f</span><span class="p">):</span>
         <span class="n">fail_g</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># We only record the time for successfull attempts</span>
+        <span class="n">cpu_g</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
 
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">pop_nog</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_nog</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">cpu_nog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">prob_nog</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop_nog</span><span class="o">.</span><span class="n">champion_f</span><span class="p">):</span>
         <span class="n">fail_nog</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># We only record the time for successfull attempts</span>
+        <span class="n">cpu_nog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gradient: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">cpu_g</span><span class="p">)</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No Gradient: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">cpu_nog</span><span class="p">)</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
@@ -869,13 +736,14 @@ Mismatch on mass: 4.126786734559573e-08
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 2000/2000 [02:18&lt;00:00, 14.45it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [02:09&lt;00:00,  1.29s/it]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 1.8443e-02s
-No Gradient: 3.0552e-02s
-Gradient: 192
-No Gradient: 188
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 4.8809e-01s
+No Gradient: 5.5510e-01s
+
+Gradient (n.fails): 7
+No Gradient (n.fails): 64
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -887,8 +755,8 @@ No Gradient: 188
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpu_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpu_g</span><span class="p">)</span>
 <span class="n">cpu_nog</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpu_nog</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cpu_g</span><span class="p">[</span><span class="n">cpu_g</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;gradient&quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cpu_nog</span><span class="p">[</span><span class="n">cpu_nog</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;no_gradient&quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cpu_g</span><span class="p">[</span><span class="n">cpu_g</span> <span class="o">&lt;</span> <span class="mf">2.2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;gradient&quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cpu_nog</span><span class="p">[</span><span class="n">cpu_nog</span> <span class="o">&lt;</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;no_gradient&quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="c1"># plt.xlim([0,0.15])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;point2point, 4 seg case&quot;</span><span class="p">)</span>
@@ -898,9 +766,13 @@ No Gradient: 188
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7b80001d91b87326c24c871092a270c632c04265556c4454fefb4ae4d4182f6c.png" src="../_images/7b80001d91b87326c24c871092a270c632c04265556c4454fefb4ae4d4182f6c.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;N. occurrences&#39;)
+</pre></div>
+</div>
+<img alt="../_images/cfe10624ec001205eb75198db6126ff26b314565b0abd800cd2efc1843999535.png" src="../_images/cfe10624ec001205eb75198db6126ff26b314565b0abd800cd2efc1843999535.png" />
 </div>
 </div>
+</section>
 </section>
 
 
@@ -920,6 +792,23 @@ No Gradient: 188
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-performances-of-the-analytical-gradient">Analytical performances of the analytical gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-low-thrust-transfer">Solving the low-thrust transfer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#graident-vs-no-gradient">Graident vs no gradient</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
