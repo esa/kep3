@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_LEG_SIMS_FLANAGAN_H
-#define kep3_LEG_SIMS_FLANAGAN_H
+#ifndef kep3_LEG_SIMS_FLANAGAN_HF_H
+#define kep3_LEG_SIMS_FLANAGAN_HF_H
 
 #include <array>
 #include <tuple>
@@ -16,29 +16,39 @@
 
 #include <fmt/ostream.h>
 
+#include <heyoka/taylor.hpp>
+
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 
 namespace kep3::leg
 {
-/// The Sims-Flanagan leg model
+/// The High-fidelity leg model expanding upon Sims-Flanagan
 /**
  * This class represents, generically, a low-thrust leg as a sequence of successive
- * impulses of magnitude compatible with the low-thrust propulsion system of a spacecraft.
+ * fixed low-thrust segments.
  * The leg achieves to transfer a given spacecraft from an initial to a final state in the
  * time given (and can be considered as feasible) whenever the method evaluate_mismatch
  * returns all zeros and the method get_throttles_con returns all values less than zero.
+ *
+ * The dynamics is by default Keplerian, but the user can construct his own and pass it to the
+ * leg. The user constructed dynamics will need to meet the requirements of having the variables
+ * x,y,z,vx,vy,vz,m and the first three parameters heyoka::par[0], heyoka::par[1], heyoka::par[2] that represent
+ * the thrust direction.
  */
-class kep3_DLL_PUBLIC sims_flanagan
+class kep3_DLL_PUBLIC sims_flanagan_hf
 {
 public:
     // Default Constructor.
-    sims_flanagan() = default;
+    sims_flanagan_hf() = default;
     // Constructors
-    sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
-                  const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
-                  double mu, double cut = 0.5);
+    sims_flanagan_hf(
+        const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+        double mu, double cut, double ts,
+        const std::optional<const std::pair<heyoka::taylor_adaptive<double> &, heyoka::taylor_adaptive<double> &>>
+            &tas);
 
     // Setters
     void set_tof(double tof);
@@ -52,6 +62,7 @@ public:
     void set_isp(double isp);
     void set_mu(double mu);
     void set_cut(double cut);
+    void set_ts(double ts);
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
              double mu, double cut = 0.5);
@@ -67,10 +78,10 @@ public:
     [[nodiscard]] double get_isp() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
+    [[nodiscard]] double get_ts() const;
     [[nodiscard]] unsigned get_nseg() const;
     [[nodiscard]] unsigned get_nseg_fwd() const;
     [[nodiscard]] unsigned get_nseg_bck() const;
-
 
     // Compute constraints
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
@@ -84,22 +95,6 @@ public:
     [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
 private:
-    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
-    gradients_multiple_impulses(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                                const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a,
-                                double dt) const;
-
-    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
-    gradients_fwd(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                  const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a, double dt) const;
-
-    [[nodiscard]] std::pair<std::array<double, 49>, std::vector<double>>
-    gradients_bck(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                  const std::array<std::array<double, 3>, 2> &rvf_orig, double mf, double c, double a, double dt) const;
-
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
@@ -114,9 +109,11 @@ private:
         ar &m_isp;
         ar &m_mu;
         ar &m_cut;
+        ar &m_ts;
         ar &m_nseg;
         ar &m_nseg_fwd;
         ar &m_nseg_bck;
+        ar &m_tas;
     }
 
     // Initial spacecraft state.
@@ -137,6 +134,10 @@ private:
     double m_mu{1.};
     // The cut parameter
     double m_cut = 0.5;
+    // The reference epoch
+    double m_ts = 0.;
+    // The adaptive Taylor integrators
+    std::optional<std::pair<heyoka::taylor_adaptive<double>, heyoka::taylor_adaptive<double>>> m_tas = std::nullopt;
     // Segment sizes
     unsigned m_nseg = 2u;
     unsigned m_nseg_fwd = 1u;
@@ -144,12 +145,12 @@ private:
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const sims_flanagan &);
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const sims_flanagan_hf &);
 
 } // namespace kep3::leg
 
 template <>
-struct fmt::formatter<kep3::leg::sims_flanagan> : fmt::ostream_formatter {
+struct fmt::formatter<kep3::leg::sims_flanagan_hf> : fmt::ostream_formatter {
 };
 
 #endif
