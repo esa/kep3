@@ -111,30 +111,31 @@ sims_flanagan_hf::sims_flanagan_hf(
       m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
+    // We perform some sanity checks on the user provided inputs
     _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
+    // If the user provides the taylor integrators we use those, else we provide default ones (Keplerian)
     if (tas) {
         m_tas.value() = tas.value();
     } else {
         tas = _build_default_taylors();
-
     }
 }
 
 // Setters
-void sims_flanagan::set_tof(double tof)
+void sims_flanagan_hf::set_tof(double tof)
 {
     _check_tof(tof);
     m_tof = tof;
 }
-void sims_flanagan::set_rvs(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan_hf::set_rvs(std::array<std::array<double, 3>, 2> rv)
 {
     m_rvs = rv;
 }
-void sims_flanagan::set_ms(double mass)
+void sims_flanagan_hf::set_ms(double mass)
 {
     m_ms = mass;
 }
-void sims_flanagan::set_throttles(std::vector<double> throttles)
+void sims_flanagan_hf::set_throttles(std::vector<double> throttles)
 {
     _check_throttles(throttles);
     m_throttles = std::move(throttles);
@@ -142,7 +143,7 @@ void sims_flanagan::set_throttles(std::vector<double> throttles)
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
-void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
+void sims_flanagan_hf::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
 {
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error(
@@ -154,41 +155,41 @@ void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
-void sims_flanagan::set_rvf(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan_hf::set_rvf(std::array<std::array<double, 3>, 2> rv)
 {
     m_rvf = rv;
 }
-void sims_flanagan::set_mf(double mass)
+void sims_flanagan_hf::set_mf(double mass)
 {
     m_mf = mass;
 }
-void sims_flanagan::set_max_thrust(double max_thrust)
+void sims_flanagan_hf::set_max_thrust(double max_thrust)
 {
     _check_max_thrust(max_thrust);
     m_max_thrust = max_thrust;
 }
-void sims_flanagan::set_isp(double isp)
+void sims_flanagan_hf::set_isp(double isp)
 {
     _check_isp(isp);
     m_isp = isp;
 }
-void sims_flanagan::set_mu(double mu)
+void sims_flanagan_hf::set_mu(double mu)
 {
     _check_mu(mu);
     m_mu = mu;
 }
-void sims_flanagan::set_cut(double cut)
+void sims_flanagan_hf::set_cut(double cut)
 {
     _check_cut(cut);
     m_cut = cut;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
-void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
-                        const std::vector<double> &throttles,
-                        // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                        double isp, double mu, double cut)
+void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
+                           const std::vector<double> &throttles,
+                           // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                           const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
+                           double isp, double mu, double cut)
 {
     _sanity_checks(rvs, ms, throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
     m_rvs = rvs;
@@ -207,61 +208,61 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
 }
 
 // Getters
-double sims_flanagan::get_tof() const
+double sims_flanagan_hf::get_tof() const
 {
     return m_tof;
 }
-const std::array<std::array<double, 3>, 2> &sims_flanagan::get_rvs() const
+const std::array<std::array<double, 3>, 2> &sims_flanagan_hf::get_rvs() const
 {
     return m_rvs;
 }
-double sims_flanagan::get_ms() const
+double sims_flanagan_hf::get_ms() const
 {
     return m_ms;
 }
-const std::vector<double> &sims_flanagan::get_throttles() const
+const std::vector<double> &sims_flanagan_hf::get_throttles() const
 {
     return m_throttles;
 }
-const std::array<std::array<double, 3>, 2> &sims_flanagan::get_rvf() const
+const std::array<std::array<double, 3>, 2> &sims_flanagan_hf::get_rvf() const
 {
     return m_rvf;
 }
-double sims_flanagan::get_mf() const
+double sims_flanagan_hf::get_mf() const
 {
     return m_mf;
 }
-double sims_flanagan::get_max_thrust() const
+double sims_flanagan_hf::get_max_thrust() const
 {
     return m_max_thrust;
 }
-double sims_flanagan::get_isp() const
+double sims_flanagan_hf::get_isp() const
 {
     return m_isp;
 }
-double sims_flanagan::get_mu() const
+double sims_flanagan_hf::get_mu() const
 {
     return m_mu;
 }
-double sims_flanagan::get_cut() const
+double sims_flanagan_hf::get_cut() const
 {
     return m_cut;
 }
-unsigned sims_flanagan::get_nseg() const
+unsigned sims_flanagan_hf::get_nseg() const
 {
     return m_nseg;
 }
-unsigned sims_flanagan::get_nseg_fwd() const
+unsigned sims_flanagan_hf::get_nseg_fwd() const
 {
     return m_nseg_fwd;
 }
-unsigned sims_flanagan::get_nseg_bck() const
+unsigned sims_flanagan_hf::get_nseg_bck() const
 {
     return m_nseg_bck;
 }
 
 // The core routines
-std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
+std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
 {
     // We introduce some convenience variables
     std::array<double, 3> dv{};
@@ -327,7 +328,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
             mass_fwd - mass_bck};
 }
 
-std::vector<double> sims_flanagan::compute_throttle_constraints() const
+std::vector<double> sims_flanagan_hf::compute_throttle_constraints() const
 {
     std::vector<double> retval(m_nseg);
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg; ++i) {
@@ -351,7 +352,7 @@ mat61 _dyn(std::array<std::array<double, 3>, 2> rv, double mu)
 }
 
 // Performs the state updates for nseg sarting from rvs, ms. Computes all gradient information
-std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::gradients_multiple_impulses(
+std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan_hf::gradients_multiple_impulses(
     std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a, double dt) const
@@ -486,19 +487,19 @@ std::pair<std::array<double, 49>, std::vector<double>> sims_flanagan::gradients_
 }
 
 std::pair<std::array<double, 49>, std::vector<double>>
-sims_flanagan::gradients_fwd(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                             // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                             const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a,
-                             double dt) const
+sims_flanagan_hf::gradients_fwd(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                const std::array<std::array<double, 3>, 2> &rvs, double ms, double c, double a,
+                                double dt) const
 {
     return gradients_multiple_impulses(th1, th2, rvs, ms, c, a, dt);
 }
 
 std::pair<std::array<double, 49>, std::vector<double>>
-sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
-                             // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                             const std::array<std::array<double, 3>, 2> &rvf_orig, double mf, double c, double a,
-                             double dt) const
+sims_flanagan_hf::gradients_bck(std::vector<double>::const_iterator th1, std::vector<double>::const_iterator th2,
+                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                const std::array<std::array<double, 3>, 2> &rvf_orig, double mf, double c, double a,
+                                double dt) const
 {
     // 1) we invert the starting velocity.
     auto rvf = rvf_orig;
@@ -585,7 +586,7 @@ std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> 
     return {grad_rvm, grad_rvm_bck, std::move(grad_final)};
 }
 
-std::vector<double> sims_flanagan::compute_tc_grad() const
+std::vector<double> sims_flanagan_hf::compute_tc_grad() const
 {
     std::vector<double> retval(static_cast<size_t>(m_nseg) * m_nseg * 3u, 0);
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg; ++i) {
@@ -596,7 +597,7 @@ std::vector<double> sims_flanagan::compute_tc_grad() const
     return retval;
 }
 
-std::ostream &operator<<(std::ostream &s, const sims_flanagan &sf)
+std::ostream &operator<<(std::ostream &s, const sims_flanagan_hf &sf)
 {
     s << fmt::format("Number of segments: {}\n", sf.get_nseg());
     s << fmt::format("Number of fwd segments: {}\n", sf.get_nseg_fwd());

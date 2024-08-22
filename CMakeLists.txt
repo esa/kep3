@@ -1,5 +1,7 @@
 # NOTE: current minimum kep3 requirement.
 cmake_minimum_required(VERSION 3.18.0)
+# This effectively requests behavior preferred as of a given CMake version and tells newer CMake versions to warn about their new policies.
+cmake_policy(VERSION 3.30)
 
 # Set default build type to "Release".
 # NOTE: this should be done before the project command since the latter can set
@@ -170,6 +172,7 @@ target_include_directories(kep3 PUBLIC
 # Boost.
 # NOTE: need 1.69 for safe numerics.
 set(_kep3_MIN_BOOST_VERSION "1.69")
+
 find_package(Boost ${_kep3_MIN_BOOST_VERSION} REQUIRED)
 target_link_libraries(kep3 PUBLIC Boost::boost)
 # NOTE: quench warnings from Boost when building the library.
