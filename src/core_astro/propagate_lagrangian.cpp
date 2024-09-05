@@ -41,9 +41,9 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
     auto &[rf, vf] = pos_velf;
     double R0 = std::sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
     double Rf = 0.;
-    double V02 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
+    double const V02 = v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2];
     double DX = 0.;
-    double energy = (V02 / 2 - mu / R0);
+    double const energy = (V02 / 2 - mu / R0);
     double a = -mu / 2.0 / energy; // will be negative for hyperbolae
     double sqrta = 0.;
     double F = 0., G = 0., Ft = 0., Gt = 0.;
@@ -53,7 +53,8 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
     if (a > 0) { // Solve Kepler's equation in DE, elliptical case
         sqrta = std::sqrt(a);
         double DM = std::sqrt(mu / std::pow(a, 3)) * tof;
-        double sinDM = std::sin(DM), cosDM = std::cos(DM);
+        double const sinDM = std::sin(DM);
+        double const cosDM = std::cos(DM);
         // Here we use the atan2 to recover the mean anomaly difference in the
         // [0,2pi] range. This makes sure that for high value of M no catastrophic
         // cancellation occurs, as would be the case using std::fmod(DM, 2pi)
@@ -65,7 +66,7 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
         c0 = (1 - R0 / a);
         // This initial guess was developed applying Lagrange expansion theorem to
         // the Kepler's equation in DE. We stopped at 3rd order.
-        double IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
+        double const IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
                     + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
                     + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
                           * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
@@ -193,12 +194,12 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
     }
 
     double F = 0., G = 0., Ft = 0., Gt = 0.;
-    double R0 = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
-    double V02 = vf[0] * vf[0] + vf[1] * vf[1] + vf[2] * vf[2];
+    double const R0 = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
+    double const V02 = vf[0] * vf[0] + vf[1] * vf[1] + vf[2] * vf[2];
     // the reciprocal of the semi-major axis
-    double alpha = 2 / R0 - V02 / mu;
+    double const alpha = 2 / R0 - V02 / mu;
     // initial radial velocity (see we use the inverted vf = +-v0 according to dt)
-    double VR0 = (rf[0] * vf[0] + rf[1] * vf[1] + rf[2] * vf[2]) / R0;
+    double const VR0 = (rf[0] * vf[0] + rf[1] * vf[1] + rf[2] * vf[2]) / R0;
 
     // solve kepler's equation in the universal anomaly DS
     double IG = 0;
@@ -211,7 +212,7 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
     std::uintmax_t max_iter = 100u;
     // NOTE: Halley iterates may result into instabilities (specially with a poor
     // IG)
-    double DS = boost::math::tools::newton_raphson_iterate(
+    double const DS = boost::math::tools::newton_raphson_iterate(
         [dt_copy, R0, VR0, alpha, mu](double DS) {
             return std::make_tuple(kepDS(DS, dt_copy, R0, VR0, alpha, mu), d_kepDS(DS, R0, VR0, alpha, mu));
         },
@@ -223,10 +224,10 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
                                 "equation for the universal anomaly in propagate_lagrangian_u.");
     }
     // evaluate the lagrangian coefficients F and G
-    double S = stumpff_s(alpha * DS * DS);
-    double C = stumpff_c(alpha * DS * DS);
+    double const S = stumpff_s(alpha * DS * DS);
+    double const C = stumpff_c(alpha * DS * DS);
     //
-    double z = alpha * DS * DS;
+    double const z = alpha * DS * DS;
     F = 1 - DS * DS / R0 * C;
     G = dt_copy - 1 / std::sqrt(mu) * DS * DS * DS * S;
 
@@ -234,7 +235,7 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
     rf[0] = F * r0[0] + G * vf[0];
     rf[1] = F * r0[1] + G * vf[1];
     rf[2] = F * r0[2] + G * vf[2];
-    double RF = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
+    double const RF = std::sqrt(rf[0] * rf[0] + rf[1] * rf[1] + rf[2] * rf[2]);
 
     // compute the lagrangian coefficients Ft, Gt
     Ft = std::sqrt(mu) / RF / R0 * (z * S - 1) * DS;
@@ -269,16 +270,16 @@ propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const 
     auto par = kep3::ic2par(pos_vel0, mu);
     if (par[0] > 0) {
         // 2e - Compute the mean anomalies
-        double n = std::sqrt(mu / par[0] / par[0] / par[0]);
-        double M0 = kep3::f2m(par[5], par[1]);
-        double Mf = M0 + n * dt;
+        double const n = std::sqrt(mu / par[0] / par[0] / par[0]);
+        double const M0 = kep3::f2m(par[5], par[1]);
+        double const Mf = M0 + n * dt;
         // 3e - Update elements (here Kepler's equation gets solved)
         par[5] = kep3::m2f(Mf, par[1]);
     } else {
         // 2h - Compute the mean hyperbolic anomalies
-        double n = std::sqrt(-mu / par[0] / par[0] / par[0]);
-        double N0 = kep3::f2n(par[5], par[1]);
-        double Nf = N0 + n * dt;
+        double const n = std::sqrt(-mu / par[0] / par[0] / par[0]);
+        double const N0 = kep3::f2n(par[5], par[1]);
+        double const Nf = N0 + n * dt;
         // 3h - Update elements (here Kepler's equation gets solved in its
         // hyperbolic version)
         par[5] = kep3::n2f(Nf, par[1]);

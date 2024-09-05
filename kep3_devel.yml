@@ -4,6 +4,7 @@ channels:
 dependencies:
   - c-compiler
   - cxx-compiler
+  - clang-tools
   - ninja
   - cmake >=3.18
   - boost-cpp >=1.73
@@ -19,5 +20,3 @@ dependencies:
   - spiceypy
   - matplotlib
   - pygmo_plugins_nonfree
-
-
