@@ -134,6 +134,7 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/lambert_problem.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/stark_problem.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/keplerian.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/jpl_lp.cpp"
@@ -144,7 +145,6 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/stm.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_taylor.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/lt_kepler.cpp"
 )
 
