@@ -35,9 +35,9 @@ class kep3_DLL_PUBLIC stark_problem
 {
 public:
     explicit stark_problem(double mu=1., double veff=1., double tol=1e-16);
-    std::array<double, 7> propagate(const std::array<double, 7> &x0, std::array<double, 3> thrust, double tof);
+    std::array<double, 7> propagate(const std::array<double, 7> &rvm_state, std::array<double, 3> thrust, double tof);
     std::tuple<std::array<double, 7>, std::array<double, 49>, std::array<double, 21>>
-    propagate_var(const std::array<double, 7> &x0, std::array<double, 3> thrust, double tof);
+    propagate_var(const std::array<double, 7> &rvm_state, std::array<double, 3> thrust, double tof);
     // Getters
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_veff() const;

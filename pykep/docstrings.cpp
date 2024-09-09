@@ -1157,6 +1157,88 @@ std::string lambert_problem_docstring()
 )";
 }
 
+std::string stark_problem_docstring()
+{
+    return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
+
+      Args:
+          *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
+
+          *veff* (:class:`float`): propulsion system effective velocity (Isp g0). Defaults to 1.
+
+          *tol* (:class:`float`): tolerance of the Taylor adaptive integration. Defaults to 1e-16.
+
+      .. note::
+
+        Units need to be consistent upon construction as well as later on when calling the propagate methods.
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> mu = pk.MU_SUN
+        >>> veff = 3000. * pk.G0
+        >>> tol = 1e-14
+        >>> sp = pk.stark_problem(mu, veff, tol)
+        >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
+        [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
+)";
+}
+
+std::string stark_problem_propagate_docstring()
+{
+    return R"(propagate(rvm_state, thrust, tof)
+
+      Args:
+          *rvm_state* (:class:`list` [7,]): position, velocity and mass flattened into a 7D list. 
+
+          *thrust* (:class:`list` [3,]): thrust flattened into a 3D list. 
+
+          *tof* (:class:`float`): time of flight.
+
+      .. note::
+
+        Units need to be consistent with the ones used upon constructing the instance.
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> mu = pk.MU_SUN
+        >>> veff = 3000. * pk.G0
+        >>> tol = 1e-14
+        >>> sp = pk.stark_problem(mu, veff, tol)
+        >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+        [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
+)";
+}
+
+std::string stark_problem_propagate_var_docstring()
+{
+    return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
+
+      Args:
+          *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
+
+          *veff* (:class:`float`): propulsion system effective velocity (Isp g0). Defaults to 1.
+
+          *tol* (:class:`float`): tolerance of the Taylor adaptive integration. Defaults to 1e-16.
+
+      .. note::
+
+        Units need to be consistent upon construction and later on when calling the propagate methods.
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> mu = pk.MU_SUN
+        >>> veff = 3000. * pk.G0
+        >>> tol = 1e-14
+        >>> sp = pk.stark_problem(mu, veff, tol)
+        >>> sp.propagate(state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+)";
+}
+
+
+
 std::string propagate_lagrangian_docstring()
 {
     return R"(propagate_lagrangian(rv = [[1,0,0], [0,1,0]], tof = pi/2, mu = 1, stm = False)

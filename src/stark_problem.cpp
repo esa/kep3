@@ -37,9 +37,9 @@ stark_problem::stark_problem(double mu, double veff, double tol)
     std::copy(m_ta_var.get_state().begin()+7, m_ta_var.get_state().end(), m_var_ic.begin());
 };
 
-std::array<double, 7> stark_problem::propagate(const std::array<double, 7> &x0, std::array<double, 3> thrust, double tof)
+std::array<double, 7> stark_problem::propagate(const std::array<double, 7> &rvm_state, std::array<double, 3> thrust, double tof)
 {
-    if (x0[6]==0) {
+    if (rvm_state[6]==0) {
         throw std::domain_error("stark_problem: initial mass is zero!");
     }
     std::array<double, 7> retval{};
@@ -47,7 +47,7 @@ std::array<double, 7> stark_problem::propagate(const std::array<double, 7> &x0, 
     std::copy(thrust.begin(), thrust.end(), m_ta.get_pars_data() + 2);
     // Set the Taylor Integration initial conditions
     m_ta.set_time(0.);
-    std::copy(x0.begin(), x0.end(), m_ta.get_state_data());
+    std::copy(rvm_state.begin(), rvm_state.end(), m_ta.get_state_data());
     // ... and integrate
     auto out = m_ta.propagate_until(tof);
     if (std::get<0>(out) != taylor_outcome::time_limit) {
@@ -58,9 +58,9 @@ std::array<double, 7> stark_problem::propagate(const std::array<double, 7> &x0, 
 }
 
 std::tuple<std::array<double, 7>, std::array<double, 49>, std::array<double, 21>>
-stark_problem::propagate_var(const std::array<double, 7> &x0, std::array<double, 3> thrust, double tof)
+stark_problem::propagate_var(const std::array<double, 7> &rvm_state, std::array<double, 3> thrust, double tof)
 {
-    if (x0[6]==0) {
+    if (rvm_state[6]==0) {
         throw std::domain_error("stark_problem: initial mass is zero!");
     }
     std::array<double, 7> retval{};
@@ -70,7 +70,7 @@ stark_problem::propagate_var(const std::array<double, 7> &x0, std::array<double,
     std::copy(thrust.begin(), thrust.end(), m_ta_var.get_pars_data() + 2);
     // Set the Taylor Integration initial conditions
     m_ta_var.set_time(0.);
-    std::copy(x0.begin(), x0.end(), m_ta_var.get_state_data());
+    std::copy(rvm_state.begin(), rvm_state.end(), m_ta_var.get_state_data());
     std::copy(m_var_ic.begin(), m_var_ic.end(), m_ta_var.get_state_data()+7);
     // ... and integrate
     auto out = m_ta_var.propagate_until(tof);
@@ -125,10 +125,10 @@ void stark_problem::set_veff(double veff_in)
 //Streaming operator
 std::ostream &operator<<(std::ostream &os, const stark_problem &p)
 {
-    os << "Stark Problem: ";
-    os << fmt::format("mu central body: {}\n", p.get_mu());
-    os << fmt::format("propulsion veff (Isp g0)\n", p.get_veff());
-    os << fmt::format("tolerance requested \n", p.get_tol());
+    os << "Stark Problem:\n";
+    os << fmt::format("\tmu central body: {}\n", p.get_mu());
+    os << fmt::format("\tpropulsion veff (Isp g0): {}\n", p.get_veff());
+    os << fmt::format("\ttolerance requested: {}\n", p.get_tol());
     return os;
 }
 

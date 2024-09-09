@@ -21,6 +21,7 @@
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/planet.hpp>
+#include <kep3/stark_problem.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -323,6 +324,28 @@ PYBIND11_MODULE(core, m)
     m.def("propagate_lagrangian_v", &kep3::propagate_lagrangian_v, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_v_docstring().c_str());
 
+    // Exposing the Stark problem class
+    py::class_<kep3::stark_problem> stark_problem(m, "stark_problem", pykep::stark_problem_docstring().c_str());
+    stark_problem
+        .def(py::init<double, double, double>(), py::arg("mu") = 1., py::arg("veff") = 1., py::arg("tol") = 1e-16)
+        // repr().
+        .def("__repr__", &pykep::ostream_repr<kep3::stark_problem>)
+        // Copy and deepcopy.
+        .def("__copy__", &pykep::generic_copy_wrapper<kep3::stark_problem>)
+        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::stark_problem>)
+        // Pickle support.
+        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::stark_problem>,
+                        &pykep::pickle_setstate_wrapper<kep3::stark_problem>))
+        .def_property_readonly("mu", &kep3::stark_problem::get_mu, "The central body gravity parameter.")
+        .def_property_readonly("veff", &kep3::stark_problem::get_veff, "The effective velocity (Isp g0)")
+        .def_property_readonly("tol", &kep3::stark_problem::get_tol, "The Taylor integrator tolerance.")
+        // The actual call to propagators. (we do not here care about copies and allocations as this is 20 times slower
+        // than propagate lagrangian already on c++ side).
+        .def("propagate", &kep3::stark_problem::propagate, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
+             pykep::stark_problem_propagate_docstring().c_str())
+        .def("propagate_var", &kep3::stark_problem::propagate_var, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
+             pykep::stark_problem_propagate_docstring().c_str());
+
     // Exposing the sims_flanagan leg
     py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());
     sims_flanagan
@@ -376,21 +399,19 @@ PYBIND11_MODULE(core, m)
                 });
                 // NOTE: at this point, the capsules have been created successfully (including
                 // the registration of the destructor). We can thus release ownership from vec_ptr_xx,
-                // as now the capsules are responsible for destroying its contents. 
+                // as now the capsules are responsible for destroying its contents.
                 auto *ptr_rs = vec_ptr_rs.release();
                 auto *ptr_rf = vec_ptr_rf.release();
                 auto *ptr_th = vec_ptr_th.release();
                 auto rs_python = py::array_t<double>(
-                    py::array::ShapeContainer{static_cast<py::ssize_t>(7),
-                                              static_cast<py::ssize_t>(7)}, // shape
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
                     ptr_rs->data(), std::move(vec_caps_rs));
                 auto rf_python = py::array_t<double>(
-                    py::array::ShapeContainer{static_cast<py::ssize_t>(7),
-                                              static_cast<py::ssize_t>(7)}, // shape
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
                     ptr_rf->data(), std::move(vec_caps_rf));
                 auto th_python = py::array_t<double>(
                     py::array::ShapeContainer{static_cast<py::ssize_t>(7),
-                                              static_cast<py::ssize_t>(leg.get_nseg()*3+1u)}, // shape
+                                              static_cast<py::ssize_t>(leg.get_nseg() * 3 + 1u)}, // shape
                     ptr_th->data(), std::move(vec_caps_th));
                 return py::make_tuple(rs_python, rf_python, th_python);
             },
