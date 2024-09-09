@@ -343,8 +343,58 @@ PYBIND11_MODULE(core, m)
         // than propagate lagrangian already on c++ side).
         .def("propagate", &kep3::stark_problem::propagate, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
              pykep::stark_problem_propagate_docstring().c_str())
-        .def("propagate_var", &kep3::stark_problem::propagate_var, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
-             pykep::stark_problem_propagate_docstring().c_str());
+        .def(
+            "propagate_var",
+            [](kep3::stark_problem &sp, const std::array<double, 7> &rvm_state, std::array<double, 3> thrust,
+               double tof) {
+                auto sp_retval = sp.propagate_var(rvm_state, thrust, tof);
+                // Lets transfer ownership of dxdx to python (not sure this is actually needed to
+                // get an efficient return value ... maybe its overkill here). It surely avoid one more copy / allocation of 49+21
+                // values, but in the overall algorithm maybe irrelevant. 
+                std::array<double, 49> &dxdx = std::get<1>(sp_retval);
+
+                // We create a capsule for the py::array_t to manage ownership change.
+                auto vec_ptr = std::make_unique<std::array<double, 49>>(dxdx);
+
+                py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                });
+
+                // NOTE: at this point, the capsule has been created successfully (including
+                // the registration of the destructor). We can thus release ownership from vec_ptr,
+                // as now the capsule is responsible for destroying its contents. If the capsule constructor
+                // throws, the destructor function is not registered/invoked, and the destructor
+                // of vec_ptr will take care of cleaning up.
+                auto *ptr = vec_ptr.release();
+
+                auto computed_dxdx = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
+                    ptr->data(), std::move(vec_caps));
+
+                // Lets transfer ownership of dxdu to python
+                std::array<double, 21> &dxdu = std::get<2>(sp_retval);
+
+                // We create a capsule for the py::array_t to manage ownership change.
+                auto vec_ptr2 = std::make_unique<std::array<double, 21>>(dxdu);
+
+                py::capsule vec_caps2(vec_ptr2.get(), [](void *ptr) {
+                    std::unique_ptr<std::array<double, 21>> vec_ptr2(static_cast<std::array<double, 21> *>(ptr));
+                });
+
+                // NOTE: at this point, the capsule has been created successfully (including
+                // the registration of the destructor). We can thus release ownership from vec_ptr,
+                // as now the capsule is responsible for destroying its contents. If the capsule constructor
+                // throws, the destructor function is not registered/invoked, and the destructor
+                // of vec_ptr will take care of cleaning up.
+                auto *ptr2 = vec_ptr2.release();
+
+                auto computed_dxdu = py::array_t<double>(
+                    py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(3)}, // shape
+                    ptr->data(), std::move(vec_caps2));
+                return py::make_tuple(std::get<0>(sp_retval), computed_dxdx, computed_dxdu);
+            },
+            py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
+            pykep::stark_problem_propagate_docstring().c_str());
 
     // Exposing the sims_flanagan leg
     py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());

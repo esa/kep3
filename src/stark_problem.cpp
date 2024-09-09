@@ -75,6 +75,7 @@ stark_problem::propagate_var(const std::array<double, 7> &rvm_state, std::array<
     // ... and integrate
     auto out = m_ta_var.propagate_until(tof);
     if (std::get<0>(out) != taylor_outcome::time_limit) {
+        fmt::print("State: {}", m_ta_var.get_state());
         throw std::domain_error("stark_problem: failiure to reach the final time requested during a variational propagation.");
     }
     // We now copy the result into the various return values
