@@ -1161,26 +1161,35 @@ std::string stark_problem_docstring()
 {
     return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
 
-      Args:
-          *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
+Class representing the Stark problem in the form:
 
-          *veff* (:class:`float`): propulsion system effective velocity (Isp g0). Defaults to 1.
+.. math::
+   \begin{array}{c}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
+       \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
+   \end{array}
 
-          *tol* (:class:`float`): tolerance of the Taylor adaptive integration. Defaults to 1e-16.
+Args:
+    *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
 
-      .. note::
+    *veff* (:class:`float`): propulsion system effective velocity (Isp g0). Defaults to 1.
 
-        Units need to be consistent upon construction as well as later on when calling the propagate methods.
+    *tol* (:class:`float`): tolerance of the Taylor adaptive integration. Defaults to 1e-16.
 
-      Examples:
-        >>> import pykep as pk
-        >>> import numpy as np
-        >>> mu = pk.MU_SUN
-        >>> veff = 3000. * pk.G0
-        >>> tol = 1e-14
-        >>> sp = pk.stark_problem(mu, veff, tol)
-        >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
-        [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
+.. note::
+
+  Units need to be consistent upon construction as well as later on when calling the propagate methods.
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> mu = pk.MU_SUN
+  >>> veff = 3000. * pk.G0
+  >>> tol = 1e-14
+  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
+  [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
 )";
 }
 
@@ -1188,56 +1197,77 @@ std::string stark_problem_propagate_docstring()
 {
     return R"(propagate(rvm_state, thrust, tof)
 
-      Args:
-          *rvm_state* (:class:`list` [7,]): position, velocity and mass flattened into a 7D list. 
+Stark problem numerical propagation. 
+The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
 
-          *thrust* (:class:`list` [3,]): thrust flattened into a 3D list. 
+Args:
+    *rvm_state* (:class:`list` (7,)): position, velocity and mass flattened into a 7D list. 
 
-          *tof* (:class:`float`): time of flight.
+    *thrust* (:class:`list` (3,)): thrust flattened into a 3D list. 
 
-      .. note::
+    *tof* (:class:`float`): time of flight.
 
-        Units need to be consistent with the ones used upon constructing the instance.
+Returns:
+    :class:`list` (7,) : position, velocity and mass after the numerical propagation, flattened into a 7D list. 
 
-      Examples:
-        >>> import pykep as pk
-        >>> import numpy as np
-        >>> mu = pk.MU_SUN
-        >>> veff = 3000. * pk.G0
-        >>> tol = 1e-14
-        >>> sp = pk.stark_problem(mu, veff, tol)
-        >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
-        [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
+.. note::
+
+  Units need to be consistent with the ones used upon constructing the instance.
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> mu = pk.MU_SUN
+  >>> veff = 3000. * pk.G0
+  >>> tol = 1e-14
+  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+  [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
 )";
 }
 
 std::string stark_problem_propagate_var_docstring()
 {
-    return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
+    return R"(propagate_var(rvm_state, thrust, tof)
 
-      Args:
-          *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
+Stark problem numerical propagation via variational equations. 
+The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
 
-          *veff* (:class:`float`): propulsion system effective velocity (Isp g0). Defaults to 1.
+It also computes the system State Transition Matrix:
 
-          *tol* (:class:`float`): tolerance of the Taylor adaptive integration. Defaults to 1e-16.
+.. math::
+    \mathbf M = \frac{d\mathbf x_f}{d\mathbf x_0}
 
-      .. note::
+as well as the gradients of the final states with respect to the thrust direction.
 
-        Units need to be consistent upon construction and later on when calling the propagate methods.
+.. math::
+    \mathbf U = = \frac{d\mathbf x_f}{d\mathbf u}
 
-      Examples:
-        >>> import pykep as pk
-        >>> import numpy as np
-        >>> mu = pk.MU_SUN
-        >>> veff = 3000. * pk.G0
-        >>> tol = 1e-14
-        >>> sp = pk.stark_problem(mu, veff, tol)
-        >>> sp.propagate(state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+Args:
+    *rvm_state* (:class:`list` (7,)): position, velocity and mass flattened into a 7D list. 
+
+    *thrust* (:class:`list` (3,)): thrust flattened into a 3D list. 
+
+    *tof* (:class:`float`): time of flight.
+
+Returns:
+    :class:`tuple` (:class:`list` (7,), :class:`numpy.ndarray` (7,7), :class:`numpy.ndarray` (7,3)): position, velocity and mass after ropagation flattened into a 7D list, state transition matrix 
+    and 
+
+.. note::
+
+  Units need to be consistent upon construction and later on when calling the propagate methods.
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> mu = pk.MU_SUN
+  >>> veff = 3000. * pk.G0
+  >>> tol = 1e-14
+  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp.propagate(state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
 )";
 }
-
-
 
 std::string propagate_lagrangian_docstring()
 {
