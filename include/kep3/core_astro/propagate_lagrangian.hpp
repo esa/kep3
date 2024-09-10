@@ -37,7 +37,7 @@ propagate_lagrangian_v(const std::array<std::array<double, 3>, 2> &pos_vel, std:
                        bool stm = false);
 
 // These are backup functions that use a different algorithm to get the same as propagate_lagrangian.
-// We offer them with an identical interface even if the stm is not implements.
+// We offer them with an identical interface even if the stm is not implemented.
 kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
 propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu, bool = false);
 

@@ -70,7 +70,7 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r0_a, const std::a
                                 "impossible to define automatically clock or "
                                 "counterclockwise");
     }
-    double lambda2 = 1.0 - m_c / m_s;
+    double const lambda2 = 1.0 - m_c / m_s;
     m_lambda = std::sqrt(lambda2);
 
     auto its = cross(ih, irs);
@@ -90,17 +90,18 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r0_a, const std::a
         its = -its;
         itf = -itf;
     }
-    double lambda3 = m_lambda * lambda2;
-    double T = std::sqrt(2.0 * m_mu / m_s / m_s / m_s) * m_tof;
+    double const lambda3 = m_lambda * lambda2;
+    double const T = std::sqrt(2.0 * m_mu / m_s / m_s / m_s) * m_tof;
 
     // 2 - We now have lambda, T and we will find all x
     // 2.1 - Let us first detect the maximum number of revolutions for which there
     // exists a solution
     m_Nmax = static_cast<unsigned>(T / kep3::pi);
     m_Nmax = std::min(m_multi_revs, m_Nmax);
-    double T00 = std::acos(m_lambda) + m_lambda * std::sqrt(1.0 - lambda2);
-    double T0 = (T00 + m_Nmax * kep3::pi);
-    double T1 = 2.0 / 3.0 * (1.0 - lambda3), DT = 0.0, DDT = 0.0, DDDT = 0.0;
+    double const T00 = std::acos(m_lambda) + m_lambda * std::sqrt(1.0 - lambda2);
+    double const T0 = (T00 + m_Nmax * kep3::pi);
+    double const T1 = 2.0 / 3.0 * (1.0 - lambda3);
+    double DT = 0.0, DDT = 0.0, DDDT = 0.0;
     if (m_Nmax > 0) {
         if (T < T0) { // We use Halley iterations to find xM and TM
             int it = 0;
@@ -161,15 +162,15 @@ lambert_problem::lambert_problem(const std::array<double, 3> &r0_a, const std::a
     }
 
     // 4 - For each found x value we reconstruct the terminal velocities
-    double gamma = std::sqrt(m_mu * m_s / 2.0);
-    double rho = (Rs - Rf) / m_c;
-    double sigma = std::sqrt(1 - rho * rho);
+    double const gamma = std::sqrt(m_mu * m_s / 2.0);
+    double const rho = (Rs - Rf) / m_c;
+    double const sigma = std::sqrt(1 - rho * rho);
     double vrs = 0., vts = 0., vrf = 0., vtf = 0., y = 0.;
     for (size_t i = 0; i < m_x.size(); ++i) {
         y = std::sqrt(1.0 - lambda2 + lambda2 * m_x[i] * m_x[i]);
         vrs = gamma * ((m_lambda * y - m_x[i]) - rho * (m_lambda * y + m_x[i])) / Rs;
         vrf = -gamma * ((m_lambda * y - m_x[i]) + rho * (m_lambda * y + m_x[i])) / Rf;
-        double vt = gamma * sigma * (y + m_lambda * m_x[i]);
+        double const vt = gamma * sigma * (y + m_lambda * m_x[i]);
         vts = vt / Rs;
         vtf = vt / Rf;
         for (auto j = 0lu; j < 3lu; ++j) {
@@ -193,7 +194,7 @@ unsigned lambert_problem::householder(double T, double &x0,
         x2tof(tof, x0, N);
         dTdx(DT, DDT, DDDT, x0, tof);
         delta = tof - T;
-        double DT2 = DT * DT;
+        double const DT2 = DT * DT;
         xnew = x0 - delta * (DT2 - delta * DDT / 2.0) / (DT * (DT2 - delta * DDT) + DDDT * delta * delta / 6.0);
         err = std::abs(x0 - xnew);
         x0 = xnew;
@@ -204,12 +205,12 @@ unsigned lambert_problem::householder(double T, double &x0,
 
 void lambert_problem::dTdx(double &DT, double &DDT, double &DDDT, double x, double T) const
 {
-    double l2 = m_lambda * m_lambda;
-    double l3 = l2 * m_lambda;
-    double umx2 = 1.0 - x * x;
-    double y = std::sqrt(1.0 - l2 * umx2);
-    double y2 = y * y;
-    double y3 = y2 * y;
+    double const l2 = m_lambda * m_lambda;
+    double const l3 = l2 * m_lambda;
+    double const umx2 = 1.0 - x * x;
+    double const y = std::sqrt(1.0 - l2 * umx2);
+    double const y2 = y * y;
+    double const y3 = y2 * y;
     DT = 1.0 / umx2 * (3.0 * T * x - 2.0 + 2.0 * l3 * x / y);
     DDT = 1.0 / umx2 * (3.0 * T + 5.0 * x * DT + 2.0 * (1.0 - l2) * l3 / y3);
     DDDT = 1.0 / umx2 * (7.0 * x * DDT + 8.0 * DT - 6.0 * (1.0 - l2) * l2 * l3 * x / y3 / y2);
@@ -218,17 +219,17 @@ void lambert_problem::dTdx(double &DT, double &DDT, double &DDDT, double x, doub
 void lambert_problem::x2tof2(double &tof, double x, // NOLINT
                              unsigned N) const
 {
-    double a = 1.0 / (1.0 - x * x);
+    double const a = 1.0 / (1.0 - x * x);
     if (a > 0) // ellipse
     {
-        double alfa = 2.0 * std::acos(x);
+        double const alfa = 2.0 * std::acos(x);
         double beta = 2.0 * std::asin(std::sqrt(m_lambda * m_lambda / a));
         if (m_lambda < 0.0) {
             beta = -beta;
         }
         tof = ((a * std::sqrt(a) * ((alfa - std::sin(alfa)) - (beta - std::sin(beta)) + 2.0 * kep3::pi * N)) / 2.0);
     } else {
-        double alfa = 2.0 * std::acosh(x);
+        double const alfa = 2.0 * std::acosh(x);
         double beta = 2.0 * std::asinh(std::sqrt(-m_lambda * m_lambda / a));
         if (m_lambda < 0.0) {
             beta = -beta;
@@ -239,33 +240,33 @@ void lambert_problem::x2tof2(double &tof, double x, // NOLINT
 
 void lambert_problem::x2tof(double &tof, double x, unsigned N) const
 {
-    double battin = 0.01;
-    double lagrange = 0.2;
-    double dist = std::abs(x - 1);
+    double const battin = 0.01;
+    double const lagrange = 0.2;
+    double const dist = std::abs(x - 1);
     if (dist < lagrange && dist > battin) { // We use Lagrange tof expression
         x2tof2(tof, x, N);
         return;
     }
-    double K = m_lambda * m_lambda;
-    double E = x * x - 1.0;
-    double rho = std::abs(E);
-    double z = std::sqrt(1 + K * E);
+    double const K = m_lambda * m_lambda;
+    double const E = x * x - 1.0;
+    double const rho = std::abs(E);
+    double const z = std::sqrt(1 + K * E);
     if (dist < battin) { // We use Battin series tof expression
-        double eta = z - m_lambda * x;
-        double S1 = 0.5 * (1.0 - m_lambda - x * eta);
+        double const eta = z - m_lambda * x;
+        double const S1 = 0.5 * (1.0 - m_lambda - x * eta);
         double Q = hypergeometricF(S1, 1e-11);
         Q = 4.0 / 3.0 * Q;
         tof = (eta * eta * eta * Q + 4.0 * m_lambda * eta) / 2.0 + N * kep3::pi / std::pow(rho, 1.5);
         return;
     } else { // We use Lancaster tof expresion
-        double y = std::sqrt(rho);
-        double g = x * z - m_lambda * E;
+        double const y = std::sqrt(rho);
+        double const g = x * z - m_lambda * E;
         double d = 0.0;
         if (E < 0) {
-            double l = std::acos(g);
+            double const l = std::acos(g);
             d = N * kep3::pi + l;
         } else {
-            double f = y * (z - m_lambda * x);
+            double const f = y * (z - m_lambda * x);
             d = std::log(f + g);
         }
         tof = (x - m_lambda * z - d / y) / E;

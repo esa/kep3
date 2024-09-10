@@ -44,17 +44,13 @@ namespace kep3
  * @author Dario Izzo (dario.izzo _AT_ googlemail.com)
  */
 
-class kep3_DLL_PUBLIC lambert_problem;
-
-// Streaming operator for the class kep_toolbox::lambert_problem.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
-
 class kep3_DLL_PUBLIC lambert_problem
 {
     static const std::array<double, 3> default_r0;
     static const std::array<double, 3> default_r1;
 
 public:
+    // We choose in this case to friend  the streaming operator as to not expose a number of tedious getters (lambda, chord etc...)
     friend kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
     explicit lambert_problem(const std::array<double, 3> &r0  = default_r0, const std::array<double, 3> &r1 = default_r1,
                              double tof = kep3::pi / 2, double mu = 1., bool cw = false, unsigned multi_revs = 1);
@@ -107,9 +103,6 @@ private:
     bool m_has_converged;
     unsigned m_multi_revs;
 };
-
-// Streaming operator for the class kep3::lambert_problem.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
 
 } // namespace kep3
 

@@ -92,7 +92,7 @@ epoch::epoch(const std::string &in, string_format sf)
     }
     unsigned d = 1;
     std::int32_t h = 0, min = 0, s = 0, us = 0;
-    int y = std::stoi(in.substr(0, 4));
+    int const y = std::stoi(in.substr(0, 4));
     auto mon = boost::numeric_cast<unsigned>(std::stoi(in.substr(5, 2)));
     if (len >= 10) {
         d = boost::numeric_cast<unsigned>(std::stoi(in.substr(8, 2)));

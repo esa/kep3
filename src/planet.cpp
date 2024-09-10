@@ -27,14 +27,14 @@ namespace kep3::detail
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 double period_from_energy(const std::array<double, 3> &r, const std::array<double, 3> &v, double mu)
 {
-    double R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
-    double v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-    double en = v2 / 2. - mu / R;
+    double const R = std::sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    double const v2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+    double const en = v2 / 2. - mu / R;
     if (en > 0) {
         // If the energy is positive we have an hyperbolae and we return nan
         return std::numeric_limits<double>::quiet_NaN();
     } else {
-        double a = -mu / 2. / en;
+        double const a = -mu / 2. / en;
         return kep3::pi * 2. * std::sqrt(a * a * a / mu);
     }
 }
@@ -68,8 +68,8 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
 
 std::array<std::array<double, 3>, 2> null_udpla::eph(double)
 {
-    std::array<double, 3> pos = {1., 0., 0.};
-    std::array<double, 3> vel = {0., 1., 0.};
+    std::array<double, 3> const pos = {1., 0., 0.};
+    std::array<double, 3> const vel = {0., 1., 0.};
     return {pos, vel};
 }
 

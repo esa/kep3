@@ -25,25 +25,41 @@ using xt::linalg::dot;
 // differences in small numbers, relative otherwise.
 inline double floating_point_error(double a, double b)
 {
-    return std::abs(a - b) / std::max(1., std::max(a, b));
+    return std::abs(a - b) / std::max(1., std::max(std::abs(a), std::abs(b)));
 }
 
+// Self explanatory
 template <typename T>
 double L_infinity_norm(T a, T b)
 {
+    if (a.size() != b.size()) {
+        throw std::domain_error("Computing the L-infinity norm of two vectors having unequal size.");
+    }
     double retval = 0.;
+
     for (decltype(a.size()) i=0u; i < a.size() ; ++i) {
         std::abs(a[i]-b[i]) > retval ? retval = std::abs(a[i]-b[i]) : retval;
     }
     return retval;
 }
 
-// This tests how close two 3D vectors are in the euclidean metric. err = r2-r1
+// Takes the floating_point_error to compute the infinity norm ... (thus not an infinity norm)
+template <typename T>
+double L_infinity_norm_rel(T a, T b)
+{
+    double retval = 0.;
+    for (decltype(a.size()) i=0u; i < a.size() ; ++i) {
+        std::abs(a[i]-b[i]) > retval ? retval = floating_point_error(a[i], b[i]) : retval;
+    }
+    return retval;
+}
+
+// This tests how close two 3D vectors are in the euclidean metric. err = |(r2-r1)|
 inline double floating_point_error_vector(const std::array<double, 3> &r1, const std::array<double, 3> &r2)
 {
-    double R1 = std::sqrt(r1[0] * r1[0] + r1[1] * r1[1] + r1[2] * r1[2]);
+    double const R1 = std::sqrt(r1[0] * r1[0] + r1[1] * r1[1] + r1[2] * r1[2]);
     std::array<double, 3> r12 = {{r2[0] - r1[0], r2[1] - r1[1], r2[2] - r1[2]}};
-    double R12 = std::sqrt(r12[0] * r12[0] + r12[1] * r12[1] + r12[2] * r12[2]);
+    double const R12 = std::sqrt(r12[0] * r12[0] + r12[1] * r12[1] + r12[2] * r12[2]);
     return R12 / std::max(1., R1);
 }
 

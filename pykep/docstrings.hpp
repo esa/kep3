@@ -81,6 +81,12 @@ std::string udpla_vsop2013_docstring();
 // Lambert Problem
 std::string lambert_problem_docstring();
 
+// Stark problem
+std::string stark_problem_docstring();
+std::string stark_problem_propagate_docstring();
+std::string stark_problem_propagate_var_docstring();
+
+
 // Propagators
 std::string propagate_lagrangian_docstring();
 std::string propagate_lagrangian_v_docstring();
