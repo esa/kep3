@@ -265,7 +265,32 @@ class vsop2013_test(_ut.TestCase):
         p = pk.planet(pk.udpla.vsop2013())
         self.assertTrue("mercury" in str(p))
         self.assertTrue("1e-05" in str(p))
+        
+class propagate_test(_ut.TestCase):
+    def test_lagrangian(self):
+        import pykep as pk
+        import numpy as np
+        
+        r,v = pk.propagate_lagrangian(rv = [[1.23,0.12,-0.53],[0.0456,1.,0.2347623]], tof = 7.32, mu = 1.34, stm=False)
+        r_gt = (0.04322525778936694, -1.3187148031966465, -0.3566980626026463)
+        v_gt = (0.9223897138305034, 0.18875607625417432, -0.3722128151635408)
+        self.assertTrue(np.allclose(r, r_gt, atol=1e-13))
+        self.assertTrue(np.allclose(v, v_gt, atol=1e-13))
 
+        
+    def test_stark(self):
+        import pykep as pk
+        import numpy as np
+        
+        sp = pk.stark_problem(mu = 1.34)
+        r_gt,v_gt = pk.propagate_lagrangian(rv = [[1.23,0.12,-0.53],[0.0456,1.,0.2347623]], tof = 7.32, mu = 1.34, stm=False)
+        rvm = sp.propagate(rvm_state = [1.23,0.12,-0.53, 0.0456,1.,0.2347623, 1.], thrust = [0.,0.,0.], tof = 7.32)
+        self.assertTrue(np.allclose(rvm[:3], r_gt, atol=1e-13))
+        self.assertTrue(np.allclose(rvm[3:6], v_gt, atol=1e-13))
+        
+        rvm, _, _ = sp.propagate_var(rvm_state = [1.23,0.12,-0.53, 0.0456,1.,0.2347623, 100.], thrust = [1e-19,0.,0.], tof = 7.32)
+        self.assertTrue(np.allclose(rvm[:3], r_gt, atol=1e-13))
+        self.assertTrue(np.allclose(rvm[3:6], v_gt, atol=1e-13))
 
 def run_test_suite():
     tl = _ut.TestLoader()
@@ -284,6 +309,8 @@ def run_test_suite():
     suite.addTest(planet_test("test_udpla_optional_methods"))
     suite.addTest(epoch_test("test_epoch_construction"))
     suite.addTest(epoch_test("test_epoch_operators"))
+    suite.addTest(propagate_test("test_lagrangian"))
+    suite.addTest(propagate_test("test_stark"))
     suite.addTest(py_udplas_test("test_tle"))
     suite.addTest(py_udplas_test("test_spice"))
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
