@@ -9,7 +9,7 @@ Their variational version is also offered (at order one) as to be able to produc
 more. Higher order variational equations can also be obtained directly using the available dynamics and 
 using `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` syntax.
 
------------------------------------------------------------
+--------------------------------------------------------
 
 Stark dynamics
 ===================
