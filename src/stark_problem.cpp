@@ -14,18 +14,18 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/stark_problem.hpp>
-#include <kep3/ta/lt_kepler.hpp>
+#include <kep3/ta/stark.hpp>
 
 namespace kep3
 {
 
 using heyoka::taylor_outcome;
-using ta::get_ta_lt_kepler;
-using ta::get_ta_lt_kepler_var;
+using ta::get_ta_stark;
+using ta::get_ta_stark_var;
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 stark_problem::stark_problem(double mu, double veff, double tol)
-    : m_mu(mu), m_veff(veff), m_tol(tol), m_ta(get_ta_lt_kepler(tol)), m_ta_var(get_ta_lt_kepler_var(tol)), m_var_ic(70)
+    : m_mu(mu), m_veff(veff), m_tol(tol), m_ta(get_ta_stark(tol)), m_ta_var(get_ta_stark_var(tol)), m_var_ic(70)
 {
     // We set mu and veff for the non variational
     *(m_ta.get_pars_data()) = m_mu;

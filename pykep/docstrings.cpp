@@ -1271,6 +1271,14 @@ Examples:
 )";
 }
 
+std::string ta_stark_docstring()
+{return "";}
+std::string ta_stark_var_docstring()
+{return "";}
+std::string ta_stark_dyn_docstring()
+{return "";}
+
+
 std::string propagate_lagrangian_docstring()
 {
     return R"(propagate_lagrangian(rv = [[1,0,0], [0,1,0]], tof = pi/2, mu = 1, stm = False)

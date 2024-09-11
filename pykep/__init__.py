@@ -55,6 +55,9 @@ from . import udpla
 # Importing trajectory legs
 from . import leg
 
+# Importing Taylor adaptive integrators
+from . import ta
+
 # Importing the python utils
 from .utils import *
 

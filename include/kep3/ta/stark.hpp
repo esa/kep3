@@ -21,16 +21,16 @@
 namespace kep3::ta
 {
 // Returns the low-thrust dynamics (heyoka API) in a Keplerian context and Cartesian throttles. 7 states, 5 parameters: mu, veff, ux, uy, uz.
-std::vector<std::pair<heyoka::expression, heyoka::expression>> lt_kepler_dyn();
+kep3_DLL_PUBLIC std::vector<std::pair<heyoka::expression, heyoka::expression>> stark_dyn();
 
 // These return const references to function level static variables of type heyoka::taylor_adaptive<double>.
 // NOTE: The object retruned are expected to be copied to then be modified.
-kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_lt_kepler(double tol);
-kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_lt_kepler_var(double tol); // variational (x,y,z,vx,vy,vz,ux,uy,uz) first order
+kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_stark(double tol);
+kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_stark_var(double tol); // variational (x,y,z,vx,vy,vz,ux,uy,uz) first order
 
 // Methods to access the cache dimensions.
-kep3_DLL_PUBLIC size_t get_ta_lt_kepler_cache_dim();
-kep3_DLL_PUBLIC size_t get_ta_lt_kepler_var_cache_dim();
+kep3_DLL_PUBLIC size_t get_ta_stark_cache_dim();
+kep3_DLL_PUBLIC size_t get_ta_stark_var_cache_dim();
 } // namespace kep3::ta
 
 #endif

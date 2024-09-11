@@ -22,6 +22,7 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
+#include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -288,6 +289,11 @@ PYBIND11_MODULE(core, m)
         .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
+    // Exposing taylor adaptive propagators
+    m.def("_stark", &kep3::ta::get_ta_stark, py::arg("tol") = 1e-16, pykep::ta_stark_docstring().c_str());
+    m.def("_stark_var", &kep3::ta::get_ta_stark_var, py::arg("tol") = 1e-16, pykep::ta_stark_var_docstring().c_str());
+    m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::ta_stark_dyn_docstring().c_str());
+
     // Exposing propagators
     m.def(
         "propagate_lagrangian",
@@ -349,8 +355,8 @@ PYBIND11_MODULE(core, m)
                double tof) {
                 auto sp_retval = sp.propagate_var(rvm_state, thrust, tof);
                 // Lets transfer ownership of dxdx to python (not sure this is actually needed to
-                // get an efficient return value ... maybe its overkill here). It surely avoid one more copy / allocation of 49+21
-                // values, but in the overall algorithm maybe irrelevant. 
+                // get an efficient return value ... maybe its overkill here). It surely avoid one more copy /
+                // allocation of 49+21 values, but in the overall algorithm maybe irrelevant.
                 std::array<double, 49> &dxdx = std::get<1>(sp_retval);
 
                 // We create a capsule for the py::array_t to manage ownership change.

@@ -78,6 +78,12 @@ std::string udpla_keplerian_from_posvel_docstring();
 std::string udpla_jpl_lp_docstring();
 std::string udpla_vsop2013_docstring();
 
+// Taylor Adaptive propagators
+std::string ta_stark_docstring();
+std::string ta_stark_var_docstring();
+std::string ta_stark_dyn_docstring();
+
+
 // Lambert Problem
 std::string lambert_problem_docstring();
 
