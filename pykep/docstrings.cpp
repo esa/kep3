@@ -1161,8 +1161,9 @@ std::string stark_problem_docstring()
 {
     return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
 
-Class representing the Stark problem. That is the initial value problem
-of a fixed inertial thrust dynamics described by the equations:
+Class representing the Stark problem. In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body and
+described by the equations:
 
 .. math::
    \left\{
@@ -1171,6 +1172,11 @@ of a fixed inertial thrust dynamics described by the equations:
        \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
        \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
    \end{array}\right.
+
+.. note::
+
+  Similar and connected functionality is provided by the functions :class:`~pk.ta.stark`,
+  :class:`~pk.ta.stark_var`: and :class:`~pk.ta.stark_dyn`:.
 
 Args:
     *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
@@ -1199,7 +1205,9 @@ std::string stark_problem_propagate_docstring()
 {
     return R"(propagate(rvm_state, thrust, tof)
 
-Stark problem numerical propagation. 
+Stark problem numerical propagation. In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+
 The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
 
 Args:
@@ -1233,6 +1241,10 @@ std::string stark_problem_propagate_var_docstring()
     return R"(propagate_var(rvm_state, thrust, tof)
 
 Stark problem numerical propagation via variational equations. 
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+
 The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
 
 It also computes the system State Transition Matrix:
@@ -1253,8 +1265,8 @@ Args:
     *tof* (:class:`float`): time of flight.
 
 Returns:
-    :class:`tuple` (:class:`list` (7,), :class:`numpy.ndarray` (7,7), :class:`numpy.ndarray` (7,3)): position, velocity and mass after ropagation flattened into a 7D list, state transition matrix 
-    and 
+    :class:`tuple` (:class:`list` (7,), :class:`numpy.ndarray` (7,7), :class:`numpy.ndarray` (7,3)): position, velocity and mass (after propagation) flattened into a 7D list, the state transition matrix 
+    and the gradient with respect to thrust.
 
 .. note::
 
@@ -1271,12 +1283,96 @@ Examples:
 )";
 }
 
-std::string ta_stark_docstring()
-{return "";}
-std::string ta_stark_var_docstring()
-{return "";}
-std::string ta_stark_dyn_docstring()
-{return "";}
+std::string get_stark_docstring()
+{
+    return R"(get_stark(tol)
+
+Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+
+If the requested propagator was never created this will create it, else it will
+return the one from the global cache, thus avoiding jitting.
+
+The dynamics is that returned by :class:`~pk.ta.stark_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_stark(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1.
+  >>> veff = 1.
+  >>> thrust = [0., 0., 0.]
+  >>> tof = 1.
+  >>> ta.pars[:] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_stark_var_docstring()
+{
+    return R"(get_stark_var(tol)
+
+Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+
+.. note:
+   Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+
+The dynamics is that returned by :class:`~pk.ta.stark_dyn`: and also used in :class:`~pk.ta.stark`
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_stark_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1.
+  >>> veff = 1.
+  >>> thrust = [0., 0., 0.]
+  >>> tof = 1.
+  >>> ta.pars[:5] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+   
+std::string stark_dyn_docstring()
+{return R"(stark_dyn()
+
+The dynamics of the Stark problem. 
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
+       \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
+   \end{array}\right.
+
+where :math:`\mu, v_{eff} = I_{sp}g_0` and :math:`\mathbf T = [T_x, T_y, T_z]` are parameters.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
 
 
 std::string propagate_lagrangian_docstring()

@@ -290,9 +290,9 @@ PYBIND11_MODULE(core, m)
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing taylor adaptive propagators
-    m.def("_stark", &kep3::ta::get_ta_stark, py::arg("tol") = 1e-16, pykep::ta_stark_docstring().c_str());
-    m.def("_stark_var", &kep3::ta::get_ta_stark_var, py::arg("tol") = 1e-16, pykep::ta_stark_var_docstring().c_str());
-    m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::ta_stark_dyn_docstring().c_str());
+    m.def("_get_stark", &kep3::ta::get_ta_stark, py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
+    m.def("_get_stark_var", &kep3::ta::get_ta_stark_var, py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
+    m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
 
     // Exposing propagators
     m.def(

@@ -79,9 +79,9 @@ std::string udpla_jpl_lp_docstring();
 std::string udpla_vsop2013_docstring();
 
 // Taylor Adaptive propagators
-std::string ta_stark_docstring();
-std::string ta_stark_var_docstring();
-std::string ta_stark_dyn_docstring();
+std::string get_stark_docstring();
+std::string get_stark_var_docstring();
+std::string stark_dyn_docstring();
 
 
 // Lambert Problem
