@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'propagation';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="List of user implemented planets (UDPLAs)" href="udpla.html" />
+    <link rel="next" title="Taylor adaptive propagators" href="taylor_adaptive.html" />
     <link rel="prev" title="The plot module" href="plot.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -171,6 +171,8 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Numerical Propagation</a></li>
 
+
+<li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
@@ -496,8 +498,9 @@ and velocity after the propagation and the flattened stm (if requested).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.stark_problem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">stark_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.stark_problem" title="Permalink to this definition">#</a></dt>
-<dd><p>Class representing the Stark problem. That is the initial value problem
-of a fixed inertial thrust dynamics described by the equations:</p>
+<dd><p>Class representing the Stark problem. In <cite>pykep</cite>, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body and
+described by the equations:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
 \begin{array}{l}
@@ -505,6 +508,11 @@ of a fixed inertial thrust dynamics described by the equations:</p>
     \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
     \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
 \end{array}\right.\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Similar and connected functionality is provided by the functions <code class="xref py py-class docutils literal notranslate"><span class="pre">stark</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">stark_var</span></code>: and <code class="xref py py-class docutils literal notranslate"><span class="pre">stark_dyn</span></code>:.</p>
+</div>
 <dl>
 <dt>Args:</dt><dd><p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): central body gravitational parameter. Defaults to 1.</p>
 <p><em>veff</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): propulsion system effective velocity (Isp g0). Defaults to 1.</p>
@@ -537,8 +545,9 @@ of a fixed inertial thrust dynamics described by the equations:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.stark_problem.propagate">
 <span class="sig-name descname"><span class="pre">propagate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvm_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.stark_problem.propagate" title="Permalink to this definition">#</a></dt>
-<dd><p>Stark problem numerical propagation. 
-The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
+<dd><p>Stark problem numerical propagation. In <cite>pykep</cite>, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
+<p>The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>rvm_state</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,)): position, velocity and mass flattened into a 7D list.</p>
 <p><em>thrust</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (3,)): thrust flattened into a 3D list.</p>
@@ -569,8 +578,10 @@ The propagation will be singular for vanishing masses (infinite acceleration) an
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.stark_problem.propagate_var">
 <span class="sig-name descname"><span class="pre">propagate_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvm_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.stark_problem.propagate_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Stark problem numerical propagation via variational equations. 
-The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
+<dd><p>Stark problem numerical propagation via variational equations.</p>
+<p>In <cite>pykep</cite>, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
+<p>The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
 <p>It also computes the system State Transition Matrix:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf M = \frac{d\mathbf x_f}{d\mathbf x_0}\]</div>
@@ -582,8 +593,8 @@ The propagation will be singular for vanishing masses (infinite acceleration) an
 <p><em>thrust</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (3,)): thrust flattened into a 3D list.</p>
 <p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,7), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,3)): position, velocity and mass after ropagation flattened into a 7D list, state transition matrix 
-and</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,7), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,3)): position, velocity and mass (after propagation) flattened into a 7D list, the state transition matrix 
+and the gradient with respect to thrust.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -641,11 +652,11 @@ and</p>
       </div>
     </a>
     <a class="right-next"
-       href="udpla.html"
+       href="taylor_adaptive.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">List of user implemented planets (UDPLAs)</p>
+        <p class="prev-next-title">Taylor adaptive propagators</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

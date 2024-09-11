@@ -169,6 +169,8 @@
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
 
+<li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
+
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -523,8 +525,6 @@ document.write(`
       </ul></li>
       <li><a href="planet.html#pykep.planet.get_mu_self">get_mu_self() (pykep.planet method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="planet.html#pykep.planet.get_name">get_name() (pykep.planet method)</a>
 
       <ul>
@@ -535,9 +535,15 @@ document.write(`
         <li><a href="udpla.html#pykep.udpla.tle.get_name">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="planet.html#pykep.planet.get_radius">get_radius() (pykep.planet method)</a>
 </li>
       <li><a href="planet.html#pykep.planet.get_safe_radius">get_safe_radius() (pykep.planet method)</a>
+</li>
+      <li><a href="taylor_adaptive.html#pykep.ta.get_stark">get_stark() (in module pykep.ta)</a>
+</li>
+      <li><a href="taylor_adaptive.html#pykep.ta.get_stark_var">get_stark_var() (in module pykep.ta)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -729,9 +735,11 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
 </li>
+      <li><a href="udpla.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="udpla.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
+      <li><a href="taylor_adaptive.html#pykep.ta.stark_dyn">stark_dyn() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.stark_problem">stark_problem (class in pykep)</a>
 </li>

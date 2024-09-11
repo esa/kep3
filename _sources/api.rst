@@ -18,5 +18,6 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    planet
    plot
    propagation
+   taylor_adaptive 
    udpla
    trajopt
