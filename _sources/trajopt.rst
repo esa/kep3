@@ -18,6 +18,8 @@ Direct
 .. autoclass:: direct_point2point
     :members: pretty, plot
 
+-------------------------------------------------------
+
 .. autoclass:: direct_pl2pl
     :members: pretty, plot
 

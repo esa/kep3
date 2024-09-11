@@ -11,7 +11,7 @@ seamlessly via variational equations.
 
 The main routines are listed here:
  
-Keplerian dynamics
+Keplerian dynamics 
 ===================
  
 .. currentmodule:: pykep
@@ -19,3 +19,13 @@ Keplerian dynamics
 .. autofunction:: propagate_lagrangian
 
 .. autofunction:: propagate_lagrangian_v
+
+---------------------------------------------------------
+
+Non-Keplerian dynamics
+======================
+
+.. currentmodule:: pykep
+
+.. autoclass:: stark_problem
+    :members:  propagate, propagate_var, mu, veff, tol

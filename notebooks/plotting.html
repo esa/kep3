@@ -171,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
 
+
 <li class="toctree-l2"><a class="reference internal" href="../udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -190,7 +191,8 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 </ul>
 </details></li>
 </ul>
@@ -510,7 +512,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 <span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_solar_system</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">bodies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">ep</span> <span class="o">=</span> <span class="n">ep</span><span class="p">)</span>
+<span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_solar_system</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">bodies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">when</span> <span class="o">=</span> <span class="n">ep</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
@@ -522,26 +524,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_solar_system</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">bodies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">ep</span> <span class="o">=</span> <span class="n">ep</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-
-<span class="nn">File ~/local/lib/python3.11/site-packages/pykep/plot/_planet.py:117,</span> in <span class="ni">add_solar_system</span><span class="nt">(ax, bodies, ep, s)</span>
-<span class="g g-Whitespace">    </span><span class="mi">115</span> <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">bodies</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">116</span>     <span class="n">udpla</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;Mercury&quot;</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">117</span>     <span class="n">mercury</span> <span class="o">=</span> <span class="n">_pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span><span class="n">_pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">),</span> <span class="n">ep</span><span class="o">=</span><span class="n">ep</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">118</span>     <span class="n">_pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet_orbit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">mercury</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">119</span>     <span class="n">_pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">mercury</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="n">ep</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Mercury&quot;</span><span class="p">)</span>
-
-<span class="ne">TypeError</span>: planet_to_keplerian() got an unexpected keyword argument &#39;ep&#39;
-</pre></div>
-</div>
-<img alt="../_images/fab1a0618e1bb8e3f97046043e5f012ef2abe1f237061b315fee7eb907f12b7c.png" src="../_images/fab1a0618e1bb8e3f97046043e5f012ef2abe1f237061b315fee7eb907f12b7c.png" />
+<img alt="../_images/61fa121d625a33f367d3b7cabcfdc9267ad55631bc0577ca9d546bededb4d5d3.png" src="../_images/61fa121d625a33f367d3b7cabcfdc9267ad55631bc0577ca9d546bededb4d5d3.png" />
 </div>
 </div>
 </section>
@@ -588,7 +571,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2cd6e41eb60a04d3a8c8e0f3dba65e341e47847492ac3fca079ff7590d2d620a.png" src="../_images/2cd6e41eb60a04d3a8c8e0f3dba65e341e47847492ac3fca079ff7590d2d620a.png" />
+<img alt="../_images/08dd83d55c78ad852367734d3e2fbedc62556448f1ddfbe61def14221dddce5b.png" src="../_images/08dd83d55c78ad852367734d3e2fbedc62556448f1ddfbe61def14221dddce5b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -634,7 +617,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/531d77567c1b90a85a7388a909c47d032a11aa15a46de162b0d14eda6e65bcba.png" src="../_images/531d77567c1b90a85a7388a909c47d032a11aa15a46de162b0d14eda6e65bcba.png" />
+<img alt="../_images/653c11f657cbaaf060e43b548ed234663d7cfcdf41089918caf48c54e08a7d48.png" src="../_images/653c11f657cbaaf060e43b548ed234663d7cfcdf41089918caf48c54e08a7d48.png" />
 </div>
 </div>
 </section>
@@ -678,7 +661,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a988b7d4757a7138202e15a39862388c23c170829066954c0ee7c871160e234f.png" src="../_images/a988b7d4757a7138202e15a39862388c23c170829066954c0ee7c871160e234f.png" />
+<img alt="../_images/7dfd3d127fcf9c4b041e71b305fb116b0ac534abacea8bcf661c0ec4e3be8165.png" src="../_images/7dfd3d127fcf9c4b041e71b305fb116b0ac534abacea8bcf661c0ec4e3be8165.png" />
 </div>
 </div>
 </section>

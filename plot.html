@@ -169,6 +169,7 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
+
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -188,7 +189,8 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 </ul>
 </details></li>
 </ul>
@@ -495,12 +497,12 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.plot.add_solar_system">
-<span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_solar_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ax,</span> <span class="pre">bodies=[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6],</span> <span class="pre">ep=2000-01-01T00:00:00.000000,</span> <span class="pre">s=[15,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">3,</span> <span class="pre">2,</span> <span class="pre">8,</span> <span class="pre">8,</span> <span class="pre">5,</span> <span class="pre">5]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_solar_system" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_solar_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ax,</span> <span class="pre">bodies=[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6],</span> <span class="pre">when=2000-01-01T00:00:00.000000,</span> <span class="pre">s=[15,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">3,</span> <span class="pre">2,</span> <span class="pre">8,</span> <span class="pre">8,</span> <span class="pre">5,</span> <span class="pre">5]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_solar_system" title="Permalink to this definition">#</a></dt>
 <dd><p>Adds to <em>ax</em> the selected solar system planets.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>): the 3D axis.</p>
 <p><em>bodies</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, optional): the solar system planet id (i.e. 3 for Earth). Defaults to [1, 2, 3, 4, 5, 6].</p>
-<p><em>ep</em> (<a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch.</p>
+<p><em>when</em> (<a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch.</p>
 <p><em>s</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, optional): the size of the Sun and all the 8 solar system planets. Defaults to [15, 2, 3, 3, 2, 8, 8, 5, 5].</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: the 3D axis.</p>

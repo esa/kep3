@@ -168,6 +168,7 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 
+
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -187,7 +188,8 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 </ul>
 </details></li>
 </ul>
@@ -636,6 +638,8 @@ document.write(`
       <ul>
         <li><a href="leg.html#pykep.leg.sims_flanagan.mu">(pykep.leg.sims_flanagan property)</a>
 </li>
+        <li><a href="propagation.html#pykep.stark_problem.mu">(pykep.stark_problem property)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -693,9 +697,13 @@ document.write(`
         <li><a href="trajopt.html#pykep.trajopt.direct_point2point.pretty">(pykep.trajopt.direct_point2point method)</a>
 </li>
       </ul></li>
+      <li><a href="propagation.html#pykep.stark_problem.propagate">propagate() (pykep.stark_problem method)</a>
+</li>
       <li><a href="propagation.html#pykep.propagate_lagrangian">propagate_lagrangian() (in module pykep)</a>
 </li>
       <li><a href="propagation.html#pykep.propagate_lagrangian_v">propagate_lagrangian_v() (in module pykep)</a>
+</li>
+      <li><a href="propagation.html#pykep.stark_problem.propagate_var">propagate_var() (pykep.stark_problem method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -725,6 +733,8 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="udpla.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
 </li>
+      <li><a href="propagation.html#pykep.stark_problem">stark_problem (class in pykep)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -743,6 +753,8 @@ document.write(`
         <li><a href="leg.html#pykep.leg.sims_flanagan.tof">(pykep.leg.sims_flanagan property)</a>
 </li>
       </ul></li>
+      <li><a href="propagation.html#pykep.stark_problem.tol">tol (pykep.stark_problem property)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -751,9 +763,11 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lambert.html#pykep.lambert_problem.v0">v0 (pykep.lambert_problem property)</a>
 </li>
+      <li><a href="lambert.html#pykep.lambert_problem.v1">v1 (pykep.lambert_problem property)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="lambert.html#pykep.lambert_problem.v1">v1 (pykep.lambert_problem property)</a>
+      <li><a href="propagation.html#pykep.stark_problem.veff">veff (pykep.stark_problem property)</a>
 </li>
       <li><a href="udpla.html#pykep.udpla.vsop2013">vsop2013 (class in pykep.udpla)</a>
 </li>
