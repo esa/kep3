@@ -396,7 +396,7 @@ PYBIND11_MODULE(core, m)
 
                 auto computed_dxdu = py::array_t<double>(
                     py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(3)}, // shape
-                    ptr->data(), std::move(vec_caps2));
+                    ptr2->data(), std::move(vec_caps2));
                 return py::make_tuple(std::get<0>(sp_retval), computed_dxdx, computed_dxdu);
             },
             py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),

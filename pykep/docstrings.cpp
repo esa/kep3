@@ -813,7 +813,6 @@ In order to consider more complex cases, the UDPLA may implement one or more of 
 See the documentation of the corresponding methods in this class for details on how the optional
 methods in the UDPLA should be implemented and on how they are used by :class:`~pykep.planet`.
 
-
 Args:
     *udpla*: a user-defined planet, either C++ or Python
 
@@ -1175,8 +1174,8 @@ described by the equations:
 
 .. note::
 
-  Similar and connected functionality is provided by the functions :class:`~pk.ta.stark`,
-  :class:`~pk.ta.stark_var`: and :class:`~pk.ta.stark_dyn`:.
+  Similar and connected functionality is provided by the functions :func:`~pykep.ta.stark`,
+  :func:`~pykep.ta.stark_var`: and :func:`~pykep.ta.stark_dyn`:.
 
 Args:
     *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
@@ -1295,7 +1294,7 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
 If the requested propagator was never created this will create it, else it will
 return the one from the global cache, thus avoiding jitting.
 
-The dynamics is that returned by :class:`~pk.ta.stark_dyn`.
+The dynamics is that returned by :func:`~pykep.ta.stark_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1329,7 +1328,7 @@ Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
-The dynamics is that returned by :class:`~pk.ta.stark_dyn`: and also used in :class:`~pk.ta.stark`
+The dynamics is that returned by :func:`~pykep.ta.stark_dyn`: and also used in :func:`~pykep.ta.get_stark`
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
