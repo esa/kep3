@@ -295,16 +295,26 @@ class direct_pl2pl:
     ):
         """
         Plots the trajectory leg  3D axes.
+        
         Args:
             *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.
+            
             *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`, optional): The 3D axis to plot on. Defaults to None.
+            
             *units* (:class:`float`, optional): The unit scale for the plot. Defaults to _pk.AU.
+            
             *show_midpoints* (:class:`bool`, optional): Whether to show midpoints on the trajectory. Defaults to False.
+            
             *show_gridpoints* (:class:`bool`, optional): Whether to show grid points on the trajectory. Defaults to False.
+            
             *show_throttles* (:class:`bool`, optional): Whether to show throttle vectors. Defaults to False.
+            
             *length* (:class:`float`, optional): Length of the throttle vectors. Defaults to 0.1.
+            
             *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.
+            
             *\*\*kwargs*: Additional keyword arguments for the plot.
+            
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis with the plotted trajectory.
         """

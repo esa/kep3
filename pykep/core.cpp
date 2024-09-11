@@ -394,7 +394,7 @@ PYBIND11_MODULE(core, m)
                 return py::make_tuple(std::get<0>(sp_retval), computed_dxdx, computed_dxdu);
             },
             py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
-            pykep::stark_problem_propagate_docstring().c_str());
+            pykep::stark_problem_propagate_var_docstring().c_str());
 
     // Exposing the sims_flanagan leg
     py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());

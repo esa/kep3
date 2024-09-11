@@ -1161,14 +1161,16 @@ std::string stark_problem_docstring()
 {
     return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
 
-Class representing the Stark problem in the form:
+Class representing the Stark problem. That is the initial value problem
+of a fixed inertial thrust dynamics described by the equations:
 
 .. math::
-   \begin{array}{c}
+   \left\{
+   \begin{array}{l}
        \dot{\mathbf r} = \mathbf v \\
        \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
        \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
-   \end{array}
+   \end{array}\right.
 
 Args:
     *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
