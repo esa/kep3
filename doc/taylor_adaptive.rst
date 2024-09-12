@@ -22,3 +22,15 @@ Stark dynamics
 
 .. autofunction:: stark_dyn 
 
+
+Circular Restricted Three Body Problem
+=======================================
+ 
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_cr3bp
+
+.. autofunction:: get_cr3bp_var
+
+.. autofunction:: cr3bp_dyn 
+

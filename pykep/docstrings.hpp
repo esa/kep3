@@ -82,7 +82,9 @@ std::string udpla_vsop2013_docstring();
 std::string get_stark_docstring();
 std::string get_stark_var_docstring();
 std::string stark_dyn_docstring();
-
+std::string get_cr3bp_docstring();
+std::string get_cr3bp_var_docstring();
+std::string cr3bp_dyn_docstring();
 
 // Lambert Problem
 std::string lambert_problem_docstring();

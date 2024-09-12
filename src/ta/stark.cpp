@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <array>
+#include <heyoka/kw.hpp>
 #include <mutex>
 #include <tuple>
 #include <unordered_map>
@@ -59,12 +60,12 @@ std::vector<std::pair<expression, expression>> stark_dyn()
     const auto xdot = vx;
     const auto ydot = vy;
     const auto zdot = vz;
-    const auto vxdot = -mu * pow(r2, -3. / 2) * x +  ux / m;
-    const auto vydot = -mu * pow(r2, -3. / 2) * y +  uy / m;
-    const auto vzdot = -mu * pow(r2, -3. / 2) * z +  uz / m;
+    const auto vxdot = -mu * pow(r2, -3. / 2) * x + ux / m;
+    const auto vydot = -mu * pow(r2, -3. / 2) * y + uy / m;
+    const auto vzdot = -mu * pow(r2, -3. / 2) * z + uz / m;
     // To avoid singularities in the corner case u_norm=0. we use a select here. Implications on performances should be
     // studied.
-    const auto mdot =  select(eq(u_norm, 0.), 0., - u_norm / veff);
+    const auto mdot = select(eq(u_norm, 0.), 0., -u_norm / veff);
     return {prime(x) = xdot,   prime(y) = ydot,   prime(z) = zdot, prime(vx) = vxdot,
             prime(vy) = vydot, prime(vz) = vzdot, prime(m) = mdot};
 };
@@ -83,7 +84,8 @@ const heyoka::taylor_adaptive<double> &get_ta_stark(double tol)
     if (auto it = ta_stark_cache.find(tol); it == ta_stark_cache.end()) {
         // Cache miss, create new one.
         const std::vector init_state = {1., 1., 1., 1., 1., 1., 1.};
-        auto new_ta = taylor_adaptive<double>{stark_dyn(), init_state, heyoka::kw::tol = tol};
+        auto new_ta = taylor_adaptive<double>{stark_dyn(), init_state, heyoka::kw::tol = tol,
+                                              heyoka::kw::pars = {1., 1., 0., 0., 0.}};
         return ta_stark_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
     } else {
         // Cache hit, return existing.
@@ -107,7 +109,8 @@ const heyoka::taylor_adaptive<double> &get_ta_stark_var(double tol)
         auto vsys = var_ode_sys(stark_dyn(), {x, y, z, vx, vy, vz, m, par[2], par[3], par[4]}, 1);
         // Cache miss, create new one.
         const std::vector init_state = {1., 1., 1., 1., 1., 1., 1.};
-        auto new_ta = taylor_adaptive<double>{vsys, init_state, heyoka::kw::tol = tol, heyoka::kw::compact_mode = true};
+        auto new_ta = taylor_adaptive<double>{vsys, init_state, heyoka::kw::tol = tol, heyoka::kw::compact_mode = true,
+                                              heyoka::kw::pars = {1., 1., 0., 0., 1e-32}};
         return ta_stark_var_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
     } else {
         // Cache hit, return existing.

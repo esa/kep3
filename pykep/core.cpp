@@ -22,6 +22,7 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
+#include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
@@ -290,9 +291,42 @@ PYBIND11_MODULE(core, m)
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing taylor adaptive propagators
-    m.def("_get_stark", &kep3::ta::get_ta_stark, py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
-    m.def("_get_stark_var", &kep3::ta::get_ta_stark_var, py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
+    // Stark
+    m.def(
+        "_get_stark",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
+    m.def(
+        "_get_stark_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
     m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
+    // CR3BP
+    m.def(
+        "_get_cr3bp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_cr3bp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_cr3bp_docstring().c_str());
+    m.def(
+        "_get_cr3bp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_cr3bp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_cr3bp_var_docstring().c_str());
+    m.def("_cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
 
     // Exposing propagators
     m.def(

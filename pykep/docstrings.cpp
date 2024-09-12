@@ -1286,7 +1286,7 @@ std::string get_stark_docstring()
 {
     return R"(get_stark(tol)
 
-Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -1320,7 +1320,7 @@ std::string get_stark_var_docstring()
 {
     return R"(get_stark_var(tol)
 
-Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.
 
 .. note:
    Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
@@ -1367,6 +1367,98 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
    \end{array}\right.
 
 where :math:`\mu, v_{eff} = I_{sp}g_0` and :math:`\mathbf T = [T_x, T_y, T_z]` are parameters.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string get_cr3bp_docstring()
+{
+    return R"(get_cr3bp(tol)
+
+Gets the Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy. 
+If the requested propagator was never created this will create it, else it will
+return the one from the global cache, thus avoiding jitting.
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+
+The dynamics is that returned by :func:`~pykep.ta.cr3bp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_cr3bp(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_cr3bp_var_docstring()
+{
+    return R"(get_cr3bp_var(tol)
+
+Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy.
+If the requested propagator was never created this will create it, else it will
+return the one from the global cache, thus avoiding jitting.
+
+.. note:
+   Variations are only considered with respect to initial conditions.
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+
+The dynamics is that returned by :func:`~pykep.ta.cr3bp_dyn`: and also used in :func:`~pykep.ta.get_cr3bp`
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_cr3bp_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+   
+std::string cr3bp_dyn_docstring()
+{return R"(cr3bp_dyn()
+
+The dynamics of the Circular Restricted Body Problem. 
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+
+The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:`m_2` is the mass of the
+secondary body (i.e. placed on the positive x axis). 
+
+The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
+:math:`T = \sqrt(\frac{r_{12}^3}{m_1+m_2})` (period of rotation of the primaries).
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} \\
+       \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} \\
+       \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3}
+   \end{array}\right.
+
+where :math:`\mu` is the only parameter.
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
