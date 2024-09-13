@@ -1,7 +1,7 @@
 .. _trajopt:
 
 Trajectory Optimization
-=======================
+###########################
 
 In `pykep` both direct and indirect optimization techniques are provided
 to perform spacecraft trajectory optimization. Most direct techniques provided are
@@ -14,7 +14,7 @@ optimization problems (NLP) compatible to the pagmo software suite.
 .. currentmodule:: pykep.trajopt
 
 Direct
-------
+************************
 .. autoclass:: direct_point2point
     :members: pretty, plot
 

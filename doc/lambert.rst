@@ -1,7 +1,7 @@
 .. _lambert:
 
 Lambert class
-====================
+#################
 
 .. currentmodule:: pykep
 

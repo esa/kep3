@@ -1,7 +1,7 @@
 .. _epoch:
 
 Epoch class
-====================
+################
 
 The representation of an epoch, that is of a specific point in time, be it in the future or in the past, can be rather confusing. 
 In `pykep` we opted to offer a dedicated class called :class:`~pykep.epoch`` to offer a simple interface and, under the hoods, interfacing

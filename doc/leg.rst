@@ -1,7 +1,7 @@
 .. _leg:
 
 Interplanetary transfer legs
-=========================================
+###############################
 
 .. currentmodule:: pykep.leg
 

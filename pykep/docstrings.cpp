@@ -1377,13 +1377,14 @@ std::string get_cr3bp_docstring()
 {
     return R"(get_cr3bp(tol)
 
-Gets the Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy. 
-If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.
+Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
 
-In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
 
-The dynamics is that returned by :func:`~pykep.ta.cr3bp_dyn`.
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The specific dynamics used is that returned by :func:`~pykep.ta.cr3bp_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1407,16 +1408,17 @@ std::string get_cr3bp_var_docstring()
 {
     return R"(get_cr3bp_var(tol)
 
-Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy.
-If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
+
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
 
 .. note:
    Variations are only considered with respect to initial conditions.
 
-In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
 
-The dynamics is that returned by :func:`~pykep.ta.cr3bp_dyn`: and also used in :func:`~pykep.ta.get_cr3bp`
+The specific dynamics used is that returned by :func:`~pykep.ta.cr3bp_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1439,15 +1441,15 @@ Examples:
 std::string cr3bp_dyn_docstring()
 {return R"(cr3bp_dyn()
 
-The dynamics of the Circular Restricted Body Problem. 
+The dynamics of the Circular Restricted Three Body Problem (CR3BP).
 
-In `pykep`, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form). 
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
 
 The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:`m_2` is the mass of the
 secondary body (i.e. placed on the positive x axis). 
 
 The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
-:math:`T = \sqrt(\frac{r_{12}^3}{m_1+m_2})` (period of rotation of the primaries).
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (period of rotation of the primaries).
 
 .. math::
    \left\{

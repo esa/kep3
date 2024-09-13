@@ -21,7 +21,7 @@
 -------------------------------
 
 Basic
-======
+##########
 Start with these tutorials to get the basic gist of how `pykep` works and its conventions when dealing with
 astrodynamical notation and computations.
 

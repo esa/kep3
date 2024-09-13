@@ -1,7 +1,7 @@
 .. _elements:
 
 Orbital Elements
-=======================
+###################
 
 In `pykep` the default osculating orbital elements used are the classical set :math:`[a, e, i, \Omega, \omega, f]`
 (:math:`f` is the True Anomaly) together with the Cartesian position and velocity :math:`[\mathbf r, \mathbf v]`. Support is given also for
