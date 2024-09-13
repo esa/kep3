@@ -170,11 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Numerical Propagation</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -393,25 +389,23 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian-dynamics">Non-Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem"><code class="docutils literal notranslate"><span class="pre">stark_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.mu"><code class="docutils literal notranslate"><span class="pre">stark_problem.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.tol"><code class="docutils literal notranslate"><span class="pre">stark_problem.tol</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.veff"><code class="docutils literal notranslate"><span class="pre">stark_problem.veff</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian-dynamics">Non-Keplerian dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem"><code class="docutils literal notranslate"><span class="pre">stark_problem</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.mu"><code class="docutils literal notranslate"><span class="pre">stark_problem.mu</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.tol"><code class="docutils literal notranslate"><span class="pre">stark_problem.tol</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.veff"><code class="docutils literal notranslate"><span class="pre">stark_problem.veff</span></code></a></li>
 </ul>
 </li>
 </ul>
-
+</li>
+</ul>
             </nav>
         </div>
     </div>
@@ -430,9 +424,8 @@ Kepler’s  dynamics and Taylor numerical integration, as implemented in the
 other cases. The state transition matrix is also available and provided, in the case of numerical integration,
 seamlessly via variational equations.</p>
 <p>The main routines are listed here:</p>
-</section>
 <section id="keplerian-dynamics">
-<h1>Keplerian dynamics<a class="headerlink" href="#keplerian-dynamics" title="Permalink to this heading">#</a></h1>
+<h2>Keplerian dynamics<a class="headerlink" href="#keplerian-dynamics" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.propagate_lagrangian">
 <span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">propagate_lagrangian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[1,</span> <span class="pre">0,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">pi</span> <span class="pre">/</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.propagate_lagrangian" title="Permalink to this definition">#</a></dt>
@@ -495,7 +488,7 @@ and velocity after the propagation and the flattened stm (if requested).</p>
 </section>
 <hr class="docutils" />
 <section id="non-keplerian-dynamics">
-<h1>Non-Keplerian dynamics<a class="headerlink" href="#non-keplerian-dynamics" title="Permalink to this heading">#</a></h1>
+<h2>Non-Keplerian dynamics<a class="headerlink" href="#non-keplerian-dynamics" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.stark_problem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">stark_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.stark_problem" title="Permalink to this definition">#</a></dt>
@@ -631,6 +624,7 @@ and the gradient with respect to thrust.</p>
 </dd></dl>
 
 </section>
+</section>
 
 
                 </article>
@@ -677,25 +671,23 @@ and the gradient with respect to thrust.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian-dynamics">Keplerian dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_v"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_v()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian-dynamics">Non-Keplerian dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem"><code class="docutils literal notranslate"><span class="pre">stark_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.mu"><code class="docutils literal notranslate"><span class="pre">stark_problem.mu</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.tol"><code class="docutils literal notranslate"><span class="pre">stark_problem.tol</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.veff"><code class="docutils literal notranslate"><span class="pre">stark_problem.veff</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian-dynamics">Non-Keplerian dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem"><code class="docutils literal notranslate"><span class="pre">stark_problem</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.mu"><code class="docutils literal notranslate"><span class="pre">stark_problem.mu</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">stark_problem.propagate_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.tol"><code class="docutils literal notranslate"><span class="pre">stark_problem.tol</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.stark_problem.veff"><code class="docutils literal notranslate"><span class="pre">stark_problem.veff</span></code></a></li>
 </ul>
 </li>
 </ul>
-
+</li>
+</ul>
   </nav></div>
 
 </div></div>

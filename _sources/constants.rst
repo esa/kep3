@@ -1,7 +1,7 @@
 .. _constants:
 
 Global constants
-=======================
+##################
 
 In `pykep` the access a number of common constants are provided for convenience. The user can overwrite their values if needed.
 These constants are not used in the `pykep` internals, they are only provided for convenience for the user to instantiate / use

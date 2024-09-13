@@ -168,11 +168,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -393,19 +389,19 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-utils">Common utils</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.make_3Daxis"><code class="docutils literal notranslate"><span class="pre">make_3Daxis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-trajectories">Plotting trajectories</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-trajectories">Plotting trajectories</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -433,9 +429,8 @@ document.write(`
 </dl>
 </dd></dl>
 
-</section>
 <section id="plotting-planets">
-<h2>Plotting planets<a class="headerlink" href="#plotting-planets" title="Permalink to this heading">#</a></h2>
+<h3>Plotting planets<a class="headerlink" href="#plotting-planets" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.plot.add_sun">
 <span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_sun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_sun" title="Permalink to this definition">#</a></dt>
@@ -515,7 +510,7 @@ document.write(`
 
 </section>
 <section id="plotting-trajectories">
-<h2>Plotting trajectories<a class="headerlink" href="#plotting-trajectories" title="Permalink to this heading">#</a></h2>
+<h3>Plotting trajectories<a class="headerlink" href="#plotting-trajectories" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.plot.add_lambert">
 <span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_lambert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_lambert" title="Permalink to this definition">#</a></dt>
@@ -592,6 +587,7 @@ The resulting trajectory is plotted on the given Axes object using the provided 
 
 </section>
 </section>
+</section>
 
 
                 </article>
@@ -640,19 +636,19 @@ The resulting trajectory is plotted on the given Axes object using the provided 
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-utils">Common utils</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.make_3Daxis"><code class="docutils literal notranslate"><span class="pre">make_3Daxis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-trajectories">Plotting trajectories</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-trajectories">Plotting trajectories</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -1,7 +1,8 @@
 .. _taylor_adaptive:
 
 Taylor adaptive propagators
-==============================
+############################
+
 
 Taylot adaptive integrators are offered in `pykep` wrapping some of the functionalities of
 `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` python package.
@@ -11,8 +12,8 @@ using `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`bis
 
 --------------------------------------------------------
 
-Stark dynamics
-===================
+Stark
+*************************
  
 .. currentmodule:: pykep.ta
 
@@ -24,7 +25,7 @@ Stark dynamics
 
 
 Circular Restricted Three Body Problem
-=======================================
+*****************************************
  
 .. currentmodule:: pykep.ta
 

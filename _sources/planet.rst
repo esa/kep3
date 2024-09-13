@@ -1,7 +1,7 @@
 .. _planet:
 
 Planet class
-====================
+###################
 
 .. currentmodule:: pykep
 

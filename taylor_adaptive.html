@@ -170,11 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
-
-
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Taylor adaptive propagators</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 </ul>
@@ -393,21 +389,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Taylor adaptive propagators</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#stark-dynamics">Stark dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
 </ul>
 </li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -425,10 +419,9 @@ document.write(`
 Their variational version is also offered (at order one) as to be able to produce stms and, where needed,
 more. Higher order variational equations can also be obtained directly using the available dynamics and
 using <a class="reference external" href="https://bluescarni.github.io/heyoka.py/index.html">Heyoka</a> <span id="id3">[<a class="reference internal" href="bibliography.html#id5" title="Francesco Biscani and Dario Izzo. Revisiting high-order taylor methods for astrodynamics and celestial mechanics. Monthly Notices of the Royal Astronomical Society, 504(2):2614–2628, 2021.">BI21</a>]</span> syntax.</p>
-</section>
 <hr class="docutils" />
-<section id="stark-dynamics">
-<h1>Stark dynamics<a class="headerlink" href="#stark-dynamics" title="Permalink to this heading">#</a></h1>
+<section id="stark">
+<h2>Stark<a class="headerlink" href="#stark" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_stark">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_stark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_stark" title="Permalink to this definition">#</a></dt>
@@ -509,15 +502,15 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
 
 </section>
 <section id="circular-restricted-three-body-problem">
-<h1>Circular Restricted Three Body Problem<a class="headerlink" href="#circular-restricted-three-body-problem" title="Permalink to this heading">#</a></h1>
+<h2>Circular Restricted Three Body Problem<a class="headerlink" href="#circular-restricted-three-body-problem" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_cr3bp">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_cr3bp" title="Permalink to this definition">#</a></dt>
-<dd><p>Gets the Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy. 
-If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form).</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.cr3bp_dyn" title="pykep.ta.cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a>.</p>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy.</p>
+<p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.</p>
+<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
+<p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.cr3bp_dyn" title="pykep.ta.cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
@@ -540,11 +533,11 @@ return the one from the global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_cr3bp_var">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_cr3bp_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_cr3bp_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the CR3BP problem from the global cache and returns a copy.
-If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form).</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.cr3bp_dyn" title="pykep.ta.cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a>: and also used in <a class="reference internal" href="#pykep.ta.get_cr3bp" title="pykep.ta.get_cr3bp"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></p>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy.</p>
+<p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.</p>
+<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
+<p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.cr3bp_dyn" title="pykep.ta.cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
@@ -567,12 +560,12 @@ return the one from the global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.cr3bp_dyn">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">cr3bp_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.cr3bp_dyn" title="Permalink to this definition">#</a></dt>
-<dd><p>The dynamics of the Circular Restricted Body Problem.</p>
-<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus non symplectic as not in a Hamiltonian form).</p>
+<dd><p>The dynamics of the Circular Restricted Three Body Problem (CR3BP).</p>
+<p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
 <p>The parameter <span class="math notranslate nohighlight">\(\mu\)</span> is defined as <span class="math notranslate nohighlight">\(\frac{m_2}{m_1+m_2}\)</span> where <span class="math notranslate nohighlight">\(m_2\)</span> is the mass of the
 secondary body (i.e. placed on the positive x axis).</p>
 <p>The equations are non-dimensional with units <span class="math notranslate nohighlight">\(L = r_{12}\)</span> (distance between the primaries), <span class="math notranslate nohighlight">\(M = m_1 + m_2\)</span> (total system mass) and
-<span class="math notranslate nohighlight">\(T = \sqrt(\frac{r_{12}^3}{m_1+m_2})\)</span> (period of rotation of the primaries).</p>
+<span class="math notranslate nohighlight">\(T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}\)</span> (period of rotation of the primaries).</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
 \begin{array}{l}
@@ -588,6 +581,7 @@ secondary body (i.e. placed on the positive x axis).</p>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -635,21 +629,19 @@ secondary body (i.e. placed on the positive x axis).</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Taylor adaptive propagators</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#stark-dynamics">Stark dynamics</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
 </ul>
 </li>
 </ul>
-
   </nav></div>
 
 </div></div>

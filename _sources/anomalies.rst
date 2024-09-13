@@ -1,7 +1,7 @@
 .. _anomalies:
 
 Anomalies Conversions
-=======================
+########################
 
 In `pykep` we adopt the following naming for the various anomalies: 
 :math:`M` is the Mean Anomaly,
@@ -21,7 +21,7 @@ to another, and their vectorized versions.
 .. currentmodule:: pykep
 
 Normal
-------
+****************
 .. autofunction:: m2e
 .. autofunction:: e2m
 .. autofunction:: m2f
@@ -38,7 +38,7 @@ Normal
 .. autofunction:: f2zeta
 
 Vectorized
-----------
+************************
 .. autofunction:: m2e_v
 .. autofunction:: e2m_v
 .. autofunction:: m2f_v
