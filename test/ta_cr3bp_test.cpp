@@ -65,6 +65,7 @@ TEST_CASE("dynamics")
         std::vector<double> ic{1.01238082345234, -0.0423523523454,  0.22634376321,
                                -0.1232623614,    0.123462698209365, 0.123667064622};
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
+        // Assign value for cis-lunar case. (note: not the official pykep on in this case)
         *ta.get_pars_data() = 0.01215058560962404;
         auto out = ta.propagate_until(5.7856656782589234);
         std::vector<double> const ground_truth = {0.43038358727124, -1.64650668902846, 0.10271923139472,
@@ -90,6 +91,7 @@ TEST_CASE("variational_dynamics")
         std::vector<double> ic{1.01238082345234, -0.0423523523454,  0.22634376321,
                                -0.1232623614,    0.123462698209365, 0.123667064622};
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
+        // Assign value for cis-lunar case. (note: not the official pykep on in this case)
         *ta.get_pars_data() = 0.01215058560962404;
         auto out = ta.propagate_until(5.7856656782589234);
         std::vector<double> const ground_truth = {0.43038358727124, -1.64650668902846, 0.10271923139472,

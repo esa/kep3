@@ -1286,7 +1286,7 @@ std::string get_stark_docstring()
 {
     return R"(get_stark(tol)
 
-Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.
+Returns a Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -1320,7 +1320,7 @@ std::string get_stark_var_docstring()
 {
     return R"(get_stark_var(tol)
 
-Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
 .. note:
    Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
