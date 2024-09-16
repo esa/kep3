@@ -425,7 +425,7 @@ using <a class="reference external" href="https://bluescarni.github.io/heyoka.py
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_stark">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_stark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_stark" title="Permalink to this definition">#</a></dt>
-<dd><p>Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.</p>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy.</p>
 <p>In <cite>pykep</cite>, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
 <p>If the requested propagator was never created this will create it, else it will
@@ -455,7 +455,7 @@ return the one from the global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_stark_var">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_stark_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_stark_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache and returns a copy.</p>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy.</p>
 <p>In <cite>pykep</cite>, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
 <p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.stark_dyn" title="pykep.ta.stark_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a>: and also used in <a class="reference internal" href="#pykep.ta.get_stark" title="pykep.ta.get_stark"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_stark()</span></code></a></p>

@@ -12,7 +12,7 @@ seamlessly via variational equations.
 
 The main routines are listed here:
  
-Keplerian dynamics 
+Keplerian 
 ******************
  
 .. currentmodule:: pykep
@@ -23,7 +23,7 @@ Keplerian dynamics
 
 ---------------------------------------------------------
 
-Non-Keplerian dynamics
+Non-Keplerian 
 ************************
 
 .. currentmodule:: pykep
