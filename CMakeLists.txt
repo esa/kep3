@@ -140,6 +140,8 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/jpl_lp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/vsop2013.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sims_flanagan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sims_flanagan_hf.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sf_checks.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2eq2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"

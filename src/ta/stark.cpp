@@ -10,7 +10,6 @@
 #include <array>
 #include <heyoka/kw.hpp>
 #include <mutex>
-#include <tuple>
 #include <unordered_map>
 #include <vector>
 

@@ -9,8 +9,6 @@
 
 #include <array>
 #include <cstddef>
-#include <functional>
-#include <iomanip>
 #include <iterator>
 #include <vector>
 
@@ -30,6 +28,7 @@
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
+#include <kep3/leg/sf_checks.hpp>
 #include <kep3/linalg.hpp>
 
 namespace kep3::leg
@@ -41,62 +40,7 @@ using kep3::linalg::mat61;
 using kep3::linalg::mat63;
 using kep3::linalg::mat66;
 
-void _check_tof(double tof)
-{
-    if (tof < 0.) {
-        throw std::domain_error("The time of flight of a sims_flanagan leg needs to be larger or equal to zero.");
-    }
-}
-void _check_throttles(const std::vector<double> &throttles)
-{
-    if ((throttles.size() % 3) != 0u) {
-        throw std::logic_error("The throttles of a sims_flanagan leg are detected to be not a multiple of 3 in size "
-                               "[u0x, u0y, u0z, .....].");
-    }
-    if (throttles.empty()) {
-        throw std::logic_error(
-            "The throttles of a sims_flanagan leg are detected to be empty! At least one segment is necessary.");
-    }
-}
-void _check_max_thrust(double max_thrust)
-{
-    if (max_thrust < 0.) {
-        throw std::domain_error(
-            "The maximum allowed thrust of a sims_flanagan leg is detected to be smaller than zero.");
-    }
-}
-void _check_isp(double isp)
-{
-    if (isp < 0.) {
-        throw std::domain_error("The specific impulse of a sims_flanagan leg is detected to be smaller than zero.");
-    }
-}
-void _check_mu(double mu)
-{
-    if (mu < 0.) {
-        throw std::domain_error(
-            "The gravitational parameter of a sims_flanagan leg is detected to be smaller than zero.");
-    }
-}
-void _check_cut(double cut)
-{
-    if (cut < 0. || cut > 1.) {
-        throw std::domain_error("The parameter cut of a sims_flanagan leg must be in [0, 1].");
-    }
-}
-void _sanity_checks(const std::array<std::array<double, 3>, 2> &, double, const std::vector<double> &throttles,
-                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                    const std::array<std::array<double, 3>, 2> &, double, double tof, double max_thrust, double isp,
-                    double mu, double cut)
-{
-    _check_throttles(throttles);
-    _check_tof(tof);
-    _check_max_thrust(max_thrust);
-    _check_isp(isp);
-    _check_mu(mu);
-    _check_cut(cut);
-}
-
+// Constructors
 sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
@@ -106,7 +50,7 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
       m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
-    _sanity_checks(rvs, ms, m_throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
+    _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
 }
 
 // Setters
@@ -125,7 +69,7 @@ void sims_flanagan::set_ms(double mass)
 }
 void sims_flanagan::set_throttles(std::vector<double> throttles)
 {
-    _check_throttles(throttles);
+    _check_throttles(throttles, m_nseg);
     m_throttles = std::move(throttles);
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
@@ -178,7 +122,7 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
                         const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                         double isp, double mu, double cut)
 {
-    _sanity_checks(rvs, ms, throttles, rvf, mf, tof, max_thrust, isp, mu, cut);
+    _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
     m_rvs = rvs;
     m_ms = ms;
     m_throttles = throttles;

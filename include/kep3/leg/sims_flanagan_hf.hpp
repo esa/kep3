@@ -11,7 +11,7 @@
 #define kep3_LEG_SIMS_FLANAGAN_HF_H
 
 #include <array>
-#include <tuple>
+// #include <tuple>
 #include <vector>
 
 #include <fmt/ostream.h>
@@ -21,6 +21,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
+#include <kep3/ta/stark.hpp>
 
 namespace kep3::leg
 {
@@ -41,14 +42,16 @@ class kep3_DLL_PUBLIC sims_flanagan_hf
 {
 public:
     // Default Constructor.
-    sims_flanagan_hf() = default;
+    sims_flanagan_hf(); // = default;
     // Constructors
-    sims_flanagan_hf(
-        const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
-        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
-        double mu, double cut, double ts,
-        const std::optional<const std::pair<heyoka::taylor_adaptive<double> &, heyoka::taylor_adaptive<double> &>>
-            &tas);
+    // Backwards-compatible constructor with rv and m states separately
+    sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+                     const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
+                     double isp, double mu, double cut = 0.5, double tol = 1e-16);
+    // Constructor with rvm states
+    sims_flanagan_hf(const std::array<double, 7> &rvms, std::vector<double> throttles,
+                     const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
+                     double cut, double tol);
 
     // Setters
     void set_tof(double tof);
@@ -62,68 +65,81 @@ public:
     void set_isp(double isp);
     void set_mu(double mu);
     void set_cut(double cut);
-    void set_ts(double ts);
+    void set_tol(double tol);
+    void set_tas(heyoka::taylor_adaptive<double> tas);
+    void set_rvms(std::array<double, 7> rvms);
+    void set_rvmf(std::array<double, 7> rvmf);
+    void set_walking_rvm(std::array<double, 7> rvm);
+    // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
-             double mu, double cut = 0.5);
+             double mu, double cut = 0.5, double tol = 1e-16);
+    // Setting function with rvm states
+    void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf, 
+             double tof, double max_thrust, double isp,
+             double mu, double cut = 0.5, double tol = 1e-16);
 
     // Getters
     [[nodiscard]] double get_tof() const;
-    [[nodiscard]] const std::array<std::array<double, 3>, 2> &get_rvs() const;
+    [[nodiscard]] const std::array<std::array<double, 3>, 2> get_rvs() const;
     [[nodiscard]] double get_ms() const;
     [[nodiscard]] const std::vector<double> &get_throttles() const;
-    [[nodiscard]] const std::array<std::array<double, 3>, 2> &get_rvf() const;
+    [[nodiscard]] const std::array<std::array<double, 3>, 2> get_rvf() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
     [[nodiscard]] double get_isp() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
-    [[nodiscard]] double get_ts() const;
+    [[nodiscard]] double get_tol() const;
     [[nodiscard]] unsigned get_nseg() const;
     [[nodiscard]] unsigned get_nseg_fwd() const;
     [[nodiscard]] unsigned get_nseg_bck() const;
+    [[nodiscard]] heyoka::taylor_adaptive<double> get_tas() const;
+    [[nodiscard]] std::array<double, 7> get_rvms() const;
+    [[nodiscard]] std::array<double, 7> get_rvmf() const;
+    [[nodiscard]] std::array<double, 7> get_walking_rvm() const;
 
     // Compute constraints
-    [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
+    [[nodiscard]] std::array<double, 7> compute_mismatch_constraints();
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
 
-    // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles, tof)
-    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
-    compute_mc_grad() const;
+    // // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles, tof)
+    // [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+    // compute_mc_grad() const;
 
-    // Compute throttle constraint gradients
-    [[nodiscard]] std::vector<double> compute_tc_grad() const;
+    // // Compute throttle constraint gradients
+    // [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
 private:
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
     {
-        ar &m_rvs;
-        ar &m_ms;
-        ar &m_throttles;
-        ar &m_tof;
-        ar &m_rvf;
-        ar &m_mf;
-        ar &m_max_thrust;
-        ar &m_isp;
-        ar &m_mu;
-        ar &m_cut;
-        ar &m_ts;
-        ar &m_nseg;
-        ar &m_nseg_fwd;
-        ar &m_nseg_bck;
-        ar &m_tas;
+        ar & m_rvms;
+        ar & m_throttles;
+        ar & m_thrusts;
+        ar & m_tof;
+        ar & m_rvmf;
+        ar & m_max_thrust;
+        ar & m_isp;
+        ar & m_mu;
+        ar & m_cut;
+        ar & m_tol;
+        ar & m_nseg;
+        ar & m_nseg_fwd;
+        ar & m_nseg_bck;
+        ar & m_tas;
+        // ar & m_walking_rvm;
     }
 
-    // Initial spacecraft state.
-    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0, 1., 0.}}};
-    double m_ms = 1.;
+    // Initial rvm state
+    std::array<double, 7> m_rvms{1., 0., 0., 0., 1., 0., 1.};
     // Sequence of throttles.
-    std::vector<double> m_throttles{0., .0, 0., 0., 0., 0.};
-    // Final spacecraft state.
-    std::array<std::array<double, 3>, 2> m_rvf{{{0., 1., 0.}, {-1., 0., 0.}}};
-    double m_mf = 1.;
+    std::vector<double> m_throttles{0., 0., 0., 0., 0., 0.};
+    // Sequence of thrusts.
+    std::vector<double> m_thrusts{0., 0., 0., 0., 0., 0.};
+    // Final rvm state
+    std::array<double, 7> m_rvmf{0., 1., 0., -1., 0., 0., 1.};
     // Time of flight (defaults to 1/4 of the period)
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion system maximum thrust.
@@ -134,15 +150,18 @@ private:
     double m_mu{1.};
     // The cut parameter
     double m_cut = 0.5;
-    // The reference epoch
-    double m_ts = 0.;
-    // The adaptive Taylor integrators
-    std::optional<std::pair<heyoka::taylor_adaptive<double>, heyoka::taylor_adaptive<double>>> m_tas = std::nullopt;
+    // The tolerance
+    double m_tol = 1e-16;
     // Segment sizes
     unsigned m_nseg = 2u;
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
+    // We introduce ta from cache
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    heyoka::taylor_adaptive<double> m_tas = ta_cache;
+
 };
+
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const sims_flanagan_hf &);

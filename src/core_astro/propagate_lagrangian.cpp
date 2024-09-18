@@ -263,7 +263,7 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
  * such a high factor ..investigate?)
  */
 std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
-propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu, // NOLINT
+propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu,  // NOLINT
                     bool)
 {
     // 1 - Compute the orbital parameters at t0

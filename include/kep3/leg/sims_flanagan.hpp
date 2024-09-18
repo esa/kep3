@@ -120,10 +120,10 @@ private:
     }
 
     // Initial spacecraft state.
-    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0, 1., 0.}}};
+    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0., 1., 0.}}};
     double m_ms = 1.;
     // Sequence of throttles.
-    std::vector<double> m_throttles{0., .0, 0., 0., 0., 0.};
+    std::vector<double> m_throttles{0., 0., 0., 0., 0., 0.};
     // Final spacecraft state.
     std::array<std::array<double, 3>, 2> m_rvf{{{0., 1., 0.}, {-1., 0., 0.}}};
     double m_mf = 1.;
