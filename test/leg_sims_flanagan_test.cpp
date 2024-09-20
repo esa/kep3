@@ -246,20 +246,23 @@ TEST_CASE("compute_mismatch_constraints_test")
 
 TEST_CASE("mismatch_constraints_test2")
 {
-    // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with a different program)
+    // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
+    double AU_OLD = 149597870700.0;
+    double EV_OLD = 29784.691831696804;
+    double MU_OLD = 1.32712440018e20;
+    // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with a
+    // different program)
     std::array<std::array<double, 3>, 2> rvs{
-        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
+        {{1 * AU_OLD, 0.1 * AU_OLD, -0.1 * AU_OLD}, {0.2 * EV_OLD, 1 * EV_OLD, -0.2 * EV_OLD}}};
 
     std::array<std::array<double, 3>, 2> rvf{
-        {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
-         {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+        {{1.2 * AU_OLD, -0.1 * AU_OLD, 0.1 * AU_OLD}, {-0.2 * EV_OLD, 1.023 * EV_OLD, -0.44 * EV_OLD}}};
 
     double ms = 1500.;
     double mf = 1300.;
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.6);
+    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, MU_OLD, 0.6);
     auto retval = sf.compute_mismatch_constraints();
     std::vector<double> ground_truth
         = {-1.9701274809621304e+11, 4.6965044246848071e+11, -1.5007523306033661e+11, -2.9975151466948650e+04,
@@ -292,7 +295,8 @@ TEST_CASE("grad_test")
     auto grad_a = udp.gradient(x);
     auto xgrad = xt::adapt(grad, {1u + 7u + 5u, 17u});
     auto xgrad_a = xt::adapt(grad_a, {1u + 7u + 5u, 17u});
-    REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-8); // With the high fidelity gradient this is still the best we can achieve
+    REQUIRE(xt::linalg::norm(xgrad - xgrad_a)
+            < 1e-8); // With the high fidelity gradient this is still the best we can achieve
 }
 
 TEST_CASE("serialization_test")

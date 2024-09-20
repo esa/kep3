@@ -34,29 +34,39 @@ TEST_CASE("construct")
 
 TEST_CASE("propagate")
 {
-    auto s = kep3::stark_problem(kep3::MU_SUN, 3000 * kep3::G0, 1e-16);
-    // Mass is zero
-    REQUIRE_THROWS_AS(s.propagate({kep3::AU, 1000, 01000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
-    // Radius is zero
-    REQUIRE_THROWS_AS(s.propagate({0., 0., 0., 0.123, kep3::EARTH_VELOCITY, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
-    // Thrust is zero
-    REQUIRE_NOTHROW(s.propagate({kep3::AU, 1000, 01000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 1000.}, {0., 0., 0.}, 300. * kep3::DAY2SEC));
+    // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
+    double AU_OLD = 149597870700.0;
+    double EV_OLD = 29784.691831696804;
+    double MU_OLD = 1.32712440018e20;
 
-    auto res = s.propagate({kep3::AU, 1000, 1000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 1000.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC);
+    auto s = kep3::stark_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
+    // Mass is zero
+    REQUIRE_THROWS_AS(s.propagate({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
+    // Radius is zero
+    REQUIRE_THROWS_AS(s.propagate({0., 0., 0., 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
+    // Thrust is zero
+    REQUIRE_NOTHROW(s.propagate({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 1000.}, {0., 0., 0.}, 300. * kep3::DAY2SEC));
+
+    auto res = s.propagate({AU_OLD, 1000, 1000, 0.123, EV_OLD, 10.1234, 1000.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC);
     std::array<double, 7> const ground_truth{86447318382.73862, -109196478678.49327, 9774837.693084948, 25535.89383875655, 18933.302734531168, -47.00078590023982, 954.2200884785473};
     REQUIRE(L_infinity_norm_rel(res, ground_truth) <=1e-13);
 }
 TEST_CASE("propagate_var")
 {
-    auto s = kep3::stark_problem(kep3::MU_SUN, 3000 * kep3::G0, 1e-16);
-    // Mass is zero
-    REQUIRE_THROWS_AS(s.propagate_var({kep3::AU, 1000, 01000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
-    // Radius is zero
-    REQUIRE_THROWS_AS(s.propagate_var({0., 0., 0., 0.123, kep3::EARTH_VELOCITY, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
-    // Thrust is zero
-    REQUIRE_THROWS_AS(s.propagate_var({kep3::AU, 1000, 01000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 1000.}, {0., 0., 0.}, 300. * kep3::DAY2SEC), std::domain_error);
+    // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
+    double AU_OLD = 149597870700.0;
+    double EV_OLD = 29784.691831696804;
+    double MU_OLD = 1.32712440018e20;
 
-    auto res = s.propagate_var({kep3::AU, 1000, 1000, 0.123, kep3::EARTH_VELOCITY, 10.1234, 1000.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC);
+    auto s = kep3::stark_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
+    // Mass is zero
+    REQUIRE_THROWS_AS(s.propagate_var({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
+    // Radius is zero
+    REQUIRE_THROWS_AS(s.propagate_var({0., 0., 0., 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
+    // Thrust is zero
+    REQUIRE_THROWS_AS(s.propagate_var({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 1000.}, {0., 0., 0.}, 300. * kep3::DAY2SEC), std::domain_error);
+
+    auto res = s.propagate_var({AU_OLD, 1000, 1000, 0.123, EV_OLD, 10.1234, 1000.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC);
     std::array<double, 7> const ground_truth{86447318382.73862, -109196478678.49327, 9774837.693084948, 25535.89383875655, 18933.302734531168, -47.00078590023982, 954.2200884785473};
     REQUIRE(L_infinity_norm_rel(std::get<0>(res), ground_truth) <=1e-13);
 }
