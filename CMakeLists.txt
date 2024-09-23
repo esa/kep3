@@ -1,7 +1,12 @@
 # NOTE: current minimum kep3 requirement.
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.28.0)
 # This effectively requests behavior preferred as of a given CMake version and tells newer CMake versions to warn about their new policies.
 cmake_policy(VERSION 3.30)
+
+# This removes a strange behaviour on osx CI machines where ninja would error out with 
+# '/bin/sh: CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND: command not found' even if clang-scan-deps was installed
+# Since we here do not use modules we deactivate their search.
+set(CMAKE_CXX_SCAN_FOR_MODULES 0)
 
 # Set default build type to "Release".
 # NOTE: this should be done before the project command since the latter can set
