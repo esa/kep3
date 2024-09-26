@@ -39,7 +39,7 @@ std::pair<double, double> fb_con(const std::array<double, 3> &v_rel_in, const st
 std::pair<double, double> fb_con(const std::array<double, 3> &v_rel_in, const std::array<double, 3> &v_rel_out,
                                  const kep3::planet &pl)
 {
-    return std::move(fb_con(v_rel_in, v_rel_out, pl.get_mu_self(), pl.get_safe_radius()));
+    return fb_con(v_rel_in, v_rel_out, pl.get_mu_self(), pl.get_safe_radius());
 }
 
 double fb_dv(const std::array<double, 3> &v_rel_in, const std::array<double, 3> &v_rel_out, double mu,
