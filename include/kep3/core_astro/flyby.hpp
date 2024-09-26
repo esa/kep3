@@ -7,12 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// From cartesian to osculating Keplerian
-/**
- * Transforms cartesian coordinates (r,v) to Keplerian elements (a,e,i,W,w,E).
- * Note that we use the eccentric anomaly (or Gudermannian if e > 1)
- */
-
 #ifndef kep3_FLYBY_H
 #define kep3_FLYBY_H
 
@@ -25,14 +19,24 @@
 namespace kep3
 {
 
+// Returns the constraints [v2, alpha] of a fly-by. The first is an equality constraint, the second an inequality
+// (negative if satisfied).
 kep3_DLL_PUBLIC std::pair<double, double> fb_con(const std::array<double, 3> &v_rel_in,
-                                                 const std::array<double, 3> &v_rel_out, double, double);
+                                                 const std::array<double, 3> &v_rel_out, double mu, double safe_radius);
 
-kep3_DLL_PUBLIC double fb_dv(const std::array<double, 3> &v_rel_in, const std::array<double, 3> &v_rel_out, double,
-                             double);
+kep3_DLL_PUBLIC std::pair<double, double> fb_con(const std::array<double, 3> &v_rel_in,
+                                                 const std::array<double, 3> &v_rel_out, const kep3::planet &pl);
 
-kep3_DLL_PUBLIC double fb_vout(const std::array<double, 3> &v_in, const std::array<double, 3> &v_pla, double rp,
-                               double beta, double mu);
+// Returns the dv needed to make a fly-by feasible. (assuming one DV at the out conditions).
+kep3_DLL_PUBLIC double fb_dv(const std::array<double, 3> &v_rel_in, const std::array<double, 3> &v_rel_out, double mu,
+                             double safe_radius);
+
+kep3_DLL_PUBLIC double fb_dv(const std::array<double, 3> &v_rel_in, const std::array<double, 3> &v_rel_out,
+                             const kep3::planet &pl);
+
+// Propagates an absolute incoming velocity through a fly-by.
+kep3_DLL_PUBLIC std::array<double, 3> fb_vout(const std::array<double, 3> &v_in, const std::array<double, 3> &v_pla,
+                                              double rp, double beta, double mu);
 
 } // namespace kep3
 #endif // kep3_FLYBY_H

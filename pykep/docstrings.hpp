@@ -89,6 +89,11 @@ std::string cr3bp_dyn_docstring();
 // Lambert Problem
 std::string lambert_problem_docstring();
 
+// Flybys
+std::string fb_con_docstring();
+std::string fb_dv_docstring();
+std::string fb_vout_docstring();
+
 // Stark problem
 std::string stark_problem_docstring();
 std::string stark_problem_propagate_docstring();

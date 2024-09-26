@@ -36,11 +36,11 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<std::array<double,
       m_radius(added_params[1]), m_safe_radius(added_params[2]), m_period(), m_ellipse(), m_pos_vel_0(pos_vel),
       m_kep_f_elements()
 {
-    double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] + pos_vel[0][2] * pos_vel[0][2]);
-    double en = (pos_vel[1][0] * pos_vel[1][0] + pos_vel[1][1] * pos_vel[1][1] + pos_vel[1][2] * pos_vel[1][2]) / 2.
+    const double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1] + pos_vel[0][2] * pos_vel[0][2]);
+    const double en = (pos_vel[1][0] * pos_vel[1][0] + pos_vel[1][1] * pos_vel[1][1] + pos_vel[1][2] * pos_vel[1][2]) / 2.
                 - mu_central_body / R;
     (en > 0) ? m_ellipse = false : m_ellipse = true;
-    double a = -m_mu_central_body / 2. / en;
+    const double a = -m_mu_central_body / 2. / en;
     if (m_ellipse) {
         m_period = kep3::pi * 2. * std::sqrt(a * a * a / m_mu_central_body);
     } else {

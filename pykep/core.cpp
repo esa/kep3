@@ -14,6 +14,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
@@ -437,6 +438,26 @@ PYBIND11_MODULE(core, m)
             },
             py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
             pykep::stark_problem_propagate_var_docstring().c_str());
+
+    // Exposing fly-by routines
+    m.def("fb_con",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, const kep3::planet &>(
+              &kep3::fb_con),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("planet"), pykep::fb_con_docstring().c_str());
+    m.def(
+        "fb_con",
+        py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, double, double>(&kep3::fb_con),
+        py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("mu"), py::arg("safe_radius"));
+
+    m.def("fb_dv",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, const kep3::planet &>(
+              &kep3::fb_dv),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("planet"), pykep::fb_dv_docstring().c_str());
+    m.def("fb_dv",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, double, double>(&kep3::fb_dv),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("mu"), py::arg("safe_radius"));
+    m.def("fb_vout", &kep3::fb_vout, py::arg("v_in"), py::arg("v_pla"), py::arg("rp"), py::arg("beta"), py::arg("mu"),
+          pykep::fb_vout_docstring().c_str());
 
     // Exposing the sims_flanagan leg
     py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());

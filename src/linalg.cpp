@@ -21,4 +21,17 @@ mat31 _cross(const mat31 &v1, const mat31 &v2)
     return {{v1(1, 0) * v2(2, 0) - v2(1, 0) * v1(2, 0), v2(0, 0) * v1(2, 0) - v1(0, 0) * v2(2, 0),
              v1(0, 0) * v2(1, 0) - v2(0, 0) * v1(1, 0)}};
 }
+
+std::array<double, 3> _cross(const std::array<double, 3> &v1, const std::array<double, 3> &v2)
+{
+    return {{v1[1] * v2[2] - v2[1] * v1[2], v2[0] * v1[2] - v1[0] * v2[2], v1[0] * v2[1] - v2[0] * v1[1]}};
+}
+
+void _normalize(std::array<double, 3> &v1)
+{
+    const double norm = std::sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]);
+    v1[0] /= norm;
+    v1[1] /= norm;
+    v1[2] /= norm;
+}
 } // namespace kep3::linalg

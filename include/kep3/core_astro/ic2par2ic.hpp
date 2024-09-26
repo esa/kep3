@@ -7,12 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// From cartesian to osculating Keplerian
-/**
- * Transforms cartesian coordinates (r,v) to Keplerian elements (a,e,i,W,w,E).
- * Note that we use the eccentric anomaly (or Gudermannian if e > 1)
- */
-
 #ifndef kep3_IC2PAR2IC_H
 #define kep3_IC2PAR2IC_H
 
