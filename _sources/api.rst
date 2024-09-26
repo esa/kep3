@@ -14,6 +14,7 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    elements
    epoch
    lambert
+   flyby
    leg
    planet
    plot
