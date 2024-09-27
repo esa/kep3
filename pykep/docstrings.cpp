@@ -1012,7 +1012,7 @@ std::string planet_elements_docstring()
 {
     return R"(elements(when = 0., el_type = KEP_F)
 
-The period of the planet in seconds.
+The elements of the planet at epoch.
 
 If the UDPLA provides a ``elements(float, pk.el_type)`` method, then ``planet.elements`` will call it.
 Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.elements`` will return the elements as computed by the
