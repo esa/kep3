@@ -12,7 +12,7 @@ jobs:
   linux_pykep:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_linux_pykep.sh
       - name: Upload to github pages 🚀
@@ -23,10 +23,10 @@ jobs:
   windows_pykep:
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: kep3_devel
           environment-file: kep3_devel.yml
