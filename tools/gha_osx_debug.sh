@@ -7,7 +7,7 @@ set -x
 set -e
 
 # Install conda+deps.
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O miniforge3.sh
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh -O miniforge3.sh
 export deps_dir=$HOME/local
 export PATH="$HOME/miniforge3/bin:$PATH"
 bash miniforge3.sh -b -p $HOME/miniforge3
