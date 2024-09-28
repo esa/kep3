@@ -479,7 +479,7 @@ signatures, etc.)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.elements">
 <span class="sig-name descname"><span class="pre">elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">KEP_F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.elements" title="Permalink to this definition">#</a></dt>
-<dd><p>The period of the planet in seconds.</p>
+<dd><p>The elements of the planet at epoch.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">elements(float,</span> <span class="pre">pk.el_type)</span></code> method, then <code class="docutils literal notranslate"><span class="pre">planet.elements</span></code> will call it.
 Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method <code class="docutils literal notranslate"><span class="pre">planet.elements</span></code> will return the elements as computed by the
 <a class="reference internal" href="elements.html#pykep.ic2par" title="pykep.ic2par"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.ic2par()</span></code></a>. Otherwise, -1 will be returned.</p>
