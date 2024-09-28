@@ -38,8 +38,7 @@ class direct_pl2pl:
         v_scaling=_pk.EARTH_VELOCITY,
         with_gradient=True,
     ):
-        """
-        Initializes the direct_pl2pl instance with given parameters.
+        """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
@@ -255,7 +254,7 @@ class direct_pl2pl:
 
     def pretty(self, x):
         """
-        Prints a humar readable representation of the transfer.
+        Prints a human readable representation of the transfer.
 
         Args:
             *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.
@@ -295,26 +294,26 @@ class direct_pl2pl:
     ):
         """
         Plots the trajectory leg  3D axes.
-        
+
         Args:
             *x* (:class:`list`): The decision vector containing final mass, thrust direction, and time of flight.
-            
+
             *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`, optional): The 3D axis to plot on. Defaults to None.
-            
+
             *units* (:class:`float`, optional): The unit scale for the plot. Defaults to _pk.AU.
-            
+
             *show_midpoints* (:class:`bool`, optional): Whether to show midpoints on the trajectory. Defaults to False.
-            
+
             *show_gridpoints* (:class:`bool`, optional): Whether to show grid points on the trajectory. Defaults to False.
-            
+
             *show_throttles* (:class:`bool`, optional): Whether to show throttle vectors. Defaults to False.
-            
+
             *length* (:class:`float`, optional): Length of the throttle vectors. Defaults to 0.1.
-            
+
             *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.
-            
+
             *\*\*kwargs*: Additional keyword arguments for the plot.
-            
+
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis with the plotted trajectory.
         """

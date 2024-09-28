@@ -6,30 +6,32 @@ from bisect import bisect_left
 
 
 class mga:
-    r"""
-    The Multiple Gravity Assist (MGA) encoding of an interplanetary trajectory.
+    r"""The Multiple Gravity Assist (MGA) encoding of an interplanetary trajectory.
 
     This class may be used as a User Defined Problem (UDP) for the pygmo (http://esa.github.io/pygmo/) optimisation suite.
 
-    - Izzo, Dario. "Global optimization and space pruning for spacecraft trajectory design." Spacecraft Trajectory Optimization 1 (2010): 178-200.
-
     The decision vector (chromosome) is::
 
-      direct encoding: [t0, T1, T2 ... ] in [mjd2000, days, days ... ]
-      alpha encoding:  [t0, T, a1, a2 ...] in [mjd2000, days, nd, nd ... ]
-      eta encoding:    [t0, n1, n2, n3 ...] in [mjd2000, nd, nd ...]
+      direct encoding: z = [t0, T1, T2 ... ] in [mjd2000, days, days ... ]
+      alpha encoding: z = [t0, T, a1, a2 ...] in [mjd2000, days, nd, nd ... ]
+      eta encoding: z = [t0, n1, n2, n3 ...] in [mjd2000, nd, nd ...]
 
     .. note::
 
        The time of flights of a MGA trajectory (and in general) can be encoded in different ways.
-       When they are directly present in the decision vector, we have the *direct* encoding. This is the most 'evolvable' encoding
-       but also the one that requires the most problem knowledge (e.g. to define the bounds on each leg) and is not
-       very flexible in dealing with constraints on the total time of flight. The *alpha* and *eta* encodings, instead, allow
-       to only specify bounds on the time of flight of the entire trajectory, and not on the single legs: a property that is attractive
-       for multi-objective optimization, for example.
+       When they are directly present in the decision vector, we talk about a *direct* encoding. This is the most
+       'evolvable' encoding but also the one that requires the most problem knowledge (e.g. to define the bounds on each leg)
+       and is not very flexible in dealing with constraints on the total time of flight. The *alpha* and *eta* encodings,
+       instead, allow to only specify bounds on the time of flight of the entire trajectory, and not on the single legs:
+       a property that is attractive for multi-objective optimization, for example.
 
-       In the *alpha* encoding each leg time-of-flight is decoded as follows, T_i = T log(alpha_i) / \sum_n(log(alpha_n)).
-       In the *eta* encoding  each leg time-of-flight is decoded as follows, T_i = (tof_max - \sum_0^(i-1)(T_j)) * eta_i
+       In the *alpha* encoding each leg time-of-flight is decoded as follows,
+
+       :math:`T_i = T \log\alpha_i / \sum_n\log\alpha_n`.
+
+       In the *eta* encoding  each leg time-of-flight is decoded as follows,
+
+       :math:`T_i = (T_{max} - \sum_{j=0}^{(i-1)}T_j) \eta_i`
 
        The chromosome dimension for the direct and eta encoding is the same, while the alpha encoding requires one more gene.
 
@@ -54,28 +56,31 @@ class mga:
         e_target=None,
         rp_target=None,
     ):
-        r"""mga(seq, t0, tof, vinf, multi_objective=False, alpha_encoding=False, orbit_insertion=False, e_target=None, rp_target=None)
+        r"""mga(seq, t0, tof, vinf, multi_objective=False, tof_encoding="direct"", orbit_insertion=False, e_target=None, rp_target=None)
 
         Args:
-            - seq (``list of pk.planet``): sequence of body encounters including the departure planet.
-            - t0 (:class:`list` of :class:`float` or :class:`~pk.epoch`): lower and upper bounds for the launch epoch. When floats are used MJD2000 is assumed.
-            - tof (``list`` or ``float``): defines the bounds on the time of flight. If *tof_encoding* is 'direct', this contains a list
-              of 2D lists defining the upper and lower bounds on each leg. If *tof_encoding* is 'alpha',
-              this contains a 2D list with the lower and upper bounds on the total time-of-flight. If *tof_encoding*
-              is 'eta' tof is a float defining an upper bound for the time-of-flight.
-            - vinf (:class:`float`): the vinf provided at launch for free
-            - multi_objective (:class:`bool`): when True constructs a multiobjective problem (dv, T). In this case, 'alpha' or `eta` encodings are recommended
-            - tof_encoding (:class:`str`): one of 'direct', 'alpha' or 'eta'. Selects the encoding for the time of flights
-            - orbit_insertion (:class:`bool`): when True the arrival dv is computed as that required to acquire a target orbit defined by e_target and rp_target
-            - e_target (:class:`float`): if orbit_insertion is True this defines the target orbit eccentricity around the final planet
-            - rp_target (:class:`float`): if orbit_insertion is True this defines the target orbit pericenter around the final planet (in m)
-            - max_revs (:class:`int`): maximal number of revolutions for lambert transfer
+            *seq* (:class:`list` [:class:`~pykep.planet`]): sequence of planetary encounters including the departure body.
 
-        Raises:
-            - ValueError: if *planets* do not share the same central body (checked on the mu_central_body attribute)
-            - ValueError: if *t0* does not contain objects able to construct a epoch (e.g. pk. epoch or floats)
-            - ValueError: if *tof* is badly defined
-            - ValueError: it the target orbit is not defined and *orbit_insertion* is True
+            *t0* (:class:`list` [:class:`float` or :class:`~pk.epoch`]): lower and upper bounds for the launch epoch. When floats are used MJD2000 is assumed.
+
+            *tof* (``list`` or ``float``): defines the bounds on the time of flight. If *tof_encoding* is 'direct', this contains a list
+            of 2D lists defining the upper and lower bounds on each leg. If *tof_encoding* is 'alpha',
+            this contains a 2D list with the lower and upper bounds on the total time-of-flight. If *tof_encoding*
+            is 'eta' tof is a float defining an upper bound for the time-of-flight.
+
+            *vinf* (:class:`float`): the vinf provided at launch for free
+
+            *multi_objective* (:class:`bool`): when True constructs a multiobjective problem (dv, T). In this case, 'alpha' or `eta` encodings are recommended
+
+            *tof_encoding* (:class:`str`): one of 'direct', 'alpha' or 'eta'. Selects the encoding for the time of flights
+
+            *orbit_insertion* (:class:`bool`): when True the arrival dv is computed as that required to acquire a target orbit defined by e_target and rp_target
+
+            *e_target* (:class:`float`): if orbit_insertion is True this defines the target orbit eccentricity around the final planet
+
+            *rp_target* (:class:`float`): if orbit_insertion is True this defines the target orbit pericenter around the final planet (in m)
+
+            *max_revs* (:class:`int`): maximal number of revolutions for lambert transfer
         """
 
         # Sanity checks
@@ -345,14 +350,14 @@ class mga:
 
     def to_planet(self, x: List[float]):
         """
-        For a decision vector *x*, constructs a virtual planet with the spacecraft ephemerides.
+        Returns a :class:`~pykep.planet` representing the spacecraft trajectory encoded into *x*.
 
         Args:
-            - x (``list``, ``tuple``, ``numpy.ndarray``): Decision chromosome, e.g. (``pygmo.population.champion_x``).
+            *x* (:class:`list`): The decision vector in the correct tof encoding.
 
         Example:
-          udpla = mga_udp.to_planet(population.champion_x)
-          r, v = udpla.eph(7000.)
+          sc = mga_udp.to_planet(population.champion_x)
+          r, v = sc.eph(7000.)
         """
 
         class mga_udpla:
@@ -413,12 +418,11 @@ class mga:
         return _pk.planet(mga_udpla(self.seq, lambert_legs, mjd2000s))
 
     def pretty(self, x):
-        """pretty(x)
+        """
+        Prints a human readable representation of the transfer.
 
         Args:
-            - x (``list``, ``tuple``, ``numpy.ndarray``): Decision chromosome, e.g. (``pygmo.population.champion_x``).
-
-        Prints human readable information on the trajectory represented by the decision vector x
+            *x* (:class:`list`): The decision vector in the correct tof encoding.
         """
         DVlaunch, DVfb, DVarrival, lambert_legs, DVlaunch_tot, mjd2000s, T = (
             self._compute_dvs(x)
@@ -449,15 +453,22 @@ class mga:
         print("\nTotal DV: ", DVlaunch + _np.sum(DVfb) + DVarrival)
 
     def plot(self, x, ax=None, units=_pk.AU, N=60, figsize=(5, 5)):
-        """plot(self, x, axes=None, units=pk.AU, N=60)
-
-        Plots the spacecraft trajectory.
+        """
+        Plots the trajectory leg  3D axes.
 
         Args:
-            - x (``tuple``, ``list``, ``numpy.ndarray``): Decision chromosome.
-            - axes (``matplotlib.axes._subplots.Axes3DSubplot``): 3D axes to use for the plot
-            - units (``float``, ``int``): Length unit by which to normalise data.
-            - N (``float``): Number of points to plot per leg
+            *x* (:class:`list`): The decision vector in the correct tof encoding.
+
+            *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`, optional): The 3D axis to plot on. Defaults to None.
+
+            *units* (:class:`float`, optional): The unit scale for the plot. Defaults to pk.AU.
+
+            *N* (:class:`int`, optional): The number of points to use when plotting the trajectory. Defaults to 60.
+
+            *figsize* (:class:`tuple`): The figure size (only used if a*ax* is None and axis ave to be created.), Defaults to (5, 5).
+
+        Returns:
+            :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis where the trajectory was plotted.
         """
         import matplotlib.pyplot as plt
 
