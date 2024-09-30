@@ -33,7 +33,7 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
     // Forbid the use of a pykep.planet as a UDPLA.
     if (pykep::type(m_obj).equal(py::module::import("pykep").attr("planet"))) {
         pykep::py_throw(PyExc_TypeError,
-                        ("a pykep.planet cannot be used as a UDPLA for another pykep.problem (if you need to copy a "
+                        ("a pykep.planet cannot be used as a UDPLA to construct another pykep.planet (if you need to copy a "
                          "planet please use the standard Python copy()/deepcopy() functions)"));
     }
     // Check that o is an instance of a class, and not just a type.
