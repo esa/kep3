@@ -99,6 +99,10 @@ class mga:
 
         # 3 - Check the tof bounds
         if tof_encoding == "alpha":
+            if type(tof) is not type([]):
+                raise TypeError(
+                    r"When the tof_encoding is 'alpha', the tof must be in the form [lb, ub]."
+                )
             if len(tof) != 2:
                 raise TypeError(
                     r"When the tof_encoding is 'alpha', the tof must be in the form [lb, ub]."
@@ -199,7 +203,8 @@ class mga:
                 T[i] = (dt - sum(T[:i])) * x[i + 1]
             return T
 
-    def alpha2direct(self, x):
+    @staticmethod
+    def alpha2direct(x):
         """alpha2direct(x)
 
         Args:
@@ -213,7 +218,8 @@ class mga:
         retval = _np.insert(retval, 0, x[0])
         return retval
 
-    def direct2alpha(self, x):
+    @staticmethod
+    def direct2alpha(x):
         """direct2alpha(x)
 
         Args:
@@ -324,12 +330,13 @@ class mga:
         if self.orbit_insertion:
             # In this case we compute the insertion DV as a single pericenter
             # burn
+            MU_SELF = self.seq[-1].get_mu_self()
             DVper = _np.sqrt(
-                DVarrival * DVarrival + 2 * self.seq[-1].mu_self / self.rp_target
+                DVarrival * DVarrival + 2 * MU_SELF / self.rp_target
             )
             DVper2 = _np.sqrt(
-                2 * self.seq[-1].mu_self / self.rp_target
-                - self.seq[-1].mu_self / self.rp_target * (1.0 - self.e_target)
+                2 * MU_SELF / self.rp_target
+                - MU_SELF / self.rp_target * (1.0 - self.e_target)
             )
             DVarrival = _np.abs(DVper - DVper2)
         return (DVlaunch, DVfb, DVarrival, l, DVlaunch_tot, ep, T)

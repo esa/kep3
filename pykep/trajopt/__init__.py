@@ -15,3 +15,6 @@ from ._direct_pl2pl import direct_pl2pl
 
 # Evolutionary encodings for high energy transfers (chemical propulsion)
 from ._mga import mga
+
+# The interplanetary trajectory gym
+from . import gym 

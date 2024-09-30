@@ -1688,7 +1688,7 @@ final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`
   \frac{\partial \mathbf {mc}}{\partial \mathbf u}
 
 Returns:
-    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3)
+    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3 + 1)
 
 Examples:
   >>> import pykep as pk

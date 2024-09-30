@@ -30,3 +30,9 @@ bibliography
 tut_basic
 tut_trajopt
 ```
+
+```{image} _static/esa_logo.png
+:alt: ESA patch
+:width: 400px
+:align: center
+``` 

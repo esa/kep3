@@ -1,6 +1,6 @@
 .. _udpla:
 
-List of user implemented planets (UDPLAs)
+User defined planets (UDPLAs)
 #########################################
 
 .. currentmodule:: pykep.udpla
