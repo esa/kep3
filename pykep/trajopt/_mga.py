@@ -303,7 +303,7 @@ class mga:
             r[i], v[i] = self.seq[i].eph(ep[i])
 
         # 3 - we solve the lambert problems (and store trajectory r,v)
-        l = list()
+        lps = list()
         for i in range(self._n_legs):
             lp = _pk.lambert_problem(
                 r0=r[i],
@@ -313,20 +313,20 @@ class mga:
                 cw=False,
                 multi_revs=0,
             )
-            l.append(lp)
+            lps.append(lp)
 
         # 4 - we compute the various dVs needed at fly-bys to match incoming
         # and outcoming
         DVfb = list()
-        for i in range(len(l) - 1):
-            v_rel_in = [a - b for a, b in zip(l[i].v1[0], v[i + 1])]
-            v_rel_out = [a - b for a, b in zip(l[i + 1].v0[0], v[i + 1])]
+        for i in range(len(lps) - 1):
+            v_rel_in = [a - b for a, b in zip(lps[i].v1[0], v[i + 1])]
+            v_rel_out = [a - b for a, b in zip(lps[i + 1].v0[0], v[i + 1])]
             DVfb.append(_pk.fb_dv(v_rel_in, v_rel_out, self.seq[i + 1]))
 
         # 5 - we add the departure and arrival dVs
-        DVlaunch_tot = _np.linalg.norm([a - b for a, b in zip(v[0], l[0].v0[0])])
+        DVlaunch_tot = _np.linalg.norm([a - b for a, b in zip(v[0], lps[0].v0[0])])
         DVlaunch = max(0, DVlaunch_tot - self.vinf)
-        DVarrival = _np.linalg.norm([a - b for a, b in zip(v[-1], l[-1].v1[0])])
+        DVarrival = _np.linalg.norm([a - b for a, b in zip(v[-1], lps[-1].v1[0])])
         if self.orbit_insertion:
             # In this case we compute the insertion DV as a single pericenter
             # burn
@@ -339,7 +339,7 @@ class mga:
                 - MU_SELF / self.rp_target * (1.0 - self.e_target)
             )
             DVarrival = _np.abs(DVper - DVper2)
-        return (DVlaunch, DVfb, DVarrival, l, DVlaunch_tot, ep, T)
+        return (DVlaunch, DVfb, DVarrival, lps, DVlaunch_tot, ep, T)
 
     # Objective function
     def fitness(self, x):
@@ -459,7 +459,7 @@ class mga:
 
         print("\nTotal DV: ", DVlaunch + _np.sum(DVfb) + DVarrival)
 
-    def plot(self, x, ax=None, units=_pk.AU, N=60, figsize=(5, 5)):
+    def plot(self, x, ax=None, units=_pk.AU, N=60, c_orbit = 'dimgray', c = 'indianred', leg_ids = [],  figsize=(5, 5), **kwargs):
         """
         Plots the trajectory leg  3D axes.
 
@@ -473,6 +473,10 @@ class mga:
             *N* (:class:`int`, optional): The number of points to use when plotting the trajectory. Defaults to 60.
 
             *figsize* (:class:`tuple`): The figure size (only used if a*ax* is None and axis ave to be created.), Defaults to (5, 5).
+            
+            *leg_ids* (:class:`list`): selects the legs to plot. Optional, defaults to all legs.
+            
+            *\*\*kwargs*: Additional keyword arguments to pass to the trajectory plot (all Lambert arcs)
 
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis where the trajectory was plotted.
@@ -481,21 +485,20 @@ class mga:
 
         if ax is None:
             ax = _pk.plot.make_3Daxis(figsize=figsize)
-        _, _, _, _, _, mjd2000s, _ = self._compute_dvs(x)
+        _, _, _, lps, _, mjd2000s, _ = self._compute_dvs(x)
         for i, item in enumerate(self.seq):
-            _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c="r", units=units)
-            _pk.plot.add_planet_orbit(pla=item, ax=ax, units=units, N=N)
+            _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c=c, units=units)
+            _pk.plot.add_planet_orbit(pla=item, ax=ax, units=units, N=N, c=c_orbit)
 
         _pk.plot.add_sun(ax=ax)
+        
+        if len(leg_ids) == 0:
+            for lp in lps:
+                _pk.plot.add_lambert(ax, lp, N = 60, sol = 0, units=units, c=c, **kwargs)
+        else:
+            for leg_id in leg_ids:
+                _pk.plot.add_lambert(ax, lps[leg_id], N = 60, sol = 0, units=units, c=c, **kwargs)
 
-        _pk.plot.add_planet_orbit(
-            pla=self.to_planet(x),
-            ax=ax,
-            plot_range=[mjd2000s[0], mjd2000s[-1]],
-            c="r",
-            units=units,
-            N=N,
-        )
         return ax
 
 
