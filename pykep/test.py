@@ -8,7 +8,7 @@
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import unittest as _ut
-from .test_trajopt import mga_tests
+from .test_trajopt import *
 
 def float_abs_error(a: float, b: float):
     return abs(a - b)
@@ -313,8 +313,9 @@ def run_test_suite():
     suite.addTest(propagate_test("test_stark"))
     suite.addTest(py_udplas_test("test_tle"))
     suite.addTest(py_udplas_test("test_spice"))
-    suite.addTest(mga_tests("test_construction"))
-    suite.addTest(mga_tests("test_encoding_to_encoding"))
+    suite.addTest(trajopt_mga_tests("test_construction"))
+    suite.addTest(trajopt_mga_tests("test_encoding_to_encoding"))
+    suite.addTest(gym_cassini1_tests("test_fitness"))
 
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
 
