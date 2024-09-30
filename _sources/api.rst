@@ -17,8 +17,10 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    flyby
    leg
    planet
-   plot
+   udpla
    propagation
    taylor_adaptive 
-   udpla
    trajopt
+   gym
+   plot
+

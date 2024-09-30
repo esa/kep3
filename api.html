@@ -167,11 +167,12 @@
 <li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html">User defined planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
@@ -432,8 +433,14 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="planet.html#pykep.planet"><code class="docutils literal notranslate"><span class="pre">planet</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">The plot module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#common-utils">Common utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="udpla.html">User defined planets (UDPLAs)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.vsop2013"><code class="docutils literal notranslate"><span class="pre">vsop2013</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.spice"><code class="docutils literal notranslate"><span class="pre">spice</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.de440s"><code class="docutils literal notranslate"><span class="pre">de440s</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="propagation.html">Numerical Propagation</a><ul>
@@ -446,19 +453,17 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="udpla.html">List of user implemented planets (UDPLAs)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.vsop2013"><code class="docutils literal notranslate"><span class="pre">vsop2013</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.spice"><code class="docutils literal notranslate"><span class="pre">spice</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="udpla.html#pykep.udpla.de440s"><code class="docutils literal notranslate"><span class="pre">de440s</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html#direct">Direct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html#evolutionary-encodings">Evolutionary Encodings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gym.html#mga-problems">MGA problems</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">The plot module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#common-utils">Common utils</a></li>
 </ul>
 </li>
 </ul>

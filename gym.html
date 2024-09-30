@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Trajectory Optimization &#8212; pykep 0.0.1 documentation</title>
+    <title>Trajectory Optimization Gym &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -42,11 +42,13 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'tut_trajopt';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gym';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Point to point low-thrust" href="notebooks/udp_point2point.html" />
-    <link rel="prev" title="Plotting" href="notebooks/plotting.html" />
+    <link rel="next" title="The plot module" href="plot.html" />
+    <link rel="prev" title="Trajectory Optimization" href="trajopt.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -157,8 +159,8 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="api.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
@@ -171,14 +173,14 @@
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
@@ -189,7 +191,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 </ul>
@@ -265,7 +267,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Ftut_trajopt.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fgym.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -295,7 +297,7 @@
       
       
       
-      <li><a href="_sources/tut_trajopt.rst" target="_blank"
+      <li><a href="_sources/gym.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -366,7 +368,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -377,11 +381,22 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Trajectory Optimization</h1>
+    <h1>Trajectory Optimization Gym</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mga-problems">MGA problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.cassini1"><code class="docutils literal notranslate"><span class="pre">gym.cassini1</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -391,28 +406,21 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <div class="admonition important" id="tut-trajopt">
-<p class="admonition-title">Important</p>
-<p>
-Most of these tutorials can be launched as online interactive notebooks
-thanks to the infrastructure provided by <a href="https://mybinder.org/">binder</a>.
-Look for the rocket icon <i class="fas fa-rocket"></i> on top of each page!
-</p></div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Some tutorials may use features not available yet in the latest stable release
-of pykep, and thus might fail to execute correctly in the online interactive
-notebooks.</p>
-</div>
-<hr class="docutils" />
-<section id="trajectory-optimization">
-<h1>Trajectory Optimization<a class="headerlink" href="#trajectory-optimization" title="Permalink to this heading">#</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
-</ul>
-</div>
+  <section id="trajectory-optimization-gym">
+<span id="gym"></span><h1>Trajectory Optimization Gym<a class="headerlink" href="#trajectory-optimization-gym" title="Permalink to this heading">#</a></h1>
+<section id="mga-problems">
+<h2>MGA problems<a class="headerlink" href="#mga-problems" title="Permalink to this heading">#</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykep.trajopt.gym.cassini1">
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA</span> <span class="pre">direct</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P1)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<p>This is an MGA problem inspired to the Cassini spacecraft interplanetary transfer to Saturn.
+The objective of this mission is to reach Saturn and to be captured by its gravity into an orbit having pericenter radius <span class="math notranslate nohighlight">\(r_p=108950\)</span> km,
+and eccentricity <span class="math notranslate nohighlight">\(e=0.98\)</span>. The planetary fly-by sequence considered is E-VVEJ-S (as the one used by Cassini spacecraft).
+As objective function we use the total <span class="math notranslate nohighlight">\(\Delta V\)</span> accumulated during the mission, including the launch <span class="math notranslate nohighlight">\(\Delta V\)</span> and the various <span class="math notranslate nohighlight">\(\Delta V\)</span> one
+needs to give at the planets and upon arrival to perform the final orbit injection.</p>
+</section>
 </section>
 
 
@@ -427,20 +435,20 @@ notebooks.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="notebooks/plotting.html"
+       href="trajopt.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Plotting</p>
+        <p class="prev-next-title">Trajectory Optimization</p>
       </div>
     </a>
     <a class="right-next"
-       href="notebooks/udp_point2point.html"
+       href="plot.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Point to point low-thrust</p>
+        <p class="prev-next-title">The plot module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -450,6 +458,24 @@ notebooks.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mga-problems">MGA problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.cassini1"><code class="docutils literal notranslate"><span class="pre">gym.cassini1</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
