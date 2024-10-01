@@ -11,10 +11,9 @@
 #define kep3_LEG_SIMS_FLANAGAN_HF_H
 
 #include <array>
-// #include <tuple>
-#include <vector>
-
+#include <cmath>
 #include <fmt/ostream.h>
+#include <vector>
 
 #include <heyoka/taylor.hpp>
 
@@ -41,9 +40,9 @@ namespace kep3::leg
 class kep3_DLL_PUBLIC sims_flanagan_hf
 {
 public:
+    // Constructors
     // Default Constructor.
     sims_flanagan_hf(); // = default;
-    // Constructors
     // Backwards-compatible constructor with rv and m states separately
     sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
                      const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
@@ -75,9 +74,10 @@ public:
              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
              double mu, double cut = 0.5, double tol = 1e-16);
     // Setting function with rvm states
-    void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf, 
-             double tof, double max_thrust, double isp,
-             double mu, double cut = 0.5, double tol = 1e-16);
+    void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
+             double tof, double max_thrust, double isp, double mu, double cut = 0.5, double tol = 1e-16);
+    void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
+             double time_of_flight);
 
     // Getters
     [[nodiscard]] double get_tof() const;
@@ -95,20 +95,27 @@ public:
     [[nodiscard]] unsigned get_nseg_fwd() const;
     [[nodiscard]] unsigned get_nseg_bck() const;
     [[nodiscard]] heyoka::taylor_adaptive<double> get_tas() const;
+    [[nodiscard]] heyoka::taylor_adaptive<double> get_tas_var() const;
     [[nodiscard]] std::array<double, 7> get_rvms() const;
     [[nodiscard]] std::array<double, 7> get_rvmf() const;
     [[nodiscard]] std::array<double, 7> get_walking_rvm() const;
 
     // Compute constraints
+    [[nodiscard]] std::array<double, 7> get_state_derivative(std::array<double, 7> state,
+                                                             std::array<double, 3> throttles);
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints();
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
+    [[nodiscard]] std::vector<double> compute_constraints();
 
-    // // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles, tof)
-    // [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
-    // compute_mc_grad() const;
+    [[nodiscard]] std::vector<double> set_and_compute_constraints(std::vector<double> chromosome);
 
-    // // Compute throttle constraint gradients
-    // [[nodiscard]] std::vector<double> compute_tc_grad() const;
+    // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles)
+    [[nodiscard]] std::tuple<std::array<std::array<double, 7u>, 5u>, std::array<std::array<double, 49u>, 5u>,
+               std::array<std::array<double, 21u>, 5u>>
+    compute_mc_grad();
+
+    // Compute throttle constraint gradients
+    [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
 private:
     friend class boost::serialization::access;
@@ -116,6 +123,7 @@ private:
     void serialize(Archive &ar, const unsigned int)
     {
         ar & m_rvms;
+        ar & m_vars;
         ar & m_throttles;
         ar & m_thrusts;
         ar & m_tof;
@@ -129,11 +137,12 @@ private:
         ar & m_nseg_fwd;
         ar & m_nseg_bck;
         ar & m_tas;
-        // ar & m_walking_rvm;
     }
 
     // Initial rvm state
     std::array<double, 7> m_rvms{1., 0., 0., 0., 1., 0., 1.};
+    // Initial variational state
+    std::array<double, 70> m_vars{};
     // Sequence of throttles.
     std::vector<double> m_throttles{0., 0., 0., 0., 0., 0.};
     // Sequence of thrusts.
@@ -159,9 +168,10 @@ private:
     // We introduce ta from cache
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
     heyoka::taylor_adaptive<double> m_tas = ta_cache;
-
+    // Introduce variational ta from cache
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
 };
-
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const sims_flanagan_hf &);

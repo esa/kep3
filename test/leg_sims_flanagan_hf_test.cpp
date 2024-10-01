@@ -9,9 +9,9 @@
 
 #include <algorithm>
 #include <stdexcept>
-// #include <utility>
 #include <vector>
 
+#include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xio.hpp>
 
@@ -28,11 +28,23 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/planet.hpp>
+#include <kep3/ta/stark.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
 #include "catch.hpp"
-// #include "leg_sims_flanagan_udp.hpp"
-// #include "test_helpers.hpp"
+#include "leg_sims_flanagan_hf_helpers.hpp"
+#include "test_helpers.hpp"
+#include <pagmo/utils/gradients_and_hessians.hpp>
+#include <xtensor/xview.hpp>
+
+#include <heyoka/config.hpp>
+#include <heyoka/expression.hpp>
+#include <heyoka/math/pow.hpp>
+#include <heyoka/math/relational.hpp>
+#include <heyoka/math/select.hpp>
+#include <heyoka/math/sqrt.hpp>
+#include <heyoka/math/sum.hpp>
+#include <heyoka/taylor.hpp>
 
 TEST_CASE("constructor")
 {
@@ -55,8 +67,8 @@ TEST_CASE("constructor")
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_hf(rvs, ms, {0., 0., 0., 0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
-        // REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
-        //                   std::domain_error); // SC: negative ToF valid?
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
+                          std::domain_error);
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, -0.3, 1., 1., 0.5),
             std::domain_error);
@@ -186,153 +198,153 @@ TEST_CASE("compute_mismatch_constraints_test")
             REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
         }
     }
-
-    // {
-    //     // Here we reuse the ballitic arc as a ground truth for an optimization.
-    //     // We check that, when feasible, the optimal mass solution is indeed ballistic.
-    //     pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
-    //     prob.set_c_tol(1e-8);
-    //     bool found = false;
-    //     unsigned trial = 0u;
-    //     pagmo::nlopt uda{"slsqp"};
-    //     uda.set_xtol_abs(1e-10);
-    //     uda.set_xtol_rel(1e-10);
-    //     uda.set_ftol_abs(0);
-    //     uda.set_maxeval(1000);
-    //     pagmo::algorithm algo{uda};
-    //     while ((!found) && (trial < 20u)) {
-    //         pagmo::population pop{prob, 1u};
-    //         algo.set_verbosity(10u);
-    //         pop = algo.evolve(pop);
-    //         auto champ = pop.champion_f();
-    //         found = prob.feasibility_f(champ);
-    //         if (found) {
-    //             fmt::print("{}\n", champ);
-    //             found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
-    //         }
-    //         trial++;
-    //     }
-    //     REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
-    //                            // theres a problem somewhere.
-    // }
-    // {
-    //     // Here we create an ALMOST ballistic arc as a ground truth for an optimization.
-    //     // We check that, when feasible, the optimal mass solution is indeed ballistic.
-    //     auto rv1_modified = rv1;
-    //     rv1_modified[1][0] += 1000; // Adding 1km/s along x
-    //     pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
-    //     prob.set_c_tol(1e-8);
-    //     bool found = false;
-    //     unsigned trial = 0u;
-    //     pagmo::nlopt uda{"slsqp"};
-    //     uda.set_xtol_abs(1e-10);
-    //     uda.set_xtol_rel(1e-10);
-    //     uda.set_ftol_abs(0);
-    //     uda.set_maxeval(1000);
-    //     pagmo::algorithm algo{uda};
-    //     while ((!found) && (trial < 20u)) {
-    //         pagmo::population pop{prob, 1u};
-    //         algo.set_verbosity(10u);
-    //         pop = algo.evolve(pop);
-    //         auto champ = pop.champion_f();
-    //         found = prob.feasibility_f(champ);
-    //         if (found) {
-    //             fmt::print("{}\n", champ);
-    //         }
-    //         trial++;
-    //     }
-    //     // If this does not pass, then the optimization above never converged to a feasible solution.
-    //     REQUIRE_FALSE(!found);
-    // }
 }
 
-// SC: Not supposed to work because different dynamics are at play
-TEST_CASE("mismatch_constraints_test2")
+TEST_CASE("compute_mismatch_constraints_test2")
 {
-    // // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with
-    // a different program)
-    std::array<std::array<double, 3>, 2> rvs{
-        {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-         {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
 
-    std::array<std::array<double, 3>, 2> rvf{
-        {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
-         {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
+    // Initialise unique test quantities
+    double cut = 0.6;
+    auto sf_helper_object = sf_hf_test_object(cut);
 
-    double ms = 1500.;
-    double mf = 1300.;
+    kep3::leg::sims_flanagan_hf sf(sf_helper_object.m_rvs, sf_helper_object.m_ms, sf_helper_object.m_throttles,
+                                   sf_helper_object.m_rvf, sf_helper_object.m_mf, sf_helper_object.m_tof,
+                                   sf_helper_object.m_max_thrust, sf_helper_object.m_isp, sf_helper_object.m_mu,
+                                   sf_helper_object.m_cut, 1e-16);
+    kep3::leg::sims_flanagan sf_lf(sf_helper_object.m_rvs, sf_helper_object.m_ms, sf_helper_object.m_throttles,
+                                   sf_helper_object.m_rvf, sf_helper_object.m_mf, sf_helper_object.m_tof,
+                                   sf_helper_object.m_max_thrust, sf_helper_object.m_isp, sf_helper_object.m_mu,
+                                   sf_helper_object.m_cut);
+
+    auto retval = sf.compute_mismatch_constraints();
+    auto retval_lf = sf_lf.compute_mismatch_constraints();
+
+    std::array<double, 3> r1 = {retval[0], retval[1], retval[2]};
+    std::array<double, 3> r2 = {retval_lf[0], retval_lf[1], retval_lf[2]};
+    std::array<double, 3> v1 = {retval[3], retval[4], retval[5]};
+    std::array<double, 3> v2 = {retval_lf[3], retval_lf[4], retval_lf[5]};
+
+    REQUIRE(kep3_tests::floating_point_error_vector(r1, r2) < 1e-14);
+    REQUIRE(kep3_tests::floating_point_error_vector(v1, v2) < 1e-14);
+    REQUIRE(std::abs((retval[6] - retval_lf[6]) / retval[6]) < 1e-14);
+}
+
+TEST_CASE("compute_mismatch_constraints_test3")
+{
+
+    // Initialise unique test quantities
+    double cut = 0.5;
+    std::vector<double> throttles = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15};
+    auto sf_test_object = sf_hf_test_object(throttles, cut);
+    std::array<double, 7> mc_manual = sf_test_object.compute_manual_mc();
+
+    // Calculate equivalent with hf leg.
+    kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
+                                   sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_cut, 1e-16);
+    auto mc_sf_hf = sf.compute_mismatch_constraints();
+
+    std::array<double, 3> r1 = {mc_sf_hf[0], mc_sf_hf[1], mc_sf_hf[2]};
+    std::array<double, 3> r2 = {mc_manual[0], mc_manual[1], mc_manual[2]};
+    REQUIRE(kep3_tests::floating_point_error_vector(r1, r2) < 1e-16);
+    std::array<double, 3> v1 = {mc_sf_hf[3], mc_sf_hf[4], mc_sf_hf[5]};
+    std::array<double, 3> v2 = {mc_manual[3], mc_manual[4], mc_manual[5]};
+    REQUIRE(kep3_tests::floating_point_error_vector(v1, v2) < 1e-16);
+    REQUIRE(std::abs((mc_sf_hf[6] - mc_manual[6]) / mc_sf_hf[6]) < 1e-16);
+}
+
+TEST_CASE("compute_mc_grad_test")
+{
+    // Initialise unique test quantities
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    std::vector<double> inverted_throttles = throttles;
-    // Invert direction of backwards leg thrust
-    auto invert_direction = [](double throttle) { return throttle * -1; };
-    std::transform(throttles.begin(), throttles.end(), inverted_throttles.begin(), invert_direction);
-    kep3::leg::sims_flanagan_hf sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.6,
-                                   1e-13);
-    auto retval = sf.compute_mismatch_constraints();
+    double cut = 0.6;
+    auto sf_test_object = sf_hf_test_object(throttles, cut);
 
-    // Change initial and final state to have inverted velocities
-    // std::transform(rvs[1].begin(), rvs[1].end(), rvs[1].begin(), invert_direction);
-    // std::transform(rvf[1].begin(), rvf[1].end(), rvf[1].begin(), invert_direction);
-    kep3::leg::sims_flanagan_hf sf2(rvf, mf, throttles, rvs, ms, -324.0 * kep3::DAY2SEC, 0.12, 100, kep3::MU_SUN, 0.4,
-                                    1e-13);
-    auto retval2 = sf2.compute_mismatch_constraints();
+    // Numerical gradient
+    std::vector<double> num_grad = sf_test_object.compute_numerical_gradient();
 
-    REQUIRE(std::abs((retval2[0] - retval[0]) / retval2[0]) < 1e-13);
-    REQUIRE(std::abs((retval2[1] - retval[1]) / retval2[1]) < 1e-13);
-    REQUIRE(std::abs((retval2[2] - retval[2]) / retval2[2]) < 1e-13);
-    REQUIRE(std::abs((retval2[3] - retval[3]) / retval2[3]) < 1e-13);
-    REQUIRE(std::abs((retval2[4] - retval[4]) / retval2[4]) < 1e-13);
-    REQUIRE(std::abs((retval2[5] - retval[5]) / retval2[5]) < 1e-13);
+    xt::xarray<double> xt_num_dmc_dxs, xt_num_dmc_dxf, xt_num_dmc_du0, xt_num_dmc_du1, xt_num_dmc_du2, xt_num_dmc_du3,
+        xt_num_dmc_du4, xt_num_dmc_dtof;
+    std::tie(xt_num_dmc_dxs, xt_num_dmc_dxf, xt_num_dmc_du0, xt_num_dmc_du1, xt_num_dmc_du2, xt_num_dmc_du3,
+             xt_num_dmc_du4, xt_num_dmc_dtof)
+        = sf_test_object.process_mc_numerical_gradient(num_grad);
+
+    // Analytical gradient
+    xt::xarray<double> xt_a_dmc_dxs, xt_a_dmc_dxf, xt_a_dmc_du0, xt_a_dmc_du1, xt_a_dmc_du2, xt_a_dmc_du3, xt_a_dmc_du4,
+        xt_a_dmc_dtof;
+    std::tie(xt_a_dmc_dxs, xt_a_dmc_dxf, xt_a_dmc_du0, xt_a_dmc_du1, xt_a_dmc_du2, xt_a_dmc_du3, xt_a_dmc_du4,
+             xt_a_dmc_dtof)
+        = sf_test_object.compute_analytical_gradient();
+
+    // Calculate analytical gradient
+
+    REQUIRE(xt::linalg::norm(xt_num_dmc_dxs - xt_a_dmc_dxs) < 1e-9); // SC: The difference is like 4.56e-8
+    REQUIRE(xt::linalg::norm(xt_num_dmc_dxf - xt_a_dmc_dxf) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_du0 - xt_a_dmc_du0) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_du1 - xt_a_dmc_du1) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_du2 - xt_a_dmc_du2) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_du3 - xt_a_dmc_du3) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_du4 - xt_a_dmc_du4) < 1e-9);
+    REQUIRE(xt::linalg::norm(xt_num_dmc_dtof - xt_a_dmc_dtof) < 1e-9);
 }
 
-// TEST_CASE("grad_test")
-// {
-//     // Here we test the analytical gradient against an equivalent numerical one. We do so through the udp
-//     "sf_test_udp" std::array<std::array<double, 3>, 2> rvs{
-//         {{1 * kep3::AU, 0.1 * kep3::AU, -0.1 * kep3::AU},
-//          {0.2 * kep3::EARTH_VELOCITY, 1 * kep3::EARTH_VELOCITY, -0.2 * kep3::EARTH_VELOCITY}}};
-//     //
-//     std::array<std::array<double, 3>, 2> rvf{
-//         {{1.2 * kep3::AU, -0.1 * kep3::AU, 0.1 * kep3::AU},
-//          {-0.2 * kep3::EARTH_VELOCITY, 1.023 * kep3::EARTH_VELOCITY, -0.44 * kep3::EARTH_VELOCITY}}};
-//     //
-//     double ms = 1500.;
+TEST_CASE("compute_tc_grad_test")
+{
 
-//     sf_test_udp udp{rvs, ms, rvf, 0.12, 100, 5};
-//     std::vector<double> x
-//         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 324., 1300.};
-//     auto grad = udp.gradient_numerical(x);
-//     auto grad_a = udp.gradient(x);
-//     auto xgrad = xt::adapt(grad, {1u + 7u + 5u, 17u});
-//     auto xgrad_a = xt::adapt(grad_a, {1u + 7u + 5u, 17u});
-//     REQUIRE(xt::linalg::norm(xgrad - xgrad_a) < 1e-8); // With the high fidelity gradient this is still the best we
-//     can achieve
-// }
+    // Initialise unique test quantities
+    std::vector<double> throttles
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
+    unsigned int nseg = static_cast<unsigned int>(throttles.size()) / 3;
+    double cut = 0.6;
+    // Initialise helper quantities
+    auto sf_test_object = sf_hf_test_object(throttles, cut);
 
-// TEST_CASE("serialization_test")
-// {
-//     // Instantiate a generic lambert problem
-//     std::array<std::array<double, 3>, 2> rvs{{{-1, -1, -1}, {-1, -1, -1}}};
-//     std::array<std::array<double, 3>, 2> rvf{{{0.1, 1.1, 0.1}, {-1.1, 0.1, 0.1}}};
-//     kep3::leg::sims_flanagan_hf sf1{rvs, 12., {1, 2, 3, 4, 5, 6}, rvf, 10, 2.3, 2.3, 2.3, 1.1, 0.2};
+    // Numerical gradient
+    std::vector<double> num_grad = sf_test_object.compute_numerical_gradient();
+    std::vector<double> tc_num_grad(nseg * 15);
+    for (unsigned int i(0); i < nseg; ++i) {
+        // dtc_du
+        std::copy(std::next(num_grad.begin(), 7 + 30 * (i + 7)), std::next(num_grad.begin(), 22 + 30 * (i + 7)),
+                  std::next(tc_num_grad.begin(), i * 15));
+    }
+    xt::xarray<double> xt_tc_num_grad = xt::adapt(reinterpret_cast<double *>(tc_num_grad.data()), {5, 15});
 
-//     // Store the string representation.
-//     std::stringstream ss;
-//     auto before = boost::lexical_cast<std::string>(sf1);
-//     // Now serialize
-//     {
-//         boost::archive::binary_oarchive oarchive(ss);
-//         oarchive << sf1;
-//     }
-//     // Deserialize
-//     // Create a new lambert problem object
-//     kep3::leg::sims_flanagan_hf sf2{};
-//     {
-//         boost::archive::binary_iarchive iarchive(ss);
-//         iarchive >> sf2;
-//     }
-//     auto after = boost::lexical_cast<std::string>(sf2);
-//     // Compare the string represetation
-//     REQUIRE(before == after);
-// }
+    // Calculate throttle constraint gradients
+    kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
+                                   sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_cut, 1e-16);
+    std::vector<double> tc_a_grad = sf.compute_tc_grad();
+    xt::xarray<double> xt_tc_a_grad = xt::adapt(reinterpret_cast<double *>(tc_a_grad.data()), {5, 15});
+
+    REQUIRE(xt::linalg::norm(xt_tc_num_grad - xt_tc_a_grad) < 1e-13); // SC: 1e-14 fails
+}
+
+TEST_CASE("serialization_test")
+{
+    // Instantiate a generic lambert problem
+    std::array<std::array<double, 3>, 2> rvs{{{-1, -1, -1}, {-1, -1, -1}}};
+    std::array<std::array<double, 3>, 2> rvf{{{0.1, 1.1, 0.1}, {-1.1, 0.1, 0.1}}};
+    kep3::leg::sims_flanagan_hf sf1{rvs, 12., {1, 2, 3, 4, 5, 6}, rvf, 10, 2.3, 2.3, 2.3, 1.1, 0.2};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(sf1);
+    // Now serialize
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << sf1;
+    }
+    // Deserialize
+    // Create a new lambert problem object
+    kep3::leg::sims_flanagan_hf sf_a{};
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> sf_a;
+    }
+    auto after = boost::lexical_cast<std::string>(sf_a);
+    // Compare the string represetation
+    REQUIRE(before == after);
+}
