@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <cmath>
+#include <random>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -47,18 +48,13 @@ static const std::array<double, 6> neptune_el = {30.06992276, 0.00859048, 1.7700
 static const std::array<double, 6> neptune_el_dot = {0.00026291, 0.00005105, 0.00035372, 218.45945325, -0.32241464, -0.00508664};
 // clang-format on
 
-// The old AU values used in pykep2 are here used to match legacy code.
-double const MU_SUN = 1.32712440018e20;
-double const AU = 149597870691.0;
-
-
 // NOLINTNEXTLINE(cert-err58-cpp)
 const std::unordered_map<std::string, int> mapped_planets
     = {{"mercury", 1}, {"venus", 2},  {"earth", 3},   {"mars", 4}, {"jupiter", 5},
        {"saturn", 6},  {"uranus", 7}, {"neptune", 8}, {"pluto", 9}};
 
 jpl_lp::jpl_lp(std::string name)
-    : m_elements(), m_elements_dot(), m_name(std::move(name)), m_mu_central_body(MU_SUN)
+    : m_elements(), m_elements_dot(), m_name(std::move(name)), m_mu_central_body(kep3::MU_SUN)
 {
 
     boost::algorithm::to_lower(m_name);
@@ -138,11 +134,11 @@ std::array<double, 6> jpl_lp::_f_elements(double mjd2000) const
     // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
     // 2023.
     std::array<double, 6> elements_updated{}, elements_f{};
-    double dt = (mjd2000 - 0.5) / 36525.; // Number of centuries passed since J2000.0
+    double dt = (mjd2000) / 36525.; // Number of centuries passed since J2000.0
     for (unsigned int i = 0; i < 6; ++i) {
         elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
     }
-    elements_f[0] = elements_updated[0] * AU;
+    elements_f[0] = elements_updated[0] * kep3::AU;
     elements_f[1] = elements_updated[1];
     elements_f[2] = elements_updated[2] * kep3::DEG2RAD;
     elements_f[3] = elements_updated[5] * kep3::DEG2RAD;
@@ -210,7 +206,7 @@ std::string jpl_lp::get_extra_info() const
     auto pos_vel = eph(0.);
 
     std::string retval = fmt::format("\nLow-precision planet elements: \n")
-                         + fmt::format("Semi major axis (AU): {}\n", par[0] / AU)
+                         + fmt::format("Semi major axis (AU): {}\n", par[0] / kep3::AU)
                          + fmt::format("Eccentricity: {}\n", par[1])
                          + fmt::format("Inclination (deg.): {}\n", par[2] * kep3::RAD2DEG)
                          + fmt::format("Big Omega (deg.): {}\n", par[3] * kep3::RAD2DEG)
@@ -225,7 +221,7 @@ std::string jpl_lp::get_extra_info() const
 
 std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
 {
-    os << udpla.get_extra_info() << std::endl;
+    os << udpla.get_extra_info() << "/n";
     return os;
 }
 

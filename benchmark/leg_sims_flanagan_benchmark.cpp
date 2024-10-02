@@ -54,7 +54,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
     uda.set_ftol_abs(1e-8);
     uda.set_maxeval(1000);
     pagmo::algorithm algo{uda};
-    //algo.set_verbosity(0u);
+    algo.set_verbosity(0u);
 
     // The initial positions
     kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);

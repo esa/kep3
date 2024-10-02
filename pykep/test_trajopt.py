@@ -56,15 +56,16 @@ class gym_cassini1_tests(_ut.TestCase):
     def test_fitness(self):
         import pykep as pk
         udp = pk.trajopt.gym.cassini1
-        # Three random values. Ground truth provided by the old pykep code
+        # Three random values. Ground truth provided by a snapshot of the kep3 code validated agains the old pykep code 
+        # (not identical, just validated ... as a the old pykep had a buggy jpl_lp eph method nhere fixed)
         x = [-554.5189290104555, 103.27184879471751, 335.41655259663474, 80.50258543604521, 862.0950563689543, 2865.018040480413  ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f,80400.08897584089) < 1e-14)
+        self.assertTrue(float_rel_error(f,80747.26667221037) < 1e-14)
         
         x = [-932.0532394941108, 37.534681289972674, 162.5093144821548, 336.970139545233, 1743.2915882004586, 2527.8785180526465  ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f,217105.87501757513) < 1e-14)
+        self.assertTrue(float_rel_error(f,216694.84791232392) < 1e-14)
         
         x = [-583.0776694390058, 388.65047998036107, 334.9959782156864, 65.57508619540917, 1520.2982946551908, 2132.7771932619144 ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f,107218.0849582104) < 1e-14)
+        self.assertTrue(float_rel_error(f,107787.63141728108) < 1e-14)
