@@ -54,7 +54,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
     uda.set_ftol_abs(1e-8);
     uda.set_maxeval(1000);
     pagmo::algorithm algo{uda};
-    algo.set_verbosity(0u);
+    //algo.set_verbosity(0u);
 
     // The initial positions
     kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
@@ -63,7 +63,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
     kep3::planet jupiter{udpla_jupiter};
     double count_a = 0;
     double count_n = 0;
-    std::cout << std::endl;
+    std::cout << "\n";
     for (auto i = 0u; i < N; ++i) {
         // And some epochs / tofs.
         const double tof_days = tof_d(rng_engine);
@@ -143,7 +143,7 @@ void perform_test_convergence(unsigned N, unsigned nseg)
     kep3::planet jupiter{udpla_jupiter};
     unsigned count_a = 0;
     unsigned count_n = 0;
-    std::cout << std::endl;
+    std::cout << "\n";
     for (auto i = 0u; i < N; ++i) {
         // And some epochs / tofs.
         const double tof_days = tof_d(rng_engine);
