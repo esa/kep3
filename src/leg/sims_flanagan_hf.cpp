@@ -355,7 +355,7 @@ std::array<double, 7> sims_flanagan_hf::get_rvmf() const
 }
 
 // The core routines
-std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints()
+std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
 {
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
@@ -426,7 +426,7 @@ std::vector<double> sims_flanagan_hf::compute_throttle_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::compute_constraints()
+std::vector<double> sims_flanagan_hf::compute_constraints() 
 {
     std::vector<double> retval(7 + m_nseg, 0.);
     // Fitness
@@ -445,7 +445,7 @@ std::vector<double> sims_flanagan_hf::compute_constraints()
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<double> chromosome)
+std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<double> chromosome) 
 {
     std::array<double, 7> rvms;
     std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
@@ -495,7 +495,7 @@ std::array<double, 7> sims_flanagan_hf::get_state_derivative(std::array<double, 
 
 std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
            std::vector<std::array<double, 7u>>>
-sims_flanagan_hf::compute_all_gradients()
+sims_flanagan_hf::compute_all_gradients() const
 {
     // Initialise
     std::vector<std::array<double, 7u>> xf_per_seg(m_nseg, {0});
@@ -707,7 +707,7 @@ sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &d
     return {std::move(grad_rvm), std::move(grad_rvm_bck), std::move(grad_final)};
 }
 
-std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan_hf::compute_mc_grad()
+std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan_hf::compute_mc_grad() const
 {
     // Initialise
     std::vector<std::array<double, 49u>> dxdx_per_seg;

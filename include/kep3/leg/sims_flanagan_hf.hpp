@@ -103,7 +103,7 @@ public:
     // Compute constraints
     [[nodiscard]] std::array<double, 7> get_state_derivative(std::array<double, 7> state,
                                                              std::array<double, 3> throttles) const;
-    [[nodiscard]] std::array<double, 7> compute_mismatch_constraints();
+    [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
     [[nodiscard]] std::vector<double> compute_constraints();
 
@@ -112,7 +112,7 @@ public:
     // Compute all gradients w.r.t. all legs
     [[nodiscard]]
     std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
-               std::vector<std::array<double, 7u>>> compute_all_gradients();
+               std::vector<std::array<double, 7u>>> compute_all_gradients() const;
 
     // Process all gradients to retrieve relevant gradients (w.r.t. initial and final rvm state as well as w.r.t.
     // throttles and tof)
@@ -123,7 +123,7 @@ public:
 
     // Compute mismatch constraint gradients (w.r.t. initial and final rvm state as well as w.r.t. throttles and
     // tof)
-    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> compute_mc_grad();
+    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> compute_mc_grad() const;
 
     // Compute throttle constraint gradients
     [[nodiscard]] std::vector<double> compute_tc_grad() const;
@@ -178,10 +178,10 @@ private:
     unsigned m_nseg_bck = 1u;
     // We introduce ta from cache
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
-    heyoka::taylor_adaptive<double> m_tas = ta_cache;
+    mutable heyoka::taylor_adaptive<double> m_tas = ta_cache;
     // Introduce variational ta from cache
     const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
-    heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
+    mutable heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
