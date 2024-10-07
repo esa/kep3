@@ -33,7 +33,7 @@ template <typename T>
 double L_infinity_norm(T a, T b)
 {
     if (a.size() != b.size()) {
-        throw std::domain_error("Computing the L-infinity norm of two vectors having unequal size.");
+        throw std::domain_error("Subtracting two vectors having unequal size.");
     }
     double retval = 0.;
 

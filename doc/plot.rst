@@ -1,7 +1,7 @@
 .. _plot:
 
 The plot module
-================
+######################
 
 .. currentmodule:: pykep.plot
 
@@ -11,7 +11,7 @@ Common utils
 .. autofunction:: make_3Daxis
 
 Plotting planets
---------------------------
+****************************************
 
 .. autofunction:: add_sun
 
@@ -22,7 +22,7 @@ Plotting planets
 .. autofunction:: add_solar_system
 
 Plotting trajectories
-----------------------------------
+******************************************
 
 .. autofunction:: add_lambert
 

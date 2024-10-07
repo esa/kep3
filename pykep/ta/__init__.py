@@ -23,6 +23,13 @@ get_stark_var = _core._get_stark_var
 get_stark_var.__module__ = "ta"
 stark_dyn = _core._stark_dyn
 stark_dyn.__module__ = "ta"
+
+get_cr3bp = _core._get_cr3bp
+get_cr3bp.__module__ = "ta"
+get_cr3bp_var = _core._get_cr3bp_var
+get_cr3bp_var.__module__ = "ta"
+cr3bp_dyn = _core._cr3bp_dyn
+cr3bp_dyn.__module__ = "ta"
 # Removing core from the list of imported symbols.
 del _core
 del _hy

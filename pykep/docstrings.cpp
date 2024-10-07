@@ -1012,7 +1012,7 @@ std::string planet_elements_docstring()
 {
     return R"(elements(when = 0., el_type = KEP_F)
 
-The period of the planet in seconds.
+The elements of the planet at epoch.
 
 If the UDPLA provides a ``elements(float, pk.el_type)`` method, then ``planet.elements`` will call it.
 Otherwise, if the UDPLA provides a ``get_mu_self()`` method ``planet.elements`` will return the elements as computed by the
@@ -1059,12 +1059,12 @@ Examples:
 
 std::string udpla_keplerian_from_elem_docstring()
 {
-    return R"(__init__(ep, elem, mu_central_body, name = "unkown", added_params = [-1,-1,-1], elem_type = KEP_F)
+    return R"(__init__(when, elem, mu_central_body, name = "unkown", added_params = [-1,-1,-1], elem_type = KEP_F)
 
 Constructs a Keplerian udpla from its orbital elements at epoch.
 
 Args:
-    *ep* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
+    *when* (:class:`~pykep.epoch`): the epoch at which the orbital elements are provided.
 
     *elem* (:class:`list` or :class:`numpy.ndarray`): the orbital elements. by default.
 
@@ -1074,13 +1074,13 @@ Args:
 
     *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
 
-    *el_type* (:class:`~pykep.el_type`): the elements type. Deafulets to osculating Keplrian (a ,e ,i, W, w, f) with true anomaly.
+    *el_type* (:class:`~pykep.el_type`): the elements type. Deafulets to osculating Keplerian (a ,e ,i, W, w, f) with true anomaly.
 
 Examples:
     >>> import pykep as pk
     >>> elem = [1, 0, 0, 0, 0, 0]
-    >>> ep = pk.epoch("2025-03-22")
-    >>> udpla = pk.udpla.keplerian(ep = ep, elem = elem, mu_central_body =1, name = "my_pla")
+    >>> when = pk.epoch("2025-03-22")
+    >>> udpla = pk.udpla.keplerian(when = when, elem = elem, mu_central_body =1, name = "my_pla")
     >>> pla = pk.planet(udpla)
 )";
 }
@@ -1286,7 +1286,7 @@ std::string get_stark_docstring()
 {
     return R"(get_stark(tol)
 
-Gets the Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+Returns a Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -1320,7 +1320,7 @@ std::string get_stark_var_docstring()
 {
     return R"(get_stark_var(tol)
 
-Gets the variational (order 1) Taylor adaptive propagator (Heyoka) for the Stark problem from the global cache.
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
 .. note:
    Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
@@ -1349,9 +1349,10 @@ Examples:
   >>> ta.propagate_until(tof)
 )";
 }
-   
+
 std::string stark_dyn_docstring()
-{return R"(stark_dyn()
+{
+    return R"(stark_dyn()
 
 The dynamics of the Stark problem. 
 
@@ -1373,6 +1374,100 @@ Returns:
 )";
 }
 
+std::string get_cr3bp_docstring()
+{
+    return R"(get_cr3bp(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
+
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The specific dynamics used is that returned by :func:`~pykep.ta.cr3bp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_cr3bp(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_cr3bp_var_docstring()
+{
+    return R"(get_cr3bp_var(tol)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
+
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
+
+.. note:
+   Variations are only considered with respect to initial conditions.
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The specific dynamics used is that returned by :func:`~pykep.ta.cr3bp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_cr3bp_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string cr3bp_dyn_docstring()
+{
+    return R"(cr3bp_dyn()
+
+The dynamics of the Circular Restricted Three Body Problem (CR3BP).
+
+In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:`m_2` is the mass of the
+secondary body (i.e. placed on the positive x axis). 
+
+The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (period of rotation of the primaries).
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} \\
+       \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} \\
+       \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3}
+   \end{array}\right.
+
+where :math:`\mu` is the only parameter.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
 
 std::string propagate_lagrangian_docstring()
 {
@@ -1593,7 +1688,7 @@ final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`
   \frac{\partial \mathbf {mc}}{\partial \mathbf u}
 
 Returns:
-    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3)
+    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3 + 1)
 
 Examples:
   >>> import pykep as pk
@@ -1623,6 +1718,132 @@ Examples:
   >>> sf = pk.leg.sims_flanagan()
   >>  sf.throttles = [0.8]*3
   >>> sf.compute_tc_grad()
+)";
+};
+
+std::string fb_con_docstring()
+{
+    return R"(fb_con(v_rel_in, v_rel_out, mu, safe_radius)
+Alternative signature: fb_con(v_rel_in, v_rel_out, planet)
+
+Computes the constraint violation during a fly-by modelled as an instantaneous rotation of the incoming and outgoing relative velocities (Mivovitch).
+The two must be identical in magnitude (equality constraint) and the angle :math:`\alpha` between them must be less than the 
+:math:`\alpha_{max}`: the maximum value allowed for that particular *planet* (inequality constraint), as computed from its gravitational
+parameter and safe radius using the formula:
+
+.. math::
+  \alpha_{max} = - 2 \arcsin\left(\frac{1}{e_{min}}\right)
+
+where:
+
+.. math::
+  e_{min} = 1 + V_{\infty}^2 \frac{R_{safe}}{\mu}
+
+.. note::
+  This function is often used in the multiple gravity assist low-thrust (MGA-LT) encoding of an interplanetary trajectory where multiple
+  low-thrust legs are patched at the fly-by planets by forcing satisfaction for these constraints.
+
+Args:
+  *v_rel_in* (:class:`list` (3,)): Cartesian components of the incoming relative velocity.
+
+  *v_rel_out* (:class:`list` (3,)): Cartesian components of the outgoing relative velocity.
+
+  *mu* (:class:`float`): planet gravitational parameter
+
+  *safe_radius* (:class:`float`): planet safe radius
+
+  *planet* (:class:`~pykep.planet`): planet (in which case *mu* and *safe_radius* will be extracted from this object). Note: this signature is slower and to be avoided.
+
+Returns:
+  :class:`tuple` [:class:`float`, :class:`float`]: The equality constraint violation (defined as the difference between the squared velocities) and the inequality constraint violation 
+  (negative if satisfied).
+
+Examples:
+  >>> import pykep as pk
+  >>> eq, ineq = pk.fb_con(v_rel_in = [10.,1.,-4.], v_rel_out = [10.,1.,-4.], mu = 1., safe_radius = 1.)
+
+)";
+};
+
+std::string fb_dv_docstring()
+{
+    return R"(fb_dv(v_rel_in, v_rel_out, mu, safe_radius)
+Alternative signature: fb_dv(v_rel_in, v_rel_out, planet)
+
+Computes the :math:`\Delta V` necessary to perform a fly-by modelled as an instantaneous rotation of the incoming and outgoing
+relative velocities (Mivovitch). If planetary gravity is not enough to patch the incoming and outcoming conditions
+(i.e. the :func:`~pykep.fb_con()` returns some constraint violation) a :math:`\Delta V` is assumed
+at the end of the planetocentric hyperbola.
+
+.. note::
+  This function is often used in the multiple gravity assist (MGA) encoding of an interplanetary trajectory where multiple
+  Lambert arcs are patched at the fly-by planets by applying a hopefully vanishing :math:`\Delta V`.
+
+Args:
+  *v_rel_in* (:class:`list` (3,)): Cartesian components of the incoming relative velocity.
+
+  *v_rel_out* (:class:`list` (3,)): Cartesian components of the outgoing relative velocity.
+
+  *mu* (:class:`float`): planet gravitational parameter
+
+  *safe_radius* (:class:`float`): planet safe radius
+
+  *planet* (:class:`~pykep.planet`): planet (in which case *mu* and *safe_radius* will be extracted from this object). Note: this signature is slower and to be avoided.
+
+Returns:
+  :class:`float`: The magnitude of the required :math:`\Delta V`
+
+Examples:
+  >>> import pykep as pk
+  >>> DV = pk.fb_dv(v_rel_in = [10.,1.,-4.], v_rel_out = [10.,1.,-4.], mu = 1., safe_radius = 1.)
+)";
+};
+
+std::string fb_vout_docstring()
+{
+    return R"(fb_vout(v_in, v_pla, rp, beta, mu)
+
+Propagates incoming conditions through a planetary encounter (fly-by) assuming an instantaneous rotation of magnitude :math:`\delta` of 
+the incoming and outgoing relative velocities (Mivovitch). The planetocentric hyperbola (hence the angle :math:`\delta`) is fully
+determined by the incoming condition :math:`v_{\infty} = \mathbf v_{in} - \mathbf v_{pla}` as well as by its pericenter :math:`r_p`
+and an angle :math:`\beta` defining the orientation of the orbital plane. Eventually the outgoing conditions are computed as:
+
+.. math::
+  \mathbf v_{out} = \mathbf v_{in} + \mathbf v_{\infty}^{out}
+
+.. math::
+  \mathbf v_{\infty}^{out} = |\mathbf v_{\infty}^{in}|
+  \left(
+  \cos\delta\hat{\mathbf b}_1
+  +\sin\delta\cos\beta\hat{\mathbf b}_2
+  +\sin\delta\sin\beta\hat{\mathbf b}_3
+  \right)
+
+where the :math:`[\hat{\mathbf b}_1, \hat{\mathbf b}_2, \hat{\mathbf b}_3]` frame is defined by the incoming 
+relative velocity (normalized), :math:`\hat{\mathbf b}_1 \times \mathbf v_{pla}` (normalized) and completing the right handed frame.
+
+.. note::
+  This function is often used in the multiple gravity assist with DSM (MGA-DSM) encoding of an interplanetary trajectory where multiple
+  impulsive manouvres are allowed betwwen planetary fly-bys.
+
+Args:
+  *v_in* (:class:`list` (3,)): Cartesian components of the incoming velocity 
+  (note: this is NOT the relative velocity, rather the absolute and in the same frame as *v_pla*).
+
+  *v_pla* (:class:`list` (3,)): Cartesian components of the planet velocity.
+
+  *rp* (:class:`float`): planetocentric hyperbola pericenter radius.
+
+  *beta* (:class:`float`): planetocentric hyperbola plane angle.
+
+  *mu* (:class:`float`): planet gravitational parameter.
+
+Returns:
+  :class:`list` (3,): The outgoing velocity in the frame of *v_pla* (inertial).
+
+Examples:
+  >>> import pykep as pk
+  >>> DV = pk.fb_vout(v_in = [1.,1.,1], v_pla = [10.,1.,-4.], rp = 1., mu = 1., beta=1.2)
 )";
 };
 

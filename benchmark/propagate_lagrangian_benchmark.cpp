@@ -70,7 +70,7 @@ void perform_test_speed(
 
     auto start = high_resolution_clock::now();
     for (auto i = 0u; i < N; ++i) {
-        auto res = propagate(pos_vels[i], tofs[i], 1., false);
+        propagate(pos_vels[i], tofs[i], 1., false);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);

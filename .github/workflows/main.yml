@@ -12,22 +12,22 @@ jobs:
   linux_asan_debug:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_linux_asan_debug.sh
   osx_11_debug:
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_osx_debug.sh
   windows_2022_release:
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: kep3_devel
           environment-file: kep3_devel.yml
@@ -46,11 +46,11 @@ jobs:
   linux_coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_linux_coverage.sh
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: coverage.info
         env:

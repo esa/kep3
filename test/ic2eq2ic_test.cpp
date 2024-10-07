@@ -13,8 +13,7 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <boost/math/constants/constants.hpp>
-
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 
@@ -24,10 +23,9 @@
 using Catch::Matchers::WithinRel;
 using kep3::eq2ic;
 using kep3::ic2eq;
+using kep3::pi;
 
-constexpr double pi{boost::math::constants::pi<double>()};
-
-TEST_CASE("ic2eq")
+    TEST_CASE("fb_con")
 {
     // Zero inclination and eccentricity
     {

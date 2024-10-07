@@ -23,8 +23,8 @@ using heyoka::taylor_adaptive;
 using heyoka::taylor_outcome;
 
 using kep3::ta::get_ta_stark;
-using kep3::ta::get_ta_stark_var;
 using kep3::ta::get_ta_stark_cache_dim;
+using kep3::ta::get_ta_stark_var;
 using kep3::ta::get_ta_stark_var_cache_dim;
 
 using kep3_tests::L_infinity_norm_rel;
@@ -37,9 +37,9 @@ TEST_CASE("caches")
     auto ta_cached = get_ta_stark(1e-16);
     REQUIRE(get_ta_stark_cache_dim() == 1u);
     ta_cached = get_ta_stark(1e-16);
-    REQUIRE(get_ta_stark_cache_dim() ==1u);
+    REQUIRE(get_ta_stark_cache_dim() == 1u);
     ta_cached = get_ta_stark(1e-8);
-    REQUIRE(get_ta_stark_cache_dim() ==2u);
+    REQUIRE(get_ta_stark_cache_dim() == 2u);
 
     // The variational integrator.
     REQUIRE(get_ta_stark_var_cache_dim() == 0u);
@@ -48,7 +48,7 @@ TEST_CASE("caches")
     ta_cached = get_ta_stark_var(1e-16);
     REQUIRE(get_ta_stark_var_cache_dim() == 1u);
     ta_cached = get_ta_stark_var(1e-8);
-    REQUIRE(get_ta_stark_var_cache_dim() == 2u);    
+    REQUIRE(get_ta_stark_var_cache_dim() == 2u);
 }
 
 TEST_CASE("dynamics")
@@ -72,12 +72,15 @@ TEST_CASE("dynamics")
     }
     {
         // We test a generic case.
+        // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep
+        // ones.
+        double MU_OLD = 1.32712440018e20;
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
         ta.set_time(0.);
         std::vector<double> ic{164557657760.1, 179517444829.19998, 47871318621.12, 32763.159550000004,
                                23827.7524,     9531.10096,         1200.};
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
-        std::vector<double> pars{kep3::MU_SUN, 3000.*kep3::G0, 0.05, 0., 0.032};
+        std::vector<double> pars{MU_OLD, 3000. * kep3::G0, 0.05, 0., 0.032};
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
         auto out = ta.propagate_until(3888000.0);
         std::vector<double> const ground_truth
@@ -107,24 +110,28 @@ TEST_CASE("variational_dynamics")
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
         auto out = ta.propagate_until(2. * kep3::pi);
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
-        REQUIRE(L_infinity_norm_rel(std::vector<double>(ta.get_state().begin(), ta.get_state().begin() + 7), ic) <= 1e-13);
+        REQUIRE(L_infinity_norm_rel(std::vector<double>(ta.get_state().begin(), ta.get_state().begin() + 7), ic)
+                <= 1e-13);
     }
     {
         // We test a generic case.
+        // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep
+        // ones.
+        double MU_OLD = 1.32712440018e20;
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
         ta.set_time(0.);
         std::vector<double> ic{164557657760.1, 179517444829.19998, 47871318621.12, 32763.159550000004,
                                23827.7524,     9531.10096,         1200.};
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
-        std::vector<double> pars{kep3::MU_SUN, 3000.*kep3::G0, 0.05, 0., 0.032};
+        std::vector<double> pars{MU_OLD, 3000. * kep3::G0, 0.05, 0., 0.032};
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
         auto out = ta.propagate_until(3888000.0);
         std::vector<double> const ground_truth
             = {284296823432.0578,  263961690798.0665, 82814214381.94377, 29341.50292902231,
                20219.294034700008, 8592.028822618351, 1192.1548315009777};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
-        REQUIRE(kep3_tests::L_infinity_norm_rel(std::vector<double>(ta.get_state().begin(), ta.get_state().begin() + 7), ground_truth)
+        REQUIRE(kep3_tests::L_infinity_norm_rel(std::vector<double>(ta.get_state().begin(), ta.get_state().begin() + 7),
+                                                ground_truth)
                 <= 1e-13);
     }
 }
-

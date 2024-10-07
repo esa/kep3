@@ -1,7 +1,7 @@
 .. _constants:
 
 Global constants
-=======================
+##################
 
 In `pykep` the access a number of common constants are provided for convenience. The user can overwrite their values if needed.
 These constants are not used in the `pykep` internals, they are only provided for convenience for the user to instantiate / use
@@ -15,22 +15,26 @@ the various `pykep` objects and functionalities.
      - Symbol in pykep
      - Units
      - Value
-   * - Astronomical Unit
+   * - Astronomical Unit 
      - pykep.AU
      - :math:`m` 
-     - 149597870700.0
+     - 1.495978707e+11
    * - Cavendish constant
      - pykep.CAVENDISH
-     - :math:`\frac{N m^2}{kg^2}` 
-     - 7.36687e-10
+     - :math:`\frac{m^3}{sec^2 kg}` 
+     - 6.67430e-11
    * - Sun's gravitational parameter
      - pykep.MU_SUN
      - :math:`\frac{m^3}{sec^2}` 
-     - 1.32712440018e+20
-   * - Earth's gravitational parameter
+     - 1.32712440041279419e20
+   * - Earth's gravitational parameter (JPL DE440)
      - pykep.MU_EARTH
      - :math:`\frac{m^3}{sec^2}` 
-     - 398600441800000.0
+     - 3.98600435507e+14
+   * - Moon's gravitational parameter (JPL DE440)
+     - pykep.MU_MOON
+     - :math:`\frac{m^3}{sec^2}` 
+     - 4.902800118e+12
    * - Earth's velocity
      - pykep.EARTH_VELOCITY
      - :math:`\frac{m}{sec}` 
@@ -43,6 +47,10 @@ the various `pykep` objects and functionalities.
      - pykep.EARTH_J2
      - --
      - 0.00108262668
+   * - CR3BP: Moon-Earth parameter
+     - pykep.CR3BP_EARTH_MOON
+     - --
+     - 0.01215058439470971
    * - Seconds in one day
      - pykep.DAY2SEC
      - --
@@ -51,3 +59,7 @@ the various `pykep` objects and functionalities.
      - pykep.RAD2DEG
      - --
      - 57.29577951308232
+   * - Radians in one degree
+     - pykep.DEG2RAD
+     - --
+     - 0.017453292519943295

@@ -40,14 +40,17 @@ TEST_CASE("constructor")
 
 TEST_CASE("eph")
 {
-    // We use 2030-01-01 as a reference epoch for all these tests
+    // We use 2020-01-01 as a reference epoch for all these tests. To compute the ground truth 
+    // we queried JPL Horizon. Since the queries are made at different times the eph used are also
+    // different. As a consequence if you repeat the query today you may get a different result.
+    // Note also the low error tolerance requested as low precision eph are indeed low precision.
     double ref_epoch = kep3::epoch(2458849.5, kep3::epoch::julian_type::JD).mjd2000();
     {
-        // This is Mercury w.r.t. the Sun queried from JPL Horizon at
+        // This is Mercury w.r.t. the Sun queried from JPL Horizon (DE441) at
         // 2020-01-01
         std::array<std::array<double, 3>, 2> pos_vel_0{
-            {{-9.474762662376745E+09, -6.894147965135109E+10, -4.764334842347469E+09},
-             {3.848711305256677E+04, -4.155242103836629E+03, -3.870162659830893E+03}}};
+            {{-1.004313454665499E+10, -6.782852744259514E+10, -4.760875668975301E+09},
+             {3.847265152100766E+04, -4.158689617302953E+03, -3.869763814829368E+03}}};
         // Mercury in jpl_lp mode
         jpl_lp udpla{"mercury"};
         auto [r, v] = udpla.eph(ref_epoch);

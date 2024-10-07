@@ -8,6 +8,7 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <cmath>
+#include <random>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -133,7 +134,7 @@ std::array<double, 6> jpl_lp::_f_elements(double mjd2000) const
     // algorithm from https://ssd.jpl.nasa.gov/planets/approx_pos.html accessed
     // 2023.
     std::array<double, 6> elements_updated{}, elements_f{};
-    double dt = mjd2000 / 36525.; // Number of centuries passed since J2000.0
+    double dt = (mjd2000 - 0.5) / 36525.; // Number of centuries passed since J2000. T = (T_eph - 2451545.0)/36525
     for (unsigned int i = 0; i < 6; ++i) {
         elements_updated[i] = (m_elements[i] + m_elements_dot[i] * dt);
     }
@@ -220,7 +221,7 @@ std::string jpl_lp::get_extra_info() const
 
 std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
 {
-    os << udpla.get_extra_info() << std::endl;
+    os << udpla.get_extra_info() << "\n";
     return os;
 }
 

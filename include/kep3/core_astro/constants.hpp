@@ -22,15 +22,14 @@ enum elements_type {
     MEQ_R,  // Modified Equinoctial Elements (retrogade)
     POSVEL, // position and Velocity
 };
-
 inline constexpr double pi = boost::math::constants::pi<double>();
 inline constexpr double half_pi = boost::math::constants::half_pi<double>();
-
-inline constexpr double AU = 149597870700.0;                 // Astronomical Unit (m)
-inline constexpr double CAVENDISH = 73.6687e-11;             // Cavendish constant (N M^2 / kg^2)
-inline constexpr double MU_SUN = 1.32712440018e20;           // Sun's gravitational parameter (m^3/s^2 kg)
-inline constexpr double MU_EARTH = 398600441800000.0;        // Earth's gravitational parameter (m^3/s^2 kg)
-inline constexpr double EARTH_VELOCITY = 29784.691831696804; // Earth's velocity. (m/s)
+inline constexpr double AU = 149597870700.0;                 // Astronomical Unit (m) - IAU 2012 Resolution B1
+inline constexpr double CAVENDISH = 6.67430e-11;             // Cavendish constant (m^3/s^2/kg)
+inline constexpr double MU_SUN = 1.32712440041279419e20;     // Sun's gravitational parameter (m^3/s^2 kg) - DE440
+inline constexpr double MU_EARTH = 398600435507000.0;        // Earth's gravitational parameter (m^3/s^2 kg) - DE440
+inline constexpr double MU_MOON =  4902800118000.0;          // Moon's gravitational parameter (m^3/s^2 kg) - DE440
+inline constexpr double EARTH_VELOCITY = 29784.69183430911;  // Earth's velocity. (m/s)
 inline constexpr double EARTH_J2 = 1.08262668E-03;
 inline constexpr double EARTH_RADIUS = 6378137; // Earth's radius (m)
 inline constexpr double DEG2RAD = (pi / 180.0);
@@ -39,6 +38,8 @@ inline constexpr double DAY2SEC = 86400.0;
 inline constexpr double SEC2DAY = (1. / DAY2SEC);
 inline constexpr double DAY2YEAR = (1. / 365.25);
 inline constexpr double G0 = 9.80665; // Acceleration at Earth's surface (m/s^2)
+inline constexpr double CR3BP_EARTH_MOON = 0.01215058439470971; // (M_moon + M_Earth) / M_Earth
+
 
 } // namespace kep3
 

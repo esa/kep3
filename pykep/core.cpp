@@ -14,6 +14,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
@@ -22,6 +23,7 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
+#include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
@@ -41,7 +43,7 @@
 namespace py = pybind11;
 namespace pk = pykep;
 
-PYBIND11_MODULE(core, m)
+PYBIND11_MODULE(core, m) //NOLINT
 {
     py::options options;
     options.disable_function_signatures();
@@ -56,10 +58,12 @@ PYBIND11_MODULE(core, m)
     m.attr("EARTH_J2") = py::float_(kep3::EARTH_J2);
     m.attr("EARTH_RADIUS") = py::float_(kep3::EARTH_RADIUS);
     m.attr("RAD2DEG") = py::float_(kep3::RAD2DEG);
+    m.attr("DEG2RAD") = py::float_(kep3::RAD2DEG);
     m.attr("DAY2SEC") = py::float_(kep3::DAY2SEC);
     m.attr("SEC2DAY") = py::float_(kep3::SEC2DAY);
     m.attr("DAY2YEAR") = py::float_(kep3::DAY2YEAR);
     m.attr("G0") = py::float_(kep3::G0);
+    m.attr("CR3BP_EARTH_MOON") = py::float_(kep3::CR3BP_EARTH_MOON);
 
     // We expose here global enums:
     py::enum_<kep3::elements_type>(m, "el_type", "")
@@ -136,19 +140,19 @@ PYBIND11_MODULE(core, m)
         // Constructor from datetime py::object
         .def(py::init([](const py::object &in) {
                  // We check that `in` is a datetimeobject
-                 py::object Datetime = py::module_::import("datetime").attr("datetime");
+                 const py::object Datetime = py::module_::import("datetime").attr("datetime");
                  if (!py::isinstance(in, Datetime)) {
                      pykep::py_throw(PyExc_TypeError, ("it seems you are trying to construct kep3::epoch object from a "
                                                        "python object that is not of type datetime"));
                  }
                  // We collect its info
-                 int y = in.attr("year").cast<int>();
+                 const int y = in.attr("year").cast<int>();
                  auto m = in.attr("month").cast<unsigned>();
                  auto d = in.attr("day").cast<unsigned>();
-                 int h = in.attr("hour").cast<int>();
-                 int min = in.attr("minute").cast<int>();
-                 int s = in.attr("second").cast<int>();
-                 int us = in.attr("microsecond").cast<int>();
+                 const int h = in.attr("hour").cast<int>();
+                 const int min = in.attr("minute").cast<int>();
+                 const int s = in.attr("second").cast<int>();
+                 const int us = in.attr("microsecond").cast<int>();
                  return kep3::epoch(y, m, d, h, min, s, 0, us);
              }),
              py::arg("when"), pk::epoch_from_datetime_doc().c_str())
@@ -211,7 +215,7 @@ PYBIND11_MODULE(core, m)
             auto vec_ptr = std::make_unique<std::vector<double>>(std::move(res));
 
             py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+                const std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
             });
 
             // NOTE: at this point, the capsule has been created successfully (including
@@ -290,9 +294,42 @@ PYBIND11_MODULE(core, m)
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing taylor adaptive propagators
-    m.def("_get_stark", &kep3::ta::get_ta_stark, py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
-    m.def("_get_stark_var", &kep3::ta::get_ta_stark_var, py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
+    // Stark
+    m.def(
+        "_get_stark",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
+    m.def(
+        "_get_stark_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
     m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
+    // CR3BP
+    m.def(
+        "_get_cr3bp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_cr3bp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_cr3bp_docstring().c_str());
+    m.def(
+        "_get_cr3bp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_cr3bp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_cr3bp_var_docstring().c_str());
+    m.def("_cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
 
     // Exposing propagators
     m.def(
@@ -301,13 +338,13 @@ PYBIND11_MODULE(core, m)
             auto pl_retval = kep3::propagate_lagrangian(pos_vel, dt, mu, request_stm);
             if (pl_retval.second) {
                 // The stm was requested lets transfer ownership to python
-                std::array<double, 36> &stm = pl_retval.second.value();
+                const std::array<double, 36> &stm = pl_retval.second.value();
 
                 // We create a capsule for the py::array_t to manage ownership change.
                 auto vec_ptr = std::make_unique<std::array<double, 36>>(stm);
 
                 py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                    std::unique_ptr<std::array<double, 36>> vptr(static_cast<std::array<double, 36> *>(ptr));
+                    const std::unique_ptr<std::array<double, 36>> vptr(static_cast<std::array<double, 36> *>(ptr));
                 });
 
                 // NOTE: at this point, the capsule has been created successfully (including
@@ -357,13 +394,13 @@ PYBIND11_MODULE(core, m)
                 // Lets transfer ownership of dxdx to python (not sure this is actually needed to
                 // get an efficient return value ... maybe its overkill here). It surely avoid one more copy /
                 // allocation of 49+21 values, but in the overall algorithm maybe irrelevant.
-                std::array<double, 49> &dxdx = std::get<1>(sp_retval);
+                const std::array<double, 49> &dxdx = std::get<1>(sp_retval);
 
                 // We create a capsule for the py::array_t to manage ownership change.
                 auto vec_ptr = std::make_unique<std::array<double, 49>>(dxdx);
 
                 py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                    const std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
                 });
 
                 // NOTE: at this point, the capsule has been created successfully (including
@@ -378,13 +415,13 @@ PYBIND11_MODULE(core, m)
                     ptr->data(), std::move(vec_caps));
 
                 // Lets transfer ownership of dxdu to python
-                std::array<double, 21> &dxdu = std::get<2>(sp_retval);
+                const std::array<double, 21> &dxdu = std::get<2>(sp_retval);
 
                 // We create a capsule for the py::array_t to manage ownership change.
                 auto vec_ptr2 = std::make_unique<std::array<double, 21>>(dxdu);
 
                 py::capsule vec_caps2(vec_ptr2.get(), [](void *ptr) {
-                    std::unique_ptr<std::array<double, 21>> vec_ptr2(static_cast<std::array<double, 21> *>(ptr));
+                    const std::unique_ptr<std::array<double, 21>> vec_ptr2(static_cast<std::array<double, 21> *>(ptr));
                 });
 
                 // NOTE: at this point, the capsule has been created successfully (including
@@ -401,6 +438,26 @@ PYBIND11_MODULE(core, m)
             },
             py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
             pykep::stark_problem_propagate_var_docstring().c_str());
+
+    // Exposing fly-by routines
+    m.def("fb_con",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, const kep3::planet &>(
+              &kep3::fb_con),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("planet"), pykep::fb_con_docstring().c_str());
+    m.def(
+        "fb_con",
+        py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, double, double>(&kep3::fb_con),
+        py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("mu"), py::arg("safe_radius"));
+
+    m.def("fb_dv",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, const kep3::planet &>(
+              &kep3::fb_dv),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("planet"), pykep::fb_dv_docstring().c_str());
+    m.def("fb_dv",
+          py::overload_cast<const std::array<double, 3> &, const std::array<double, 3> &, double, double>(&kep3::fb_dv),
+          py::arg("v_rel_in"), py::arg("v_rel_out"), py::arg("mu"), py::arg("safe_radius"));
+    m.def("fb_vout", &kep3::fb_vout, py::arg("v_in"), py::arg("v_pla"), py::arg("rp"), py::arg("beta"), py::arg("mu"),
+          pykep::fb_vout_docstring().c_str());
 
     // Exposing the sims_flanagan leg
     py::class_<kep3::leg::sims_flanagan> sims_flanagan(m, "_sims_flanagan", pykep::leg_sf_docstring().c_str());
@@ -436,22 +493,22 @@ PYBIND11_MODULE(core, m)
             [](const kep3::leg::sims_flanagan &leg) {
                 auto tc_cpp = leg.compute_mc_grad();
                 // Lets transfer ownership to python of the three
-                std::array<double, 49> &rs_addr = std::get<0>(tc_cpp);
-                std::array<double, 49> &rf_addr = std::get<1>(tc_cpp);
-                std::vector<double> &th_addr = std::get<2>(tc_cpp);
+                const std::array<double, 49> &rs_addr = std::get<0>(tc_cpp);
+                const std::array<double, 49> &rf_addr = std::get<1>(tc_cpp);
+                const std::vector<double> &th_addr = std::get<2>(tc_cpp);
 
                 // We create three separate capsules for the py::array_t to manage ownership change.
                 auto vec_ptr_rs = std::make_unique<std::array<double, 49>>(rs_addr);
                 py::capsule vec_caps_rs(vec_ptr_rs.get(), [](void *ptr) {
-                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                    const std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
                 });
                 auto vec_ptr_rf = std::make_unique<std::array<double, 49>>(rf_addr);
                 py::capsule vec_caps_rf(vec_ptr_rf.get(), [](void *ptr) {
-                    std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+                    const std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
                 });
                 auto vec_ptr_th = std::make_unique<std::vector<double>>(th_addr);
                 py::capsule vec_caps_th(vec_ptr_th.get(), [](void *ptr) {
-                    std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+                    const std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
                 });
                 // NOTE: at this point, the capsules have been created successfully (including
                 // the registration of the destructor). We can thus release ownership from vec_ptr_xx,
@@ -475,13 +532,13 @@ PYBIND11_MODULE(core, m)
         .def(
             "compute_tc_grad",
             [](const kep3::leg::sims_flanagan &leg) {
-                std::vector<double> tc_cpp = leg.compute_tc_grad();
+                const std::vector<double> tc_cpp = leg.compute_tc_grad();
                 // Lets transfer ownership to python
-                std::vector<double> &tc_cpp_addr = tc_cpp;
+                const std::vector<double> &tc_cpp_addr = tc_cpp;
                 // We create a capsule for the py::array_t to manage ownership change.
                 auto vec_ptr = std::make_unique<std::vector<double>>(tc_cpp_addr);
                 py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                    std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+                    const std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
                 });
                 // NOTE: at this point, the capsule has been created successfully (including
                 // the registration of the destructor). We can thus release ownership from vec_ptr,

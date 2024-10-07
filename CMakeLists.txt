@@ -1,7 +1,12 @@
 # NOTE: current minimum kep3 requirement.
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.28.0)
 # This effectively requests behavior preferred as of a given CMake version and tells newer CMake versions to warn about their new policies.
 cmake_policy(VERSION 3.30)
+
+# This removes a strange behaviour on osx CI machines where ninja would error out with 
+# '/bin/sh: CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND: command not found' even if clang-scan-deps was installed
+# Since we here do not use modules we deactivate their search.
+set(CMAKE_CXX_SCAN_FOR_MODULES 0)
 
 # Set default build type to "Release".
 # NOTE: this should be done before the project command since the latter can set
@@ -142,12 +147,14 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sims_flanagan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sims_flanagan_hf.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/leg/sf_checks.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/flyby.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2par2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/ic2eq2ic.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/stm.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/stark.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/cr3bp.cpp"
 )
 
 # Setup of the kep3 shared library.

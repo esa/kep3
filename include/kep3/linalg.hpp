@@ -45,10 +45,13 @@ xt::xtensor_fixed<double, xt::xshape<m, n>> _dot(const xt::xtensor_fixed<double,
     }
     return C;
 }
-
 mat33 _skew(const mat31 &v);
 mat31 _cross(const mat31 &v1, const mat31 &v2);
 // ---------------------------------------------------------------------------------------
+
+// Linear algebra helpers for std::array<double, 3> types.
+std::array<double, 3> _cross(const std::array<double, 3> &v1, const std::array<double, 3> &v2);
+void _normalize(std::array<double, 3> &v1);
 
 } // namespace kep3::linalg
 

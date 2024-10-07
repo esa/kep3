@@ -1,7 +1,7 @@
 .. _api:
 
 API
-====
+#######
 
 pykep API is designed to maximize its usability. Let us know what you think about it!
 
@@ -14,10 +14,13 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    elements
    epoch
    lambert
+   flyby
    leg
    planet
-   plot
+   udpla
    propagation
    taylor_adaptive 
-   udpla
    trajopt
+   gym
+   plot
+

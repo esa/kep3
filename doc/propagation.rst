@@ -1,7 +1,8 @@
 .. _propagation:
 
 Numerical Propagation
-=====================
+#####################
+
 
 The backbone of numerical propagation in `pykep` is based on Lagrangian coefficients for 
 Kepler's  dynamics and Taylor numerical integration, as implemented in the 
@@ -11,8 +12,8 @@ seamlessly via variational equations.
 
 The main routines are listed here:
  
-Keplerian dynamics 
-===================
+Keplerian 
+******************
  
 .. currentmodule:: pykep
 
@@ -22,8 +23,8 @@ Keplerian dynamics
 
 ---------------------------------------------------------
 
-Non-Keplerian dynamics
-======================
+Non-Keplerian 
+************************
 
 .. currentmodule:: pykep
 

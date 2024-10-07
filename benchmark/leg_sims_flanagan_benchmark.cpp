@@ -63,17 +63,17 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
     kep3::planet jupiter{udpla_jupiter};
     double count_a = 0;
     double count_n = 0;
-    std::cout << std::endl;
-    for (auto i = 0; i < N; ++i) {
+    std::cout << "\n";
+    for (auto i = 0u; i < N; ++i) {
         // And some epochs / tofs.
-        double tof_days = tof_d(rng_engine);
-        double tof = tof_days * kep3::DAY2SEC;
-        double ts = ts_d(rng_engine);
-        double mass = mass_d(rng_engine);
+        const double tof_days = tof_d(rng_engine);
+        const double tof = tof_days * kep3::DAY2SEC;
+        const double ts = ts_d(rng_engine);
+        const double mass = mass_d(rng_engine);
         auto rvs = earth.eph(ts);
         auto rvf = jupiter.eph(ts + tof_days);
         // We create a ballistic arc matching the two.
-        kep3::lambert_problem lp{rvs[0], rvf[0], tof, kep3::MU_SUN};
+        const kep3::lambert_problem lp{rvs[0], rvf[0], tof, kep3::MU_SUN};
         rvs[1][0] = lp.get_v0()[0][0];
         rvs[1][1] = lp.get_v0()[0][1];
         rvs[1][2] = lp.get_v0()[0][2];
@@ -88,13 +88,12 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
         prob_n.set_c_tol(1e-8);
 
         // We construct the random chromosmes 
-        pagmo::population pop{prob_a, pop_size};
-
+        const pagmo::population pop{prob_a, pop_size};
 
         // First we time the analytical gradients
         auto start = high_resolution_clock::now();
-        for (auto i = 0u; i < pop_size; ++i) {
-            prob_a.gradient(pop.get_x()[i]);
+        for (decltype(pop_size) j = 0u; j < pop_size; ++j) {
+            prob_a.gradient(pop.get_x()[j]);
         }
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
@@ -102,8 +101,8 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
 
         // then the numerical ones
         start = high_resolution_clock::now();
-        for (auto i = 0u; i < pop_size; ++i) {
-            prob_n.gradient(pop.get_x()[i]);
+        for (decltype(pop_size) j = 0u; j < pop_size; ++j) {
+            prob_n.gradient(pop.get_x()[j]);
         }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
@@ -144,17 +143,17 @@ void perform_test_convergence(unsigned N, unsigned nseg)
     kep3::planet jupiter{udpla_jupiter};
     unsigned count_a = 0;
     unsigned count_n = 0;
-    std::cout << std::endl;
-    for (auto i = 0; i < N; ++i) {
+    std::cout << "\n";
+    for (auto i = 0u; i < N; ++i) {
         // And some epochs / tofs.
-        double tof_days = tof_d(rng_engine);
-        double tof = tof_days * kep3::DAY2SEC;
+        const double tof_days = tof_d(rng_engine);
+        const double tof = tof_days * kep3::DAY2SEC;
         double ts = ts_d(rng_engine);
-        double mass = mass_d(rng_engine);
+        const double mass = mass_d(rng_engine);
         auto rvs = earth.eph(ts);
         auto rvf = jupiter.eph(ts + tof_days);
         // We create a ballistic arc matching the two.
-        kep3::lambert_problem lp{rvs[0], rvf[0], tof, kep3::MU_SUN};
+        const kep3::lambert_problem lp{rvs[0], rvf[0], tof, kep3::MU_SUN};
         rvs[1][0] = lp.get_v0()[0][0];
         rvs[1][1] = lp.get_v0()[0][1];
         rvs[1][2] = lp.get_v0()[0][2];

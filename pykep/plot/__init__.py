@@ -41,7 +41,7 @@ def propagate_lagrangian_theta_v(rv=[[1, 0, 0], [0, 1, 0]], thetas=[0.0, _np.pi 
 
     Propagates (Keplerian) the state for an assigned difference in True anomalies. It does not compute the State Transition Matrix
     A similar API is offered as that of :func:`~pykep.propagate_lagrangian`, but not identical. The function is essentially offered only for plotting
-    purposes as to avoid (or anyway alleviate) the non uniform grid effect deriving when plotting at equal time intervals.
+    purposes as to avoid (or anyway alleviate) the non uniform grid effect when plotting at equal time intervals.
 
     Args:
           *rv* (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].
@@ -75,9 +75,9 @@ def propagate_lagrangian_theta_v(rv=[[1, 0, 0], [0, 1, 0]], thetas=[0.0, _np.pi 
     v0 = _np.array(rv[1])
     R0 = _np.linalg.norm(r0)
     V02 = _np.dot(v0, v0)
-    energy = V02 / 2 - mu / R0
+    #energy = V02 / 2 - mu / R0
     # energy will be negative for hyperbolae
-    a = -mu / 2.0 / energy
+    #a = -mu / 2.0 / energy
     sigma0 = _np.dot(r0, v0) / _np.sqrt(mu)
     h = _np.linalg.norm(_np.cross(r0, v0))
     p = h * h / mu

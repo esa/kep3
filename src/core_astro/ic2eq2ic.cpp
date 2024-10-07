@@ -29,7 +29,7 @@ namespace kep3
 // Cefola: Equinoctial orbit elements - Application to artificial satellite
 // orbitsCefola, P., 1972, September. Equinoctial orbit elements-Application to
 // artificial satellite orbits. In Astrodynamics Conference (p. 937).
-
+ 
 std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel, double mu, bool retrogade)
 {
     {
