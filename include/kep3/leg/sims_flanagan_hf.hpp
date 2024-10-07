@@ -102,17 +102,28 @@ public:
 
     // Compute constraints
     [[nodiscard]] std::array<double, 7> get_state_derivative(std::array<double, 7> state,
-                                                             std::array<double, 3> throttles);
+                                                             std::array<double, 3> throttles) const;
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints();
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
     [[nodiscard]] std::vector<double> compute_constraints();
 
     [[nodiscard]] std::vector<double> set_and_compute_constraints(std::vector<double> chromosome);
 
-    // Compute mismatch constraint gradients (w.r.t. rvm state and w.r.t. throttles)
-    [[nodiscard]] std::tuple<std::array<std::array<double, 7u>, 5u>, std::array<std::array<double, 49u>, 5u>,
-               std::array<std::array<double, 21u>, 5u>>
-    compute_mc_grad();
+    // Compute all gradients w.r.t. all legs
+    [[nodiscard]]
+    std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
+               std::vector<std::array<double, 7u>>> compute_all_gradients();
+
+    // Process all gradients to retrieve relevant gradients (w.r.t. initial and final rvm state as well as w.r.t.
+    // throttles and tof)
+    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+    get_relevant_gradients(std::vector<std::array<double, 49u>> &dxdx_per_seg,
+                           std::vector<std::array<double, 21u>> &dxdu_per_seg,
+                           std::vector<std::array<double, 7u>> &dxdtof_per_seg) const;
+
+    // Compute mismatch constraint gradients (w.r.t. initial and final rvm state as well as w.r.t. throttles and
+    // tof)
+    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> compute_mc_grad();
 
     // Compute throttle constraint gradients
     [[nodiscard]] std::vector<double> compute_tc_grad() const;

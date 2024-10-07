@@ -40,11 +40,6 @@
 namespace kep3::leg
 {
 
-using kep3::linalg::mat13;
-using kep3::linalg::mat61;
-using kep3::linalg::mat63;
-using kep3::linalg::mat66;
-
 // Constructors
 
 sims_flanagan_hf::sims_flanagan_hf()
@@ -444,7 +439,7 @@ std::vector<double> sims_flanagan_hf::compute_constraints()
     retval[4] = eq_con[4];
     retval[5] = eq_con[5];
     retval[6] = eq_con[6];
-    //  Inequality Constraints
+    // Inequality Constraints
     auto ineq_con = compute_throttle_constraints();
     std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 7);
     return retval;
@@ -458,7 +453,7 @@ std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<do
     std::copy(chromosome.begin() + 7, chromosome.begin() + 7 + m_nseg * 3, throttles.begin());
     std::array<double, 7> rvmf;
     std::copy(chromosome.begin() + 7 + m_nseg * 3, chromosome.begin() + 7 + m_nseg * 3 + 7, rvmf.begin());
-    double time_of_flight = chromosome[29];
+    double time_of_flight = chromosome[(7 + m_nseg * 3 + 7 + 1) - 1];
     // Set relevant quantities before evaluating constraints
     set(rvms, throttles, rvmf, time_of_flight);
     // Evaluate and return constraints
@@ -467,7 +462,7 @@ std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<do
 
 // Return specific two-body 'stark' dynamics state derivative
 std::array<double, 7> sims_flanagan_hf::get_state_derivative(std::array<double, 7> state,
-                                                             std::array<double, 3> throttles)
+                                                             std::array<double, 3> throttles) const
 {
 
     std::array<double, 3> thrusts;
@@ -498,14 +493,17 @@ std::array<double, 7> sims_flanagan_hf::get_state_derivative(std::array<double, 
     return dstatedt;
 }
 
-std::tuple<std::array<std::array<double, 7u>, 5u>, std::array<std::array<double, 49u>, 5u>,
-           std::array<std::array<double, 21u>, 5u>>
-sims_flanagan_hf::compute_mc_grad()
+std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
+           std::vector<std::array<double, 7u>>>
+sims_flanagan_hf::compute_all_gradients()
 {
     // Initialise
-    std::array<std::array<double, 7u>, 5u> xf_per_seg = {{{0}}};
-    std::array<std::array<double, 49u>, 5u> dxdx_per_seg = {{{0}}};
-    std::array<std::array<double, 21u>, 5u> dxdu_per_seg = {{{0}}};
+    std::vector<std::array<double, 7u>> xf_per_seg(m_nseg, {0});
+    std::vector<std::array<double, 49u>> dxdx_per_seg(m_nseg, {0});
+    std::vector<std::array<double, 21u>> dxdu_per_seg(m_nseg, {0});
+    // For ToF gradient
+    std::vector<std::array<double, 7u>> x0_per_seg(m_nseg, {0});
+    std::vector<std::array<double, 7u>> dxdtof_per_seg(m_nseg, {0});
 
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
@@ -577,7 +575,152 @@ sims_flanagan_hf::compute_mc_grad()
         }
     }
 
-    return std::make_tuple(xf_per_seg, dxdx_per_seg, dxdu_per_seg);
+    // Get ToF gradients
+    // Initialize initial state matrix
+    if (m_nseg_fwd > 0) {
+        x0_per_seg[0] = m_rvms;
+    }
+    for (unsigned int i(1); i < m_nseg_fwd; ++i) {
+        x0_per_seg[i] = xf_per_seg[i - 1];
+    }
+    if (m_nseg_bck > 0) {
+        x0_per_seg[m_nseg - 1] = m_rvmf;
+    }
+    for (unsigned int i(1); i < m_nseg_bck; ++i) {
+        x0_per_seg[(m_nseg - 1) - i] = xf_per_seg[(m_nseg - 1) - (i - 1)];
+    }
+
+    for (unsigned int i(0); i < dxdtof_per_seg.size(); ++i) {
+        std::array<double, 3> current_throttles = {m_throttles[i * 3], m_throttles[i * 3 + 1], m_throttles[i * 3 + 2]};
+        dxdtof_per_seg[i] = get_state_derivative(x0_per_seg[i], current_throttles);
+    }
+
+    return std::make_tuple(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
+}
+
+std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &dxdx_per_seg,
+                                         std::vector<std::array<double, 21u>> &dxdu_per_seg,
+                                         std::vector<std::array<double, 7u>> &dxdtof_per_seg) const
+{
+
+    auto xt_dxdx_per_seg = xt::adapt(reinterpret_cast<double *>(dxdx_per_seg.data()), {m_nseg, 49u});
+    // Mn_o will contain [Mnf-1, Mnf-1@Mnf-2, Mnf-2@Mnf-3, Mnf-1@M0, Mnf, Mnf@Mnf+1, Mnf@Mnf+2, Mnf@Mn]
+    std::vector<xt::xarray<double>> Mn_o(m_nseg, xt::zeros<double>({7u, 7u}));
+    // Fwd leg
+    xt::xarray<double> final_M;
+    xt::xarray<double> current_M;
+    if (m_nseg_fwd > 0) {
+        Mn_o[0] = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1, xt::all()), {7, 7});
+        for (unsigned int i(0); i < m_nseg_fwd - 1; ++i) {
+            current_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1 - (i + 1), xt::all()), {7, 7});
+            if (i == 0) {
+                final_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1, xt::all()), {7, 7});
+            } else {
+                final_M = Mn_o[i];
+            }
+            Mn_o[i + 1] = xt::linalg::dot(final_M, current_M);
+        }
+    }
+    // Bck leg
+    if (m_nseg_bck > 0) {
+        Mn_o[m_nseg_fwd] = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd, xt::all()), {7, 7});
+        for (unsigned int i(0); i < m_nseg_bck - 1; ++i) {
+            current_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd + (i + 1), xt::all()), {7, 7});
+            if (i == 0) {
+                final_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd, xt::all()), {7, 7});
+            } else {
+                final_M = Mn_o[m_nseg_fwd + i];
+            }
+            Mn_o[m_nseg_fwd + i + 1] = xt::linalg::dot(final_M, current_M);
+        }
+    }
+
+    // Initial and final displacements
+    std::array<double, 49> grad_rvm = {0};
+    auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
+    if (m_nseg_fwd > 0) {
+        xt::view(xgrad_rvm, xt::all(), xt::all()) = xt::view(Mn_o[m_nseg_fwd - 1], xt::all(), xt::all());
+    } else {
+        xt::view(xgrad_rvm, xt::all(), xt::all()) = xt::eye(7);
+    }
+
+    std::array<double, 49> grad_rvm_bck = {0};
+    auto xgrad_rvm_bck = xt::adapt(grad_rvm_bck, {7u, 7u});
+    if (m_nseg_bck > 0) {
+        xt::view(xgrad_rvm_bck, xt::all(), xt::all())
+            = xt::view(Mn_o[m_nseg - 1], xt::all(), xt::all()) * -1; // Multiple by -1 because mass correlation is -1.
+    } else {
+        xt::view(xgrad_rvm_bck, xt::all(), xt::all()) = xt::eye(7) * -1;
+    }
+
+    // Throttle derivatives
+    xt::xarray<double> xt_dxdu_per_seg = xt::adapt(reinterpret_cast<double *>(dxdu_per_seg.data()), {m_nseg, 21u});
+    std::vector<double> grad_final_throttle(static_cast<size_t>(7) * (m_nseg * 3u), 0.);
+    auto xgrad_final_throttle = xt::adapt(grad_final_throttle, {7u, static_cast<unsigned>(m_nseg) * 3u});
+    xt::xarray<double> corresponding_M;
+    xt::xarray<double> current_U;
+    for (unsigned int i(0); i < m_nseg; ++i) {
+        current_U = xt::reshape_view(xt::view(xt_dxdu_per_seg, i, xt::all()), {7, 3});
+        if (i == m_nseg_fwd - 1) {
+            corresponding_M = xt::eye(7);
+        } else if (i == m_nseg_fwd) {
+            corresponding_M = xt::eye(7) * -1; // Multiple by -1 because mass correlation is -1.
+        } else if (i <= m_nseg_fwd - 2 && m_nseg_fwd >= 2) {
+            corresponding_M = Mn_o[m_nseg_fwd - 2 - i];
+        } else if (i > m_nseg_fwd) {
+            corresponding_M = Mn_o[i - 1] * -1; // Multiple by -1 because mass correlation is -1.
+        } else {
+            throw std::runtime_error("During calculation of the throttle derivatives, the index doesn't correspond to "
+                                     "any leg and therefore cannot find the corresponding gradients.");
+        }
+        xt::view(xgrad_final_throttle, xt::all(), xt::range(3 * i, 3 * (i + 1)))
+            = xt::linalg::dot(corresponding_M, current_U);
+    }
+
+    // ToF derivatives
+    xt::xarray<double> xt_dxdtof_per_seg = xt::adapt(reinterpret_cast<double *>(dxdtof_per_seg.data()), {m_nseg, 7u});
+    std::vector<double> grad_final_tof(static_cast<size_t>(7), 0.);
+    auto xgrad_final_tof = xt::adapt(grad_final_tof, {7u, 1u});
+    for (unsigned int i(0); i < m_nseg; ++i) {
+        xt::xarray<double> current_F = xt::reshape_view(xt::view(xt_dxdtof_per_seg, i, xt::all()), {7, 1});
+        if ((i <= m_nseg_fwd - 1) && m_nseg_fwd > 0) {
+            corresponding_M = Mn_o
+                [m_nseg_fwd - 1
+                 - i]; // +1 w.r.t. throttle derivatives because dx/dtof is defined at begin of leg rather than end
+        } else if ((static_cast<int>(i) > static_cast<int>(m_nseg_fwd) - 1) && m_nseg_bck > 0) {
+            corresponding_M = Mn_o[i]; // Idem
+        } else {
+            throw std::runtime_error("During calculation of the tof derivatives, the index doesn't correspond to "
+                                     "any leg and therefore cannot find the corresponding gradients.");
+        }
+        xgrad_final_tof += xt::linalg::dot(corresponding_M, current_F);
+    }
+    xgrad_final_tof /= m_nseg;
+
+    // Combine throttle and tof matrices
+    std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
+    auto xgrad_final = xt::adapt(grad_final, {7u, static_cast<unsigned>(m_nseg) * 3u + 1u});
+    xt::view(xgrad_final, xt::all(), xt::range(0, m_nseg * 3)) = xt::view(xgrad_final_throttle, xt::all(), xt::all());
+    xt::view(xgrad_final, xt::all(), m_nseg * 3) = xt::view(xgrad_final_tof, xt::all(), 0);
+
+    return {std::move(grad_rvm), std::move(grad_rvm_bck), std::move(grad_final)};
+}
+
+std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan_hf::compute_mc_grad()
+{
+    // Initialise
+    std::vector<std::array<double, 49u>> dxdx_per_seg;
+    std::vector<std::array<double, 21u>> dxdu_per_seg;
+    std::vector<std::array<double, 7u>> dxdtof_per_seg;
+    std::tie(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg) = compute_all_gradients();
+
+    std::array<double, 49> grad_rvm = {0};
+    std::array<double, 49> grad_rvm_bck = {0};
+    std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
+    std::tie(grad_rvm, grad_rvm_bck, grad_final) = get_relevant_gradients(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
+
+    return {grad_rvm, grad_rvm_bck, grad_final};
 }
 
 std::vector<double> sims_flanagan_hf::compute_tc_grad() const

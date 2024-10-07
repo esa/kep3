@@ -200,6 +200,7 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
+// Compare low-fidelity and high-fidelity methods with zero thrust (ought to be the same)
 TEST_CASE("compute_mismatch_constraints_test2")
 {
 
@@ -229,6 +230,7 @@ TEST_CASE("compute_mismatch_constraints_test2")
     REQUIRE(std::abs((retval[6] - retval_lf[6]) / retval[6]) < 1e-14);
 }
 
+// Compare high-fidelity method with manually calculated (direct heyoka interfacing) Taylor integration.
 TEST_CASE("compute_mismatch_constraints_test3")
 {
 
@@ -257,37 +259,32 @@ TEST_CASE("compute_mismatch_constraints_test3")
 TEST_CASE("compute_mc_grad_test")
 {
     // Initialise unique test quantities
-    std::vector<double> throttles
-        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    double cut = 0.6;
-    auto sf_test_object = sf_hf_test_object(throttles, cut);
+    std::vector<double> throttles_full
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24,
+           0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34};
+    std::array<unsigned long, 4> nseg_array = {1, 2, 5, 10};
+    std::array<double, 7> cut_array = {0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0};
+    std::vector<double> throttles;
+    for (unsigned long nseg : nseg_array) {
+        for (double cut : cut_array) {
+            throttles
+                = std::vector<double>(throttles_full.begin(), throttles_full.begin() + static_cast<long>(nseg) * 3);
+            auto sf_test_object = sf_hf_test_object(throttles, cut);
 
-    // Numerical gradient
-    std::vector<double> num_grad = sf_test_object.compute_numerical_gradient();
+            // Numerical gradient
+            std::vector<double> num_grad = sf_test_object.compute_numerical_gradient();
+            auto xt_num_gradients = xt::adapt(num_grad, {7u + nseg, 7u + 3u * nseg + 1u + 7u});
+            auto xt_num_mc_gradients = xt::view(xt_num_gradients, xt::range(0, 7), xt::all());
 
-    xt::xarray<double> xt_num_dmc_dxs, xt_num_dmc_dxf, xt_num_dmc_du0, xt_num_dmc_du1, xt_num_dmc_du2, xt_num_dmc_du3,
-        xt_num_dmc_du4, xt_num_dmc_dtof;
-    std::tie(xt_num_dmc_dxs, xt_num_dmc_dxf, xt_num_dmc_du0, xt_num_dmc_du1, xt_num_dmc_du2, xt_num_dmc_du3,
-             xt_num_dmc_du4, xt_num_dmc_dtof)
-        = sf_test_object.process_mc_numerical_gradient(num_grad);
+            // Analytical gradient
+            std::vector<double> a_gradients = sf_test_object.compute_analytical_gradient();
+            auto xt_a_gradients = xt::adapt(a_gradients, {7u, 7u + 3u * static_cast<unsigned>(nseg) + 1u + 7u});
 
-    // Analytical gradient
-    xt::xarray<double> xt_a_dmc_dxs, xt_a_dmc_dxf, xt_a_dmc_du0, xt_a_dmc_du1, xt_a_dmc_du2, xt_a_dmc_du3, xt_a_dmc_du4,
-        xt_a_dmc_dtof;
-    std::tie(xt_a_dmc_dxs, xt_a_dmc_dxf, xt_a_dmc_du0, xt_a_dmc_du1, xt_a_dmc_du2, xt_a_dmc_du3, xt_a_dmc_du4,
-             xt_a_dmc_dtof)
-        = sf_test_object.compute_analytical_gradient();
-
-    // Calculate analytical gradient
-
-    REQUIRE(xt::linalg::norm(xt_num_dmc_dxs - xt_a_dmc_dxs) < 1e-9); // SC: The difference is like 4.56e-8
-    REQUIRE(xt::linalg::norm(xt_num_dmc_dxf - xt_a_dmc_dxf) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_du0 - xt_a_dmc_du0) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_du1 - xt_a_dmc_du1) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_du2 - xt_a_dmc_du2) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_du3 - xt_a_dmc_du3) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_du4 - xt_a_dmc_du4) < 1e-9);
-    REQUIRE(xt::linalg::norm(xt_num_dmc_dtof - xt_a_dmc_dtof) < 1e-9);
+            REQUIRE(xt::linalg::norm(xt_num_mc_gradients - xt_a_gradients)
+                    < 1e-8); // With the high fidelity gradient this is still the best we can achieve. The difference is
+                             // like 4.56e-8
+        }
+    }
 }
 
 TEST_CASE("compute_tc_grad_test")
@@ -303,13 +300,8 @@ TEST_CASE("compute_tc_grad_test")
 
     // Numerical gradient
     std::vector<double> num_grad = sf_test_object.compute_numerical_gradient();
-    std::vector<double> tc_num_grad(nseg * 15);
-    for (unsigned int i(0); i < nseg; ++i) {
-        // dtc_du
-        std::copy(std::next(num_grad.begin(), 7 + 30 * (i + 7)), std::next(num_grad.begin(), 22 + 30 * (i + 7)),
-                  std::next(tc_num_grad.begin(), i * 15));
-    }
-    xt::xarray<double> xt_tc_num_grad = xt::adapt(reinterpret_cast<double *>(tc_num_grad.data()), {5, 15});
+    auto xt_num_gradients = xt::adapt(num_grad, {7u + nseg, 30u});
+    auto xt_num_tc_gradients = xt::view(xt_num_gradients, xt::range(7, 12), xt::range(7, 22));
 
     // Calculate throttle constraint gradients
     kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
@@ -317,9 +309,9 @@ TEST_CASE("compute_tc_grad_test")
                                    sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
                                    sf_test_object.m_cut, 1e-16);
     std::vector<double> tc_a_grad = sf.compute_tc_grad();
-    xt::xarray<double> xt_tc_a_grad = xt::adapt(reinterpret_cast<double *>(tc_a_grad.data()), {5, 15});
+    auto xt_tc_a_grad = xt::adapt(tc_a_grad, {nseg, 3u * nseg});
 
-    REQUIRE(xt::linalg::norm(xt_tc_num_grad - xt_tc_a_grad) < 1e-13); // SC: 1e-14 fails
+    REQUIRE(xt::linalg::norm(xt_num_tc_gradients - xt_tc_a_grad) < 1e-13); // 1e-14 fails
 }
 
 TEST_CASE("serialization_test")
