@@ -125,6 +125,30 @@ std::string leg_sf_nseg_docstring();
 std::string leg_sf_nseg_fwd_docstring();
 std::string leg_sf_nseg_bck_docstring();
 
+// LEG
+// Sims Flanagan High-Fidelity
+std::string leg_sf_hf_docstring();
+std::string leg_sf_hf_rvs_docstring();
+std::string leg_sf_hf_ms_docstring();
+std::string leg_sf_hf_throttles_docstring();
+std::string leg_sf_hf_rvf_docstring();
+std::string leg_sf_hf_mf_docstring();
+std::string leg_sf_hf_tof_docstring();
+std::string leg_sf_hf_max_thrust_docstring();
+std::string leg_sf_hf_isp_docstring();
+std::string leg_sf_hf_mu_docstring();
+std::string leg_sf_hf_cut_docstring();
+std::string leg_sf_hf_mc_docstring();
+std::string leg_sf_hf_tc_docstring();
+std::string leg_sf_hf_mc_grad_docstring();
+std::string leg_sf_hf_tc_grad_docstring();
+std::string leg_sf_hf_nseg_docstring();
+std::string leg_sf_hf_nseg_fwd_docstring();
+std::string leg_sf_hf_nseg_bck_docstring();
+std::string leg_sf_hf_tas_docstring();
+std::string leg_sf_hf_tas_var_docstring();
+
+
 } // namespace pykep
 
 #endif

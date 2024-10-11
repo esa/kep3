@@ -7,3 +7,6 @@ Interplanetary transfer legs
 
 .. autoclass:: sims_flanagan
    :members:
+
+.. autoclass:: sims_flanagan_hf
+   :members:

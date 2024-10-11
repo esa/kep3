@@ -69,7 +69,8 @@ void sims_flanagan::set_ms(double mass)
 }
 void sims_flanagan::set_throttles(std::vector<double> throttles)
 {
-    _check_throttles(throttles, m_nseg);
+    auto nseg = static_cast<unsigned>(throttles.size()) / 3u;
+    _check_throttles(throttles, nseg);
     m_throttles = std::move(throttles);
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);

@@ -65,9 +65,10 @@ public:
     void set_mu(double mu);
     void set_cut(double cut);
     void set_tol(double tol);
-    void set_tas(heyoka::taylor_adaptive<double> tas);
     void set_rvms(std::array<double, 7> rvms);
     void set_rvmf(std::array<double, 7> rvmf);
+    void set_tas(heyoka::taylor_adaptive<double> tas);
+    void set_tas_var(heyoka::taylor_adaptive<double> tas_var);
     void set_walking_rvm(std::array<double, 7> rvm);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,

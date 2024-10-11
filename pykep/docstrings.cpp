@@ -1847,4 +1847,197 @@ Examples:
 )";
 };
 
+std::string leg_sf_hf_docstring()
+{
+    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5, tol=1e-16)
+
+      This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
+      The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment:
+
+      Lantoine, Gregory & Russell, Ryan. (2009). The Stark Model: an exact, closed-form approach to low-thrust trajectory optimization. 
+
+      The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
+
+      Args:
+          *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
+
+          *ms* (:class:`float`): initial mass. Defaults to 1.
+
+          *throttles* (1D array-like): the Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....]. Defaults to a ballistic, two segments profile [0,0,0,0,0,0].
+
+          *rvf* (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].
+
+          *mf* (:class:`float`): final mass. Defaults to 1.
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
+
+          *isp* (:class:`float`): specific impulse of the propulasion system. Defaults to 1.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *cut* (:class:`float`): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.
+
+          *tol* (:class:`float`): the leg tolerance, in [0,1]. It determines the tolerance allowed by the heyoka Taylor integrator. Defaults to 1e-16.
+
+      .. note::
+
+        Units need to be consistent. 
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf_hf = pk.leg.sims_flanagan_hf()
+)";
+}
+std::string leg_sf_hf_rvs_docstring()
+{
+    return "The initial position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].";
+};
+std::string leg_sf_hf_ms_docstring()
+{
+    return "Initial mass.";
+};
+std::string leg_sf_hf_throttles_docstring()
+{
+    return "The Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....].";
+};
+std::string leg_sf_hf_rvf_docstring()
+{
+    return "The final position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].";
+};
+std::string leg_sf_hf_mf_docstring()
+{
+    return "Final mass.";
+};
+std::string leg_sf_hf_tof_docstring()
+{
+    return "Time of flight.";
+};
+std::string leg_sf_hf_max_thrust_docstring()
+{
+    return "Maximum spacecraft thruet.";
+};
+std::string leg_sf_hf_isp_docstring()
+{
+    return "Specific impulse of the propulasion system";
+};
+std::string leg_sf_hf_mu_docstring()
+{
+    return "Central body gravitational parameter.";
+};
+std::string leg_sf_hf_cut_docstring()
+{
+    return "The leg cut: it determines the number of forward and backward segments.";
+};
+std::string leg_sf_hf_nseg_docstring()
+{
+    return "The total number of segments";
+};
+std::string leg_sf_hf_nseg_bck_docstring()
+{
+    return "The total number of backward segments";
+};
+std::string leg_sf_hf_nseg_fwd_docstring()
+{
+    return "The total number of forward segments";
+};
+std::string leg_sf_hf_tas_docstring()
+{
+    return "The Taylor integrator";
+};
+std::string leg_sf_hf_tas_var_docstring()
+{
+    return "The Taylor integrator with variational variables";
+};
+std::string leg_sf_hf_mc_docstring()
+{
+    return R"(compute_mismatch_constraints()
+
+      In the Sims-Flanagan trajectory leg model, a forward propagation is performed from the starting state as well as a backward from the final state.
+      The state values thus computed need to match in some middle control point. This is typically imposed as 7 independent constraints called mismatch-constraints
+      computed by this method. 
+
+      Returns:
+          :class:`list` [:class:`float`]: The seven mismatch constraints in the same units used to construct the leg.
+      
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf_hf = pk.leg.sims_flanagan_hf()
+        >>> sf_hf.compute_mismatch_constraints()
+)";
+};
+std::string leg_sf_hf_tc_docstring()
+{
+    return R"(compute_throttle_constraints()
+
+      In the Sims-Flanagan trajectory leg model implemented in pykep, we introduce the concept of throttles. Each throttle is defined by three numbers
+      :math:`[u_x, u_y, u_z] \in [0,1]` indicating that a certain component of the thrust vector has reached a fraction of its maximum allowed value. 
+      As a consequence, along the segment along which the throttle is applied, the constraint  :math:`u_x ^2 + u_y ^2 + u_z^2 = 1`, called a throttle constraint,
+      has to be met. 
+
+      Returns:
+          :class:`list` [:class:`float`]: The throttle constraints.
+      
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf_hf = pk.leg.sims_flanagan_hf()
+        >>  sf_hf.throttles = [0.8]*3
+        >>> sf_hf.compute_throttle_constraints()
+)";
+};
+std::string leg_sf_hf_mc_grad_docstring()
+{
+    return R"(compute_mc_grad()
+
+Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]`, the
+final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`, the total time of flight with :math:`T` and the introducing the augmented throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradients:
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_s}
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_f}
+
+.. math::
+  \frac{\partial \mathbf {mc}}{\partial \mathbf u}
+
+Returns:
+    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3)
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> sf_hf = pk.leg.sims_flanagan_hf()
+  >>  sf_hf.throttles = [0.8]*3
+  >>> sf_hf.compute_mc_grad()
+)";
+};
+
+std::string leg_sf_hf_tc_grad_docstring()
+{
+    return R"(compute_tc_grad()
+
+Computes the gradients of the throttles constraints. Indicating the total time of flight with :math:`T` and introducing the augmented throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradient:
+
+.. math::
+  \frac{\partial \mathbf {tc}}{\partial \mathbf u}
+
+Returns:
+    :class:`tuple` [:class:`numpy.ndarray`]: The gradient. Size will be (nseg,nseg*3).
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> sf_hf = pk.leg.sims_flanagan_hf()
+  >>  sf_hf.throttles = [0.8]*3
+  >>> sf_hf.compute_tc_grad()
+)";
+};
+
 } // namespace pykep

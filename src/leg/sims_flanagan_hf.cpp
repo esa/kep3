@@ -139,7 +139,8 @@ void sims_flanagan_hf::set_ms(double mass)
 }
 void sims_flanagan_hf::set_throttles(std::vector<double> throttles)
 {
-    _check_throttles(throttles, m_nseg);
+    auto nseg = static_cast<unsigned>(throttles.size()) / 3u;
+    _check_throttles(throttles, nseg);
     m_throttles = std::move(throttles);
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
@@ -200,6 +201,14 @@ void sims_flanagan_hf::set_rvms(std::array<double, 7> rvms)
 void sims_flanagan_hf::set_rvmf(std::array<double, 7> rvmf)
 {
     m_rvmf = rvmf;
+}
+void sims_flanagan_hf::set_tas(heyoka::taylor_adaptive<double> tas)
+{
+    m_tas = tas;
+}
+void sims_flanagan_hf::set_tas_var(heyoka::taylor_adaptive<double> tas_var)
+{
+    m_tas_var = tas_var;
 }
 
 void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,

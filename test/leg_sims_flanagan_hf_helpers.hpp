@@ -99,7 +99,7 @@ struct sf_hf_test_object {
         return m_mc_manual;
     };
 
-    [[nodiscard]] void set_cut(double cut)
+    void set_cut(double cut)
     {
         m_cut = cut;
     }
