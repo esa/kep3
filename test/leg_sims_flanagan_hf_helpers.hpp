@@ -10,6 +10,7 @@
 #ifndef kep3_TEST_LEG_SIMS_FLANAGAN_HF_HELPERS_H
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_HELPERS_H
 
+#include <cstddef>
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
@@ -48,27 +49,27 @@ struct sf_hf_test_object {
     // Default constructor
     sf_hf_test_object() = default;
 
-    sf_hf_test_object(std::vector<double> throttles) : m_throttles(throttles)
+    explicit sf_hf_test_object(std::vector<double> &throttles) : m_throttles(throttles)
     {
-        for (unsigned int i(0); i < m_throttles.size(); ++i) {
-            m_thrusts.push_back(m_throttles[i] * m_max_thrust);
+        for (double m_throttle : m_throttles) {
+            m_thrusts.push_back(m_throttle * m_max_thrust);
         }
     }
 
-    sf_hf_test_object(double cut) : m_cut(cut) {}
+    explicit sf_hf_test_object(double cut) : m_cut(cut) {}
 
-    sf_hf_test_object(std::vector<double> throttles, double cut) : m_cut(cut), m_throttles(throttles)
+    sf_hf_test_object(std::vector<double> &throttles, double cut) : m_cut(cut), m_throttles(throttles)
     {
-        for (unsigned int i(0); i < m_throttles.size(); ++i) {
-            m_thrusts.push_back(m_throttles[i] * m_max_thrust);
+        for (double m_throttle : m_throttles) {
+            m_thrusts.push_back(m_throttle * m_max_thrust);
         }
     }
 
     // Retrieve mismatch constraints from manual heyoka Taylor adaptive integrator
     [[nodiscard]] std::array<double, 7> compute_manual_mc()
     {
-        for (unsigned int i(0); i < m_throttles.size(); ++i) {
-            m_thrusts.push_back(m_throttles[i] * m_max_thrust);
+        for (double m_throttle : m_throttles) {
+            m_thrusts.push_back(m_throttle * m_max_thrust);
         }
 
         m_new_ta = heyoka::taylor_adaptive<double>{kep3::ta::stark_dyn(), m_rvms, heyoka::kw::tol = m_tol};
@@ -104,7 +105,7 @@ struct sf_hf_test_object {
         m_cut = cut;
     }
 
-    std::vector<double> compute_numerical_gradient()
+    [[nodiscard]] std::vector<double> compute_numerical_gradient()
     {
         // Create SF leg.
         kep3::leg::sims_flanagan_hf sf_num(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu,
@@ -123,7 +124,7 @@ struct sf_hf_test_object {
             [&sf_num](const std::vector<double> &x) { return sf_num.set_and_compute_constraints(x); }, chromosome);
     }
 
-    std::vector<double> compute_analytical_gradient()
+    [[nodiscard]] std::vector<double> compute_analytical_gradient() const
     {
         // Initialise
         kep3::leg::sims_flanagan_hf sf_a(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu, m_cut,
@@ -138,7 +139,7 @@ struct sf_hf_test_object {
         auto xgrad_final = xt::adapt(grad_final, {7u, nseg * 3u + 1u});
 
         // Cast gradients into a single vector
-        std::vector<double> gradient(7u * (7u + static_cast<unsigned>(nseg) * 3u + 1u + 7u), 0);
+        std::vector<double> gradient(static_cast<size_t>(7u * (7u + static_cast<unsigned>(nseg) * 3u + 1u + 7u)), 0);
         auto xgradient = xt::adapt(gradient, {7u, 7u + static_cast<unsigned>(nseg) * 3u + 1u + 7u});
         xt::view(xgradient, xt::all(), xt::range(0u, 7u)) = xt::view(xgrad_rvm, xt::all(), xt::all()); // dmc_dxs
         xt::view(xgradient, xt::all(), xt::range(7u, 7u + nseg * 3u))
@@ -154,9 +155,9 @@ struct sf_hf_test_object {
     // Member attributes
     std::vector<double> m_num_grad;
     heyoka::taylor_adaptive<double> m_new_ta;
-    std::array<double, 7> m_fwd_final_state;
-    std::array<double, 7> m_bck_final_state;
-    std::array<double, 7> m_mc_manual;
+    std::array<double, 7> m_fwd_final_state{};
+    std::array<double, 7> m_bck_final_state{};
+    std::array<double, 7> m_mc_manual{};
     std::array<std::array<double, 3>, 2> m_rvs{{{1, 0.1, -0.1}, {0.2, 1, -0.2}}};
     std::array<std::array<double, 3>, 2> m_rvf{{{1.2, -0.1, 0.1}, {-0.2, 1.023, -0.44}}};
     double m_ms = 1;
@@ -169,9 +170,9 @@ struct sf_hf_test_object {
     std::vector<double> m_throttles = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::vector<double> m_thrusts;
     double m_tol = 1e-16;
-    const std::vector<double> m_rvms
+    std::vector<double> m_rvms
         = {m_rvs[0][0], m_rvs[0][1], m_rvs[0][2], m_rvs[1][0], m_rvs[1][1], m_rvs[1][2], m_ms};
-    const std::vector<double> m_rvmf
+    std::vector<double> m_rvmf
         = {m_rvf[0][0], m_rvf[0][1], m_rvf[0][2], m_rvf[1][0], m_rvf[1][1], m_rvf[1][2], m_mf};
 };
 
