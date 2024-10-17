@@ -1899,6 +1899,10 @@ std::string leg_sf_hf_ms_docstring()
 {
     return "Initial mass.";
 };
+std::string leg_sf_hf_rvms_docstring()
+{
+    return "The initial position vector, velocity, and mass: [xs, ys, zs, vxs, vys, vzs, ms].";
+};
 std::string leg_sf_hf_throttles_docstring()
 {
     return "The Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....].";
@@ -1910,6 +1914,10 @@ std::string leg_sf_hf_rvf_docstring()
 std::string leg_sf_hf_mf_docstring()
 {
     return "Final mass.";
+};
+std::string leg_sf_hf_rvmf_docstring()
+{
+    return "The final position vector, velocity, and mass: [xf, yf, zf, vxf, vyf, vzf, mf].";
 };
 std::string leg_sf_hf_tof_docstring()
 {
@@ -1930,6 +1938,10 @@ std::string leg_sf_hf_mu_docstring()
 std::string leg_sf_hf_cut_docstring()
 {
     return "The leg cut: it determines the number of forward and backward segments.";
+};
+std::string leg_sf_hf_tol_docstring()
+{
+    return "The tolerance of the Taylor adaptive integrator.";
 };
 std::string leg_sf_hf_nseg_docstring()
 {

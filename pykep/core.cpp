@@ -608,8 +608,10 @@ PYBIND11_MODULE(core, m) // NOLINT
                                   &kep3::leg::sims_flanagan_hf::set_##name,                                            \
                                   pykep::leg_sf_hf_##name##_docstring().c_str());
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvmf);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mf);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tof);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(max_thrust);
@@ -618,6 +620,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mu);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tol);
 
 #undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
 
