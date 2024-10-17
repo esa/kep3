@@ -142,6 +142,7 @@ std::string leg_sf_hf_mc_docstring();
 std::string leg_sf_hf_tc_docstring();
 std::string leg_sf_hf_mc_grad_docstring();
 std::string leg_sf_hf_tc_grad_docstring();
+std::string leg_sf_hf_get_state_history_docstring();
 std::string leg_sf_hf_nseg_docstring();
 std::string leg_sf_hf_nseg_fwd_docstring();
 std::string leg_sf_hf_nseg_bck_docstring();

@@ -12,6 +12,7 @@
 #include <iterator>
 #include <numeric>
 #include <stdexcept>
+#include <sys/types.h>
 #include <vector>
 
 #include <boost/range/algorithm.hpp>
@@ -435,7 +436,7 @@ std::vector<double> sims_flanagan_hf::compute_throttle_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::compute_constraints() 
+std::vector<double> sims_flanagan_hf::compute_constraints()
 {
     std::vector<double> retval(7 + m_nseg, 0.);
     // Fitness
@@ -454,7 +455,7 @@ std::vector<double> sims_flanagan_hf::compute_constraints()
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<double> chromosome) 
+std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<double> chromosome)
 {
     std::array<double, 7> rvms;
     std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
@@ -716,7 +717,8 @@ sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &d
     return {std::move(grad_rvm), std::move(grad_rvm_bck), std::move(grad_final)};
 }
 
-std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> sims_flanagan_hf::compute_mc_grad() const
+std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+sims_flanagan_hf::compute_mc_grad() const
 {
     // Initialise
     std::vector<std::array<double, 49u>> dxdx_per_seg;
@@ -741,6 +743,89 @@ std::vector<double> sims_flanagan_hf::compute_tc_grad() const
         retval[i * m_nseg * 3 + 3 * i + 2] = 2 * m_throttles[3 * i + 2];
     }
     return retval;
+}
+
+std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned int grid_points_per_segment) const
+{
+    // Get time grid
+    const double prop_seg_duration = (m_tof / m_nseg);
+    std::vector<double> leg_time_grid;
+    // Initial time
+    double timestep = 0.0;
+    leg_time_grid.push_back(timestep);
+
+    for (uint _(0); _ < grid_points_per_segment * m_nseg - 2; ++_) {
+        timestep += prop_seg_duration / (grid_points_per_segment - 1);
+        leg_time_grid.push_back(timestep);
+    }
+    // leg_time_grid.push_back(m_tof);
+    std::vector<double> current_leg_time_grid(grid_points_per_segment);
+
+    // Forward pass
+    // Initial state
+    // Set the Taylor Integration initial conditions
+    m_tas.set_time(0.);
+    std::copy(m_rvms.begin(), m_rvms.end(), m_tas.get_state_data());
+    std::vector<std::vector<double>> output_per_seg(m_nseg);
+
+    // Loop through segments in forward pass of Sims-Flanagan transcription
+    for (unsigned int i = 0u; i < m_nseg_fwd; ++i) {
+        // Assign current thrusts to Taylor adaptive integrator
+        if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
+            std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
+                      std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
+                      std::next(m_tas.get_pars_data(), 2));
+        } else {
+            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
+        }
+
+        // Current leg time grid
+        std::copy(std::next(leg_time_grid.begin(), i * (grid_points_per_segment - 1)),
+                  std::next(leg_time_grid.begin(), (i + 1) * (grid_points_per_segment - 1) + 1),
+                  current_leg_time_grid.begin());
+        m_tas.set_time(current_leg_time_grid.at(0));
+        // ... and integrate
+        auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
+        if (status != heyoka::taylor_outcome::time_limit) {
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+        }
+        output_per_seg.insert(output_per_seg.begin() + i, output_states);
+    }
+
+    // Backward pass
+    // Final state
+    // Set the Taylor Integration final conditions
+    m_tas.set_time(m_tof);
+    std::copy(m_rvmf.begin(), m_rvmf.end(), m_tas.get_state_data());
+    std::vector<double> back_time_grid(grid_points_per_segment);
+
+    // Loop through segments in backward pass of Sims-Flanagan transcription
+    for (unsigned int i = 0u; i < m_nseg_bck; ++i) {
+        // Assign current_thrusts to Taylor adaptive integrator
+        if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
+            // Copy thrust into Taylor-adaptive integrator
+            std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
+                      std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
+                      std::next(m_tas.get_pars_data(), 2));
+        } else {
+            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
+        }
+
+        // Current leg time grid
+        std::reverse_copy(leg_time_grid.begin() + (m_nseg - (i + 1)) * (grid_points_per_segment - 1),
+                          leg_time_grid.begin() + (m_nseg - i) * (grid_points_per_segment - 1) + 1,
+                          back_time_grid.begin());
+        m_tas.set_time(back_time_grid.at(0));
+
+        // ... and integrate
+        auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
+        if (status != heyoka::taylor_outcome::time_limit) {
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+        }
+        output_per_seg.insert(output_per_seg.begin() + m_nseg - 1 - i, output_states);
+    }
+
+    return output_per_seg;
 }
 
 std::ostream &operator<<(std::ostream &s, const sims_flanagan_hf &sf)

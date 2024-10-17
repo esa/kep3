@@ -2040,4 +2040,26 @@ Examples:
 )";
 };
 
+std::string leg_sf_hf_get_state_history_docstring()
+{
+    return R"(get_state_history()
+
+Retrieves the state history of the Sims-Flanagan leg at specified times defined
+by the grid_points_per_segment argument. This defines how many points are
+saved per segment: if grid_points_per_segment=4, then each segment will include its initial and final
+state as well as two temporally equidistant points. 
+
+
+Returns:
+    :class:`tuple` [:class:`numpy.ndarray`]: The state history. Size will be (nseg,grid_points_per_segment*7).
+
+Examples:
+  >>> import pykep as pk
+  >>> import numpy as np
+  >>> sf_hf = pk.leg.sims_flanagan_hf()
+  >>> grid_points_per_segment = 10
+  >>> sf_hf.get_state_history(grid_points_per_segment)
+)";
+};
+
 } // namespace pykep

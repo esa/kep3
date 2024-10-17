@@ -314,6 +314,33 @@ TEST_CASE("compute_tc_grad_test")
     REQUIRE(xt::linalg::norm(xt_num_tc_gradients - xt_tc_a_grad) < 1e-13); // 1e-14 fails
 }
 
+TEST_CASE("compute_state_history")
+{
+    // Get state history
+    kep3::leg::sims_flanagan_hf sf{};
+    auto mc = sf.compute_mismatch_constraints();
+    uint grid_points_per_segment = 4;
+    auto state_history = sf.get_state_history(grid_points_per_segment);
+
+    // Get fwd final state
+    std::vector<double> fwd_seg_sh = state_history.at(sf.get_nseg_fwd() - 1);
+    std::array<double, 7> final_fwd_state;
+    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7, fwd_seg_sh.begin() + grid_points_per_segment * 7,
+              final_fwd_state.begin());
+
+    // Get bck final state
+    std::vector<double> bck_seg_sh = state_history.at(sf.get_nseg_fwd());
+    std::array<double, 7> final_bck_state;
+    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7, bck_seg_sh.begin() + grid_points_per_segment * 7,
+              final_bck_state.begin());
+
+    // Get mismatch and calculate Linfty norm
+    std::transform(final_fwd_state.begin(), final_fwd_state.end(), final_bck_state.begin(), final_fwd_state.begin(),
+                   std::minus<double>());
+    std::array<double, 7> manual_mismatch = final_fwd_state; // final_fwd_state is overridden with the subtracted values
+    REQUIRE(kep3_tests::L_infinity_norm(manual_mismatch, mc) < 1e-15);
+}
+
 TEST_CASE("serialization_test")
 {
     // Instantiate a generic lambert problem

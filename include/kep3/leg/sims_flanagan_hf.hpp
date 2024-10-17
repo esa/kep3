@@ -124,10 +124,14 @@ public:
 
     // Compute mismatch constraint gradients (w.r.t. initial and final rvm state as well as w.r.t. throttles and
     // tof)
-    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> compute_mc_grad() const;
+    [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
+    compute_mc_grad() const;
 
     // Compute throttle constraint gradients
     [[nodiscard]] std::vector<double> compute_tc_grad() const;
+
+    // Retrieve the state history of the sims flanagan leg
+    [[nodiscard]] std::vector<std::vector<double>> get_state_history(const unsigned int grid_points_per_segment) const;
 
 private:
     friend class boost::serialization::access;

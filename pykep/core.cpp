@@ -691,6 +691,8 @@ PYBIND11_MODULE(core, m) // NOLINT
             return tc_python;
         },
         pykep::leg_sf_hf_tc_grad_docstring().c_str());
+    sims_flanagan_hf.def("get_state_history", &kep3::leg::sims_flanagan_hf::get_state_history,
+                      pykep::leg_sf_hf_get_state_history_docstring().c_str());
     sims_flanagan_hf.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf::get_nseg,
                                            pykep::leg_sf_hf_nseg_docstring().c_str());
     sims_flanagan_hf.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf::get_nseg_fwd,
