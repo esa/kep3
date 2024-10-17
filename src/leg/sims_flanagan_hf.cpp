@@ -794,7 +794,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
         if (status != heyoka::taylor_outcome::time_limit) {
             throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
         }
-        output_per_seg.insert(output_per_seg.begin() + i, output_states);
+        output_per_seg[i] =  output_states;
     }
 
     // Backward pass
@@ -827,7 +827,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
         if (status != heyoka::taylor_outcome::time_limit) {
             throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
         }
-        output_per_seg.insert(output_per_seg.begin() + m_nseg - 1 - i, output_states);
+        output_per_seg[m_nseg - 1 - i] =  output_states;
     }
 
     return output_per_seg;

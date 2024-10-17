@@ -341,6 +341,45 @@ TEST_CASE("compute_state_history")
     REQUIRE(kep3_tests::L_infinity_norm(manual_mismatch, mc) < 1e-15);
 }
 
+TEST_CASE("compute_state_history_2")
+{
+    // Initialise unique test quantities
+    std::vector<double> throttles
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24,
+           0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34};
+    double cut = 0.6;
+    // Initialise helper quantities
+    auto sf_test_object = sf_hf_test_object(throttles, cut);
+
+    kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
+                                   sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_cut, 1e-16);
+
+    // Get state history
+    auto mc = sf.compute_mismatch_constraints();
+    uint grid_points_per_segment = 4;
+    auto state_history = sf.get_state_history(grid_points_per_segment);
+
+    // Get fwd final state
+    std::vector<double> fwd_seg_sh = state_history.at(sf.get_nseg_fwd() - 1);
+    std::array<double, 7> final_fwd_state;
+    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7, fwd_seg_sh.begin() + grid_points_per_segment * 7,
+              final_fwd_state.begin());
+
+    // Get bck final state
+    std::vector<double> bck_seg_sh = state_history.at(sf.get_nseg_fwd());
+    std::array<double, 7> final_bck_state;
+    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7, bck_seg_sh.begin() + grid_points_per_segment * 7,
+              final_bck_state.begin());
+
+    // Get mismatch and calculate Linfty norm
+    std::transform(final_fwd_state.begin(), final_fwd_state.end(), final_bck_state.begin(), final_fwd_state.begin(),
+                   std::minus<double>());
+    std::array<double, 7> manual_mismatch = final_fwd_state; // final_fwd_state is overridden with the subtracted values
+    REQUIRE(kep3_tests::L_infinity_norm(manual_mismatch, mc) < 1e-15);
+}
+
 TEST_CASE("serialization_test")
 {
     // Instantiate a generic lambert problem
