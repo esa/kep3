@@ -163,6 +163,11 @@ void sims_flanagan_hf::set_throttles(std::vector<double>::const_iterator it1, st
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
+
+    // Convert throttles to current_thrusts.
+    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
+    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
+    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
 void sims_flanagan_hf::set_rvf(std::array<std::array<double, 3>, 2> rv)
 {
@@ -736,7 +741,7 @@ sims_flanagan_hf::compute_mc_grad() const
     std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
     std::tie(grad_rvm, grad_rvm_bck, grad_final) = get_relevant_gradients(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
 
-    return {grad_rvm, grad_rvm_bck, grad_final};
+    return {grad_rvm, grad_rvm_bck, std::move(grad_final)};
 }
 
 std::vector<double> sims_flanagan_hf::compute_tc_grad() const
