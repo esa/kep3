@@ -25,110 +25,139 @@
 struct sf_hf_bench_udp {
     sf_hf_bench_udp() = default;
     sf_hf_bench_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
-                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                double max_thrust, double isp, unsigned nseg, bool analytical)
-        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg), m_analytical(analytical)
+                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                    double max_thrust, double isp, unsigned nseg, bool analytical)
+        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg),
+          m_analytical(analytical),
+          m_leg(kep3::leg::sims_flanagan_hf(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0,
+                                            m_max_thrust, m_isp, 1.0, 0.5, 1e-16))
     {
+    }
+    [[nodiscard]] void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
+                                  std::array<std::array<double, 3>, 2> rvf,
+                                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                  double max_thrust, double isp, unsigned nseg, bool analytical)
+    {
+        m_rvs = rvs;
+        m_rvf = rvf;
+        m_ms = ms;
+        m_max_thrust = max_thrust;
+        m_isp = isp;
+        m_nseg = nseg;
+        m_analytical = analytical;
+        m_leg = kep3::leg::sims_flanagan_hf(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0,
+                                            m_max_thrust, m_isp, 1.0, 0.5, 1e-16);
+    }
+
+    [[nodiscard]] void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
+                               std::array<std::array<double, 3>, 2> rvf,
+                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                               double max_thrust, double isp, unsigned nseg, bool analytical)
+    {
+        m_rvs = rvs;
+        m_rvf = rvf;
+        m_ms = ms;
+        m_max_thrust = max_thrust;
+        m_isp = isp;
+        m_nseg = nseg;
+        m_analytical = analytical;
+        m_leg.set(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0, m_max_thrust, m_isp, 1.0, 0.5,
+                  1e-16);
     }
 
     [[nodiscard]] std::vector<double> fitness(const std::vector<double> &x) const
     {
         // x = [throttles, tof (in days), mf (in kg)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
-        double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
-        double mf = x[m_nseg * 3 + 1];              // in kg
-        kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+        double tof = x[m_nseg * 3];    // in s
+        double mf = x[m_nseg * 3 + 1]; // in kg
+        m_leg.set_tof(tof);
+        m_leg.set_mf(mf);
 
         // We set the throttles
-        leg.set_throttles(x.begin(), x.end() - 2);
+        m_leg.set_throttles(x.begin(), x.end() - 2);
 
         std::vector<double> retval(1 + 7 + m_nseg, 0.);
         // Fitness
         retval[0] = -mf;
         // Equality Constraints
-        auto eq_con = leg.compute_mismatch_constraints();
-        retval[1] = eq_con[0] / kep3::AU;
-        retval[2] = eq_con[1] / kep3::AU;
-        retval[3] = eq_con[2] / kep3::AU;
-        retval[4] = eq_con[3] / kep3::EARTH_VELOCITY;
-        retval[5] = eq_con[4] / kep3::EARTH_VELOCITY;
-        retval[6] = eq_con[5] / kep3::EARTH_VELOCITY;
-        retval[7] = eq_con[6] / 1e8; //
+        auto eq_con = m_leg.compute_mismatch_constraints();
+        retval[1] = eq_con[0];
+        retval[2] = eq_con[1];
+        retval[3] = eq_con[2];
+        retval[4] = eq_con[3];
+        retval[5] = eq_con[4];
+        retval[6] = eq_con[5];
+        retval[7] = eq_con[6];
         //  Inequality Constraints
-        auto ineq_con = leg.compute_throttle_constraints();
+        auto ineq_con = m_leg.compute_throttle_constraints();
         std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 8);
         return retval;
     }
 
-     [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const
-     {
+    [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const
+    {
         if (m_analytical) {
             return _gradient_analytical(x);
         } else {
             return _gradient_numerical(x);
         }
-     }
+    }
 
     [[nodiscard]] std::vector<double> _gradient_numerical(const std::vector<double> &x) const
     {
-        return pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+        auto num_grad = pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+        return num_grad;
     }
 
     [[nodiscard]] std::vector<double> _gradient_analytical(const std::vector<double> &x) const
     {
         // x = [throttles, tof (in days), mf (in kg)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
-        double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
-        double mf = x[m_nseg * 3 + 1];              // in kg
-        kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+        double tof = x[m_nseg * 3];    // in s
+        double mf = x[m_nseg * 3 + 1]; // in kg
+        m_leg.set_tof(tof);
+        m_leg.set_mf(mf);
         // We set the throttles
-        leg.set_throttles(x.begin(), x.end() - 2);
+        m_leg.set_throttles(x.begin(), x.end() - 2);
 
         // We compute the gradients
-        auto grad_mc_all = (leg.compute_mc_grad());
-        auto grad_tc = leg.compute_tc_grad();
-        auto grad_mc_xf = std::get<1>(grad_mc_all);
-        auto grad_mc = std::move(std::get<2>(grad_mc_all));
+        std::array<double, 49> grad_rvm = {0};
+        std::array<double, 49> grad_rvm_bck = {0};
+        std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
+        std::tie(grad_rvm, grad_rvm_bck, grad_final) = m_leg.compute_mc_grad();
+        auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
+        auto xgrad_rvm_bck = xt::adapt(grad_rvm_bck, {7u, 7u});
+        auto xgrad_final = xt::adapt(grad_final, {7u, static_cast<unsigned int>(m_nseg) * 3u + 1u});
 
-        // We allocate the final gradient containing all
+        std::vector<double> grad_tc = m_leg.compute_tc_grad();
+        auto xt_grad_tc = xt::adapt(grad_tc, {m_nseg, 3u * m_nseg});
+
+        // Initialise gradient
         std::vector<double> gradient((1u + 7u + m_nseg) * (m_nseg * 3u + 2u), 0);
         // Create the various xtensor objects adapting the std containers
         auto xgradient
             = xt::adapt(gradient, {1u + 7u + static_cast<unsigned>(m_nseg), static_cast<unsigned>(m_nseg) * 3u + 2u});
-        auto xgrad_mc = xt::adapt(grad_mc, {7u, static_cast<unsigned>(m_nseg) * 3u + 1u});
-        auto xgrad_mc_xf = xt::adapt(grad_mc_xf, {7u, 7u});
-        auto xgrad_tc = xt::adapt(grad_tc, {static_cast<unsigned>(m_nseg), static_cast<unsigned>(m_nseg) * 3u});
 
-        // Row 1 - fitness gradient
         xgradient(0, m_nseg * 3 + 1) = -1.; // fitness gradient - obj fun
-        // [1:4,:-1] - fitness gradient - position mismatch
         xt::view(xgradient, xt::range(1u, 4u), xt::range(0, m_nseg * 3u + 1u))
-            = xt::view(xgrad_mc, xt::range(0u, 3u), xt::all()) / kep3::AU; // throttles, tof
-        // [4:7,:-1] - fitness gradient - velocity mismatch
+            = xt::view(xgrad_final, xt::range(0u, 3u), xt::all()); // dmc/du
         xt::view(xgradient, xt::range(4u, 7u), xt::range(0, m_nseg * 3u + 1u))
-            = xt::view(xgrad_mc, xt::range(3u, 6u), xt::all()) / kep3::EARTH_VELOCITY; // throttles, tof
-        // [7:8,:-1] - fitness gradient - mass mismatch
-        xt::view(xgradient, xt::range(7u, 8u), xt::range(0, static_cast<unsigned>(m_nseg) * 3u + 1))
-            = xt::view(xgrad_mc, xt::range(6u, 7u), xt::all()) / 1e8; // throttles, tof
-        // [8:,:-2] - fitness gradient - throttle constraints
-        xt::view(xgradient, xt::range(8u, 8u + static_cast<unsigned>(m_nseg)),
-                 xt::range(0, static_cast<unsigned>(m_nseg) * 3u))
-            = xgrad_tc;
+            = xt::view(xgrad_final, xt::range(3u, 6u), xt::all()); // dmc/du
+        xt::view(xgradient, xt::range(7u, 8u), xt::range(0, m_nseg * 3u + 1u))
+            = xt::view(xgrad_final, xt::range(6u, 7u), xt::all()); // dmc/du
 
-        // [1:4,-1] - fitness gradient, position mismatch w.r.t. mf
         xt::view(xgradient, xt::range(1u, 4u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(0u, 3u), xt::range(6u, 7u)) / kep3::AU; // mf
-        // [4:7,-1] - fitness gradient - velocity mismatch w.r.t. mf
+            = xt::view(xgrad_rvm_bck, xt::range(0u, 3u), xt::range(6u, 7u)); // dmc/dm_f
         xt::view(xgradient, xt::range(4u, 7u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(3u, 6u), xt::range(6u, 7u)) / kep3::EARTH_VELOCITY; // mf
-        // [7:8,-1] - fitness gradient - mass mismatch w.r.t. mf
+            = xt::view(xgrad_rvm_bck, xt::range(3u, 6u), xt::range(6u, 7u)); // dmc/dm_f
         xt::view(xgradient, xt::range(7u, 8u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(6u, 7u), xt::range(6u, 7u)) / 1e8; // mf
+            = xt::view(xgrad_rvm_bck, xt::range(6u, 7u), xt::range(6u, 7u)); // dmc/dm_f
+        xt::view(xgradient, xt::range(8u, 8u + m_nseg), xt::range(0, m_nseg * 3u))
+            = xt::view(xt_grad_tc, xt::all(), xt::all()); // throttle constraints
 
-        // Units for the tof
-        xt::view(xgradient, xt::all(), xt::range(m_nseg * 3u, m_nseg * 3u + 1u)) *= kep3::DAY2SEC;
+        xt::view(xgradient, xt::all(), xt::range(m_nseg * 3u, m_nseg * 3u + 1u));
+
         return gradient;
     }
 
@@ -137,10 +166,10 @@ struct sf_hf_bench_udp {
         // x = [throttles, tof (in days), mf (in kg)]
         std::vector<double> lb(m_nseg * 3 + 2, -1.);
         std::vector<double> ub(m_nseg * 3 + 2, +1.);
-        lb[m_nseg * 3] = 1.;            // days
-        ub[m_nseg * 3] = 2500.;         // days
-        lb[m_nseg * 3 + 1] = m_ms / 2.; // kg
-        ub[m_nseg * 3 + 1] = m_ms;      // kg
+        lb[m_nseg * 3] = 0.5;     // days
+        ub[m_nseg * 3] = 1.5;     // days
+        lb[m_nseg * 3 + 1] = 0.5; // kg
+        ub[m_nseg * 3 + 1] = 1;   // kg
         return {lb, ub};
     }
 
@@ -161,6 +190,7 @@ struct sf_hf_bench_udp {
     double m_isp{};
     std::size_t m_nseg{};
     bool m_analytical{};
+    mutable kep3::leg::sims_flanagan_hf m_leg{};
 };
 
 #endif

@@ -182,11 +182,13 @@ private:
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
     // We introduce ta from cache
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
-    mutable heyoka::taylor_adaptive<double> m_tas = ta_cache;
+    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    // mutable heyoka::taylor_adaptive<double> m_tas = ta_cache;
+    mutable heyoka::taylor_adaptive<double> m_tas{};
     // Introduce variational ta from cache
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
-    mutable heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
+    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    // mutable heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
+    mutable heyoka::taylor_adaptive<double> m_tas_var{};
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.

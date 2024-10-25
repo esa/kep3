@@ -65,6 +65,17 @@ struct sf_hf_test_object {
         }
     }
 
+    explicit sf_hf_test_object(std::array<std::array<double, 3>, 2> rvs, double ms, std::vector<double> throttles,
+                               std::array<std::array<double, 3>, 2> rvf, double mf, double tof, double max_thrust,
+                               double isp, double mu, double cut, double tol)
+        : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_rvf(rvf), m_mf(mf), m_tof(tof), m_max_thrust(max_thrust),
+          m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
+    {
+        for (double m_throttle : m_throttles) {
+            m_thrusts.push_back(m_throttle * m_max_thrust);
+        }
+    }
+
     // Retrieve mismatch constraints from manual heyoka Taylor adaptive integrator
     [[nodiscard]] std::array<double, 7> compute_manual_mc()
     {
@@ -170,10 +181,8 @@ struct sf_hf_test_object {
     std::vector<double> m_throttles = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::vector<double> m_thrusts;
     double m_tol = 1e-16;
-    std::vector<double> m_rvms
-        = {m_rvs[0][0], m_rvs[0][1], m_rvs[0][2], m_rvs[1][0], m_rvs[1][1], m_rvs[1][2], m_ms};
-    std::vector<double> m_rvmf
-        = {m_rvf[0][0], m_rvf[0][1], m_rvf[0][2], m_rvf[1][0], m_rvf[1][1], m_rvf[1][2], m_mf};
+    std::vector<double> m_rvms = {m_rvs[0][0], m_rvs[0][1], m_rvs[0][2], m_rvs[1][0], m_rvs[1][1], m_rvs[1][2], m_ms};
+    std::vector<double> m_rvmf = {m_rvf[0][0], m_rvf[0][1], m_rvf[0][2], m_rvf[1][0], m_rvf[1][1], m_rvf[1][2], m_mf};
 };
 
 #endif

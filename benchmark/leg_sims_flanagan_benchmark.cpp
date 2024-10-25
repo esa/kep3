@@ -87,7 +87,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
         prob_a.set_c_tol(1e-8);
         prob_n.set_c_tol(1e-8);
 
-        // We construct the random chromosmes 
+        // We construct the random chromosmes
         const pagmo::population pop{prob_a, pop_size};
 
         // First we time the analytical gradients
@@ -97,7 +97,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
         }
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        count_a+=static_cast<double>(duration.count()) / 1e6;
+        count_a += static_cast<double>(duration.count()) / 1e6;
 
         // then the numerical ones
         start = high_resolution_clock::now();
@@ -106,7 +106,7 @@ void perform_test_speed(unsigned N, unsigned nseg, unsigned pop_size)
         }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
-        count_n+=static_cast<double>(duration.count()) / 1e6;
+        count_n += static_cast<double>(duration.count()) / 1e6;
     }
     fmt::print("{} nseg - timing: analytical {} - numerical {}", nseg, count_a, count_n);
 }
@@ -194,18 +194,18 @@ void perform_test_convergence(unsigned N, unsigned nseg)
 
 int main()
 {
-    // performing tests
-    fmt::print("\nSolves the same optimization problems with and without analytical gradients:");
-    perform_test_convergence(200, 5);
-    perform_test_convergence(200, 10);
-    perform_test_convergence(200, 15);
-
     fmt::print("\nComputes the same analytical and numerical gradients and tests for speed:");
     perform_test_speed(100, 5, 10);
     perform_test_speed(100, 10, 10);
     perform_test_speed(100, 15, 10);
     perform_test_speed(100, 20, 10);
     perform_test_speed(100, 70, 10);
-    fmt::print("\n");
 
+    // performing tests
+    fmt::print("\nSolves the same optimization problems with and without analytical gradients:");
+    perform_test_convergence(200, 5);
+    perform_test_convergence(200, 10);
+    perform_test_convergence(200, 15);
+
+    fmt::print("\n");
 }

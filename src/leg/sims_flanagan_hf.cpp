@@ -47,6 +47,13 @@ sims_flanagan_hf::sims_flanagan_hf()
 {
     // We perform some sanity checks on the user provided inputs
     _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+
+    // Initialize m_tas and m_tas_var
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    m_tas = ta_cache;
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    m_tas_var = ta_var_cache;
+
     // We set mu and veff for the non variational
     *m_tas.get_pars_data() = m_mu;
     *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
@@ -74,6 +81,13 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &r
 {
     // We perform some sanity checks on the user provided inputs
     _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+
+    // Initialize m_tas and m_tas_var
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    m_tas = ta_cache;
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    m_tas_var = ta_var_cache;
+
     // We set mu and veff for the non variational
     *m_tas.get_pars_data() = m_mu;
     *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
@@ -107,6 +121,13 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<double, 7> &rvms, std::vecto
 {
     // We perform some sanity checks on the user provided inputs
     _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+
+    // Initialize m_tas and m_tas_var
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    m_tas = ta_cache;
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    m_tas_var = ta_var_cache;
+
     // We set mu and veff for the non variational
     *m_tas.get_pars_data() = m_mu;
     *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
@@ -505,9 +526,9 @@ std::array<double, 7> sims_flanagan_hf::get_state_derivative(std::array<double, 
     dstatedt[0] = state[3];
     dstatedt[1] = state[4];
     dstatedt[2] = state[5];
-    dstatedt[3] = -get_mu() * pow(r2, -3. / 2) * state[0] + thrusts[0] / state[6];
-    dstatedt[4] = -get_mu() * pow(r2, -3. / 2) * state[1] + thrusts[1] / state[6];
-    dstatedt[5] = -get_mu() * pow(r2, -3. / 2) * state[2] + thrusts[2] / state[6];
+    dstatedt[3] = -get_mu() * std::pow(r2, -3. / 2) * state[0] + thrusts[0] / state[6];
+    dstatedt[4] = -get_mu() * std::pow(r2, -3. / 2) * state[1] + thrusts[1] / state[6];
+    dstatedt[5] = -get_mu() * std::pow(r2, -3. / 2) * state[2] + thrusts[2] / state[6];
     dstatedt[6] = (u_norm != 0) ? -u_norm / veff : 0; // Conditional for if thrust is zero or not
 
     return dstatedt;
