@@ -190,6 +190,7 @@ struct sf_hf_bench_udp {
     double m_isp{};
     std::size_t m_nseg{};
     bool m_analytical{};
+    // m_leg needs to be mutable because the heyoka integrator needs to be modifiable
     mutable kep3::leg::sims_flanagan_hf m_leg{};
 };
 

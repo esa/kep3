@@ -27,8 +27,8 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
-#include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sf_checks.hpp>
+#include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/linalg.hpp>
 
 namespace kep3::leg
@@ -59,7 +59,7 @@ void sims_flanagan::set_tof(double tof)
     _check_tof(tof);
     m_tof = tof;
 }
-void sims_flanagan::set_rvs(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan::set_rvs(const std::array<std::array<double, 3>, 2> &rv)
 {
     m_rvs = rv;
 }
@@ -67,7 +67,7 @@ void sims_flanagan::set_ms(double mass)
 {
     m_ms = mass;
 }
-void sims_flanagan::set_throttles(std::vector<double> throttles)
+void sims_flanagan::set_throttles(const std::vector<double> &throttles)
 {
     auto nseg = static_cast<unsigned>(throttles.size()) / 3u;
     _check_throttles(throttles, nseg);
@@ -76,7 +76,8 @@ void sims_flanagan::set_throttles(std::vector<double> throttles)
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
-void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
+void sims_flanagan::set_throttles(const std::vector<double>::const_iterator &it1,
+                                  const std::vector<double>::const_iterator &it2)
 {
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error("The throttles of a sims_flanagan leg are being set with invalid iterators.");
@@ -87,7 +88,7 @@ void sims_flanagan::set_throttles(std::vector<double>::const_iterator it1, std::
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
-void sims_flanagan::set_rvf(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
     m_rvf = rv;
 }

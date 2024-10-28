@@ -54,22 +54,21 @@ public:
 
     // Setters
     void set_tof(double tof);
-    void set_rvs(std::array<std::array<double, 3>, 2> rv);
+    void set_rvs(const std::array<std::array<double, 3>, 2> &rv);
     void set_ms(double mass);
-    void set_throttles(std::vector<double> throttles);
-    void set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2);
-    void set_rvf(std::array<std::array<double, 3>, 2> rv);
+    void set_throttles(const std::vector<double> &throttles);
+    void set_throttles(const std::vector<double>::const_iterator &it1, const std::vector<double>::const_iterator &it2);
+    void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
     void set_isp(double isp);
     void set_mu(double mu);
     void set_cut(double cut);
     void set_tol(double tol);
-    void set_rvms(std::array<double, 7> rvms);
-    void set_rvmf(std::array<double, 7> rvmf);
-    void set_tas(heyoka::taylor_adaptive<double> tas);
-    void set_tas_var(heyoka::taylor_adaptive<double> tas_var);
-    void set_walking_rvm(std::array<double, 7> rvm);
+    void set_rvms(const std::array<double, 7> &rvms);
+    void set_rvmf(const std::array<double, 7> &rvmf);
+    void set_tas(const heyoka::taylor_adaptive<double> &tas);
+    void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
@@ -95,20 +94,20 @@ public:
     [[nodiscard]] unsigned get_nseg() const;
     [[nodiscard]] unsigned get_nseg_fwd() const;
     [[nodiscard]] unsigned get_nseg_bck() const;
-    [[nodiscard]] heyoka::taylor_adaptive<double> get_tas() const;
-    [[nodiscard]] heyoka::taylor_adaptive<double> get_tas_var() const;
-    [[nodiscard]] std::array<double, 7> get_rvms() const;
-    [[nodiscard]] std::array<double, 7> get_rvmf() const;
-    [[nodiscard]] std::array<double, 7> get_walking_rvm() const;
+    [[nodiscard]] const heyoka::taylor_adaptive<double> &get_tas() const;
+    [[nodiscard]] const heyoka::taylor_adaptive<double> &get_tas_var() const;
+    [[nodiscard]] const std::array<double, 7> &get_rvms() const;
+    [[nodiscard]] const std::array<double, 7> &get_rvmf() const;
 
     // Compute constraints
-    [[nodiscard]] std::array<double, 7> get_state_derivative(std::array<double, 7> state,
-                                                             std::array<double, 3> throttles) const;
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
-    [[nodiscard]] std::vector<double> compute_constraints();
+    [[nodiscard]] std::vector<double> compute_constraints() const;
+    [[nodiscard]] std::vector<double> set_and_compute_constraints(const std::vector<double> &chromosome);
 
-    [[nodiscard]] std::vector<double> set_and_compute_constraints(std::vector<double> chromosome);
+    // Get state derivative
+    [[nodiscard]] std::array<double, 7> get_state_derivative(const std::array<double, 7> &state,
+                                                             const std::array<double, 3> &throttles) const;
 
     // Compute all gradients w.r.t. all legs
     [[nodiscard]]
@@ -118,9 +117,9 @@ public:
     // Process all gradients to retrieve relevant gradients (w.r.t. initial and final rvm state as well as w.r.t.
     // throttles and tof)
     [[nodiscard]] std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
-    get_relevant_gradients(std::vector<std::array<double, 49u>> &dxdx_per_seg,
-                           std::vector<std::array<double, 21u>> &dxdu_per_seg,
-                           std::vector<std::array<double, 7u>> &dxdtof_per_seg) const;
+    get_relevant_gradients(const std::vector<std::array<double, 49u>> &dxdx_per_seg,
+                           const std::vector<std::array<double, 21u>> &dxdu_per_seg,
+                           const std::vector<std::array<double, 7u>> &dxdtof_per_seg) const;
 
     // Compute mismatch constraint gradients (w.r.t. initial and final rvm state as well as w.r.t. throttles and
     // tof)
@@ -181,13 +180,11 @@ private:
     unsigned m_nseg = 2u;
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
-    // We introduce ta from cache
-    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
-    // mutable heyoka::taylor_adaptive<double> m_tas = ta_cache;
+    // Taylor-adaptive integrator
+    // m_tas needs to be mutable because the heyoka integrator needs to be modifiable
     mutable heyoka::taylor_adaptive<double> m_tas{};
-    // Introduce variational ta from cache
-    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
-    // mutable heyoka::taylor_adaptive<double> m_tas_var = ta_var_cache;
+    // Variational Taylor-adaptive integrator
+    // m_tas_var needs to be mutable because the heyoka integrator needs to be modifiable
     mutable heyoka::taylor_adaptive<double> m_tas_var{};
 };
 

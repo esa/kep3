@@ -150,7 +150,7 @@ void sims_flanagan_hf::set_tof(double tof)
     _check_tof(tof);
     m_tof = tof;
 }
-void sims_flanagan_hf::set_rvs(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan_hf::set_rvs(const std::array<std::array<double, 3>, 2> &rv)
 {
     std::copy(rv[0].begin(), rv[0].end(), m_rvms.begin());
     std::copy(rv[1].begin(), rv[1].end(), std::next(m_rvms.begin(), 3));
@@ -159,7 +159,7 @@ void sims_flanagan_hf::set_ms(double mass)
 {
     m_rvms[6] = mass;
 }
-void sims_flanagan_hf::set_throttles(std::vector<double> throttles)
+void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
 {
     auto nseg = static_cast<unsigned>(throttles.size()) / 3u;
     _check_throttles(throttles, nseg);
@@ -173,7 +173,8 @@ void sims_flanagan_hf::set_throttles(std::vector<double> throttles)
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
-void sims_flanagan_hf::set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2)
+void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &it1,
+                                     const std::vector<double>::const_iterator &it2)
 {
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error(
@@ -190,7 +191,7 @@ void sims_flanagan_hf::set_throttles(std::vector<double>::const_iterator it1, st
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
-void sims_flanagan_hf::set_rvf(std::array<std::array<double, 3>, 2> rv)
+void sims_flanagan_hf::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
     std::copy(rv[0].begin(), rv[0].end(), m_rvmf.begin());
     std::copy(rv[1].begin(), rv[1].end(), std::next(m_rvmf.begin(), 3));
@@ -226,19 +227,19 @@ void sims_flanagan_hf::set_tol(double tol)
     _check_tol(tol);
     m_tol = tol;
 }
-void sims_flanagan_hf::set_rvms(std::array<double, 7> rvms)
+void sims_flanagan_hf::set_rvms(const std::array<double, 7> &rvms)
 {
     m_rvms = rvms;
 }
-void sims_flanagan_hf::set_rvmf(std::array<double, 7> rvmf)
+void sims_flanagan_hf::set_rvmf(const std::array<double, 7> &rvmf)
 {
     m_rvmf = rvmf;
 }
-void sims_flanagan_hf::set_tas(heyoka::taylor_adaptive<double> tas)
+void sims_flanagan_hf::set_tas(const heyoka::taylor_adaptive<double> &tas)
 {
     m_tas = tas;
 }
-void sims_flanagan_hf::set_tas_var(heyoka::taylor_adaptive<double> tas_var)
+void sims_flanagan_hf::set_tas_var(const heyoka::taylor_adaptive<double> &tas_var)
 {
     m_tas_var = tas_var;
 }
@@ -378,19 +379,19 @@ unsigned sims_flanagan_hf::get_nseg_bck() const
 {
     return m_nseg_bck;
 }
-heyoka::taylor_adaptive<double> sims_flanagan_hf::get_tas() const
+const heyoka::taylor_adaptive<double> &sims_flanagan_hf::get_tas() const
 {
     return m_tas;
 }
-heyoka::taylor_adaptive<double> sims_flanagan_hf::get_tas_var() const
+const heyoka::taylor_adaptive<double> &sims_flanagan_hf::get_tas_var() const
 {
     return m_tas_var;
 }
-std::array<double, 7> sims_flanagan_hf::get_rvms() const
+const std::array<double, 7> &sims_flanagan_hf::get_rvms() const
 {
     return m_rvms;
 }
-std::array<double, 7> sims_flanagan_hf::get_rvmf() const
+const std::array<double, 7> &sims_flanagan_hf::get_rvmf() const
 {
     return m_rvmf;
 }
@@ -467,7 +468,7 @@ std::vector<double> sims_flanagan_hf::compute_throttle_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::compute_constraints()
+std::vector<double> sims_flanagan_hf::compute_constraints() const
 {
     std::vector<double> retval(7 + m_nseg, 0.);
     // Fitness
@@ -486,7 +487,7 @@ std::vector<double> sims_flanagan_hf::compute_constraints()
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<double> chromosome)
+std::vector<double> sims_flanagan_hf::set_and_compute_constraints(const std::vector<double> &chromosome)
 {
     std::array<double, 7> rvms;
     std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
@@ -502,8 +503,8 @@ std::vector<double> sims_flanagan_hf::set_and_compute_constraints(std::vector<do
 }
 
 // Return specific two-body 'stark' dynamics state derivative
-std::array<double, 7> sims_flanagan_hf::get_state_derivative(std::array<double, 7> state,
-                                                             std::array<double, 3> throttles) const
+std::array<double, 7> sims_flanagan_hf::get_state_derivative(const std::array<double, 7> &state,
+                                                             const std::array<double, 3> &throttles) const
 {
 
     std::array<double, 3> thrusts;
@@ -640,12 +641,12 @@ sims_flanagan_hf::compute_all_gradients() const
 }
 
 std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>>
-sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &dxdx_per_seg,
-                                         std::vector<std::array<double, 21u>> &dxdu_per_seg,
-                                         std::vector<std::array<double, 7u>> &dxdtof_per_seg) const
+sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49u>> &dxdx_per_seg,
+                                         const std::vector<std::array<double, 21u>> &dxdu_per_seg,
+                                         const std::vector<std::array<double, 7u>> &dxdtof_per_seg) const
 {
 
-    auto xt_dxdx_per_seg = xt::adapt(reinterpret_cast<double *>(dxdx_per_seg.data()), {m_nseg, 49u});
+    auto xt_dxdx_per_seg = xt::adapt(reinterpret_cast<const double *>(dxdx_per_seg.data()), {m_nseg, 49u});
     // Mn_o will contain [Mnf-1, Mnf-1@Mnf-2, Mnf-2@Mnf-3, Mnf-1@M0, Mnf, Mnf@Mnf+1, Mnf@Mnf+2, Mnf@Mn]
     std::vector<xt::xarray<double>> Mn_o(m_nseg, xt::zeros<double>({7u, 7u}));
     // Fwd leg
@@ -696,7 +697,8 @@ sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &d
     }
 
     // Throttle derivatives
-    xt::xarray<double> xt_dxdu_per_seg = xt::adapt(reinterpret_cast<double *>(dxdu_per_seg.data()), {m_nseg, 21u});
+    xt::xarray<double> xt_dxdu_per_seg
+        = xt::adapt(reinterpret_cast<const double *>(dxdu_per_seg.data()), {m_nseg, 21u});
     std::vector<double> grad_final_throttle(static_cast<size_t>(7) * (m_nseg * 3u), 0.);
     auto xgrad_final_throttle = xt::adapt(grad_final_throttle, {7u, static_cast<unsigned>(m_nseg) * 3u});
     xt::xarray<double> corresponding_M;
@@ -720,7 +722,8 @@ sims_flanagan_hf::get_relevant_gradients(std::vector<std::array<double, 49u>> &d
     }
 
     // ToF derivatives
-    xt::xarray<double> xt_dxdtof_per_seg = xt::adapt(reinterpret_cast<double *>(dxdtof_per_seg.data()), {m_nseg, 7u});
+    xt::xarray<double> xt_dxdtof_per_seg
+        = xt::adapt(reinterpret_cast<const double *>(dxdtof_per_seg.data()), {m_nseg, 7u});
     std::vector<double> grad_final_tof(static_cast<size_t>(7), 0.);
     auto xgrad_final_tof = xt::adapt(grad_final_tof, {7u, 1u});
     for (unsigned int i(0); i < m_nseg; ++i) {
@@ -820,7 +823,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
         if (status != heyoka::taylor_outcome::time_limit) {
             throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
         }
-        output_per_seg[i] =  output_states;
+        output_per_seg[i] = output_states;
     }
 
     // Backward pass
@@ -853,7 +856,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
         if (status != heyoka::taylor_outcome::time_limit) {
             throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
         }
-        output_per_seg[m_nseg - 1 - i] =  output_states;
+        output_per_seg[m_nseg - 1 - i] = output_states;
     }
 
     return output_per_seg;

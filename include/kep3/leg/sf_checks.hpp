@@ -12,6 +12,8 @@
 
 #include <vector>
 
+// These checks are used for the low- and high-fidelity legs (in sims_flanagan.cpp and sims_flanagan_hf.cpp)
+
 void _check_tof(double tof);
 void _check_throttles(const std::vector<double> &throttles, unsigned nseg);
 void _check_max_thrust(double max_thrust);
