@@ -250,7 +250,6 @@ void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, doub
                            const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                            double isp, double mu, double cut, double tol)
 {
-    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
     // Set initial state
     set_rvs(rvs);
     set_ms(ms);
@@ -267,6 +266,7 @@ void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, doub
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
+    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
@@ -278,7 +278,6 @@ void sims_flanagan_hf::set(const std::array<double, 7> &rvms, const std::vector<
                            const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
                            double cut, double tol)
 {
-    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
     set_rvms(rvms);
     m_throttles = throttles;
     set_rvmf(rvmf);
@@ -291,6 +290,7 @@ void sims_flanagan_hf::set(const std::array<double, 7> &rvms, const std::vector<
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
+    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };

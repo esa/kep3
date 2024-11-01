@@ -7,8 +7,8 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef kep3_TEST_LEG_SIMS_FLANAGAN_UDP_BENCH_H
-#define kep3_TEST_LEG_SIMS_FLANAGAN_UDP_BENCH_H
+#ifndef kep3_TEST_LEG_SIMS_FLANAGAN_HF_UDP_BENCH_H
+#define kep3_TEST_LEG_SIMS_FLANAGAN_HF_UDP_BENCH_H
 
 #include <array>
 #include <vector>
@@ -166,8 +166,8 @@ struct sf_hf_bench_udp {
         // x = [throttles, tof (in days), mf (in kg)]
         std::vector<double> lb(m_nseg * 3 + 2, -1.);
         std::vector<double> ub(m_nseg * 3 + 2, +1.);
-        lb[m_nseg * 3] = 0.5;     // days
-        ub[m_nseg * 3] = 1.5;     // days
+        lb[m_nseg * 3] = kep3::pi / 12;     // days
+        ub[m_nseg * 3] = 2 * kep3::pi;     // days
         lb[m_nseg * 3 + 1] = 0.5; // kg
         ub[m_nseg * 3 + 1] = 1;   // kg
         return {lb, ub};
