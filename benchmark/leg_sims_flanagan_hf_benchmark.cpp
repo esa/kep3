@@ -45,8 +45,8 @@ void perform_convergence_benchmark(uint N, uint nseg)
     //
     std::uniform_real_distribution<double> dv_pert_random(0., 0.1);
     std::uniform_real_distribution<double> mass_random(1.0, 1.2);
-    std::uniform_real_distribution<double> tof_random(kep3::pi / 3, 2 * kep3::pi / 3);
-    std::uniform_real_distribution<double> ts_random(1100, 1300);
+    std::uniform_real_distribution<double> tof_random(kep3::pi / 12, 2 * kep3::pi);
+    std::uniform_real_distribution<double> ts_random(2170, 2200);
 
     // Create test leg for initial conditions
     kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
@@ -138,8 +138,8 @@ void perform_speed_benchmark(uint N, uint nseg, uint pop_size)
     //
     std::uniform_real_distribution<double> dv_pert_random(0., 0.1);
     std::uniform_real_distribution<double> mass_random(1.0, 1.2);
-    std::uniform_real_distribution<double> tof_random(kep3::pi / 3, 2 * kep3::pi);
-    std::uniform_real_distribution<double> ts_random(1100, 1300);
+    std::uniform_real_distribution<double> tof_random(kep3::pi / 12, 2 * kep3::pi);
+    std::uniform_real_distribution<double> ts_random(2170, 2200);
 
     // Create test leg for initial conditions
     kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
@@ -221,15 +221,15 @@ int main()
 {
     fmt::print("\nComputes the same analytical and numerical gradients and tests for speed:\n");
     perform_speed_benchmark(100, 5, 10);
-    // perform_speed_benchmark(100, 10, 10);
-    // perform_speed_benchmark(100, 20, 10);
-    // perform_speed_benchmark(100, 40, 10);
+    perform_speed_benchmark(100, 10, 10);
+    perform_speed_benchmark(100, 20, 10);
+    perform_speed_benchmark(100, 40, 10);
 
     // // performing tests
-    // fmt::print("\nSolves the same optimization problems with and without analytical gradients:\n");
-    // perform_convergence_benchmark(100, 5);
-    // perform_convergence_benchmark(100, 10);
-    // perform_convergence_benchmark(100, 15);
+    fmt::print("\nSolves the same optimization problems with and without analytical gradients:\n");
+    perform_convergence_benchmark(100, 5);
+    perform_convergence_benchmark(100, 10);
+    perform_convergence_benchmark(100, 15);
 
     fmt::print("\n");
 }
