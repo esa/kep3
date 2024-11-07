@@ -409,7 +409,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
     std::copy(m_rvms.begin(), m_rvms.end(), m_tas.get_state_data());
 
     // Loop through segments in forward pass of Sims-Flanagan transcription
-    for (unsigned int i = 0u; i < m_nseg_fwd; ++i) {
+    for (auto i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
         if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
             std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
@@ -435,7 +435,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
     std::copy(m_rvmf.begin(), m_rvmf.end(), m_tas.get_state_data());
 
     // Loop through segments in backward pass of Sims-Flanagan transcription
-    for (unsigned int i = 0u; i < m_nseg_bck; ++i) {
+    for (auto i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
         if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
             // Copy thrust into Taylor-adaptive integrator
@@ -555,7 +555,7 @@ sims_flanagan_hf::compute_all_gradients() const
     m_tas_var.set_time(0.);
     std::copy(m_rvms.begin(), m_rvms.end(), m_tas_var.get_state_data());
 
-    for (unsigned int i = 0u; i < m_nseg_fwd; ++i) {
+    for (auto i = 0u; i < m_nseg_fwd; ++i) {
 
         // Initialise var conditions
         std::copy(m_vars.begin(), m_vars.end(), m_tas_var.get_state_data() + 7);
@@ -588,7 +588,7 @@ sims_flanagan_hf::compute_all_gradients() const
     m_tas_var.set_time(m_tof);
     std::copy(m_rvmf.begin(), m_rvmf.end(), m_tas_var.get_state_data());
 
-    for (unsigned int i = 0u; i < m_nseg_bck; ++i) {
+    for (auto i = 0u; i < m_nseg_bck; ++i) {
 
         // Initialise var conditions
         std::copy(m_vars.begin(), m_vars.end(), m_tas_var.get_state_data() + 7);
@@ -622,17 +622,17 @@ sims_flanagan_hf::compute_all_gradients() const
     if (m_nseg_fwd > 0) {
         x0_per_seg[0] = m_rvms;
     }
-    for (unsigned int i(1); i < m_nseg_fwd; ++i) {
+    for (auto i = 1; i < m_nseg_fwd; ++i) {
         x0_per_seg[i] = xf_per_seg[i - 1];
     }
     if (m_nseg_bck > 0) {
         x0_per_seg[m_nseg - 1] = m_rvmf;
     }
-    for (unsigned int i(1); i < m_nseg_bck; ++i) {
+    for (auto i = 1; i < m_nseg_bck; ++i) {
         x0_per_seg[(m_nseg - 1) - i] = xf_per_seg[(m_nseg - 1) - (i - 1)];
     }
 
-    for (unsigned int i(0); i < dxdtof_per_seg.size(); ++i) {
+    for (auto i = 0; i < dxdtof_per_seg.size(); ++i) {
         std::array<double, 3> current_throttles = {m_throttles[i * 3], m_throttles[i * 3 + 1], m_throttles[i * 3 + 2]};
         dxdtof_per_seg[i] = get_state_derivative(x0_per_seg[i], current_throttles);
     }
@@ -654,7 +654,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
     xt::xarray<double> current_M;
     if (m_nseg_fwd > 0) {
         Mn_o[0] = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1, xt::all()), {7, 7});
-        for (unsigned int i(0); i < m_nseg_fwd - 1; ++i) {
+        for (decltype(m_nseg_fwd) i = 0; i < m_nseg_fwd - 1; ++i) {
             current_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1 - (i + 1), xt::all()), {7, 7});
             if (i == 0) {
                 final_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd - 1, xt::all()), {7, 7});
@@ -667,7 +667,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
     // Bck leg
     if (m_nseg_bck > 0) {
         Mn_o[m_nseg_fwd] = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd, xt::all()), {7, 7});
-        for (unsigned int i(0); i < m_nseg_bck - 1; ++i) {
+        for (decltype(m_nseg_fwd) i(0); i < m_nseg_bck - 1; ++i) {
             current_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd + (i + 1), xt::all()), {7, 7});
             if (i == 0) {
                 final_M = xt::reshape_view(xt::view(xt_dxdx_per_seg, m_nseg_fwd, xt::all()), {7, 7});
@@ -703,7 +703,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
     auto xgrad_final_throttle = xt::adapt(grad_final_throttle, {7u, static_cast<unsigned>(m_nseg) * 3u});
     xt::xarray<double> corresponding_M;
     xt::xarray<double> current_U;
-    for (unsigned int i(0); i < m_nseg; ++i) {
+    for (decltype(m_nseg_fwd) i(0); i < m_nseg; ++i) {
         current_U = xt::reshape_view(xt::view(xt_dxdu_per_seg, i, xt::all()), {7, 3});
         if (i == m_nseg_fwd - 1) {
             corresponding_M = xt::eye(7);
@@ -726,7 +726,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
         = xt::adapt(reinterpret_cast<const double *>(dxdtof_per_seg.data()), {m_nseg, 7u});
     std::vector<double> grad_final_tof(static_cast<size_t>(7), 0.);
     auto xgrad_final_tof = xt::adapt(grad_final_tof, {7u, 1u});
-    for (unsigned int i(0); i < m_nseg; ++i) {
+    for (decltype(m_nseg_fwd) i(0); i < m_nseg; ++i) {
         xt::xarray<double> current_F = xt::reshape_view(xt::view(xt_dxdtof_per_seg, i, xt::all()), {7, 1});
         if ((i <= m_nseg_fwd - 1) && m_nseg_fwd > 0) {
             corresponding_M = Mn_o
@@ -779,7 +779,7 @@ std::vector<double> sims_flanagan_hf::compute_tc_grad() const
     return retval;
 }
 
-std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned int grid_points_per_segment) const
+std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned grid_points_per_segment) const
 {
     // Get time grid
     const double prop_seg_duration = (m_tof / m_nseg);
@@ -788,8 +788,8 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
     double timestep = 0.0;
     leg_time_grid.push_back(timestep);
 
-    for (uint _(0); _ < grid_points_per_segment * m_nseg - 2; ++_) {
-        timestep += prop_seg_duration / (grid_points_per_segment - 1);
+    for (decltype(m_nseg) i = 0; i < grid_points_per_segment * m_nseg - 2; ++i) {
+        timestep += (prop_seg_duration / (grid_points_per_segment - 1));
         leg_time_grid.push_back(timestep);
     }
     // leg_time_grid.push_back(m_tof);
@@ -803,7 +803,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
     std::vector<std::vector<double>> output_per_seg(m_nseg);
 
     // Loop through segments in forward pass of Sims-Flanagan transcription
-    for (unsigned int i = 0u; i < m_nseg_fwd; ++i) {
+    for (decltype(m_nseg_fwd) i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
         if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
             std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
@@ -834,7 +834,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned in
     std::vector<double> back_time_grid(grid_points_per_segment);
 
     // Loop through segments in backward pass of Sims-Flanagan transcription
-    for (unsigned int i = 0u; i < m_nseg_bck; ++i) {
+    for (decltype(m_nseg) i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
         if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
             // Copy thrust into Taylor-adaptive integrator
