@@ -319,7 +319,7 @@ TEST_CASE("compute_state_history")
     // Get state history
     kep3::leg::sims_flanagan_hf sf{};
     auto mc = sf.compute_mismatch_constraints();
-    uint grid_points_per_segment = 4;
+    unsigned grid_points_per_segment = 4;
     auto state_history = sf.get_state_history(grid_points_per_segment);
 
     // Get fwd final state
@@ -358,7 +358,7 @@ TEST_CASE("compute_state_history_2")
 
     // Get state history
     auto mc = sf.compute_mismatch_constraints();
-    uint grid_points_per_segment = 4;
+    unsigned grid_points_per_segment = 4;
     auto state_history = sf.get_state_history(grid_points_per_segment);
 
     // Get fwd final state

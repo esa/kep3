@@ -58,7 +58,7 @@ struct sf_hf_test_object {
 
     explicit sf_hf_test_object(double cut) : m_cut(cut) {}
 
-    sf_hf_test_object(std::vector<double> &throttles, double cut) : m_cut(cut), m_throttles(throttles)
+    sf_hf_test_object(std::vector<double> &throttles, double cut) : m_throttles(throttles), m_cut(cut)
     {
         for (double m_throttle : m_throttles) {
             m_thrusts.push_back(m_throttle * m_max_thrust);
@@ -169,9 +169,9 @@ struct sf_hf_test_object {
     std::array<double, 7> m_fwd_final_state{};
     std::array<double, 7> m_bck_final_state{};
     std::array<double, 7> m_mc_manual{};
-    std::vector<double> m_thrusts;
     std::array<std::array<double, 3>, 2> m_rvs{{{1, 0.1, -0.1}, {0.2, 1, -0.2}}};
     double m_ms = 1;
+    std::vector<double> m_thrusts;
     std::vector<double> m_throttles = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::array<std::array<double, 3>, 2> m_rvf{{{1.2, -0.1, 0.1}, {-0.2, 1.023, -0.44}}};
     double m_mf = m_ms * 13 / 15;

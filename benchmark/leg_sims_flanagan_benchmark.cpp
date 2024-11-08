@@ -32,7 +32,7 @@ using std::chrono::high_resolution_clock;
 using std::chrono::microseconds;
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void perform_convergence_benchmark(uint N, uint nseg)
+void perform_convergence_benchmark(unsigned N, unsigned nseg)
 {
     //
     // Engines
@@ -56,10 +56,9 @@ void perform_convergence_benchmark(uint N, uint nseg)
     // auto rvf = jupiter.eph(1000);
     int count_n = 0;
     int count_a = 0;
-    for (uint i(0); i < N; ++i) {
+    for (decltype(N) i = 0; i < N; ++i) {
         auto rvs = earth.eph(ts_random(rng_engine));
         auto rvf = jupiter.eph(ts_random(rng_engine));
-        // double tof_ic = kep3::pi / 2;
         double tof_ic = tof_random(rng_engine);
         double mu = 1;
         rvs[0][0] /= kep3::AU;
@@ -100,7 +99,6 @@ void perform_convergence_benchmark(uint N, uint nseg)
         uda.set_ftol_abs(0);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
-        // algo.set_verbosity(5u);
 
         // We solve first a
         pop_a = algo.evolve(pop_a);
@@ -123,7 +121,7 @@ void perform_convergence_benchmark(uint N, uint nseg)
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void perform_speed_benchmark(uint N, uint nseg, uint pop_size)
+void perform_speed_benchmark(unsigned N, unsigned nseg, unsigned pop_size)
 {
     //
     // Engines
@@ -143,14 +141,11 @@ void perform_speed_benchmark(uint N, uint nseg, uint pop_size)
     kep3::udpla::vsop2013 udpla_jupiter("jupiter", 1e-2);
     kep3::planet earth{udpla_earth};
     kep3::planet jupiter{udpla_jupiter};
-    // auto rvs = earth.eph(1000);
-    // auto rvf = jupiter.eph(1000);
     double count_n = 0;
     double count_a = 0;
-    for (uint i(0); i < N; ++i) {
+    for (decltype(N) i = 0; i < N; ++i) {
         auto rvs = earth.eph(ts_random(rng_engine));
         auto rvf = jupiter.eph(ts_random(rng_engine));
-        // double tof_ic = kep3::pi / 2;
         double tof_ic = tof_random(rng_engine);
         double mu = 1;
         rvs[0][0] /= kep3::AU;
@@ -168,7 +163,6 @@ void perform_speed_benchmark(uint N, uint nseg, uint pop_size)
             = {{{lp.get_r1()[0], lp.get_r1()[1], lp.get_r1()[2]},
                 {lp.get_v1()[0][0] + dv_pert_random(rng_engine), lp.get_v1()[0][1] + dv_pert_random(rng_engine),
                  lp.get_v1()[0][2] + dv_pert_random(rng_engine)}}};
-        // double mass = 1;
         double mass = mass_random(rng_engine);
         double max_thrust = 1;
         double isp = 1;
@@ -189,7 +183,6 @@ void perform_speed_benchmark(uint N, uint nseg, uint pop_size)
         uda.set_ftol_abs(0);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
-        // algo.set_verbosity(5u);
 
         // First we time the analytical gradients
         auto start = high_resolution_clock::now();

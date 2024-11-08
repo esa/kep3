@@ -622,17 +622,17 @@ sims_flanagan_hf::compute_all_gradients() const
     if (m_nseg_fwd > 0) {
         x0_per_seg[0] = m_rvms;
     }
-    for (auto i = 1; i < m_nseg_fwd; ++i) {
+    for (decltype(m_nseg_fwd) i = 1; i < m_nseg_fwd; ++i) {
         x0_per_seg[i] = xf_per_seg[i - 1];
     }
     if (m_nseg_bck > 0) {
         x0_per_seg[m_nseg - 1] = m_rvmf;
     }
-    for (auto i = 1; i < m_nseg_bck; ++i) {
+    for (decltype(m_nseg_bck) i = 1; i < m_nseg_bck; ++i) {
         x0_per_seg[(m_nseg - 1) - i] = xf_per_seg[(m_nseg - 1) - (i - 1)];
     }
 
-    for (auto i = 0; i < dxdtof_per_seg.size(); ++i) {
+    for (decltype(dxdtof_per_seg.size()) i = 0; i < dxdtof_per_seg.size(); ++i) {
         std::array<double, 3> current_throttles = {m_throttles[i * 3], m_throttles[i * 3 + 1], m_throttles[i * 3 + 2]};
         dxdtof_per_seg[i] = get_state_derivative(x0_per_seg[i], current_throttles);
     }
