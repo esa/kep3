@@ -64,6 +64,10 @@ TEST_CASE("constructor")
         double mf = 1.;
         REQUIRE_NOTHROW(
             kep3::leg::sims_flanagan_hf(rvs, ms, {0., 0., 0., 0., 0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5));
+        const std::array<double, 7> rvms{1, 0, 0, 0, 1, 0, 1};
+        const std::array<double, 7> rvmf{0, 1, 0, -1, 0, 0, 1};
+        REQUIRE_NOTHROW(
+            kep3::leg::sims_flanagan_hf(rvms, {0., 0., 0., 0., 0., 0.}, rvmf, kep3::pi / 2, 1., 1., 1., 0.5));
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_hf(rvs, ms, {0., 0., 0., 0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
@@ -85,6 +89,8 @@ TEST_CASE("constructor")
             kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., -0.1),
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+                          std::logic_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, -1e-2),
                           std::logic_error);
     }
 }
@@ -120,23 +126,42 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_mu() == 0.333);
         sf.set_tof(0.333);
         REQUIRE(sf.get_tof() == 0.333);
+        sf.set_tol(1e-4);
+        REQUIRE(sf.get_tol() == 1e-4);
     }
     {
         kep3::leg::sims_flanagan_hf sf{};
         std::array<std::array<double, 3>, 2> rvf{{{1, 1, 1}, {1, 1, 1}}};
         std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
 
-        sf.set(rvf, 12, throttles, rvf, 12, 4, 4, 4, 4, 0.333);
+        sf.set(rvf, 12, throttles, rvf, 12, 4, 4, 4, 4, 0.333, 2e-5);
         REQUIRE(sf.get_rvs() == rvf);
         REQUIRE(sf.get_ms() == 12);
         REQUIRE(sf.get_rvf() == rvf);
         REQUIRE(sf.get_mf() == 12);
         REQUIRE(sf.get_throttles() == throttles);
-        REQUIRE(sf.get_cut() == 0.333);
         REQUIRE(sf.get_max_thrust() == 4);
         REQUIRE(sf.get_isp() == 4);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
+        REQUIRE(sf.get_cut() == 0.333);
+        REQUIRE(sf.get_tol() == 2e-5);
+    }
+    {
+        kep3::leg::sims_flanagan_hf sf{};
+        std::array<double , 7> rvms{1, 1, 1, 1, 1, 1, 1};
+        std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
+
+        sf.set(rvms, throttles, rvms, 4, 4, 4, 4, 0.333, 2e-5);
+        REQUIRE(sf.get_rvms() == rvms);
+        REQUIRE(sf.get_rvmf() == rvms);
+        REQUIRE(sf.get_throttles() == throttles);
+        REQUIRE(sf.get_max_thrust() == 4);
+        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_mu() == 4);
+        REQUIRE(sf.get_tof() == 4);
+        REQUIRE(sf.get_cut() == 0.333);
+        REQUIRE(sf.get_tol() == 2e-5);
     }
 }
 

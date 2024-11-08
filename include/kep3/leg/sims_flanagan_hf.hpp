@@ -50,7 +50,7 @@ public:
     // Constructor with rvm states
     sims_flanagan_hf(const std::array<double, 7> &rvms, std::vector<double> throttles,
                      const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
-                     double cut, double tol);
+                     double cut, double tol = 1e-16);
 
     // Setters
     void set_tof(double tof);
@@ -67,8 +67,8 @@ public:
     void set_tol(double tol);
     void set_rvms(const std::array<double, 7> &rvms);
     void set_rvmf(const std::array<double, 7> &rvmf);
-    void set_tas(const heyoka::taylor_adaptive<double> &tas);
-    void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
+    // void set_tas(const heyoka::taylor_adaptive<double> &tas);
+    // void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,

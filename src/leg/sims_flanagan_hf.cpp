@@ -235,14 +235,14 @@ void sims_flanagan_hf::set_rvmf(const std::array<double, 7> &rvmf)
 {
     m_rvmf = rvmf;
 }
-void sims_flanagan_hf::set_tas(const heyoka::taylor_adaptive<double> &tas)
-{
-    m_tas = tas;
-}
-void sims_flanagan_hf::set_tas_var(const heyoka::taylor_adaptive<double> &tas_var)
-{
-    m_tas_var = tas_var;
-}
+// void sims_flanagan_hf::set_tas(const heyoka::taylor_adaptive<double> &tas)
+// {
+//     m_tas = tas;
+// }
+// void sims_flanagan_hf::set_tas_var(const heyoka::taylor_adaptive<double> &tas_var)
+// {
+//     m_tas_var = tas_var;
+// }
 
 void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
                            const std::vector<double> &throttles,

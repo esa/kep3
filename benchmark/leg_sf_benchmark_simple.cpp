@@ -55,7 +55,7 @@ void perform_single_nogradient_speed_test()
                static_cast<double>(duration_con.count()) / 1e6);
 
     auto start = high_resolution_clock::now();
-    auto mc = sf_leg.compute_mismatch_constraints();
+    [[maybe_unused]] auto mc = sf_leg.compute_mismatch_constraints();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     fmt::print("\nLow-fidelity leg mc: {} nseg - timing: {}", m_throttles.size() / 3,
@@ -77,7 +77,7 @@ void perform_single_nogradient_speed_test()
                static_cast<double>(duration_hf_con.count()) / 1e6);
 
     auto hf_start = high_resolution_clock::now();
-    auto hf_mc = sf_hf_leg.compute_mismatch_constraints();
+    [[maybe_unused]] auto hf_mc = sf_hf_leg.compute_mismatch_constraints();
     auto hf_stop = high_resolution_clock::now();
     auto hf_duration = duration_cast<microseconds>(hf_stop - hf_start);
     fmt::print("\nHigh-fidelity leg mc: {} nseg - timing: {}", m_throttles.size() / 3,
@@ -131,7 +131,7 @@ void perform_single_nogradient_speed_test()
     auto bench_udp_n = sf_bench_udp{m_rvs, m_ms, m_rvf, 1, 1, static_cast<unsigned int>(m_throttles.size() / 3), false};
 
     auto lf_ngrad_start = high_resolution_clock::now();
-    auto lf_ngrad = bench_udp_a.gradient(chromosome);
+    auto lf_ngrad = bench_udp_n.gradient(chromosome);
     auto lf_ngrad_stop = high_resolution_clock::now();
     auto lf_ngrad_duration = duration_cast<microseconds>(lf_ngrad_stop - lf_ngrad_start);
     fmt::print("\nLow-fidelity leg numerical gradient: {} nseg - timing: {}", m_throttles.size() / 3,
