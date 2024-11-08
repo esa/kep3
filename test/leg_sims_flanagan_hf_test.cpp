@@ -27,6 +27,7 @@
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_hf.hpp>
+#include <kep3/leg/sf_checks.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/vsop2013.hpp>
@@ -90,8 +91,13 @@ TEST_CASE("constructor")
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
                           std::logic_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, -1e-2),
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, -1e-2),
+                          std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, 1.2),
+                          std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::_check_nseg(2, 1, 2),
                           std::logic_error);
+            
     }
 }
 
@@ -162,6 +168,8 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
         REQUIRE(sf.get_tol() == 2e-5);
+        REQUIRE(typeid(sf.get_tas()) == typeid(kep3::ta::get_ta_stark(sf.get_tol())));
+        REQUIRE(typeid(sf.get_tas_var()) == typeid(kep3::ta::get_ta_stark_var(sf.get_tol())));
     }
 }
 

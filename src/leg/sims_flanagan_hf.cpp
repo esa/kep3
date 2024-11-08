@@ -46,7 +46,7 @@ namespace kep3::leg
 sims_flanagan_hf::sims_flanagan_hf()
 {
     // We perform some sanity checks on the user provided inputs
-    _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
@@ -80,7 +80,7 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &r
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     // We perform some sanity checks on the user provided inputs
-    _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
@@ -120,7 +120,7 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<double, 7> &rvms, std::vecto
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     // We perform some sanity checks on the user provided inputs
-    _sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
@@ -147,7 +147,7 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<double, 7> &rvms, std::vecto
 // Setters
 void sims_flanagan_hf::set_tof(double tof)
 {
-    _check_tof(tof);
+    kep3::leg::_check_tof(tof);
     m_tof = tof;
 }
 void sims_flanagan_hf::set_rvs(const std::array<std::array<double, 3>, 2> &rv)
@@ -161,7 +161,7 @@ void sims_flanagan_hf::set_ms(double mass)
 }
 void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
 {
-    _check_throttles(throttles);
+    kep3::leg::_check_throttles(throttles);
     m_throttles = std::move(throttles);
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
@@ -201,29 +201,29 @@ void sims_flanagan_hf::set_mf(double mass)
 }
 void sims_flanagan_hf::set_max_thrust(double max_thrust)
 {
-    _check_max_thrust(max_thrust);
+    kep3::leg::_check_max_thrust(max_thrust);
     m_max_thrust = max_thrust;
 }
 void sims_flanagan_hf::set_isp(double isp)
 {
-    _check_isp(isp);
+    kep3::leg::_check_isp(isp);
     m_isp = isp;
 }
 void sims_flanagan_hf::set_mu(double mu)
 {
-    _check_mu(mu);
+    kep3::leg::_check_mu(mu);
     m_mu = mu;
 }
 void sims_flanagan_hf::set_cut(double cut)
 {
-    _check_cut(cut);
+    kep3::leg::_check_cut(cut);
     m_cut = cut;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
 void sims_flanagan_hf::set_tol(double tol)
 {
-    _check_tol(tol);
+    kep3::leg::_check_tol(tol);
     m_tol = tol;
 }
 void sims_flanagan_hf::set_rvms(const std::array<double, 7> &rvms)
@@ -265,7 +265,7 @@ void sims_flanagan_hf::set(const std::array<std::array<double, 3>, 2> &rvs, doub
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
-    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
@@ -289,7 +289,7 @@ void sims_flanagan_hf::set(const std::array<double, 7> &rvms, const std::vector<
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
-    _sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(throttles, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd, m_nseg_bck);
 
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
@@ -410,13 +410,9 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
     // Loop through segments in forward pass of Sims-Flanagan transcription
     for (auto i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
-                      std::next(m_tas.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
+                    std::next(m_tas.get_pars_data(), 2));
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
@@ -436,14 +432,9 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
     // Loop through segments in backward pass of Sims-Flanagan transcription
     for (auto i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
-            // Copy thrust into Taylor-adaptive integrator
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
-                      std::next(m_tas.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
+                    std::next(m_tas.get_pars_data(), 2));
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
@@ -559,13 +550,9 @@ sims_flanagan_hf::compute_all_gradients() const
         // Initialise var conditions
         std::copy(m_vars.begin(), m_vars.end(), m_tas_var.get_state_data() + 7);
         // Assign current thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
-                      std::next(m_tas_var.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
+                    std::next(m_tas_var.get_pars_data(), 2));
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
@@ -592,14 +579,9 @@ sims_flanagan_hf::compute_all_gradients() const
         // Initialise var conditions
         std::copy(m_vars.begin(), m_vars.end(), m_tas_var.get_state_data() + 7);
         // Assign current thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
-            // Copy thrust into Taylor-adaptive integrator
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
-                      std::next(m_tas_var.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
+                    std::next(m_tas_var.get_pars_data(), 2));
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
@@ -804,13 +786,9 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
     // Loop through segments in forward pass of Sims-Flanagan transcription
     for (decltype(m_nseg_fwd) i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((i + 1) * 3) <= m_thrusts.size()) {
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
-                      std::next(m_tas.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>(i * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>(3 * (i + 1))),
+                    std::next(m_tas.get_pars_data(), 2));
 
         // Current leg time grid
         std::copy(std::next(leg_time_grid.begin(), i * (grid_points_per_segment - 1)),
@@ -835,14 +813,9 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
     // Loop through segments in backward pass of Sims-Flanagan transcription
     for (decltype(m_nseg) i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
-        if (static_cast<size_t>((m_nseg - i) * 3) <= m_thrusts.size()) {
-            // Copy thrust into Taylor-adaptive integrator
-            std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
-                      std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
-                      std::next(m_tas.get_pars_data(), 2));
-        } else {
-            throw std::runtime_error("The retrieved thrust index is larger than the size of the m_thrusts vector.");
-        }
+        std::copy(std::next(m_thrusts.begin(), static_cast<long>((m_nseg - (i + 1)) * 3)),
+                    std::next(m_thrusts.begin(), static_cast<long>((m_nseg - i) * 3)),
+                    std::next(m_tas.get_pars_data(), 2));
 
         // Current leg time grid
         std::reverse_copy(leg_time_grid.begin() + (m_nseg - (i + 1)) * (grid_points_per_segment - 1),

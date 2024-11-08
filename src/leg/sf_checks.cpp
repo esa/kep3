@@ -9,12 +9,14 @@
 
 #include <stdexcept>
 #include <vector>
+#include <kep3/leg/sf_checks.hpp>
+
+namespace kep3::leg {
 
 void _check_tof(double tof)
 {
     // SC: One should be able to give this as a negative number to run the system backwards, no?
     if (tof < 0.) {
-        ;
         throw std::domain_error("The time of flight of a sims_flanagan leg needs to be larger or equal to zero.");
     }
 }
@@ -91,3 +93,5 @@ void _sanity_checks(const std::vector<double> &throttles, double tof, double max
     _check_tol(tol);
     _check_nseg(nseg, nseg_fwd, nseg_bck);
 }
+
+} // namespace kep3::leg
