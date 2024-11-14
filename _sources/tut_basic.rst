@@ -34,5 +34,6 @@ astrodynamical notation and computations.
   notebooks/interface_to_spice
   notebooks/propagate_lagrangian
   notebooks/sims_flanagan_leg
+  notebooks/sims_flanagan_hf_leg
   notebooks/plotting
 

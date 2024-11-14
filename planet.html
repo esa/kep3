@@ -17,26 +17,29 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -51,6 +54,7 @@
     <link rel="prev" title="Interplanetary transfer legs" href="leg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -66,19 +70,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -86,7 +79,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -94,8 +86,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -111,7 +103,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -141,21 +134,17 @@
     
     
     <img src="_static/pykep_logo.png" class="logo__image only-light" alt="pykep 0.0.1 documentation - Home"/>
-    <script>document.write(`<img src="_static/pykep_logo.png" class="logo__image only-dark" alt="pykep 0.0.1 documentation - Home"/>`);</script>
+    <img src="_static/pykep_logo.png" class="logo__image only-dark pst-js-only" alt="pykep 0.0.1 documentation - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
@@ -188,6 +177,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -351,24 +341,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -486,10 +468,10 @@ signatures, etc.)</p>
 Otherwise, if the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method <code class="docutils literal notranslate"><span class="pre">planet.elements</span></code> will return the elements as computed by the
 <a class="reference internal" href="elements.html#pykep.ic2par" title="pykep.ic2par"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.ic2par()</span></code></a>. Otherwise, -1 will be returned.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
 <p><em>el_type</em> (<a class="reference internal" href="elements.html#pykep.el_type" title="pykep.el_type"><code class="xref py py-class docutils literal notranslate"><span class="pre">el_type</span></code></a>): the elements type.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>: the planet’s elements at epoch.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>: the planet’s elements at epoch.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -510,9 +492,9 @@ This is a class that must implement the method:</p>
 <p>In the udpla, the signature for eph demands a float as epoch (mjd2000). The planet, instead, constructed from the same udpla, will also allow <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>.</p>
 </div>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -531,9 +513,9 @@ in his UDPLA by coding a method having the signature:</p>
 </div>
 <p>see, for example, the python implementation of the UDPLAS <a class="reference internal" href="udpla.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> and <a class="reference internal" href="udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>mjd2000s</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
+<dt>Args:</dt><dd><p><em>mjd2000s</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -544,20 +526,20 @@ in his UDPLA by coding a method having the signature:</p>
 <dd><p>Extract the user-defined planet.</p>
 <p>This method allows to extract a reference to the user-defined planet (UDPLA) stored within the
 <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> instance. The behaviour of this function depends on the value
-of <em>t</em> (which must be a <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>) and on the type of the internal UDPLA:</p>
+of <em>t</em> (which must be a <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>) and on the type of the internal UDPLA:</p>
 <ul class="simple">
 <li><p>if the type of the UDPLA is <em>t</em>, then a reference to the UDP will be returned,</p></li>
-<li><p>if <em>t</em> is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> and the UDP is a Python object (as opposed to an
+<li><p>if <em>t</em> is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> and the UDP is a Python object (as opposed to an
 exposed C++ planet), then a reference to the
 UDPLA will be returned (this allows to extract a Python UDPLA without knowing its type),</p></li>
-<li><p>otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> will be returned.</p></li>
+<li><p>otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> will be returned.</p></li>
 </ul>
 <dl>
-<dt>Args:</dt><dd><p><em>t</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>): the type of the user-defined planet to extract</p>
+<dt>Args:</dt><dd><p><em>t</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>): the type of the user-defined planet to extract</p>
 </dd>
-<dt>Returns:</dt><dd><p>a reference to the internal user-defined planet, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the extraction fails</p>
+<dt>Returns:</dt><dd><p>a reference to the internal user-defined planet, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the extraction fails</p>
 </dd>
-<dt>Raises:</dt><dd><p><em>TypeError</em>: if <em>t</em> is not a <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a></p>
+<dt>Raises:</dt><dd><p><em>TypeError</em>: if <em>t</em> is not a <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a></p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
@@ -594,7 +576,7 @@ UDPLA will be returned (this allows to extract a Python UDPLA without knowing it
 method. Otherwise, an empty string will be returned.</p>
 <p>The string representation of a <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> contains the output of a call to this method.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: extra info about the UDPLA</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: extra info about the UDPLA</p>
 </dd>
 <dt>Raises:</dt><dd><p>unspecified: any exception thrown by the <code class="docutils literal notranslate"><span class="pre">get_extra_info()</span></code> method of the UDPLA</p>
 </dd>
@@ -608,7 +590,7 @@ method. Otherwise, an empty string will be returned.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_central_body()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_mu_central_body()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the central body gravitational parameter.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the central body gravitational parameter.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -620,7 +602,7 @@ Otherwise, -1 will be returned.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_mu_self()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s gravitational parameter.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s gravitational parameter.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -633,7 +615,7 @@ Otherwise, -1 will be returned.</p>
 Otherwise, an implementation-defined name based on the type of the UDPLA will be returned.</p>
 <p>The string representation of a <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> contains the output of a call to this method.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: the problem’s name</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: the problem’s name</p>
 </dd>
 </dl>
 </dd></dl>
@@ -645,7 +627,7 @@ Otherwise, an implementation-defined name based on the type of the UDPLA will be
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s average radius.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s average radius.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -658,7 +640,7 @@ the planet atmosphere or circumvent its radiation environment.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s safe radius.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s safe radius.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -667,10 +649,10 @@ Otherwise, -1 will be returned.</p>
 <dt class="sig sig-object py" id="pykep.planet.is_">
 <span class="sig-name descname"><span class="pre">is_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.is_" title="Permalink to this definition">#</a></dt>
 <dd><p>Check the type of the user-defined planet.</p>
-<p>This method returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> if <a class="reference internal" href="#pykep.planet.extract" title="pykep.planet.extract"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract()</span></code></a> returns
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> otherwise.</p>
+<p>This method returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> if <a class="reference internal" href="#pykep.planet.extract" title="pykep.planet.extract"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract()</span></code></a> returns
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> otherwise.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>t</em>  (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>): the type that will be compared to the type of the UDPLA</p>
+<dt>Args:</dt><dd><p><em>t</em>  (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>): the type that will be compared to the type of the UDPLA</p>
 </dd>
 <dt>Returns:</dt><dd><p>bool: whether the UDPLA is of type <em>t</em> or not</p>
 </dd>
@@ -690,9 +672,9 @@ equation:</p>
 \[T = 2 \pi \sqrt{\frac{a^3}{\mu}}\]</div>
 <p>Else, -1 will be returned.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
+<dt>Args:</dt><dd><p><em>when</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a>): the epoch at which compute the period. When a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> is passed mjd2000 is assumed.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s period.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the planet’s period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -737,7 +719,8 @@ equation:</p>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -809,8 +792,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>
