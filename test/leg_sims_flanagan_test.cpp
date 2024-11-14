@@ -9,11 +9,11 @@
 
 #include <algorithm>
 #include <stdexcept>
-#include <utility>
 #include <vector>
 
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xio.hpp>
+#include <xtensor-blas/xlinalg.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -31,7 +31,6 @@
 
 #include "catch.hpp"
 #include "leg_sims_flanagan_udp.hpp"
-#include "test_helpers.hpp"
 
 TEST_CASE("constructor")
 {
@@ -70,6 +69,8 @@ TEST_CASE("constructor")
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., -0.1),
             std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+                          std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
                           std::logic_error);
     }
@@ -118,11 +119,11 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_rvf() == rvf);
         REQUIRE(sf.get_mf() == 12);
         REQUIRE(sf.get_throttles() == throttles);
-        REQUIRE(sf.get_cut() == 0.333);
         REQUIRE(sf.get_max_thrust() == 4);
         REQUIRE(sf.get_isp() == 4);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
+        REQUIRE(sf.get_cut() == 0.333);
     }
 }
 

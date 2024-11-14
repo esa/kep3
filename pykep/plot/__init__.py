@@ -8,6 +8,7 @@ from ._planet import add_planet_orbit, add_planet, add_solar_system
 from ._lambert import add_lambert
 from ._ballistic import add_ballistic_arc
 from ._sf_leg import add_sf_leg
+from ._sf_leg import add_sf_hf_leg
 
 def make_3Daxis(**kwargs):
     """Constructs and returns a 3D axis.  All kwargs are forwarded to the call to `figure()` in matplotlib.

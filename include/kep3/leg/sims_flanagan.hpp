@@ -42,11 +42,11 @@ public:
 
     // Setters
     void set_tof(double tof);
-    void set_rvs(std::array<std::array<double, 3>, 2> rv);
+    void set_rvs(const std::array<std::array<double, 3>, 2> &rv);
     void set_ms(double mass);
-    void set_throttles(std::vector<double> throttles);
-    void set_throttles(std::vector<double>::const_iterator it1, std::vector<double>::const_iterator it2);
-    void set_rvf(std::array<std::array<double, 3>, 2> rv);
+    void set_throttles(const std::vector<double> &throttles);
+    void set_throttles(const std::vector<double>::const_iterator &it1, const std::vector<double>::const_iterator &it2);
+    void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
     void set_isp(double isp);
@@ -70,7 +70,6 @@ public:
     [[nodiscard]] unsigned get_nseg() const;
     [[nodiscard]] unsigned get_nseg_fwd() const;
     [[nodiscard]] unsigned get_nseg_bck() const;
-
 
     // Compute constraints
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
@@ -104,26 +103,26 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int)
     {
-        ar &m_rvs;
-        ar &m_ms;
-        ar &m_throttles;
-        ar &m_tof;
-        ar &m_rvf;
-        ar &m_mf;
-        ar &m_max_thrust;
-        ar &m_isp;
-        ar &m_mu;
-        ar &m_cut;
-        ar &m_nseg;
-        ar &m_nseg_fwd;
-        ar &m_nseg_bck;
+        ar & m_rvs;
+        ar & m_ms;
+        ar & m_throttles;
+        ar & m_tof;
+        ar & m_rvf;
+        ar & m_mf;
+        ar & m_max_thrust;
+        ar & m_isp;
+        ar & m_mu;
+        ar & m_cut;
+        ar & m_nseg;
+        ar & m_nseg_fwd;
+        ar & m_nseg_bck;
     }
 
     // Initial spacecraft state.
-    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0, 1., 0.}}};
+    std::array<std::array<double, 3>, 2> m_rvs{{{1., 0., 0.}, {0., 1., 0.}}};
     double m_ms = 1.;
     // Sequence of throttles.
-    std::vector<double> m_throttles{0., .0, 0., 0., 0., 0.};
+    std::vector<double> m_throttles{0., 0., 0., 0., 0., 0.};
     // Final spacecraft state.
     std::array<std::array<double, 3>, 2> m_rvf{{{0., 1., 0.}, {-1., 0., 0.}}};
     double m_mf = 1.;

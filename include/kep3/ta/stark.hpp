@@ -10,7 +10,6 @@
 #ifndef kep3_TA_STARK_H
 #define kep3_TA_STARK_H
 
-#include <tuple>
 #include <vector>
 
 #include <kep3/detail/visibility.hpp>
@@ -24,7 +23,7 @@ namespace kep3::ta
 kep3_DLL_PUBLIC std::vector<std::pair<heyoka::expression, heyoka::expression>> stark_dyn();
 
 // These return const references to function level static variables of type heyoka::taylor_adaptive<double>.
-// NOTE: The object retruned are expected to be copied to then be modified.
+// NOTE: The object returned are expected to be copied to then be modified.
 kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_stark(double tol);
 kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_stark_var(double tol); // variational (x,y,z,vx,vy,vz,ux,uy,uz) first order
 

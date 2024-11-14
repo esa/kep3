@@ -10,7 +10,6 @@
 #include <array>
 #include <heyoka/kw.hpp>
 #include <mutex>
-#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -53,7 +52,7 @@ std::vector<std::pair<expression, expression>> stark_dyn()
     // The square of the radius
     const auto r2 = sum({pow(x, 2.), pow(y, 2.), pow(z, 2.)});
 
-    // The throttle magnitude
+    // The thrust magnitude
     const auto u_norm = sqrt(sum({pow(ux, 2.), pow(uy, 2.), pow(uz, 2.)}));
 
     // The Equations of Motion

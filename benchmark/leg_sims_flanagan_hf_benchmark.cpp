@@ -22,10 +22,11 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
+#include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
-#include "leg_sims_flanagan_udp_bench.hpp"
+#include "leg_sims_flanagan_hf_udp_bench.hpp"
 
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
@@ -52,10 +53,10 @@ void perform_convergence_benchmark(unsigned N, unsigned nseg)
     kep3::udpla::vsop2013 udpla_jupiter("jupiter", 1e-2);
     kep3::planet earth{udpla_earth};
     kep3::planet jupiter{udpla_jupiter};
-    // auto rvs = earth.eph(1000);
-    // auto rvf = jupiter.eph(1000);
     int count_n = 0;
     int count_a = 0;
+    auto bench_udp_a = sf_hf_bench_udp();
+    auto bench_udp_n = sf_hf_bench_udp();
     for (decltype(N) i = 0; i < N; ++i) {
         auto rvs = earth.eph(ts_random(rng_engine));
         auto rvf = jupiter.eph(ts_random(rng_engine));
@@ -80,8 +81,8 @@ void perform_convergence_benchmark(unsigned N, unsigned nseg)
         double mass = mass_random(rng_engine);
         double max_thrust = 1;
         double isp = 1;
-        auto bench_udp_a = sf_bench_udp{rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, true};
-        auto bench_udp_n = sf_bench_udp{rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, false};
+        bench_udp_a.set_leg(rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, true);
+        bench_udp_n.set_leg(rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, false);
         pagmo::problem prob_a{bench_udp_a};
         pagmo::problem prob_n{bench_udp_n};
         prob_a.set_c_tol(1e-8);
@@ -143,31 +144,24 @@ void perform_speed_benchmark(unsigned N, unsigned nseg, unsigned pop_size)
     kep3::planet jupiter{udpla_jupiter};
     double count_n = 0;
     double count_a = 0;
+    auto bench_udp_a = sf_hf_bench_udp();
+    auto bench_udp_n = sf_hf_bench_udp();
     for (decltype(N) i = 0; i < N; ++i) {
         auto rvs = earth.eph(ts_random(rng_engine));
         auto rvf = jupiter.eph(ts_random(rng_engine));
-        double tof_ic = tof_random(rng_engine);
-        double mu = 1;
         rvs[0][0] /= kep3::AU;
         rvs[0][1] /= kep3::AU;
         rvs[0][2] /= kep3::AU;
         rvf[0][0] /= kep3::AU;
         rvf[0][1] /= kep3::AU;
         rvf[0][2] /= kep3::AU;
-        const kep3::lambert_problem lp{rvs[0], rvf[0], tof_ic, mu};
 
         // Create HF legs
-        std::array<std::array<double, 3>, 2> rvs_udp_ic = {{{lp.get_r0()[0], lp.get_r0()[1], lp.get_r0()[2]},
-                                                            {lp.get_v0()[0][0], lp.get_v0()[0][1], lp.get_v0()[0][2]}}};
-        std::array<std::array<double, 3>, 2> rvf_udp_ic
-            = {{{lp.get_r1()[0], lp.get_r1()[1], lp.get_r1()[2]},
-                {lp.get_v1()[0][0] + dv_pert_random(rng_engine), lp.get_v1()[0][1] + dv_pert_random(rng_engine),
-                 lp.get_v1()[0][2] + dv_pert_random(rng_engine)}}};
         double mass = mass_random(rng_engine);
         double max_thrust = 1;
         double isp = 1;
-        auto bench_udp_a = sf_bench_udp{rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, true};
-        auto bench_udp_n = sf_bench_udp{rvs_udp_ic, mass, rvf_udp_ic, max_thrust, isp, nseg, false};
+        bench_udp_a.set_leg(rvs, mass, rvf, max_thrust, isp, nseg, true);
+        bench_udp_n.set_leg(rvs, mass, rvf, max_thrust, isp, nseg, false);
         pagmo::problem prob_a{bench_udp_a};
         pagmo::problem prob_n{bench_udp_n};
         prob_a.set_c_tol(1e-8);

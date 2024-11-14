@@ -30,6 +30,8 @@ Plotting trajectories
 
 .. autofunction:: add_sf_leg
 
+.. autofunction:: add_sf_hf_leg
+
 
 
 

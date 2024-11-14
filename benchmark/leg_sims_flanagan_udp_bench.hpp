@@ -35,10 +35,10 @@ struct sf_bench_udp {
     {
         // x = [throttles, tof (in days), mf (in kg)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
-        double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
+        double tof = x[m_nseg * 3];// * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+                                     m_isp, 1);
 
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
@@ -48,13 +48,13 @@ struct sf_bench_udp {
         retval[0] = -mf;
         // Equality Constraints
         auto eq_con = leg.compute_mismatch_constraints();
-        retval[1] = eq_con[0] / kep3::AU;
-        retval[2] = eq_con[1] / kep3::AU;
-        retval[3] = eq_con[2] / kep3::AU;
-        retval[4] = eq_con[3] / kep3::EARTH_VELOCITY;
-        retval[5] = eq_con[4] / kep3::EARTH_VELOCITY;
-        retval[6] = eq_con[5] / kep3::EARTH_VELOCITY;
-        retval[7] = eq_con[6] / 1e8; //
+        retval[1] = eq_con[0]; // / kep3::AU;
+        retval[2] = eq_con[1]; // / kep3::AU;
+        retval[3] = eq_con[2]; // / kep3::AU;
+        retval[4] = eq_con[3]; // / kep3::EARTH_VELOCITY;
+        retval[5] = eq_con[4]; // / kep3::EARTH_VELOCITY;
+        retval[6] = eq_con[5]; // / kep3::EARTH_VELOCITY;
+        retval[7] = eq_con[6]; // / 1e8; //
         //  Inequality Constraints
         auto ineq_con = leg.compute_throttle_constraints();
         std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 8);
@@ -79,10 +79,10 @@ struct sf_bench_udp {
     {
         // x = [throttles, tof (in days), mf (in kg)]
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
-        double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
+        double tof = x[m_nseg * 3]; // * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+                                     m_isp, 1);
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 
@@ -105,13 +105,13 @@ struct sf_bench_udp {
         xgradient(0, m_nseg * 3 + 1) = -1.; // fitness gradient - obj fun
         // [1:4,:-1] - fitness gradient - position mismatch
         xt::view(xgradient, xt::range(1u, 4u), xt::range(0, m_nseg * 3u + 1u))
-            = xt::view(xgrad_mc, xt::range(0u, 3u), xt::all()) / kep3::AU; // throttles, tof
+            = xt::view(xgrad_mc, xt::range(0u, 3u), xt::all()); // / kep3::AU; // throttles, tof
         // [4:7,:-1] - fitness gradient - velocity mismatch
         xt::view(xgradient, xt::range(4u, 7u), xt::range(0, m_nseg * 3u + 1u))
-            = xt::view(xgrad_mc, xt::range(3u, 6u), xt::all()) / kep3::EARTH_VELOCITY; // throttles, tof
+            = xt::view(xgrad_mc, xt::range(3u, 6u), xt::all()); // / kep3::EARTH_VELOCITY; // throttles, tof
         // [7:8,:-1] - fitness gradient - mass mismatch
         xt::view(xgradient, xt::range(7u, 8u), xt::range(0, static_cast<unsigned>(m_nseg) * 3u + 1))
-            = xt::view(xgrad_mc, xt::range(6u, 7u), xt::all()) / 1e8; // throttles, tof
+            = xt::view(xgrad_mc, xt::range(6u, 7u), xt::all()); // / 1e8; // throttles, tof
         // [8:,:-2] - fitness gradient - throttle constraints
         xt::view(xgradient, xt::range(8u, 8u + static_cast<unsigned>(m_nseg)),
                  xt::range(0, static_cast<unsigned>(m_nseg) * 3u))
@@ -119,28 +119,35 @@ struct sf_bench_udp {
 
         // [1:4,-1] - fitness gradient, position mismatch w.r.t. mf
         xt::view(xgradient, xt::range(1u, 4u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(0u, 3u), xt::range(6u, 7u)) / kep3::AU; // mf
+            = xt::view(xgrad_mc_xf, xt::range(0u, 3u), xt::range(6u, 7u)); // / kep3::AU; // mf
         // [4:7,-1] - fitness gradient - velocity mismatch w.r.t. mf
         xt::view(xgradient, xt::range(4u, 7u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(3u, 6u), xt::range(6u, 7u)) / kep3::EARTH_VELOCITY; // mf
+            = xt::view(xgrad_mc_xf, xt::range(3u, 6u), xt::range(6u, 7u)); // / kep3::EARTH_VELOCITY; // mf
         // [7:8,-1] - fitness gradient - mass mismatch w.r.t. mf
         xt::view(xgradient, xt::range(7u, 8u), xt::range(m_nseg * 3u + 1u, m_nseg * 3u + 2u))
-            = xt::view(xgrad_mc_xf, xt::range(6u, 7u), xt::range(6u, 7u)) / 1e8; // mf
+            = xt::view(xgrad_mc_xf, xt::range(6u, 7u), xt::range(6u, 7u)); // / 1e8; // mf
 
         // Units for the tof
-        xt::view(xgradient, xt::all(), xt::range(m_nseg * 3u, m_nseg * 3u + 1u)) *= kep3::DAY2SEC;
+        xt::view(xgradient, xt::all(), xt::range(m_nseg * 3u, m_nseg * 3u + 1u)); // *= kep3::DAY2SEC;
         return gradient;
     }
 
     [[nodiscard]] std::pair<std::vector<double>, std::vector<double>> get_bounds() const
     {
         // x = [throttles, tof (in days), mf (in kg)]
+        // std::vector<double> lb(m_nseg * 3 + 2, -1.);
+        // std::vector<double> ub(m_nseg * 3 + 2, +1.);
+        // lb[m_nseg * 3] = 1.;            // days
+        // ub[m_nseg * 3] = 2500.;         // days
+        // lb[m_nseg * 3 + 1] = m_ms / 2.; // kg
+        // ub[m_nseg * 3 + 1] = m_ms;      // kg
+        // return {lb, ub};
         std::vector<double> lb(m_nseg * 3 + 2, -1.);
         std::vector<double> ub(m_nseg * 3 + 2, +1.);
-        lb[m_nseg * 3] = 1.;            // days
-        ub[m_nseg * 3] = 2500.;         // days
-        lb[m_nseg * 3 + 1] = m_ms / 2.; // kg
-        ub[m_nseg * 3 + 1] = m_ms;      // kg
+        lb[m_nseg * 3] = kep3::pi / 12;     // days
+        ub[m_nseg * 3] = 2 * kep3::pi;     // days
+        lb[m_nseg * 3 + 1] = 0.5; // kg
+        ub[m_nseg * 3 + 1] = 1;   // kg
         return {lb, ub};
     }
 
