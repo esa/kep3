@@ -378,6 +378,7 @@ unsigned sims_flanagan_hf::get_nseg_bck() const
 {
     return m_nseg_bck;
 }
+// LCOV_EXCL_START
 const heyoka::taylor_adaptive<double> &sims_flanagan_hf::get_tas() const
 {
     return m_tas;
@@ -386,6 +387,7 @@ const heyoka::taylor_adaptive<double> &sims_flanagan_hf::get_tas_var() const
 {
     return m_tas_var;
 }
+// LCOV_EXCL_END
 const std::array<double, 7> &sims_flanagan_hf::get_rvms() const
 {
     return m_rvms;
@@ -416,7 +418,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
     }
 
@@ -438,7 +440,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
     }
 
@@ -556,7 +558,7 @@ sims_flanagan_hf::compute_all_gradients() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7, xf_per_seg[i].begin());
@@ -585,7 +587,7 @@ sims_flanagan_hf::compute_all_gradients() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7,
@@ -696,7 +698,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
             corresponding_M = Mn_o[i - 1] * -1; // Multiple by -1 because mass correlation is -1.
         } else {
             throw std::runtime_error("During calculation of the throttle derivatives, the index doesn't correspond to "
-                                     "any leg and therefore cannot find the corresponding gradients.");
+                                     "any leg and therefore cannot find the corresponding gradients."); // LCOV_EXCL_LINE
         }
         xt::view(xgrad_final_throttle, xt::all(), xt::range(3 * i, 3 * (i + 1)))
             = xt::linalg::dot(corresponding_M, current_U);
@@ -717,7 +719,7 @@ sims_flanagan_hf::get_relevant_gradients(const std::vector<std::array<double, 49
             corresponding_M = Mn_o[i]; // Idem
         } else {
             throw std::runtime_error("During calculation of the tof derivatives, the index doesn't correspond to "
-                                     "any leg and therefore cannot find the corresponding gradients.");
+                                     "any leg and therefore cannot find the corresponding gradients."); // LCOV_EXCL_LINE
         }
         xgrad_final_tof += xt::linalg::dot(corresponding_M, current_F);
     }
@@ -798,7 +800,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
         output_per_seg[i] = output_states;
     }
@@ -826,7 +828,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) {
-            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation.");
+            throw std::domain_error("stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
         }
         output_per_seg[m_nseg - 1 - i] = output_states;
     }
