@@ -36,7 +36,7 @@ public:
     // Default Constructor.
     sims_flanagan() = default;
     // Constructors
-    sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+    sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
                   const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
                   double mu, double cut = 0.5);
 
