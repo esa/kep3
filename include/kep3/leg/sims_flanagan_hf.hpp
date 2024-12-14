@@ -44,11 +44,11 @@ public:
     // Default Constructor.
     sims_flanagan_hf(); // = default;
     // Backwards-compatible constructor with rv and m states separately
-    sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+    sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
                      const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                      double isp, double mu, double cut = 0.5, double tol = 1e-16);
     // Constructor with rvm states
-    sims_flanagan_hf(const std::array<double, 7> &rvms, std::vector<double> throttles,
+    sims_flanagan_hf(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
                      const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
                      double cut, double tol = 1e-16);
 
@@ -81,10 +81,10 @@ public:
 
     // Getters
     [[nodiscard]] double get_tof() const;
-    [[nodiscard]] const std::array<std::array<double, 3>, 2> get_rvs() const;
+    [[nodiscard]] std::array<std::array<double, 3>, 2> get_rvs() const;
+    [[nodiscard]] std::array<std::array<double, 3>, 2> get_rvf() const;
     [[nodiscard]] double get_ms() const;
     [[nodiscard]] const std::vector<double> &get_throttles() const;
-    [[nodiscard]] const std::array<std::array<double, 3>, 2> get_rvf() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
     [[nodiscard]] double get_isp() const;
