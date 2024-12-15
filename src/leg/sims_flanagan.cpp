@@ -41,7 +41,8 @@ using kep3::linalg::mat63;
 using kep3::linalg::mat66;
 
 // Constructors
-sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms, std::vector<double> throttles,
+sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, double ms,
+                             const std::vector<double> &throttles,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                              double isp, double mu, double cut)

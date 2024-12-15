@@ -16,7 +16,7 @@ jobs:
       - name: Build
         run: bash tools/gha_linux_asan_debug.sh
   osx_11_debug:
-    runs-on: macos-13
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Build

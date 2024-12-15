@@ -184,7 +184,7 @@ target_include_directories(kep3 PUBLIC
 # NOTE: need 1.69 for safe numerics.
 set(_kep3_MIN_BOOST_VERSION "1.69")
 
-find_package(Boost ${_kep3_MIN_BOOST_VERSION} REQUIRED)
+find_package(Boost ${_kep3_MIN_BOOST_VERSION} CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC Boost::boost)
 # NOTE: quench warnings from Boost when building the library.
 target_compile_definitions(kep3 PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
@@ -202,7 +202,7 @@ if(${fmt_VERSION_MAJOR} LESS 10)
 endif()
 
 # heyoka.
-find_package(heyoka 5.0.0 REQUIRED CONFIG)
+find_package(heyoka 6 CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
 
 # spdlog.
