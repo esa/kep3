@@ -476,7 +476,7 @@ class mga:
             
             *leg_ids* (:class:`list`): selects the legs to plot. Optional, defaults to all legs.
             
-            *\*\*kwargs*: Additional keyword arguments to pass to the trajectory plot (all Lambert arcs)
+            *\\*\\*kwargs*: Additional keyword arguments to pass to the trajectory plot (all Lambert arcs)
 
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis where the trajectory was plotted.

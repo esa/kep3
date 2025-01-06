@@ -15,7 +15,7 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
 
         *units* (:class:`float`, optional): The unit conversion factor for plotting. Default is _pk.AU.
 
-        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\\*\\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Raises:
         ValueError: If the specified solution index (sol) is greater than twice the maximum number of revolutions (Nmax).

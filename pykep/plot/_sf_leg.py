@@ -37,7 +37,7 @@ def add_sf_leg(
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
 
-        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\\*\\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Notes:
         - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
@@ -47,11 +47,12 @@ def add_sf_leg(
         :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
     """
     # We extract the number of segments from the leg.
-    nseg = int(len(sf.throttles) / 3)
+    nseg = sf.nseg  
+    nseg_fwd = sf.nseg_fwd
+    nseg_bck = sf.nseg_bck
+    
     dt = sf.tof / nseg
     c = sf.max_thrust * dt
-    nseg_fwd = int(nseg * sf.cut)
-    nseg_bck = nseg - nseg_fwd
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     pos_fwd = []
@@ -67,11 +68,11 @@ def add_sf_leg(
         throttles = sf.throttles[3 * i : 3 * i + 3]
         throttles_fwd.append(throttles)
         dv = _np.linalg.norm(throttles) * c / mass_fwd
-        # plot it in a color that is proportional to the strength from royalblue to indianred
+        # plot it in a color that is proportional to the strength
         color = (
-            0.25 + (1.0 - 0.25) * min(1.0, _np.linalg.norm(throttles)),
-            0.41 + (0.0 - 0.41) * min(1.0, _np.linalg.norm(throttles)),
-            0.88 + (0.0 - 0.88) * min(1.0, _np.linalg.norm(throttles)),
+            0.25 + (0.80 - 0.25) * min(1.0, _np.linalg.norm(throttles)),
+            0.41 + (0.36 - 0.41) * min(1.0, _np.linalg.norm(throttles)),
+            0.88 + (0.36 - 0.88) * min(1.0, _np.linalg.norm(throttles)),
         )
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
@@ -195,6 +196,7 @@ def add_sf_hf_leg(
     N=10,
     show_gridpoints=False,
     show_throttles=False,
+    show_throttles_tips = False,
     length=0.1,
     arrow_length_ratio=0.05,
     **kwargs
@@ -214,12 +216,14 @@ def add_sf_hf_leg(
         *show_gridpoints* (:class:`bool`, optional): If True, gridpoints of the trajectory are shown. Default is False.
 
         *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
+        
+        *show_throttles_tips* (:class:`bool`, optional): If True, and show_throttles is True, thrust vectors at midpoints are shown with an endline. Default is False.
 
         *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
 
-        *\*\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+        *\\*\\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Notes:
         - This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.
@@ -229,9 +233,9 @@ def add_sf_hf_leg(
         :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
     """
     # We extract the number of segments from the leg.
-    nseg = int(len(sf.throttles) / 3)
-    nseg_fwd = int(nseg * sf.cut)
-    nseg_bck = nseg - nseg_fwd
+    nseg = sf.nseg
+    nseg_fwd = sf.nseg_fwd
+    nseg_bck = sf.nseg_bck
     state_history_raw = sf.get_state_history(N)
     throttles = _np.repeat(
         _np.array(sf.throttles).reshape((1, len(sf.throttles))),
@@ -275,12 +279,14 @@ def add_sf_hf_leg(
                 color="indianred",
                 arrow_length_ratio=arrow_length_ratio,
             )
-            ax.plot(
-                current_quiver_tips[:, 0],
-                current_quiver_tips[:, 1],
-                current_quiver_tips[:, 2],
-                color="indianred",
-            )
+            if show_throttles_tips:
+                current_quiver_tips = current_states / units + current_throttles * length
+                ax.plot(
+                    current_quiver_tips[:, 0],
+                    current_quiver_tips[:, 1],
+                    current_quiver_tips[:, 2],
+                    color="indianred",
+                )
 
     if show_gridpoints:
         ax.scatter(
@@ -326,12 +332,14 @@ def add_sf_hf_leg(
                 color="indianred",
                 arrow_length_ratio=arrow_length_ratio,
             )
-            ax.plot(
-                current_quiver_tips[:, 0],
-                current_quiver_tips[:, 1],
-                current_quiver_tips[:, 2],
-                color="indianred",
-            )
+            if show_throttles_tips:
+                current_quiver_tips = current_states / units + current_throttles * length
+                ax.plot(
+                    current_quiver_tips[:, 0],
+                    current_quiver_tips[:, 1],
+                    current_quiver_tips[:, 2],
+                    color="indianred",
+                )
 
     if show_gridpoints:
         ax.scatter(

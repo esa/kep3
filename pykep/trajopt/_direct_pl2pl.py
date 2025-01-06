@@ -312,7 +312,7 @@ class direct_pl2pl:
 
             *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.
 
-            *\*\*kwargs*: Additional keyword arguments for the plot.
+            *\\*\\*kwargs*: Additional keyword arguments for the plot.
 
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis with the plotted trajectory.
