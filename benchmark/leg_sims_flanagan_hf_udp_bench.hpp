@@ -33,7 +33,7 @@ struct sf_hf_bench_udp {
                                             m_max_thrust, m_isp, 1.0, 0.5, 1e-16))
     {
     }
-    [[nodiscard]] void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
+    void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
                                   std::array<std::array<double, 3>, 2> rvf,
                                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                   double max_thrust, double isp, unsigned nseg, bool analytical)
@@ -49,7 +49,7 @@ struct sf_hf_bench_udp {
                                             m_max_thrust, m_isp, 1.0, 0.5, 1e-16);
     }
 
-    [[nodiscard]] void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
+    void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
                                std::array<std::array<double, 3>, 2> rvf,
                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                double max_thrust, double isp, unsigned nseg, bool analytical)
