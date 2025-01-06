@@ -202,7 +202,7 @@ if(${fmt_VERSION_MAJOR} LESS 10)
 endif()
 
 # heyoka.
-find_package(heyoka 6 CONFIG REQUIRED)
+find_package(heyoka 7 CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
 
 # spdlog.
