@@ -70,7 +70,7 @@ class mga:
 
             *t0* (:class:`list` [:class:`float` or :class:`~pykep.epoch`]): lower and upper bounds for the launch epoch. When floats are used MJD2000 is assumed.
 
-            *tof* (``list`` or ``float``): defines the bounds on the time of flight. If *tof_encoding* is 'direct', this contains a list
+            *tof* (:class:`list` or :class:`float`): defines the bounds on the time of flight. If *tof_encoding* is 'direct', this contains a list
             of 2D lists defining the upper and lower bounds on each leg. If *tof_encoding* is 'alpha',
             this contains a 2D list with the lower and upper bounds on the total time-of-flight. If *tof_encoding*
             is 'eta' tof is a float defining an upper bound for the time-of-flight.

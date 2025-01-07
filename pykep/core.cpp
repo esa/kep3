@@ -248,6 +248,22 @@ PYBIND11_MODULE(core, m) // NOLINT
 
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
+// We also support the various quantities as attributes for compatibility with pykep 2 
+// and because its nicer syntax to have them as attributes.
+#define PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name)                                                                            \
+    planet_class.def_property_readonly(                                                                                 \
+        #name, [](const kep3::planet &pl) { return pl.get_##name(); },                                                  \
+        pykep::planet_get_##name##_docstring().c_str());
+
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(extra_info);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(mu_central_body);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(mu_self);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(radius);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(safe_radius);
+
+#undef PYKEP3_EXPOSE_PLANET_GETTER
+
     planet_class.def(
         "period",
         [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
