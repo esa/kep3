@@ -1,3 +1,10 @@
+## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+## (bluescarni@gmail.com)## 
+## This file is part of the kep3 library.## 
+## This Source Code Form is subject to the terms of the Mozilla
+## Public License v. 2.0. If a copy of the MPL was not distributed
+## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import pykep as _pk
 import numpy as _np
 
@@ -61,7 +68,7 @@ class mga:
         Args:
             *seq* (:class:`list` [:class:`~pykep.planet`]): sequence of planetary encounters including the departure body.
 
-            *t0* (:class:`list` [:class:`float` or :class:`~pk.epoch`]): lower and upper bounds for the launch epoch. When floats are used MJD2000 is assumed.
+            *t0* (:class:`list` [:class:`float` or :class:`~pykep.epoch`]): lower and upper bounds for the launch epoch. When floats are used MJD2000 is assumed.
 
             *tof* (``list`` or ``float``): defines the bounds on the time of flight. If *tof_encoding* is 'direct', this contains a list
             of 2D lists defining the upper and lower bounds on each leg. If *tof_encoding* is 'alpha',
@@ -208,10 +215,10 @@ class mga:
         """alpha2direct(x)
 
         Args:
-            - x (``array-like``): a chromosome encoding an MGA trajectory in the alpha encoding
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the alpha encoding
 
         Returns:
-            ``numpy.array``: a chromosome encoding the MGA trajectory using the direct encoding
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
         """
         T = _np.log(x[2:])
         retval = T / sum(T) * x[1]
@@ -223,10 +230,10 @@ class mga:
         """direct2alpha(x)
 
         Args:
-            - x (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
 
         Returns:
-            ``numpy.array``: a chromosome encoding the MGA trajectory using the alpha encoding
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the alpha encoding
         """
         T = _np.sum(x[1:])
         alphas = _np.exp(x[1:] / (-T))
@@ -237,10 +244,10 @@ class mga:
         """eta2direct(x)
 
         Args:
-            - x (``array-like``): a chromosome encoding an MGA trajectory in the eta encoding
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the eta encoding
 
         Returns:
-            ``numpy.array``: a chromosome encoding the MGA trajectory using the direct encoding
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
 
         Raises:
             - ValueError: when the tof_encoding is not 'eta'
@@ -262,10 +269,10 @@ class mga:
         """direct2eta(x)
 
         Args:
-            - x (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
 
         Returns:
-            ``numpy.array``: a chromosome encoding the MGA trajectory using the eta encoding
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the eta encoding
 
         Raises:
             - ValueError: when the tof_encoding is not 'eta'
