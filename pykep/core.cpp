@@ -191,7 +191,9 @@ PYBIND11_MODULE(core, m) // NOLINT
     planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
                      py::return_value_policy::reference_internal);
     // repr().
-    planet_class.def("__repr__", &pykep::ostream_repr<kep3::planet>);
+    planet_class.def("__repr__", [](const kep3::planet &pl){return pl.get_name();});
+    // Full info
+    planet_class.def("info", &pykep::ostream_repr<kep3::planet>);
     // Copy and deepcopy.
     planet_class.def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>);
     planet_class.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>);
