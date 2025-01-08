@@ -49,3 +49,12 @@ amenable to evolutionary techniques.
 
 .. autoclass:: mga
     :members: pretty, plot, to_planet
+
+Utilities
+*********
+In order to facilitate the use of the classes in this module, some utilities are provided.
+
+-------------------------------------------------------
+
+.. autoclass:: _launchers
+    :members: atlas501, atlas551, soyuzf, ariane5

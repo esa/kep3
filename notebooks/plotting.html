@@ -17,8 +17,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -28,18 +28,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -195,9 +195,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -428,8 +433,8 @@
 <p>We start importing the basics:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
@@ -448,7 +453,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d656ecedbeee02802dc4dc5a8b97bf076b4a853fe2de22bd7188f1b20e03f60d.png" src="../_images/d656ecedbeee02802dc4dc5a8b97bf076b4a853fe2de22bd7188f1b20e03f60d.png" />
+<img alt="../_images/a98b780bc0dc3040684953898506bb85687cd194eb99705d65c6325672a80288.png" src="../_images/a98b780bc0dc3040684953898506bb85687cd194eb99705d65c6325672a80288.png" />
 </div>
 </div>
 <p>We may then add the Sun and a few planets easily … in the code below we will make use of the JPL low precision ephemerides, and thus use the <a class="reference internal" href="../udpla.html#pykep.udpla.jpl_lp" title="pykep.udpla.jpl_lp"><code class="xref py py-class docutils literal notranslate"><span class="pre">jpl_lp</span></code></a> User Defined Planet, but any other udpla would work.</p>
@@ -488,7 +493,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a41f9b5b42617f848fa9e2e42625582e50186df6eeb5dfa54be786e8961e6600.png" src="../_images/a41f9b5b42617f848fa9e2e42625582e50186df6eeb5dfa54be786e8961e6600.png" />
+<img alt="../_images/9e55336ac62a17d577633868a50bef30c1f11012857fb63bffeae94e16ec4713.png" src="../_images/9e55336ac62a17d577633868a50bef30c1f11012857fb63bffeae94e16ec4713.png" />
 </div>
 </div>
 <p>In some cases it may be useful to add solar system planets at once to a plot. The <a class="reference internal" href="../plot.html#pykep.plot.add_solar_system" title="pykep.plot.add_solar_system"><code class="xref py py-class docutils literal notranslate"><span class="pre">add_solar_system</span></code></a> does just that:</p>
@@ -508,7 +513,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2af01a30d4dbe0b75ad6b5fe250b034fcb049971f0b01410b5eebdf53a687d8f.png" src="../_images/2af01a30d4dbe0b75ad6b5fe250b034fcb049971f0b01410b5eebdf53a687d8f.png" />
+<img alt="../_images/eec9e636bc4a88e0d0376d6b0ad4ecd6eb7ed56232e0af750df9c9fd73ead354.png" src="../_images/eec9e636bc4a88e0d0376d6b0ad4ecd6eb7ed56232e0af750df9c9fd73ead354.png" />
 </div>
 </div>
 </section>
@@ -555,7 +560,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/463e035db1be63200695a876b8cdd41e849d07a8b938cae20c0eff740677c54f.png" src="../_images/463e035db1be63200695a876b8cdd41e849d07a8b938cae20c0eff740677c54f.png" />
+<img alt="../_images/de38ca8368b02846fff95683ca2bd2105954343c6ed2e8c9de1e047acd9f4772.png" src="../_images/de38ca8368b02846fff95683ca2bd2105954343c6ed2e8c9de1e047acd9f4772.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -601,7 +606,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3a9aa2cebe4d7a25c503f7272cbfaed428a1c5131e0b651b6175dd05c2eb4f46.png" src="../_images/3a9aa2cebe4d7a25c503f7272cbfaed428a1c5131e0b651b6175dd05c2eb4f46.png" />
+<img alt="../_images/bd550644c9ebd19539c80bbe9b36919526ba2cbad9da538732cf28ca39cd3d3d.png" src="../_images/bd550644c9ebd19539c80bbe9b36919526ba2cbad9da538732cf28ca39cd3d3d.png" />
 </div>
 </div>
 </section>
@@ -645,7 +650,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/265318a10596fd1533690efc3b6e80aad3d04ad93cd24fed1511b28764a73464.png" src="../_images/265318a10596fd1533690efc3b6e80aad3d04ad93cd24fed1511b28764a73464.png" />
+<img alt="../_images/7d1aef9c5010fad0e3275278fe183d3c61bca485ec0ec3b35da311ff388c3c40.png" src="../_images/7d1aef9c5010fad0e3275278fe183d3c61bca485ec0ec3b35da311ff388c3c40.png" />
 </div>
 </div>
 </section>
@@ -752,8 +757,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

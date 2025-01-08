@@ -17,8 +17,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -28,18 +28,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -194,9 +194,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -427,9 +432,9 @@ mimicking natural evolution.</p>
 <p>We start, as often, with some fundamental imports:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pykep</span> <span class="k">as</span> <span class="nn">pk</span>
-<span class="kn">import</span> <span class="nn">pygmo</span> <span class="k">as</span> <span class="nn">pg</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pygmo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
@@ -478,34 +483,34 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3780.805265148429
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3783.1332872905305
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 3785.587112727598
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 3787.606982393975
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 3781.4002716246164
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 3784.329725783436
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 4705.045993205875
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 3785.0187280829564
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4 3786.4787181124398
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4 3784.2894750411438
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5 3781.725600853417
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5 3780.655789075206
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6 3779.7378333800257
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6 3786.283132277777
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7 3786.2221391088724
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7 3784.694024584519
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8 3783.9580645917417
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8 3787.39782021129
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9 3783.900525712374
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9 3783.83711704293
 </pre></div>
 </div>
 </div>
@@ -522,7 +527,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d8f863901811bf312d6b74746193fef6a938d3ac930343da02936b1c35e2f5fb.png" src="../_images/d8f863901811bf312d6b74746193fef6a938d3ac930343da02936b1c35e2f5fb.png" />
+<img alt="../_images/0323b06c9efe51579c41a1832362108ce083cd0f1a85c8820e8d7037f0fa86ea.png" src="../_images/0323b06c9efe51579c41a1832362108ce083cd0f1a85c8820e8d7037f0fa86ea.png" />
 </div>
 </div>
 <p>If we need to disentangle the sequence of the varioous legs we may also subdivide them in subplots:</p>
@@ -546,7 +551,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/33cd91481bd289acf6dde2eee4f2ea4cecb3173194352685c17713a616264391.png" src="../_images/33cd91481bd289acf6dde2eee4f2ea4cecb3173194352685c17713a616264391.png" />
+<img alt="../_images/b045305071b9e5c0ce804934ed466713dabe4cc03e6b3b91cfc497fcec3e6832.png" src="../_images/b045305071b9e5c0ce804934ed466713dabe4cc03e6b3b91cfc497fcec3e6832.png" />
 </div>
 </div>
 <p>… or show the various xy, xy, xz views as well as a full 3D one:</p>
@@ -579,7 +584,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3aa80ee9ce5935bdb2a7fea402febe7327907b3495463e5517e668976b023da9.png" src="../_images/3aa80ee9ce5935bdb2a7fea402febe7327907b3495463e5517e668976b023da9.png" />
+<img alt="../_images/4a07f8aef8a55bb72b21dbdb48e32e0a99a7e43aab6c87770f8fb1cf86acf309.png" src="../_images/4a07f8aef8a55bb72b21dbdb48e32e0a99a7e43aab6c87770f8fb1cf86acf309.png" />
 </div>
 </div>
 </section>
@@ -598,26 +603,26 @@ mimicking natural evolution.</p>
 	Encoding for tofs:  direct
 	Orbit Insertion:  False
 Departure:  earth - jpl_lp
-	Epoch:  926.2130995196342  [mjd2000]
-	Spacecraft velocity:  [25048.802645888205, 9091.91683234636, 3249.892310572708] [m/s]
-	Hyperbolic velocity:  4402.160406482966 [m/s]
+	Epoch:  933.511649745537  [mjd2000]
+	Spacecraft velocity:  [23547.740944388835, 12502.609390978907, 3065.7471491197957] [m/s]
+	Hyperbolic velocity:  4147.943728828037 [m/s]
 	Initial DV:  0 [m/s]
 Fly-by:  venus - jpl_lp
-	Epoch:  1073.721340850293  [mjd2000]
-	DV:  2.3280435016204137e-05 [m/s]
+	Epoch:  1076.3371094871202  [mjd2000]
+	DV:  0.009356465452583507 [m/s]
 Fly-by:  mars - jpl_lp
-	Epoch:  1232.8693219004292  [mjd2000]
-	DV:  0.00016799154036561958 [m/s]
+	Epoch:  1233.7768243131907  [mjd2000]
+	DV:  1.5537134459009394e-06 [m/s]
 Fly-by:  venus - jpl_lp
-	Epoch:  1534.3108755889186  [mjd2000]
-	DV:  0.000695525886840187 [m/s]
+	Epoch:  1534.5114982238176  [mjd2000]
+	DV:  0.00039539364297525026 [m/s]
 Arrival:  earth - jpl_lp
-	Epoch:  1690.6475542298158  [mjd2000]
-	Spacecraft velocity:  [15778.468470226187, 21531.065935060804, 2449.7692696795257] [m/s]
-	Arrival DV:  3779.7369465821635 [m/s]
-Time of flights:  [147.50824133 159.14798105 301.44155369 156.33667864] [days]
+	Epoch:  1691.0412162453788  [mjd2000]
+	Spacecraft velocity:  [15614.999213034618, 21652.321501762814, 2460.4862843520373] [m/s]
+	Arrival DV:  3780.646035662397 [m/s]
+Time of flights:  [142.82545974 157.43971483 300.73467391 156.52971802] [days]
 
-Total DV:  3779.7378333800257
+Total DV:  3780.655789075206
 </pre></div>
 </div>
 </div>
@@ -712,8 +717,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
