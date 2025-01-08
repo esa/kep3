@@ -2,7 +2,7 @@ import pykep as _pk
 from pykep.trajopt import mga as _mga
 
 # CASSINI
-_seq_cassini = [_pk.planet(_pk.udpla.jpl_lp('earth')), 
+_seq_cassini1 = [_pk.planet(_pk.udpla.jpl_lp('earth')), 
                 _pk.planet(_pk.udpla.jpl_lp('venus')), 
                 _pk.planet(_pk.udpla.jpl_lp('venus')), 
                 _pk.planet(_pk.udpla.jpl_lp('earth')), 
@@ -12,7 +12,7 @@ _seq_cassini = [_pk.planet(_pk.udpla.jpl_lp('earth')),
 class _cassini1_udp(_mga):
     def __init__(self):
         super().__init__(
-            seq=_seq_cassini,
+            seq=_seq_cassini1,
             t0=[-1000., 0.],
             tof=[[30, 400], [100, 470], [30, 400], [400, 2000], [1000, 6000]],
             vinf=3.,
@@ -37,7 +37,7 @@ class _cassini1_udp(_mga):
 class _cassini1a_udp(_mga):
     def __init__(self):
         super().__init__(
-            seq=_seq_cassini,
+            seq=_seq_cassini1,
             t0=[-1000., 0.],
             tof=[4000., 7000.],
             vinf=3.,
@@ -62,7 +62,7 @@ class _cassini1a_udp(_mga):
 class _cassini1n_udp(_mga):
     def __init__(self):
         super().__init__(
-            seq=_seq_cassini,
+            seq=_seq_cassini1,
             t0=[-1000., 0.],
             tof=7000.,
             vinf=3.,

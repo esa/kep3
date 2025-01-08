@@ -1,3 +1,10 @@
+## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+## (bluescarni@gmail.com)## 
+## This file is part of the kep3 library.## 
+## This Source Code Form is subject to the terms of the Mozilla
+## Public License v. 2.0. If a copy of the MPL was not distributed
+## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import numpy as _np
 import pykep as _pk
 
@@ -312,7 +319,7 @@ class direct_pl2pl:
 
             *arrow_length_ratio* (:class:`float`, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.
 
-            *\*\*kwargs*: Additional keyword arguments for the plot.
+            *\\*\\*kwargs*: Additional keyword arguments for the plot.
 
         Returns:
             :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The 3D axis with the plotted trajectory.

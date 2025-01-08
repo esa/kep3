@@ -191,7 +191,9 @@ PYBIND11_MODULE(core, m) // NOLINT
     planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
                      py::return_value_policy::reference_internal);
     // repr().
-    planet_class.def("__repr__", &pykep::ostream_repr<kep3::planet>);
+    planet_class.def("__repr__", [](const kep3::planet &pl){return pl.get_name();});
+    // Full info
+    planet_class.def("info", &pykep::ostream_repr<kep3::planet>);
     // Copy and deepcopy.
     planet_class.def("__copy__", &pykep::generic_copy_wrapper<kep3::planet>);
     planet_class.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::planet>);
@@ -243,6 +245,22 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_PLANET_GETTER(mu_self);
     PYKEP3_EXPOSE_PLANET_GETTER(radius);
     PYKEP3_EXPOSE_PLANET_GETTER(safe_radius);
+
+#undef PYKEP3_EXPOSE_PLANET_GETTER
+
+// We also support the various quantities as attributes for compatibility with pykep 2 
+// and because its nicer syntax to have them as attributes.
+#define PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name)                                                                            \
+    planet_class.def_property_readonly(                                                                                 \
+        #name, [](const kep3::planet &pl) { return pl.get_##name(); },                                                  \
+        pykep::planet_get_##name##_docstring().c_str());
+
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(extra_info);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(mu_central_body);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(mu_self);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(radius);
+    PYKEP3_EXPOSE_PLANET_ATTRIBUTE(safe_radius);
 
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
