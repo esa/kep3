@@ -76,7 +76,7 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &r
                                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
                                    double max_thrust, double isp, double mu, double cut, double tol)
-    : m_throttles(std::move(throttles)), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut),
+    : m_throttles(throttles), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut),
       m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
@@ -115,9 +115,10 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &r
 }
 
 sims_flanagan_hf::sims_flanagan_hf(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
+                                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp,
                                    double mu, double cut, double tol)
-    : m_rvms(rvms), m_throttles(std::move(throttles)), m_rvmf(rvmf), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp),
+    : m_rvms(rvms), m_throttles(throttles), m_rvmf(rvmf), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp),
       m_mu(mu), m_cut(cut), m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
@@ -165,7 +166,7 @@ void sims_flanagan_hf::set_ms(double mass)
 void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
 {
     kep3::leg::_check_throttles(throttles);
-    m_throttles = std::move(throttles);
+    m_throttles = throttles;
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
