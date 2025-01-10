@@ -1,8 +1,9 @@
 import pykep as _pk
+import numpy as _np
 from math import pi, cos, sin, acos, log, sqrt
-import numpy as np
+from copy import deepcopy
 from typing import Any, Dict, List, Tuple
-from bisect import bisect_left
+from bisect import bisect_left as _bisect_left
 
 
 # Avoiding scipy dependency
@@ -43,7 +44,6 @@ class mga_1dsm:
 
        The resulting problem is box-bounded (unconstrained).
     """
-
     def __init__(
         self,
         seq=[
@@ -112,21 +112,21 @@ class mga_1dsm:
 
         # 3 - tof is expected to have different content depending on the tof_encoding
         if tof_encoding == "direct":
-            if np.shape(np.array(tof)) != (len(seq) - 1, 2):
+            if _np.shape(_np.array(tof)) != (len(seq) - 1, 2):
                 raise TypeError(
                     "tof_encoding is "
                     + tof_encoding
                     + " and tof must be a list of two dimensional lists and with length equal to the number of legs"
                 )
         if tof_encoding == "alpha":
-            if np.shape(np.array(tof)) != (2,):
+            if _np.shape(_np.array(tof)) != (2,):
                 raise TypeError(
                     "tof_encoding is "
                     + tof_encoding
                     + " and tof must be a list of two floats"
                 )
         if tof_encoding == "eta":
-            if np.shape(np.array(tof)) != ():
+            if _np.shape(_np.array(tof)) != ():
                 raise TypeError(
                     "tof_encoding is " + tof_encoding + " and tof must be a float"
                 )
@@ -193,7 +193,7 @@ class mga_1dsm:
         lb = (
             [t0[0].mjd2000]
             + [0.0, 0.0, vinf[0] * 1000, self._eta_lb, 1e-3]
-            + [-2 * pi, np.nan, self._eta_lb, 1e-3] * (self.n_legs - 1)
+            + [-2 * pi, _np.nan, self._eta_lb, 1e-3] * (self.n_legs - 1)
         )
         ub = (
             [t0[1].mjd2000]
@@ -227,7 +227,7 @@ class mga_1dsm:
             # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
             retval_T = x[5::4]
         elif self._tof_encoding == "eta":
-            # decision vector is  [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
+            # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
             dt = self._tof
             T = [0] * self.n_legs
             for i in range(self.n_legs):
@@ -247,6 +247,78 @@ class mga_1dsm:
     def _decode_tofs(self, x):
         T, _, _, _ = self._decode_times_and_vinf(x)
         return T
+    
+    @staticmethod
+    def alpha2direct(x):
+        """alpha2direct(x)
+
+        Args:
+            *x* (``array-like``): a chromosome encoding an MGA1DSM trajectory in the alpha encoding
+
+        Returns:
+            :class:`numpy.ndarray`: a chromosome encoding the MGA1DSM trajectory using the direct encoding
+        """
+        # decision vector is  [t0] + [u, v, Vinf, eta1, a1] + [beta, rp/rV, eta2, a2] + ... + [T]
+        alphas = _np.log(x[5::4])
+        retval = deepcopy(x)
+        retval[5::4] = alphas / sum(alphas) * x[-1]
+        retval = _np.delete(retval, -1)
+        return retval
+
+    @staticmethod
+    def direct2alpha(x):
+        """direct2alpha(x)
+
+        Args:
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
+
+        Returns:
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the alpha encoding
+        """
+        # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
+        T = sum(x[5::4])
+        retval = deepcopy(x)
+        retval[5::4] = _np.exp(x[5::4] / (-T))
+        retval = _np.append(retval,T)
+        return retval
+
+    @staticmethod
+    def eta2direct(x, max_tof):
+        """eta2direct(x)
+
+        Args:
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the eta encoding
+
+        Returns:
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
+        """
+        # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
+        n = 2
+        retval = deepcopy(x)
+        # we assemble the times of flight
+        T = [0] * n
+        T[0] = max_tof * x[5]
+        for i in range(1, len(T)):
+            T[i] = (max_tof - sum(T[:i])) * x[5::4][i]
+        # ... and finally we replace the n1..n2 variables with the times of flight
+        retval[5::4] = T
+        return retval
+
+    @staticmethod
+    def direct2eta(x, max_tof):
+        """direct2eta(x)
+
+        Args:
+            *x* (``array-like``): a chromosome encoding an MGA trajectory in the direct encoding
+
+        Returns:
+            :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the eta encoding
+        """
+        retval = deepcopy(x)
+        retval[5] = x[5] / max_tof
+        for i in range(1, len(x[5::4])):
+            retval[5::4][i] = x[5::4][i] / (max_tof - sum(x[5::4][:i]))
+        return retval
 
     def _compute_dvs(self, x: List[float]) -> Tuple[
         List[float],  # DVs
@@ -329,14 +401,14 @@ class mga_1dsm:
             if self._orbit_insertion:
                 # In this case we compute the insertion DV as a single pericenter
                 # burn
-                DVper = np.sqrt(
+                DVper = _np.sqrt(
                     DV[-1] * DV[-1] + 2 * self._seq[-1].mu_self / self._rp_target
                 )
-                DVper2 = np.sqrt(
+                DVper2 = _np.sqrt(
                     2 * self._seq[-1].mu_self / self._rp_target
                     - self._seq[-1].mu_self / self._rp_target * (1.0 - self._e_target)
                 )
-                DV[-1] = np.abs(DVper - DVper2)
+                DV[-1] = _np.abs(DVper - DVper2)
 
         if self._add_vinf_dep:
             DV[0] += x[3]
@@ -458,14 +530,14 @@ class mga_1dsm:
         if self._orbit_insertion:
             # In this case we compute the insertion DV as a single pericenter
             # burn
-            DVper = np.sqrt(
+            DVper = _np.sqrt(
                 DV[-1] * DV[-1] + 2 * self._seq[-1].mu_self / self._rp_target
             )
-            DVper2 = np.sqrt(
+            DVper2 = _np.sqrt(
                 2 * self._seq[-1].mu_self / self._rp_target
                 - self._seq[-1].mu_self / self._rp_target * (1.0 - self._e_target)
             )
-            DVinsertion = np.abs(DVper - DVper2)
+            DVinsertion = _np.abs(DVper - DVper2)
             print("Insertion DV: " + str(DVinsertion) + "m/s")
 
         print(
@@ -662,7 +734,7 @@ class mga_1dsm:
                 # exactly at launch
                 return self._seq[0].eph(t)
 
-            i = bisect_left(b_ep, t)  # ballistic leg i goes from planet i to planet i+1
+            i = _bisect_left(b_ep, t)  # ballistic leg i goes from planet i to planet i+1
 
             assert i >= 1 and i <= len(b_ep)
             if i < len(b_ep):
@@ -682,3 +754,6 @@ class mga_1dsm:
             return r, v
 
         return eph
+
+# Cleaning the namespace
+del Any, Dict, List, Tuple
