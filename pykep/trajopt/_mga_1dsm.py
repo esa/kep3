@@ -276,15 +276,15 @@ class mga_1dsm:
         ballistic_legs.append((r_P[0], v0))
         ballistic_ep.append(t_P[0].mjd2000)
         r, v = _pk.propagate_lagrangian(
-            r_P[0], v0, x[4] * T[0] * _pk.DAY2SEC, self.common_mu
+            [r_P[0], v0], x[4] * T[0] * _pk.DAY2SEC, self.common_mu
         )
 
         # Lambert arc to reach seq[1]
         dt = (1 - x[4]) * T[0] * _pk.DAY2SEC
-        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, max_revs=0)
+        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, multi_revs=0)
 
-        v_end_l = l.get_v2()[0]
-        v_beg_l = l.get_v1()[0]
+        v_end_l = l.v1[0]
+        v_beg_l = l.v0[0]
         lamberts.append(l)
 
         ballistic_legs.append((r, v_beg_l))
@@ -296,26 +296,26 @@ class mga_1dsm:
         # 4 - And we proceed with each successive leg
         for i in range(1, self.n_legs):
             # Fly-by
-            v_out = _pk.fb_prop(
-                v_end_l,
-                v_P[i],
-                x[7 + (i - 1) * 4] * self._seq[i].radius,
-                x[6 + (i - 1) * 4],
-                self._seq[i].mu_self,
+            v_out = _pk.fb_vout(
+                v_in=v_end_l,
+                v_pla=v_P[i],
+                rp=x[7 + (i - 1) * 4] * self._seq[i].radius,
+                beta=x[6 + (i - 1) * 4],
+                mu=self._seq[i].mu_self,
             )
             ballistic_legs.append((r_P[i], v_out))
             ballistic_ep.append(t_P[i].mjd2000)
             # s/c propagation before the DSM
             r, v = _pk.propagate_lagrangian(
-                r_P[i], v_out, x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
+                [r_P[i], v_out], x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
             )
             # Lambert arc to reach Earth during (1-nu2)*T2 (second segment)
             dt = (1 - x[8 + (i - 1) * 4]) * T[i] * _pk.DAY2SEC
             l = _pk.lambert_problem(
-                r, r_P[i + 1], dt, self.common_mu, cw=False, max_revs=0
+                r, r_P[i + 1], dt, self.common_mu, cw=False, multi_revs=0
             )
-            v_end_l = l.get_v2()[0]
-            v_beg_l = l.get_v1()[0]
+            v_end_l = l.v1[0]
+            v_beg_l = l.v0[0]
             lamberts.append(l)
             # DSM occuring at time nu2*T2
             DV[i] = norm([a - b for a, b in zip(v_beg_l, v)])
@@ -386,16 +386,16 @@ class mga_1dsm:
 
         v0 = [a + b for a, b in zip(v_P[0], [Vinfx, Vinfy, Vinfz])]
         r, v = _pk.propagate_lagrangian(
-            r_P[0], v0, x[4] * T[0] * _pk.DAY2SEC, self.common_mu
+            [r_P[0], v0], x[4] * T[0] * _pk.DAY2SEC, self.common_mu
         )
 
         print("DSM after " + str(x[4] * T[0]) + " days")
 
         # Lambert arc to reach seq[1]
         dt = (1 - x[4]) * T[0] * _pk.DAY2SEC
-        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, max_revs=0)
-        v_end_l = l.get_v2()[0]
-        v_beg_l = l.get_v1()[0]
+        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, multi_revs=0)
+        v_end_l = l.v1[0]
+        v_beg_l = l.v0[0]
 
         # First DSM occuring at time nu1*T1
         DV[0] = norm([a - b for a, b in zip(v_beg_l, v)])
@@ -430,16 +430,16 @@ class mga_1dsm:
             print("Fly-by radius: " + str(x[7 + (i - 1) * 4]) + " planetary radii")
             # s/c propagation before the DSM
             r, v = _pk.propagate_lagrangian(
-                r_P[i], v_out, x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
+                [r_P[i], v_out], x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
             )
             print("DSM after " + str(x[8 + (i - 1) * 4] * T[i]) + " days")
             # Lambert arc to reach Earth during (1-nu2)*T2 (second segment)
             dt = (1 - x[8 + (i - 1) * 4]) * T[i] * _pk.DAY2SEC
             l = _pk.lambert_problem(
-                r, r_P[i + 1], dt, self.common_mu, cw=False, max_revs=0
+                r, r_P[i + 1], dt, self.common_mu, cw=False, multi_revs=0
             )
-            v_end_l = l.get_v2()[0]
-            v_beg_l = l.get_v1()[0]
+            v_end_l = l.v1[0]
+            v_beg_l = l.v0[0]
             # DSM occuring at time nu2*T2
             DV[i] = norm([a - b for a, b in zip(v_beg_l, v)])
             print("DSM magnitude: " + str(DV[i]) + "m/s")
@@ -548,7 +548,7 @@ class mga_1dsm:
         # 3 - We start with the first leg
         v0 = [a + b for a, b in zip(v_P[0], [Vinfx, Vinfy, Vinfz])]
         r, v = _pk.propagate_lagrangian(
-            r_P[0], v0, x[4] * T[0] * _pk.DAY2SEC, self.common_mu
+            [r_P[0], v0], x[4] * T[0] * _pk.DAY2SEC, self.common_mu
         )
         add_ballistic_arc(
             ax,
@@ -564,10 +564,10 @@ class mga_1dsm:
         # Lambert arc to reach seq[1]
         dt = (1 - x[4]) * T[0] * _pk.DAY2SEC
 
-        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, max_revs=0)
-        add_lambert(ax, lp=l, N=N, sol=0, units=units, N=N, c=c, **kwargs)
-        v_end_l = l.get_v2()[0]
-        v_beg_l = l.get_v1()[0]
+        l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, multi_revs=0)
+        add_lambert(ax, lp=l, N=N, sol=0, units=units, c=c, **kwargs)
+        v_end_l = l.v1[0]
+        v_beg_l = l.v0[0]
 
         # First DSM occuring at time nu1*T1
         DV[0] = norm([a - b for a, b in zip(v_beg_l, v)])
@@ -584,7 +584,7 @@ class mga_1dsm:
             )
             # s/c propagation before the DSM
             r, v = _pk.propagate_lagrangian(
-                r_P[i], v_out, x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
+                [r_P[i], v_out], x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
             )
             add_ballistic_arc(
                 ax,
@@ -601,19 +601,19 @@ class mga_1dsm:
             dt = (1 - x[8 + (i - 1) * 4]) * T[i] * _pk.DAY2SEC
 
             l = _pk.lambert_problem(
-                r, r_P[i + 1], dt, self.common_mu, cw=False, max_revs=0
+                r, r_P[i + 1], dt, self.common_mu, cw=False, multi_revs=0
             )
-            add_lambert(ax, lp=l, N=N, sol=0, units=units, N=N, c=c, **kwargs)
+            add_lambert(ax, lp=l, sol=0, units=units, N=N, c=c, **kwargs)
 
-            v_end_l = l.get_v2()[0]
-            v_beg_l = l.get_v1()[0]
+            v_end_l = l.v1[0]
+            v_beg_l = l.v0[0]
             # DSM occuring at time nu2*T2
             DV[i] = norm([a - b for a, b in zip(v_beg_l, v)])
         return ax
 
     def get_extra_info(self):
         return (
-            "\n\t Sequence: "
+            "\t Sequence: "
             + [pl.name for pl in self._seq].__repr__()
             + "\n\t Add launcher vinf to the objective?: "
             + self._add_vinf_dep.__repr__()
@@ -676,7 +676,7 @@ class mga_1dsm:
 
             # propagate the lagrangian
             r, v = _pk.propagate_lagrangian(
-                r_b, v_b, elapsed_seconds, self._seq[0].mu_central_body
+                [r_b, v_b], elapsed_seconds, self._seq[0].mu_central_body
             )
 
             return r, v
