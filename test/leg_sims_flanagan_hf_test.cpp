@@ -25,9 +25,9 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
+#include <kep3/leg/sf_checks.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_hf.hpp>
-#include <kep3/leg/sf_checks.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/vsop2013.hpp>
@@ -91,13 +91,13 @@ TEST_CASE("constructor")
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
                           std::logic_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, -1e-2),
-                          std::domain_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, 1.2),
-                          std::domain_error);
-        REQUIRE_THROWS_AS(kep3::leg::_check_nseg(2, 1, 2),
-                          std::logic_error);
-            
+        REQUIRE_THROWS_AS(
+            kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, -1e-2),
+            std::domain_error);
+        REQUIRE_THROWS_AS(
+            kep3::leg::sims_flanagan_hf(rvs, ms, {0, 0, 0, 0, 0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5, 1.2),
+            std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::_check_nseg(2, 1, 2), std::logic_error);
     }
 }
 
@@ -155,7 +155,7 @@ TEST_CASE("getters_and_setters")
     }
     {
         kep3::leg::sims_flanagan_hf sf{};
-        std::array<double , 7> rvms{1, 1, 1, 1, 1, 1, 1};
+        std::array<double, 7> rvms{1, 1, 1, 1, 1, 1, 1};
         std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
 
         sf.set(rvms, throttles, rvms, 4, 4, 4, 4, 0.333, 2e-5);
@@ -198,38 +198,57 @@ std::array<double, 7> normalize_con(std::array<double, 7> con)
 
 TEST_CASE("compute_mismatch_constraints_test")
 {
-    // We test that an engineered ballistic arc always returns no mismatch for all cuts.
-    // We use (for no reason) the ephs of the Earth and Jupiter
-    kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
-    kep3::udpla::vsop2013 udpla_jupiter("jupiter", 1e-2);
-    kep3::planet earth{udpla_earth};
-    kep3::planet jupiter{udpla_jupiter};
-    // And some epochs / tofs.
-    double dt_days = 1000.;
-    double dt = dt_days * kep3::DAY2SEC;
-    double t0 = 1233.3;
-    // double mass = 1000;
-    auto rv0 = earth.eph(t0);
-    auto rv1 = jupiter.eph(t0 + dt_days);
-    // We create a ballistic arc matching the two.
-    kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
-    rv0[1][0] = lp.get_v0()[0][0];
-    rv0[1][1] = lp.get_v0()[0][1];
-    rv0[1][2] = lp.get_v0()[0][2];
-    rv1[1][0] = lp.get_v1()[0][0];
-    rv1[1][1] = lp.get_v1()[0][1];
-    rv1[1][2] = lp.get_v1()[0][2];
-    // We test for 1 to 33 segments and cuts in [0,0.1,0.2, ..., 1]
-    std::vector<double> cut_values{0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+    {
+        // We test that an engineered ballistic arc always returns no mismatch for all cuts.
+        // We use (for no reason) the ephs of the Earth and Jupiter
+        kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
+        kep3::udpla::vsop2013 udpla_jupiter("jupiter", 1e-2);
+        kep3::planet earth{udpla_earth};
+        kep3::planet jupiter{udpla_jupiter};
+        // And some epochs / tofs.
+        double dt_days = 1000.;
+        double dt = dt_days * kep3::DAY2SEC;
+        double t0 = 1233.3;
+        // double mass = 1000;
+        auto rv0 = earth.eph(t0);
+        auto rv1 = jupiter.eph(t0 + dt_days);
+        // We create a ballistic arc matching the two.
+        kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
+        rv0[1][0] = lp.get_v0()[0][0];
+        rv0[1][1] = lp.get_v0()[0][1];
+        rv0[1][2] = lp.get_v0()[0][2];
+        rv1[1][0] = lp.get_v1()[0][0];
+        rv1[1][1] = lp.get_v1()[0][1];
+        rv1[1][2] = lp.get_v1()[0][2];
+        // We test for 1 to 33 segments and cuts in [0,0.1,0.2, ..., 1]
+        std::vector<double> cut_values{0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
 
-    for (unsigned long N = 1u; N < 34; ++N) {
-        for (auto cut : cut_values) {
-            std::vector<double> throttles(N * 3, 0.);
-            kep3::leg::sims_flanagan_hf sf(rv0, 1., throttles, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
-            auto mc = sf.compute_mismatch_constraints();
-            mc = normalize_con(mc);
-            REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
+        for (unsigned long N = 1u; N < 34; ++N) {
+            for (auto cut : cut_values) {
+                std::vector<double> throttles(N * 3, 0.);
+                kep3::leg::sims_flanagan_hf sf(rv0, 1., throttles, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
+                auto mc = sf.compute_mismatch_constraints();
+                mc = normalize_con(mc);
+                REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
+            }
         }
+    }
+    {
+        // We test that some random thrusted arc computes correctly the mismatches
+        std::array<std::array<double, 3>, 2> rv0{{{-25216645728.283768, 144924279081.32498, -38276.915766745136}, {-29833.034155296387, -5217.946770284042, 0.0013781466450451985}}};
+        std::array<std::array<double, 3>, 2> rv1{{{207987766344.9237, -3139291734.542421, -5177822135.395065}, {1296.9096025329445, 26295.415668645317, 518.960634127031}}};
+        std::vector<double> throttles{0.1,-0.2,0.3,-0.4,0.1,0.2,-0.3,0.2,0.2,-0.1,-0.3,0.1};
+        //std::vector<double> throttles{0,0,0,0,0,0,0,0,0,0,0,0};
+        double m0 = 4500.;
+        double m1 = 4500.;
+        double tof = 340. * kep3::DAY2SEC;
+        double max_thrust = 0.05;
+        double isp = 2500.;
+        kep3::leg::sims_flanagan_hf sf(rv0, m0, throttles, rv1, m1, tof, max_thrust, isp, 1.32712440018e+20, 0.5);
+        auto mc = sf.compute_mismatch_constraints();
+        // This was computed using directly an independent method (manually via Taylor integration)
+        std::array<double, 7> ground_truth = {49962343234.42602, 63860682492.61005, 3188074669.721971, 4846.696643712443, 2752.267007482824, 696.3982365414013, -23.610620941327397};
+        REQUIRE(kep3_tests::L_infinity_norm_rel(mc, ground_truth) < 1e-13);
     }
 }
 
@@ -357,15 +376,15 @@ TEST_CASE("compute_state_history")
 
     // Get fwd final state
     std::vector<double> fwd_seg_sh = state_history.at(sf.get_nseg_fwd() - 1);
-    std::array<double, 7> final_fwd_state;
-    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7, fwd_seg_sh.begin() + grid_points_per_segment * 7,
-              final_fwd_state.begin());
+    std::array<double, 7> final_fwd_state{};
+    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7l,
+              fwd_seg_sh.begin() + grid_points_per_segment * 7l, final_fwd_state.begin());
 
     // Get bck final state
     std::vector<double> bck_seg_sh = state_history.at(sf.get_nseg_fwd());
-    std::array<double, 7> final_bck_state;
-    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7, bck_seg_sh.begin() + grid_points_per_segment * 7,
-              final_bck_state.begin());
+    std::array<double, 7> final_bck_state{};
+    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7l,
+              bck_seg_sh.begin() + grid_points_per_segment * 7l, final_bck_state.begin());
 
     // Get mismatch and calculate Linfty norm
     std::transform(final_fwd_state.begin(), final_fwd_state.end(), final_bck_state.begin(), final_fwd_state.begin(),
@@ -396,15 +415,15 @@ TEST_CASE("compute_state_history_2")
 
     // Get fwd final state
     std::vector<double> fwd_seg_sh = state_history.at(sf.get_nseg_fwd() - 1);
-    std::array<double, 7> final_fwd_state;
-    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7, fwd_seg_sh.begin() + grid_points_per_segment * 7,
-              final_fwd_state.begin());
+    std::array<double, 7> final_fwd_state{};
+    std::copy(fwd_seg_sh.begin() + (grid_points_per_segment - 1) * 7l,
+              fwd_seg_sh.begin() + grid_points_per_segment * 7l, final_fwd_state.begin());
 
     // Get bck final state
     std::vector<double> bck_seg_sh = state_history.at(sf.get_nseg_fwd());
-    std::array<double, 7> final_bck_state;
-    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7, bck_seg_sh.begin() + grid_points_per_segment * 7,
-              final_bck_state.begin());
+    std::array<double, 7> final_bck_state{};
+    std::copy(bck_seg_sh.begin() + (grid_points_per_segment - 1) * 7l,
+              bck_seg_sh.begin() + grid_points_per_segment * 7l, final_bck_state.begin());
 
     // Get mismatch and calculate Linfty norm
     std::transform(final_fwd_state.begin(), final_fwd_state.end(), final_bck_state.begin(), final_fwd_state.begin(),

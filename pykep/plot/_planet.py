@@ -13,6 +13,8 @@ def add_planet(ax, pla: _pk.planet, when, units=_pk.AU, **kwargs):
         *when* (:class:`~pykep.epoch` or :class:`float`): the epoch (in mjd2000 if float).
 
         *units* (:class:`float`, optional): length units to be used. Defaults to pk.AU.
+        
+        *\\*\\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
 
     Returns:
         :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: the 3D axis.
