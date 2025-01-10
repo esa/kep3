@@ -68,3 +68,40 @@ class gym_cassini1_tests(_ut.TestCase):
         x = [-583.0776694390058, 388.65047998036107, 334.9959782156864, 65.57508619540917, 1520.2982946551908, 2132.7771932619144 ]
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f,107218.08496509642) < 1e-14)
+        
+class trajopt_mga1dsm_tests(_ut.TestCase):
+    def test_construction(self):
+        import pykep as pk
+        earth = pk.planet(pk.udpla.jpl_lp("earth"))
+        venus = pk.planet(pk.udpla.jpl_lp("venus"))
+        udp = pk.trajopt.mga(
+            seq=[
+                earth,
+                venus,
+                earth,
+                venus,
+                earth
+            ],
+            tof_encoding = "direct",
+            t0=[0, 1000],
+            tof=[[30, 200], [30, 300], [30, 300], [30, 300]],
+            vinf=2.5,
+        )
+        prob = pg.problem(udp)
+        pop = pg.population(prob, 100)
+
+    def test_encoding_to_encoding(self):
+        import pykep as pk
+        udp_direct = pk.trajopt.mga(tof_encoding="direct", tof = [[30, 200], [200, 300]])
+        udp_alpha = pk.trajopt.mga(tof_encoding="alpha", tof = [230, 500])
+        udp_eta = pk.trajopt.mga(tof_encoding="eta", tof = 500)
+        prob = pg.problem(udp_direct)
+        pop = pg.population(prob, 100)
+        x_direct = pop.champion_x
+        gt = udp_direct.fitness(x_direct)[0]
+        x_alpha = udp_alpha.direct2alpha(x_direct)
+        x_eta = udp_eta.direct2eta(x_direct)
+        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-14)
+        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-14)
+        self.assertTrue(float_rel_error(gt, udp_direct.fitness(udp_direct.alpha2direct(x_alpha))[0]) < 1e-14)
+        self.assertTrue(float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta))[0]) < 1e-14)

@@ -519,6 +519,8 @@ def run_test_suite():
     suite.addTest(py_udplas_test("test_spice"))
     suite.addTest(trajopt_mga_tests("test_construction"))
     suite.addTest(trajopt_mga_tests("test_encoding_to_encoding"))
+    suite.addTest(trajopt_mga1dsm_tests("test_construction"))
+    suite.addTest(trajopt_mga1dsm_tests("test_encoding_to_encoding"))
     suite.addTest(gym_cassini1_tests("test_fitness"))
 
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
