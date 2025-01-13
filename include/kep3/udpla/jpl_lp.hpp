@@ -70,6 +70,10 @@ public:
     [[nodiscard]] std::string get_extra_info() const;
     [[nodiscard]] std::array<double, 6> elements(double = 0., kep3::elements_type = kep3::elements_type::KEP_F) const;
 
+    // JPL does not really define a safe radius for the planets, so we allow the user to change it if needed.
+    // This value is mostly used to constrain fly-bys at a safe distance from the planet.
+    void set_safe_radius(double);
+
 private:
     [[nodiscard]] std::array<double, 6> _f_elements(double = 0.) const;
 };

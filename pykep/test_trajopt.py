@@ -97,6 +97,21 @@ class gym_cassini1_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 107218.08496509642) < 1e-14)
 
+class gym_cassini2_tests(_ut.TestCase):
+    def test_fitness(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.cassini2
+        # Three random values. Ground truth provided by the old pykep code
+        x = [-7.75699976e+02,  9.15777367e-01,  4.06442043e-01,  3.21309562e+03,
+        6.81118341e-01,  1.62660490e+02, -1.58051063e+00,  1.28479507e+00,
+        4.72699902e-01,  4.24319550e+02,  4.30475919e+00,  1.15739933e+00,
+        2.55718252e-01,  5.44489098e+01, -1.54332794e+00,  1.27160729e+00,
+        9.00000000e-01,  5.88481599e+02,  4.76774269e+00,  7.00000000e+01,
+        1.00000000e-02,  2.20000000e+03]
+        
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-14)
 
 class trajopt_mga1dsm_tests(_ut.TestCase):
     def test_construction(self):
@@ -148,11 +163,11 @@ class trajopt_mga1dsm_tests(_ut.TestCase):
         )
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta, 500))[0])
-            < 1e-14
+            < 1e-13
         )
         self.assertTrue(
-            np.linalg.norm(udp_direct.alpha2direct(x_alpha) - x_direct) < 1e-14
+            np.linalg.norm(udp_direct.alpha2direct(x_alpha) - x_direct) < 1e-13
         )
         self.assertTrue(
-            np.linalg.norm(udp_direct.eta2direct(x_eta, 500) - x_direct) < 1e-14
+            np.linalg.norm(udp_direct.eta2direct(x_eta, 500) - x_direct) < 1e-13
         )

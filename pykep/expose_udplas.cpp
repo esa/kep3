@@ -60,8 +60,12 @@ void expose_all_udplas(py::module &udpla_module, py::class_<kep3::planet> &plane
     jpl_lp_udpla
         .def(py::init<std::string>(), py::arg("body") = "earth", pykep::udpla_jpl_lp_docstring().c_str())
         // repr().
-        .def("__repr__", &pykep::ostream_repr<kep3::udpla::jpl_lp>);
-
+        .def("__repr__", &pykep::ostream_repr<kep3::udpla::jpl_lp>)
+        .def_property("safe_radius", &kep3::udpla::jpl_lp::get_safe_radius, &kep3::udpla::jpl_lp::set_safe_radius, "The planet's safe radius. Mostly used to constraint fly-by distances.")
+        .def("set_safe_radius", &kep3::udpla::jpl_lp::set_safe_radius, "Set the planet's safe radius. Mostly used to constraint fly-by distances.")
+        .def("get_radius", &kep3::udpla::jpl_lp::get_radius, "The planet's radius.")
+        .def_property_readonly("radius", &kep3::udpla::jpl_lp::get_radius, "The planet's radius.")
+        .def("get_radius", &kep3::udpla::jpl_lp::get_radius, "The planet's radius.");
     // vsop2013 udpla.
     auto vsop2013_udpla = pykep::expose_one_udpla<kep3::udpla::vsop2013>(
         udpla_module, planet_class, "_vsop2013", "Analytical planetary ephemerides from the VSOP2013 theory");

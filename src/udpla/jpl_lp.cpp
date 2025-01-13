@@ -219,6 +219,15 @@ std::string jpl_lp::get_extra_info() const
     return retval;
 }
 
+void jpl_lp::set_safe_radius(double safe_radius)
+{
+    if (safe_radius < m_radius) {
+        throw std::domain_error("The udpla safe radius must be at least the planet's radius ("
+                                + std::to_string(m_radius) + "), while it is: " + std::to_string(safe_radius));
+    }
+    m_safe_radius = safe_radius;
+}
+
 std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
 {
     os << udpla.get_extra_info() << "\n";

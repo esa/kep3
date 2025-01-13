@@ -329,7 +329,6 @@ def compute_numerical_gradient(sf_leg, sf_leg_type = 'lf'):
 
 class sims_flanagan_test(_ut.TestCase):
 
-
     def test_sims_flanagan(self):
         import numpy as np
 
@@ -522,9 +521,9 @@ def run_test_suite():
     suite.addTest(trajopt_mga1dsm_tests("test_construction"))
     suite.addTest(trajopt_mga1dsm_tests("test_encoding_to_encoding"))
     suite.addTest(gym_cassini1_tests("test_fitness"))
-
+    suite.addTest(gym_cassini2_tests("test_fitness"))
+    
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
 
-
-
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
+    return test_result
