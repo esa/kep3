@@ -427,8 +427,8 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
     }
 
     // Set fwd final state
@@ -455,8 +455,8 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
     }
 
     return {rvm_fwd_final[0] - m_tas.get_state()[0], rvm_fwd_final[1] - m_tas.get_state()[1],
@@ -578,8 +578,8 @@ sims_flanagan_hf::compute_all_gradients() const
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7, xf_per_seg[i].begin());
         for (auto j = 0; j < 7; ++j) {
@@ -613,8 +613,8 @@ sims_flanagan_hf::compute_all_gradients() const
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7,
                   xf_per_seg[m_nseg - (i + 1)].begin());
@@ -833,8 +833,8 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
         output_per_seg[i] = output_states;
     }
 
@@ -866,8 +866,8 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
-        }
+                "stark_problem: failure to reach the final time requested during a propagation."); 
+        } // LCOV_EXCL_STOP
         output_per_seg[m_nseg - 1 - i] = output_states;
     }
 
