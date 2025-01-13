@@ -419,15 +419,15 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
     }
 
@@ -447,15 +447,15 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
                   m_tas.get_pars_data() + 2l);
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(m_tof - (i + 1) * prop_seg_duration);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
     }
 
@@ -570,15 +570,15 @@ sims_flanagan_hf::compute_all_gradients() const
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas_var.get_pars_data() + 2l);
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7, xf_per_seg[i].begin());
@@ -605,15 +605,15 @@ sims_flanagan_hf::compute_all_gradients() const
                   m_tas_var.get_pars_data() + 2l);
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7,
@@ -825,15 +825,15 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         m_tas.set_time(current_leg_time_grid.at(0));
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
         output_per_seg[i] = output_states;
     }
@@ -858,15 +858,15 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
 
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
-        if (status != heyoka::taylor_outcome::time_limit) {
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));                       // LCOV_EXCL_LINE
-            fmt::print("taylor_outcome: {}\n", status);                      // LCOV_EXCL_LINE
-            fmt::print("state: {}\n", m_tas.get_state());                    // LCOV_EXCL_LINE
-            fmt::print("reached time: {}\n", m_tas.get_time());              // LCOV_EXCL_LINE
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration); // LCOV_EXCL_LINE
+                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print("state: {}\n", m_tas.get_state());
+            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_LINE
+                "stark_problem: failure to reach the final time requested during a propagation."); // LCOV_EXCL_STOP
         }
         output_per_seg[m_nseg - 1 - i] = output_states;
     }
