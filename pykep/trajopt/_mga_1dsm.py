@@ -485,12 +485,12 @@ class mga_1dsm:
             )
             print("Duration: " + str(T[i]) + "days")
             # Fly-by
-            v_out = _pk.fb_prop(
-                v_end_l,
-                v_P[i],
-                x[7 + (i - 1) * 4] * self._seq[i].radius,
-                x[6 + (i - 1) * 4],
-                self._seq[i].mu_self,
+            v_out = _pk.fb_vout(
+                v_in=v_end_l,
+                v_pla=v_P[i],
+                rp=x[7 + (i - 1) * 4] * self._seq[i].radius,
+                beta=x[6 + (i - 1) * 4],
+                mu=self._seq[i].mu_self,
             )
             print(
                 "Fly-by epoch: "

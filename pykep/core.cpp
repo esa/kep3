@@ -59,7 +59,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("EARTH_J2") = py::float_(kep3::EARTH_J2);
     m.attr("EARTH_RADIUS") = py::float_(kep3::EARTH_RADIUS);
     m.attr("RAD2DEG") = py::float_(kep3::RAD2DEG);
-    m.attr("DEG2RAD") = py::float_(kep3::RAD2DEG);
+    m.attr("DEG2RAD") = py::float_(kep3::DEG2RAD);
     m.attr("DAY2SEC") = py::float_(kep3::DAY2SEC);
     m.attr("SEC2DAY") = py::float_(kep3::SEC2DAY);
     m.attr("DAY2YEAR") = py::float_(kep3::DAY2YEAR);

@@ -2,29 +2,31 @@ import pykep as _pk
 from pykep.trajopt import mga_1dsm as _mga_1dsm
 
 # ROSETTA (we need to modify the safe radius of the planets to match the wanted problem)
-_churyumov = _pk.planets.keplerian(
-    when=_pk.epoch(52504.23754000012, _pk.epoch.julian_type.MJD),
-    elem=[
-        3.50294972836275 * _pk.AU,
-        0.6319356,
-        7.12723 * _pk.DEG2RAD,
-        50.92302 * _pk.DEG2RAD,
-        11.36788 * _pk.DEG2RAD,
-        0.0 * _pk.DEG2RAD,
-    ],
-    mu_central_body=_pk.MU_SUN,
-    name="Churyumov-Gerasimenko",
-)
+_churyumov = _pk.udpla.keplerian(
+        when=_pk.epoch(52504.23754000012, _pk.epoch.julian_type.MJD),
+        elem=[
+            3.50294972836275 * _pk.AU,
+            0.6319356,
+            7.12723 * _pk.DEG2RAD,
+            50.92302 * _pk.DEG2RAD,
+            11.36788 * _pk.DEG2RAD,
+            0.0 * _pk.DEG2RAD,
+        ],
+        mu_central_body=_pk.MU_SUN,
+        name="Churyumov-Gerasimenko",
+    )
 
-_mars_rosetta = _pk.jpl_lp("mars")
+
+_mars_rosetta = _pk.udpla.jpl_lp("mars")
 _mars_rosetta.safe_radius = 1.05 * _mars_rosetta.radius
+
 _seq_rosetta = [
-    _pk.jpl_lp("earth"),
-    _pk.jpl_lp("earth"),
-    _mars_rosetta,
-    _pk.jpl_lp("earth"),
-    _pk.jpl_lp("earth"),
-    _churyumov,
+    _pk.planet(_pk.udpla.jpl_lp("earth")),
+    _pk.planet(_pk.udpla.jpl_lp("earth")),
+    _pk.planet(_mars_rosetta),
+    _pk.planet(_pk.udpla.jpl_lp("earth")),
+    _pk.planet(_pk.udpla.jpl_lp("earth")),
+    _pk.planet(_churyumov),
 ]
 
 
@@ -55,8 +57,7 @@ class _rosetta_udp(_mga_1dsm):
             add_vinf_arr=True,
             tof_encoding="direct",
             multi_objective=False,
-            eta_lb=0.01,
-            eta_ub=0.9,
+            eta_bounds=[0.01, 0.9],
             rp_ub=9.0,
         )
 
