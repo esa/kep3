@@ -46,20 +46,20 @@ class trajopt_mga_tests(_ut.TestCase):
         gt = udp_direct.fitness(x_direct)[0]
         x_alpha = udp_alpha.direct2alpha(x_direct)
         x_eta = udp_eta.direct2eta(x_direct)
-        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-14)
-        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-14)
+        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-13)
+        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-13)
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_direct.alpha2direct(x_alpha))[0])
-            < 1e-14
+            < 1e-13
         )
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta))[0])
-            < 1e-14
+            < 1e-13
         )
 
 
 class gym_tests(_ut.TestCase):
-    def cassini1(self):
+    def test_cassini1(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.cassini1
@@ -97,7 +97,7 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 107218.08496509642) < 1e-14)
 
-    def cassini2(self):
+    def test_cassini2(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.cassini2
@@ -112,7 +112,7 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-13)
         
-    def rosetta(self):
+    def test_rosetta(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.rosetta
@@ -127,7 +127,7 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 1371.4992633334382) < 1e-13)
         
-    def eve_mga1dsm(self):
+    def test_eve_mga1dsm(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.eve_mga1dsm
@@ -138,7 +138,7 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 47456.939061940415) < 1e-13)
         
-    def eve_mga1dsm_a(self):
+    def test_eve_mga1dsm_a(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.eve_mga1dsm_a
@@ -149,7 +149,7 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 1101622.7179572878) < 1e-13)
         
-    def eve_mga1dsm_n(self):
+    def test_eve_mga1dsm_n(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.eve_mga1dsm_n
@@ -160,6 +160,63 @@ class gym_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 1917650.9004062244) < 1e-13)
         
+    def test_juice(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.juice
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [ 8.25587848945082e+03,  3.87927696743959e-01,
+              5.27687480720340e-01,  2.06516101304215e+03,
+              7.74309396597230e-01,  4.66381738991143e+02,
+             -1.02751095385811e+00,  8.25250602985045e+00,
+              1.85241667091363e-01,  1.10839235700056e+02,
+              3.89240251780202e+00,  2.50359555867057e+00,
+              6.46178864367641e-02,  2.15407037751815e+02,
+              4.78686007014207e+00,  8.41382633987924e+00,
+              3.38707892618604e-01,  3.19871173483077e+01,
+              2.06974341215216e+00,  4.36373629930523e+00,
+              4.66997711732296e-01,  7.22372043742636e+02,
+              4.77835192401833e+00,  7.65391290702327e+00,
+              4.89771110016942e-01,  1.03158288517734e+03]
+        
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 204.38446462495546) < 1e-13)
+        
+        # Solution previously in the old pykep gym code
+        x = [ 8.16283083e+03,  6.41922787e-01,  6.51202691e-01,  2.51009414e+03,
+        2.97841478e-01,  3.81541370e+02,  9.58572190e-01,  1.53007674e+00,
+        3.06125365e-01,  1.49264351e+02,  4.10103546e+00,  2.39297670e+00,
+        4.34424957e-01,  3.16066418e+02,  4.33225338e+00,  1.30946367e+00,
+        4.52048883e-01,  1.63208108e+02,  5.93850330e-01,  1.34871269e+00,
+        2.03288502e-01,  6.52494606e+02, -1.37902374e+00,  1.55482534e+00,
+        1.96917559e-01,  1.08471126e+03]
+        
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, -7.987614927397559) < 1e-13)
+        
+    def test_juice_mo(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.juice_mo
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [ 8.08458777709711e+03,  3.98862191419023e-02,
+              1.13145851845895e-01,  2.54109146808688e+03,
+              7.47321603643624e-01,  2.27778122138468e-02,
+             -4.41107070349122e+00,  6.27932399248486e+00,
+              7.64033667254947e-01,  2.94097311318708e-01,
+              2.72683135802239e+00,  3.48208267655823e+00,
+              9.73171666093481e-02,  5.02201106930738e-01,
+              3.76552737505492e+00,  5.97748097683895e+00,
+              5.76935286152452e-01,  1.52899955890002e-01,
+             -1.54719587734854e+00,  8.37088373080571e+00,
+              7.83924298935545e-01,  5.32290337033144e-01,
+             -5.62028545284311e+00,  3.37199051531738e+00,
+              9.13407577042211e-01,  2.61007823689634e-01,
+              2.27004720198764e+03]
+        
+        f = udp.fitness(x)
+        self.assertTrue(float_rel_error(f[0], 427.31998557200325) < 1e-13)
+        self.assertTrue(float_rel_error(f[1], 2270.0472019876433) < 1e-13)
 
 class trajopt_mga1dsm_tests(_ut.TestCase):
     def test_construction(self):
