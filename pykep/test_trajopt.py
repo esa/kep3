@@ -58,12 +58,12 @@ class trajopt_mga_tests(_ut.TestCase):
         )
 
 
-class gym_cassini1_tests(_ut.TestCase):
-    def test_fitness(self):
+class gym_tests(_ut.TestCase):
+    def cassini1(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.cassini1
-        # Three random values. Ground truth provided by the old pykep code
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
         x = [
             -554.5189290104555,
             103.27184879471751,
@@ -97,12 +97,11 @@ class gym_cassini1_tests(_ut.TestCase):
         f = udp.fitness(x)[0]
         self.assertTrue(float_rel_error(f, 107218.08496509642) < 1e-14)
 
-class gym_cassini2_tests(_ut.TestCase):
-    def test_fitness(self):
+    def cassini2(self):
         import pykep as pk
 
         udp = pk.trajopt.gym.cassini2
-        # Three random values. Ground truth provided by the old pykep code
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
         x = [-7.75699976e+02,  9.15777367e-01,  4.06442043e-01,  3.21309562e+03,
         6.81118341e-01,  1.62660490e+02, -1.58051063e+00,  1.28479507e+00,
         4.72699902e-01,  4.24319550e+02,  4.30475919e+00,  1.15739933e+00,
@@ -111,7 +110,56 @@ class gym_cassini2_tests(_ut.TestCase):
         1.00000000e-02,  2.20000000e+03]
         
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-14)
+        self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-13)
+        
+    def rosetta(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.rosetta
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [1.53488329e+03, 4.56388378e-01, 9.51717655e-01, 4.18212047e+03,
+             4.32159299e-01, 3.65256539e+02, 5.03363275e+00, 2.38949977e+00,
+             4.55746823e-01, 7.09999954e+02, 1.79894273e+00, 1.05000003e+00,
+             6.09083347e-01, 2.60816142e+02, 4.95158968e+00, 3.16049580e+00,
+             6.89049263e-01, 7.29775762e+02, 4.30823655e+00, 1.10842692e+00,
+             4.16075410e-01, 1.84999995e+03]
+        
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 1371.4992633334382) < 1e-13)
+        
+    def eve_mga1dsm(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.eve_mga1dsm
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [ 7.31864730e+02,  6.62420829e-01,  3.46714249e-01,  1.60589872e+03,
+              4.69582854e-01,  2.98596210e+02, -1.90774304e+00,  2.05710242e+01,
+              3.63127164e-01,  9.95555392e+01]
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 47456.939061940415) < 1e-13)
+        
+    def eve_mga1dsm_a(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.eve_mga1dsm_a
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [ 1.12861301e+02,  5.49233732e-01,  3.04597487e-02,  1.92554472e+03,
+              5.22619135e-01,  8.46696560e-01, -2.64317289e+00,  2.16924824e+01,
+              6.62441172e-01,  8.89339812e-02,  5.15383086e+02]
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 1101622.7179572878) < 1e-13)
+        
+    def eve_mga1dsm_n(self):
+        import pykep as pk
+
+        udp = pk.trajopt.gym.eve_mga1dsm_n
+        # Ground truth checked by the old pykep code (up to 8 digits only as per differences with constants and all)
+        x = [5.86500918e+02, 6.32855532e-01, 9.59033298e-01, 1.93800759e+03,
+             8.02901287e-01, 9.88679911e-01, 5.18276555e+00, 1.04655908e+01,
+             5.84524787e-01, 9.68549775e-01]
+        f = udp.fitness(x)[0]
+        self.assertTrue(float_rel_error(f, 1917650.9004062244) < 1e-13)
+        
 
 class trajopt_mga1dsm_tests(_ut.TestCase):
     def test_construction(self):

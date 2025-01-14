@@ -520,8 +520,13 @@ def run_test_suite():
     suite.addTest(trajopt_mga_tests("test_encoding_to_encoding"))
     suite.addTest(trajopt_mga1dsm_tests("test_construction"))
     suite.addTest(trajopt_mga1dsm_tests("test_encoding_to_encoding"))
-    suite.addTest(gym_cassini1_tests("test_fitness"))
-    suite.addTest(gym_cassini2_tests("test_fitness"))
+    suite.addTest(gym_tests("cassini1"))
+    suite.addTest(gym_tests("cassini2"))
+    suite.addTest(gym_tests("rosetta"))
+    suite.addTest(gym_tests("eve_mga1dsm"))
+    suite.addTest(gym_tests("eve_mga1dsm_a"))
+    suite.addTest(gym_tests("eve_mga1dsm_n"))
+
     
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
 
