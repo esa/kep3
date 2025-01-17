@@ -16,7 +16,6 @@ _churyumov = _pk.udpla.keplerian(
         name="Churyumov-Gerasimenko",
     )
 
-
 _mars_rosetta = _pk.udpla.jpl_lp("mars")
 _mars_rosetta.safe_radius = 1.05 * _mars_rosetta.radius
 

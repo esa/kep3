@@ -3,6 +3,12 @@
 Trajectory Optimization Gym
 ###########################
 
+A number of interplanetary trajectory problems are provided in `pykep` in the form of 
+User Defined Problems (UDP) compatible with the `pygmo <https://esa.github.io/pygmo2/>`_ :cite:p:`pagmo` python package.
+All of the problems are instantiated upon import of the `pykep` module and can be used directly. The collection of all
+problems is called the "pykep gym" and hopes to become an established benchmark set to test the performances of evolutionary
+and traditional optimisation techniques on trajectory design problems.
+
 .. currentmodule:: pykep.trajopt.gym
 
 MGA problems
