@@ -1,6 +1,6 @@
 ## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-## (bluescarni@gmail.com)## 
-## This file is part of the kep3 library.## 
+## (bluescarni@gmail.com)##
+## This file is part of the kep3 library.##
 ## This Source Code Form is subject to the terms of the Mozilla
 ## Public License v. 2.0. If a copy of the MPL was not distributed
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -92,9 +92,7 @@ class mga:
 
         # Sanity checks
         # 1 - All planets need to have the same mu_central_body
-        if [r.get_mu_central_body() for r in seq].count(
-            seq[0].get_mu_central_body()
-        ) != len(seq):
+        if [r.mu_central_body for r in seq].count(seq[0].mu_central_body) != len(seq):
             raise ValueError(
                 "All planets in the sequence need to have exactly the same mu_central_body"
             )
@@ -338,9 +336,7 @@ class mga:
             # In this case we compute the insertion DV as a single pericenter
             # burn
             MU_SELF = self.seq[-1].get_mu_self()
-            DVper = _np.sqrt(
-                DVarrival * DVarrival + 2 * MU_SELF / self.rp_target
-            )
+            DVper = _np.sqrt(DVarrival * DVarrival + 2 * MU_SELF / self.rp_target)
             DVper2 = _np.sqrt(
                 2 * MU_SELF / self.rp_target
                 - MU_SELF / self.rp_target * (1.0 - self.e_target)
@@ -466,9 +462,20 @@ class mga:
 
         print("\nTotal DV: ", DVlaunch + _np.sum(DVfb) + DVarrival)
 
-    def plot(self, x, ax=None, units=_pk.AU, N=60, c_orbit = 'dimgray', c = 'indianred', leg_ids = [],  figsize=(5, 5), **kwargs):
+    def plot(
+        self,
+        x,
+        ax=None,
+        units=_pk.AU,
+        N=60,
+        c_orbit="dimgray",
+        c_lambert="indianred",
+        leg_ids=[],
+        figsize=(5, 5),
+        **kwargs
+    ):
         """
-        Plots the trajectory leg  3D axes.
+        Plots the trajectory encoded into *x* in 3D axes.
 
         Args:
             *x* (:class:`list`): The decision vector in the correct tof encoding.
@@ -478,11 +485,15 @@ class mga:
             *units* (:class:`float`, optional): The unit scale for the plot. Defaults to pk.AU.
 
             *N* (:class:`int`, optional): The number of points to use when plotting the trajectory. Defaults to 60.
+            
+            *c_orbit* (:class:`str`, optional): The color of the planet orbits. Defaults to 'dimgray'.
+            
+            *c* (:class:`str`, optional): The color of the trajectory. Defaults to 'indianred'.
 
-            *figsize* (:class:`tuple`): The figure size (only used if a*ax* is None and axis ave to be created.), Defaults to (5, 5).
-            
+            *figsize* (:class:`tuple`): The figure size (only used if a*ax* is None and axis have to be created.), Defaults to (5, 5).
+
             *leg_ids* (:class:`list`): selects the legs to plot. Optional, defaults to all legs.
-            
+
             *\\*\\*kwargs*: Additional keyword arguments to pass to the trajectory plot (all Lambert arcs)
 
         Returns:
@@ -492,19 +503,20 @@ class mga:
 
         if ax is None:
             ax = _pk.plot.make_3Daxis(figsize=figsize)
+            
+        # Plot of leg unless specified
+        if len(leg_ids) == 0:
+            leg_ids = list(range(self._n_legs))
+            
         _, _, _, lps, _, mjd2000s, _ = self._compute_dvs(x)
         for i, item in enumerate(self.seq):
-            _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c=c, units=units)
+            if i in leg_ids:
+                _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c=c_orbit, units=units)
+                _pk.plot.add_lambert(
+                    ax, lps[i], N=60, sol=0, units=units, c=c_lambert, **kwargs
+                )
             _pk.plot.add_planet_orbit(pla=item, ax=ax, units=units, N=N, c=c_orbit)
-
         _pk.plot.add_sun(ax=ax)
-        
-        if len(leg_ids) == 0:
-            for lp in lps:
-                _pk.plot.add_lambert(ax, lp, N = 60, sol = 0, units=units, c=c, **kwargs)
-        else:
-            for leg_id in leg_ids:
-                _pk.plot.add_lambert(ax, lps[leg_id], N = 60, sol = 0, units=units, c=c, **kwargs)
 
         return ax
 

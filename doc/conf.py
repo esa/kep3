@@ -74,7 +74,7 @@ nb_execution_mode = "force"
 nb_execution_excludepatterns = [
     "udp_point2point*",
     "udp_pl2pl*",
-    "/udp_mga*"  
+    "udp_mga*"  
 ]
 
 latex_engine = "xelatex"

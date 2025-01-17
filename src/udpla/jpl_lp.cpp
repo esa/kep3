@@ -7,8 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cmath>
-#include <random>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -121,7 +119,7 @@ jpl_lp::jpl_lp(std::string name)
             // LCOV_EXCL_END
         }
     }
-    m_name = m_name + " - jpl_lp";
+    m_name = m_name + "(jpl_lp)";
 }
 
 // Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.
@@ -217,6 +215,15 @@ std::string jpl_lp::get_extra_info() const
               + fmt::format("Elements reference epoch (date): {}\n", kep3::epoch(0.))
               + fmt::format("r at ref. = {}\n", pos_vel[0]) + fmt::format("v at ref. = {}\n", pos_vel[1]);
     return retval;
+}
+
+void jpl_lp::set_safe_radius(double safe_radius)
+{
+    if (safe_radius < m_radius) {
+        throw std::domain_error("The udpla safe radius must be at least the planet's radius ("
+                                + std::to_string(m_radius) + "), while it is: " + std::to_string(safe_radius));
+    }
+    m_safe_radius = safe_radius;
 }
 
 std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)

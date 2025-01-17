@@ -188,7 +188,7 @@ std::string keplerian::get_extra_info() const
 
 std::ostream &operator<<(std::ostream &os, const kep3::udpla::keplerian &udpla)
 {
-    os << udpla.get_extra_info() << std::endl;
+    os << udpla.get_extra_info() << "\n";
     return os;
 }
 
