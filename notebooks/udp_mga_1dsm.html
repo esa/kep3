@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Multiple Gravity Assist (MGA) &#8212; pykep 0.0.1 documentation</title>
+    <title>Multiple Gravity Assist with deep space manouvres (MGA-1DSM) &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -47,11 +47,10 @@
     <script src="../_static/scripts/sphinx-book-theme.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_mga';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_mga_1dsm';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Multiple Gravity Assist with deep space manouvres (MGA-1DSM)" href="udp_mga_1dsm.html" />
-    <link rel="prev" title="Planet to planet low-thrust" href="udp_pl2pl.html" />
+    <link rel="prev" title="Multiple Gravity Assist (MGA)" href="udp_mga.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -184,8 +183,8 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple Gravity Assist (MGA)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</a></li>
 </ul>
 </details></li>
 </ul>
@@ -247,7 +246,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_mga.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_mga_1dsm.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -295,7 +294,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_mga.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_mga_1dsm.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -325,7 +324,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/udp_mga.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/udp_mga_1dsm.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -401,7 +400,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Multiple Gravity Assist (MGA)</h1>
+    <h1>Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -424,16 +423,14 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="multiple-gravity-assist-mga">
-<h1>Multiple Gravity Assist (MGA)<a class="headerlink" href="#multiple-gravity-assist-mga" title="Permalink to this heading">#</a></h1>
-<p>In this tutorial, we use the <a class="reference internal" href="../trajopt.html#pykep.trajopt.mga" title="pykep.trajopt.mga"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga</span></code></a> to design an interplanetary trajectory. The MGA encoding of an interplanetary trajectory
-models multiple (pre-defined) planetary encounters, and enables for propulsion manovures in the form of instantaneous <span class="math notranslate nohighlight">\(\Delta V\)</span> immediately after each fly-by.
-The encoding is useful as a preliminar mission design tool automating the search for good planetary geometries giving the possibility to design trajectories through a process
-mimicking natural evolution.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="multiple-gravity-assist-with-deep-space-manouvres-mga-1dsm">
+<h1>Multiple Gravity Assist with deep space manouvres (MGA-1DSM)<a class="headerlink" href="#multiple-gravity-assist-with-deep-space-manouvres-mga-1dsm" title="Permalink to this heading">#</a></h1>
+<p>In this tutorial, we use the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code> to design an interplanetary trajectory. The MGA-1DSM encoding of an interplanetary trajectory models multiple (pre-defined) planetary encounters, and enables for propulsion manovures in the form of one instantaneous <span class="math notranslate nohighlight">\(\Delta V\)</span> at any time along each leg.</p>
+<p>The specific encoding used, described in the book Chapter <span id="id1">[<a class="reference internal" href="../bibliography.html#id13" title="Dario Izzo. Global optimization and space pruning for spacecraft trajectory design. Spacecraft Trajectory Optimization, 1:178–200, 2010.">Izz10</a>]</span> by Izzo D., is useful as a preliminar mission design tool automating the search for good planetary geometries giving the possibility to design trajectories through a process mimicking natural evolution.</p>
 <p>This encoding has also been used in the past to define instances of real-world optimization problems to be used in benchmarking optimization tools suitable for interplanetary mission design.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="../trajopt.html#pykep.trajopt.mga" title="pykep.trajopt.mga"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga</span></code></a> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
 <p>We start, as often, with some fundamental imports:</p>
 </div>
 <div class="cell docutils container">
@@ -445,13 +442,13 @@ mimicking natural evolution.</p>
 </div>
 </div>
 </div>
-<p>We will study the possibility of establishing an Earth return trajectory visiting venus in two different epochs and mars in between:</p>
+<p>We will study the same trajectory problem tackled in the <a class="reference internal" href="#"><span class="std std-doc">Multiple Gravity Assist (MGA)</span></a> notebook. In essence we design an Earth return trajectory visiting Venus in two different epochs and Mars in between:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;earth&quot;</span><span class="p">))</span>
 <span class="n">venus</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;venus&quot;</span><span class="p">))</span>
 <span class="n">mars</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;mars&quot;</span><span class="p">))</span>
-<span class="n">udp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">mga</span><span class="p">(</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">mga_1dsm</span><span class="p">(</span>
     <span class="n">seq</span><span class="o">=</span><span class="p">[</span>
         <span class="n">earth</span><span class="p">,</span>
         <span class="n">venus</span><span class="p">,</span>
@@ -462,7 +459,13 @@ mimicking natural evolution.</p>
     <span class="n">tof_encoding</span> <span class="o">=</span> <span class="s2">&quot;direct&quot;</span><span class="p">,</span>
     <span class="n">t0</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
     <span class="n">tof</span><span class="o">=</span><span class="p">[[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">350</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">300</span><span class="p">]],</span>
-    <span class="n">vinf</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
+    <span class="n">vinf</span><span class="o">=</span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>
+    <span class="n">add_vinf_dep</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">add_vinf_arr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">multi_objective</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">orbit_insertion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">eta_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+    <span class="n">rp_ub</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -478,8 +481,8 @@ mimicking natural evolution.</p>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">sade</span><span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
 <span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
 <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
     <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -489,20 +492,33 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3784.5101977008676
-1 4705.043952239474
-2 3782.557283281636
-3 3784.532718276872
-4 3788.9239423070926
-5 4705.044657292304
-6 4705.044107630107
-7 3788.5143651174744
-8 3787.803009405878
-9 3784.8076519016845
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 6917.317908330968
+1 5959.74235425138
+2 5406.924775478672
+3 7964.227984755588
+4 6278.969657167671
+5 8714.447167074659
+6 6995.895722452256
+7 5794.38066030879
+8 7393.219585888481
+9 9636.315918977587
+10 6741.922309838058
+11 7076.334656947464
+12 5768.067299140814
+13 4650.288974463847
+14 6893.098472838794
+15 7446.876075069663
+16 6972.811130385536
+17 9748.371525645023
+18 4131.713400038504
+19 7065.268152110454
 </pre></div>
 </div>
 </div>
 </div>
+<p>We can compare this list to the one produced by a purely MGA model, see <a class="reference internal" href="#"><span class="std std-doc">Multiple Gravity Assist (MGA)</span></a>. We note that the total <span class="math notranslate nohighlight">\(\Delta V\)</span> is actually higher on average!
+The MGA-1DSM model is less evolvable than the MGA model, hence the higher cost computed using the identical evolutionary pipeline.
+In reality, the model offers more flexibility and reduced <span class="math notranslate nohighlight">\(\Delta V\)</span> costs can be obtained using more refined evolutionary schemes, but this is not the <em>topic</em> of this notebook.</p>
 <section id="plotting-the-trajectory">
 <h2>Plotting the trajectory<a class="headerlink" href="#plotting-the-trajectory" title="Permalink to this heading">#</a></h2>
 <p>There are several ways one can plot the solution, depending on what we want to ‘see’. Lets start with one “at-a-glance” plot:</p>
@@ -515,7 +531,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" src="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" />
+<img alt="../_images/fd33e8a3b3f07769ac89385e46b5df7814f0a4b7c19d6c6edaa1598d6b064aa0.png" src="../_images/fd33e8a3b3f07769ac89385e46b5df7814f0a4b7c19d6c6edaa1598d6b064aa0.png" />
 </div>
 </div>
 <p>If we need to disentangle the sequence of the varioous legs we may also subdivide them in subplots:</p>
@@ -539,7 +555,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" src="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" />
+<img alt="../_images/3e4705cd383ae6f654aef2f494ceebfdb741cd2c20b33243a179ef9a322a6d79.png" src="../_images/3e4705cd383ae6f654aef2f494ceebfdb741cd2c20b33243a179ef9a322a6d79.png" />
 </div>
 </div>
 <p>… or show the various xy, xy, xz views as well as a full 3D one:</p>
@@ -572,7 +588,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" src="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" />
+<img alt="../_images/a4938f53bcf58db3e0956434ba77531cec659a04eede945d7a21a5c1a3362956.png" src="../_images/a4938f53bcf58db3e0956434ba77531cec659a04eede945d7a21a5c1a3362956.png" />
 </div>
 </div>
 </section>
@@ -586,31 +602,38 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiple Gravity Assist (MGA) problem: 
-	Planet sequence:  [&#39;earth(jpl_lp)&#39;, &#39;venus(jpl_lp)&#39;, &#39;mars(jpl_lp)&#39;, &#39;venus(jpl_lp)&#39;, &#39;earth(jpl_lp)&#39;]
-	Encoding for tofs:  direct
-	Orbit Insertion:  False
-Departure:  earth(jpl_lp)
-	Epoch:  944.5900947312232  [mjd2000]
-	Spacecraft velocity:  [20377.954757865893, 17267.375991881287, 2927.6581254372268] [m/s]
-	Hyperbolic velocity:  3942.0019711155164 [m/s]
-	Initial DV:  0 [m/s]
-Fly-by:  venus(jpl_lp)
-	Epoch:  1080.451629586074  [mjd2000]
-	DV:  0.00046151242713676766 [m/s]
-Fly-by:  mars(jpl_lp)
-	Epoch:  1235.102937062856  [mjd2000]
-	DV:  3.8450598367489874e-06 [m/s]
-Fly-by:  venus(jpl_lp)
-	Epoch:  1534.6847170103094  [mjd2000]
-	DV:  0.0002847293799277395 [m/s]
-Arrival:  earth(jpl_lp)
-	Epoch:  1691.3679239438504  [mjd2000]
-	Spacecraft velocity:  [15478.924184098158, 21751.80200637948, 2470.7569522966114] [m/s]
-	Arrival DV:  3782.556533194769 [m/s]
-Time of flights:  [135.86153485 154.65130748 299.58177995 156.68320693] [days]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First Leg: earth(jpl_lp) to venus(jpl_lp)
+Departure: 2002-08-12T22:54:08.961539 (954.9542703881829 mjd2000) 
+Duration: 129.63617646186978days
+VINF: 3.954252475620799 km/sec
+DSM after 14.390272466933748 days
+DSM magnitude: 1.453931272276125m/s
 
-Total DV:  3782.557283281636
+leg no. 2: venus(jpl_lp) to mars(jpl_lp)
+Duration: 151.95284197341164days
+Fly-by epoch: 2002-12-20T14:10:14.607845 (1084.5904468500578 mjd2000) 
+Fly-by radius: 1.410233314260613 planetary radii
+DSM after 33.15220374687179 days
+DSM magnitude: 15.153363417071064m/s
+
+leg no. 3: mars(jpl_lp) to venus(jpl_lp)
+Duration: 292.6348122410418days
+Fly-by epoch: 2003-05-21T13:02:20.154347 (1236.5432888234607 mjd2000) 
+Fly-by radius: 8.777346309330092 planetary radii
+DSM after 134.55855612478126 days
+DSM magnitude: 97.48337344576049m/s
+
+leg no. 4: venus(jpl_lp) to earth(jpl_lp)
+Duration: 167.33763464044128days
+Fly-by epoch: 2004-03-09T04:16:27.931973 (1529.1781010645022 mjd2000) 
+Fly-by radius: 2.76338085955769 planetary radii
+DSM after 30.706956626414208 days
+DSM magnitude: 896.1595996311229m/s
+
+Arrival at earth(jpl_lp)
+Arrival epoch: 2004-08-23T12:22:39.564908 (1696.5157357049536 mjd2000) 
+Arrival Vinf: 3121.4631322722735m/s
+Total mission time: 2.030284641524338 years (741.5614653167645 days)
 </pre></div>
 </div>
 </div>
@@ -630,22 +653,13 @@ Total DV:  3782.557283281636
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="udp_pl2pl.html"
+       href="udp_mga.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Planet to planet low-thrust</p>
+        <p class="prev-next-title">Multiple Gravity Assist (MGA)</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="udp_mga_1dsm.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
