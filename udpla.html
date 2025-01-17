@@ -379,7 +379,13 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.get_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.get_radius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.radius</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.safe_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.safe_radius</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.set_safe_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.set_safe_radius()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.vsop2013"><code class="docutils literal notranslate"><span class="pre">vsop2013</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.tle.eph"><code class="docutils literal notranslate"><span class="pre">tle.eph()</span></code></a></li>
@@ -480,6 +486,31 @@ model from JPL (<a class="reference external" href="https://ssd.jpl.nasa.gov/pla
 </div>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.udpla.jpl_lp.get_radius">
+<span class="sig-name descname"><span class="pre">get_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.get_radius" title="Permalink to this definition">#</a></dt>
+<dd><p>The planet’s radius.
+The planet’s radius.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.udpla.jpl_lp.radius">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.radius" title="Permalink to this definition">#</a></dt>
+<dd><p>The planet’s radius.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pykep.udpla.jpl_lp.safe_radius">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">safe_radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.safe_radius" title="Permalink to this definition">#</a></dt>
+<dd><p>The planet’s safe radius. Mostly used to constraint fly-by distances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.udpla.jpl_lp.set_safe_radius">
+<span class="sig-name descname"><span class="pre">set_safe_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.set_safe_radius" title="Permalink to this definition">#</a></dt>
+<dd><p>Set the planet’s safe radius. Mostly used to constraint fly-by distances.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -730,7 +761,13 @@ This is a static method and can be queried before constructing the object.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.null_udpla"><code class="docutils literal notranslate"><span class="pre">null_udpla</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.keplerian"><code class="docutils literal notranslate"><span class="pre">keplerian</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp"><code class="docutils literal notranslate"><span class="pre">jpl_lp</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.get_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.get_radius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.radius</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.safe_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.safe_radius</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.jpl_lp.set_safe_radius"><code class="docutils literal notranslate"><span class="pre">jpl_lp.set_safe_radius()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.vsop2013"><code class="docutils literal notranslate"><span class="pre">vsop2013</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.tle"><code class="docutils literal notranslate"><span class="pre">tle</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.udpla.tle.eph"><code class="docutils literal notranslate"><span class="pre">tle.eph()</span></code></a></li>

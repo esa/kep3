@@ -429,7 +429,11 @@ models multiple (pre-defined) planetary encounters, and enables for propulsion m
 The encoding is useful as a preliminar mission design tool automating the search for good planetary geometries giving the possibility to design trajectories through a process
 mimicking natural evolution.</p>
 <p>This encoding has also been used in the past to define instances of real-world optimization problems to be used in benchmarking optimization tools suitable for interplanetary mission design.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="../trajopt.html#pykep.trajopt.mga" title="pykep.trajopt.mga"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga</span></code></a> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
 <p>We start, as often, with some fundamental imports:</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
@@ -483,34 +487,16 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3783.1332872905305
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 3787.606982393975
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 3784.329725783436
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 3785.0187280829564
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4 3784.2894750411438
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5 3780.655789075206
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6 3786.283132277777
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7 3784.694024584519
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8 3787.39782021129
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9 3783.83711704293
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3784.5101977008676
+1 4705.043952239474
+2 3782.557283281636
+3 3784.532718276872
+4 3788.9239423070926
+5 4705.044657292304
+6 4705.044107630107
+7 3788.5143651174744
+8 3787.803009405878
+9 3784.8076519016845
 </pre></div>
 </div>
 </div>
@@ -527,7 +513,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0323b06c9efe51579c41a1832362108ce083cd0f1a85c8820e8d7037f0fa86ea.png" src="../_images/0323b06c9efe51579c41a1832362108ce083cd0f1a85c8820e8d7037f0fa86ea.png" />
+<img alt="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" src="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" />
 </div>
 </div>
 <p>If we need to disentangle the sequence of the varioous legs we may also subdivide them in subplots:</p>
@@ -546,12 +532,12 @@ mimicking natural evolution.</p>
 <span class="c1"># All the legs</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">best_x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b045305071b9e5c0ce804934ed466713dabe4cc03e6b3b91cfc497fcec3e6832.png" src="../_images/b045305071b9e5c0ce804934ed466713dabe4cc03e6b3b91cfc497fcec3e6832.png" />
+<img alt="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" src="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" />
 </div>
 </div>
 <p>… or show the various xy, xy, xz views as well as a full 3D one:</p>
@@ -584,7 +570,7 @@ mimicking natural evolution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4a07f8aef8a55bb72b21dbdb48e32e0a99a7e43aab6c87770f8fb1cf86acf309.png" src="../_images/4a07f8aef8a55bb72b21dbdb48e32e0a99a7e43aab6c87770f8fb1cf86acf309.png" />
+<img alt="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" src="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" />
 </div>
 </div>
 </section>
@@ -599,30 +585,30 @@ mimicking natural evolution.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multiple Gravity Assist (MGA) problem: 
-	Planet sequence:  [&#39;earth - jpl_lp&#39;, &#39;venus - jpl_lp&#39;, &#39;mars - jpl_lp&#39;, &#39;venus - jpl_lp&#39;, &#39;earth - jpl_lp&#39;]
+	Planet sequence:  [&#39;earth(jpl_lp)&#39;, &#39;venus(jpl_lp)&#39;, &#39;mars(jpl_lp)&#39;, &#39;venus(jpl_lp)&#39;, &#39;earth(jpl_lp)&#39;]
 	Encoding for tofs:  direct
 	Orbit Insertion:  False
-Departure:  earth - jpl_lp
-	Epoch:  933.511649745537  [mjd2000]
-	Spacecraft velocity:  [23547.740944388835, 12502.609390978907, 3065.7471491197957] [m/s]
-	Hyperbolic velocity:  4147.943728828037 [m/s]
+Departure:  earth(jpl_lp)
+	Epoch:  944.5900947312232  [mjd2000]
+	Spacecraft velocity:  [20377.954757865893, 17267.375991881287, 2927.6581254372268] [m/s]
+	Hyperbolic velocity:  3942.0019711155164 [m/s]
 	Initial DV:  0 [m/s]
-Fly-by:  venus - jpl_lp
-	Epoch:  1076.3371094871202  [mjd2000]
-	DV:  0.009356465452583507 [m/s]
-Fly-by:  mars - jpl_lp
-	Epoch:  1233.7768243131907  [mjd2000]
-	DV:  1.5537134459009394e-06 [m/s]
-Fly-by:  venus - jpl_lp
-	Epoch:  1534.5114982238176  [mjd2000]
-	DV:  0.00039539364297525026 [m/s]
-Arrival:  earth - jpl_lp
-	Epoch:  1691.0412162453788  [mjd2000]
-	Spacecraft velocity:  [15614.999213034618, 21652.321501762814, 2460.4862843520373] [m/s]
-	Arrival DV:  3780.646035662397 [m/s]
-Time of flights:  [142.82545974 157.43971483 300.73467391 156.52971802] [days]
+Fly-by:  venus(jpl_lp)
+	Epoch:  1080.451629586074  [mjd2000]
+	DV:  0.00046151242713676766 [m/s]
+Fly-by:  mars(jpl_lp)
+	Epoch:  1235.102937062856  [mjd2000]
+	DV:  3.8450598367489874e-06 [m/s]
+Fly-by:  venus(jpl_lp)
+	Epoch:  1534.6847170103094  [mjd2000]
+	DV:  0.0002847293799277395 [m/s]
+Arrival:  earth(jpl_lp)
+	Epoch:  1691.3679239438504  [mjd2000]
+	Spacecraft velocity:  [15478.924184098158, 21751.80200637948, 2470.7569522966114] [m/s]
+	Arrival DV:  3782.556533194769 [m/s]
+Time of flights:  [135.86153485 154.65130748 299.58177995 156.68320693] [days]
 
-Total DV:  3780.655789075206
+Total DV:  3782.557283281636
 </pre></div>
 </div>
 </div>
