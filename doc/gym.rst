@@ -33,7 +33,10 @@ on the pareto front.
 This is the same MGA problem as :class:`~pykep.trajopt.gym.cassini1`, but with using
 a different encoding of the decision variables. In this case, the decision variables are no longer directly
 the times of flight but an equivalent set called the eta encoding. This encoding is particularly useful
-when bounds on the times of flight are not known a priori. It creates a less evolvable problem, albeit a less biased one,            
+when bounds on the times of flight are not known a priori. It creates a less evolvable problem, albeit a less biased one.
+
+MGA-1DSM problems
+************************
 
 .. autoattribute:: pykep.trajopt.gym.cassini2
 
@@ -60,13 +63,13 @@ maneuvers and fly-bys. The launch :math:`\Delta V` is not accounted for, as it i
 
 This is the same MGA-1DSM problem as :class:`~pykep.trajopt.gym.eve_mga_1dsm`, but with using
 a different encoding of the decision variables. In this case, the decision variables are no longer directly
-the times of flight but an equivalent set called the alpha encoding (see :class:`~pykep.trajopt.gym.cassini1a`).
+the times of flight but an equivalent set called the alpha encoding (see :class:`~pykep.trajopt.gym.cassini1_a`).
 
 .. autoattribute:: pykep.trajopt.gym.eve_mga1dsm_n
 
 This is the same MGA-1DSM problem as :class:`~pykep.trajopt.gym.eve_mga_1dsm`, but with using
 a different encoding of the decision variables. In this case, the decision variables are no longer directly
-the times of flight but an equivalent set called the eta encoding (see :class:`~pykep.trajopt.gym.cassini1n`).
+the times of flight but an equivalent set called the eta encoding (see :class:`~pykep.trajopt.gym.cassini1_n`).
 
 .. autoattribute:: pykep.trajopt.gym.juice
 
@@ -83,6 +86,6 @@ Jupiter system as an archetype for gas giants across the Universe.
 .. autoattribute:: pykep.trajopt.gym.juice_mo
 
 This is the same MGA-1DSM problem as :class:`~pykep.trajopt.gym.juice`, but with using
-the alpha encoding for the time of flight variables (see :class:`~pykep.trajopt.gym.cassini1a`).
+the alpha encoding for the time of flight variables (see :class:`~pykep.trajopt.gym.cassini1_a`).
 The problem is also muulti-objective, with the total time of flight as a second objective, leveragng the 
 alpha encoding to control the total time of flight (at the cost of evolvability).
