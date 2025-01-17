@@ -163,6 +163,11 @@ class mga_1dsm:
         if type(eta_bounds[0]) != type(0.0) or type(eta_bounds[1]) != type(0.0):
             raise ValueError("The eta_bounds must be a list of two floats")
 
+        # Public data members
+        self.n_legs = len(seq) - 1
+        self.common_mu = seq[0].mu_central_body
+
+        # Private data members
         self._seq = seq
         self._t0 = t0
         self._tof = tof
@@ -177,9 +182,6 @@ class mga_1dsm:
         self._eta_lb = eta_bounds[0]
         self._eta_ub = eta_bounds[1]
         self._rp_ub = rp_ub
-
-        self.n_legs = len(seq) - 1
-        self.common_mu = seq[0].mu_central_body
 
     def get_nobj(self):
         return self._multi_objective + 1
@@ -556,7 +558,9 @@ class mga_1dsm:
         units=_pk.AU,
         N=60,
         c_orbit="dimgray",
-        c="indianred",
+        c_lambert="indianred",
+        c_ballistic="royalblue",
+        leg_ids = [],
         figsize=(5, 5),
         **kwargs
     ):
@@ -597,6 +601,10 @@ class mga_1dsm:
             ax = make_3Daxis(figsize=figsize)
         else:
             ax = ax
+            
+        # Plot of leg unless specified
+        if len(leg_ids) == 0:
+            leg_ids = list(range(self.n_legs))
 
         # We add the sun to the plot
         add_sun(ax)
@@ -611,10 +619,11 @@ class mga_1dsm:
         v_P = list([None] * (self.n_legs + 1))
         DV = list([None] * (self.n_legs + 1))
 
-        for i, item in enumerate(self.seq):
+        for i, item in enumerate(self._seq):
             t_P[i] = _pk.epoch(x[0] + sum(T[0:i]))
-            r_P[i], v_P[i] = _pk.planet.eph(t_P[i])
-            add_planet(ax, pla=item, when=t_P[i], units=units, c=c)
+            r_P[i], v_P[i] = item.eph(t_P[i])
+            if i in leg_ids:
+                add_planet(ax, pla=item, when=t_P[i], units=units, c=c_orbit)
             add_planet_orbit(ax, pla=item, units=units, N=N, c=c_orbit)
 
         # 3 - We start with the first leg
@@ -622,22 +631,24 @@ class mga_1dsm:
         r, v = _pk.propagate_lagrangian(
             [r_P[0], v0], x[4] * T[0] * _pk.DAY2SEC, self.common_mu
         )
-        add_ballistic_arc(
-            ax,
-            [r_P[0], v0],
-            x[4] * T[0] * _pk.DAY2SEC,
-            self.common_mu,
-            N=N,
-            units=units,
-            c=c,
-            **kwargs
-        )
+        if 0 in leg_ids:
+            add_ballistic_arc(
+                ax,
+                [r_P[0], v0],
+                x[4] * T[0] * _pk.DAY2SEC,
+                self.common_mu,
+                N=N,
+                units=units,
+                c=c_ballistic,
+                **kwargs
+            )
 
         # Lambert arc to reach seq[1]
         dt = (1 - x[4]) * T[0] * _pk.DAY2SEC
 
         l = _pk.lambert_problem(r, r_P[1], dt, self.common_mu, cw=False, multi_revs=0)
-        add_lambert(ax, lp=l, N=N, sol=0, units=units, c=c, **kwargs)
+        if 0 in leg_ids:
+            add_lambert(ax, lp=l, N=N, sol=0, units=units, c=c_lambert, **kwargs)
         v_end_l = l.v1[0]
         v_beg_l = l.v0[0]
 
@@ -647,7 +658,7 @@ class mga_1dsm:
         # 4 - And we proceed with each successive leg
         for i in range(1, self.n_legs):
             # Fly-by
-            v_out = _pk.fb_prop(
+            v_out = _pk.fb_vout(
                 v_end_l,
                 v_P[i],
                 x[7 + (i - 1) * 4] * self._seq[i].radius,
@@ -658,16 +669,17 @@ class mga_1dsm:
             r, v = _pk.propagate_lagrangian(
                 [r_P[i], v_out], x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC, self.common_mu
             )
-            add_ballistic_arc(
-                ax,
-                [r_P[0], v0],
-                x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC,
-                self.common_mu,
-                N=N,
-                units=units,
-                c=c,
-                **kwargs
-            )
+            if i in leg_ids:
+                add_ballistic_arc(
+                    ax,
+                    [r_P[i], v_out],
+                    x[8 + (i - 1) * 4] * T[i] * _pk.DAY2SEC,
+                    self.common_mu,
+                    N=N,
+                    units=units,
+                    c=c_ballistic,
+                    **kwargs
+                )
 
             # Lambert arc to reach Earth during (1-nu2)*T2 (second segment)
             dt = (1 - x[8 + (i - 1) * 4]) * T[i] * _pk.DAY2SEC
@@ -675,7 +687,8 @@ class mga_1dsm:
             l = _pk.lambert_problem(
                 r, r_P[i + 1], dt, self.common_mu, cw=False, multi_revs=0
             )
-            add_lambert(ax, lp=l, sol=0, units=units, N=N, c=c, **kwargs)
+            if i in leg_ids:
+                add_lambert(ax, lp=l, sol=0, units=units, N=N, c=c_lambert, **kwargs)
 
             v_end_l = l.v1[0]
             v_beg_l = l.v0[0]

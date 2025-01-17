@@ -469,7 +469,7 @@ class mga:
         units=_pk.AU,
         N=60,
         c_orbit="dimgray",
-        c="indianred",
+        c_lambert="indianred",
         leg_ids=[],
         figsize=(5, 5),
         **kwargs
@@ -503,21 +503,20 @@ class mga:
 
         if ax is None:
             ax = _pk.plot.make_3Daxis(figsize=figsize)
+            
+        # Plot of leg unless specified
+        if len(leg_ids) == 0:
+            leg_ids = list(range(self._n_legs))
+            
         _, _, _, lps, _, mjd2000s, _ = self._compute_dvs(x)
         for i, item in enumerate(self.seq):
-            _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c=c, units=units)
-            _pk.plot.add_planet_orbit(pla=item, ax=ax, units=units, N=N, c=c_orbit)
-
-        _pk.plot.add_sun(ax=ax)
-
-        if len(leg_ids) == 0:
-            for lp in lps:
-                _pk.plot.add_lambert(ax, lp, N=60, sol=0, units=units, c=c, **kwargs)
-        else:
-            for leg_id in leg_ids:
+            if i in leg_ids:
+                _pk.plot.add_planet(pla=item, ax=ax, when=mjd2000s[i], c=c_orbit, units=units)
                 _pk.plot.add_lambert(
-                    ax, lps[leg_id], N=60, sol=0, units=units, c=c, **kwargs
+                    ax, lps[i], N=60, sol=0, units=units, c=c_lambert, **kwargs
                 )
+            _pk.plot.add_planet_orbit(pla=item, ax=ax, units=units, N=N, c=c_orbit)
+        _pk.plot.add_sun(ax=ax)
 
         return ax
 

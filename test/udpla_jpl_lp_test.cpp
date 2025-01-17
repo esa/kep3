@@ -174,7 +174,7 @@ TEST_CASE("elements")
 TEST_CASE("getters-setters")
 {
     jpl_lp udpla{"nePTUne"}; // casing is not important
-    REQUIRE(udpla.get_name() == "neptune - jpl_lp");
+    REQUIRE(udpla.get_name() == "neptune(jpl_lp)");
     REQUIRE(udpla.get_mu_central_body() == kep3::MU_SUN);
     REQUIRE(udpla.get_mu_self() == 6836529e9);
     REQUIRE(udpla.get_radius() == 24622000.);

@@ -7,8 +7,6 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <cmath>
-#include <random>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -121,7 +119,7 @@ jpl_lp::jpl_lp(std::string name)
             // LCOV_EXCL_END
         }
     }
-    m_name = m_name + " - jpl_lp";
+    m_name = m_name + "(jpl_lp)";
 }
 
 // Computes the kep3::KEP_F elements (osculating with true anomaly) at epoch.
