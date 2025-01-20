@@ -111,9 +111,9 @@ use of additional problem knowledge is challenging but possible, but limiting th
 Multiple impulse problem
 ************************
 
-.. autoattribute:: pykep.trajopt.gym.e2m_3imp
+.. autoattribute:: pykep.trajopt.gym.em3imp
 
-.. autoattribute:: pykep.trajopt.gym.e2m_5imp
+.. autoattribute:: pykep.trajopt.gym.em5imp
 
-.. autoattribute:: pykep.trajopt.gym.e2m_7imp
+.. autoattribute:: pykep.trajopt.gym.em7imp
 

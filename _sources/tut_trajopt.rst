@@ -30,4 +30,4 @@ Trajectory Optimization
   notebooks/udp_pl2pl
   notebooks/udp_mga
   notebooks/udp_mga_1dsm
-  notebooks/udp_pl2pl_Nimpulses
+  notebooks/udp_pl2pl_N_impulses
