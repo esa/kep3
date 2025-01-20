@@ -185,7 +185,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 </ul>
 </details></li>
 </ul>
@@ -394,8 +394,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.eve_mga1dsm_n"><code class="docutils literal notranslate"><span class="pre">gym.eve_mga1dsm_n</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.juice"><code class="docutils literal notranslate"><span class="pre">gym.juice</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.juice_mo"><code class="docutils literal notranslate"><span class="pre">gym.juice_mo</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.messenger"><code class="docutils literal notranslate"><span class="pre">gym.messenger</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-impulse-problem">Multiple impulse problem</a></li>
 </ul>
             </nav>
         </div>
@@ -409,6 +411,11 @@
                   
   <section id="trajectory-optimization-gym">
 <span id="gym"></span><h1>Trajectory Optimization Gym<a class="headerlink" href="#trajectory-optimization-gym" title="Permalink to this heading">#</a></h1>
+<p>A number of interplanetary trajectory problems are provided in <cite>pykep</cite> in the form of
+User Defined Problems (UDP) compatible with the <a class="reference external" href="https://esa.github.io/pygmo2/">pygmo</a> <span id="id1">[<a class="reference internal" href="bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> python package.
+All of the problems are instantiated upon import of the <cite>pykep</cite> module and can be used directly. The collection of all
+problems is called the “pykep gym” and hopes to become an established benchmark set to test the performances of evolutionary
+and traditional optimisation techniques on trajectory design problems.</p>
 <section id="mga-problems">
 <h2>MGA problems<a class="headerlink" href="#mga-problems" title="Permalink to this heading">#</a></h2>
 <dl class="py attribute">
@@ -513,6 +520,23 @@ Jupiter system as an archetype for gas giants across the Universe.</p>
 the alpha encoding for the time of flight variables (see <a class="reference internal" href="#pykep.trajopt.gym.cassini1_a" title="pykep.trajopt.gym.cassini1_a"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1_a</span></code></a>).
 The problem is also muulti-objective, with the total time of flight as a second objective, leveragng the
 alpha encoding to control the total time of flight (at the cost of evolvability).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykep.trajopt.gym.messenger">
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">messenger</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MGA_1DSM</span> <span class="pre">Trajectory</span></em><a class="headerlink" href="#pykep.trajopt.gym.messenger" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<p>This an MGA-1DSM problem inspired by the messenger mission that orbited the planet Mercury between 2011 and 2015, studying Mercury’s chemical composition,
+geology, and magnetic field. The name is a backronym for Mercury Surface, Space Environment, Geochemistry, and Ranging, and a reference to the messenger
+god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are concident to the actual Messenger mission.
+We have only omitted the first Earth fly-by that was used to correct for launcher performances, since we here do not make use of a launcher model.
+As far as chemical propelled interplanetary trajectories go, this particular one is particularly complex and difficult to design.
+The time of flights among successive Mercury fly-bys allow for multiple rvolutions and resonances, making optimization techniques struggle to find the correct combination.
+The amount of specialistic knowledge that needs to be used to obtain a successful design is significant.
+Finding a global optimization approach able to find a good trajectory in complete autonomy without making
+use of additional problem knowledge is challenging but possible, but limiting the number of fitness call is difficult.</p>
+</section>
+<section id="multiple-impulse-problem">
+<h2>Multiple impulse problem<a class="headerlink" href="#multiple-impulse-problem" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -576,8 +600,10 @@ alpha encoding to control the total time of flight (at the cost of evolvability)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.eve_mga1dsm_n"><code class="docutils literal notranslate"><span class="pre">gym.eve_mga1dsm_n</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.juice"><code class="docutils literal notranslate"><span class="pre">gym.juice</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.juice_mo"><code class="docutils literal notranslate"><span class="pre">gym.juice_mo</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.gym.messenger"><code class="docutils literal notranslate"><span class="pre">gym.messenger</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-impulse-problem">Multiple impulse problem</a></li>
 </ul>
   </nav></div>
 

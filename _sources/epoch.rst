@@ -9,7 +9,7 @@ seamlessly both to the c++ `std::chrono <https://en.cppreference.com/w/cpp/heade
 library and to the python `datetime <https://docs.python.org/3/library/datetime.html>`_ module. 
 
 .. note::
-    In `pykep`` the default Julian Date is the Modified Julian Date, defined as a `float` representing the number
+    In `pykep` the default Julian Date is the Modified Julian Date, defined as a `float` representing the number
     of days since the start of 2000-1-1. 
 
 .. note::

@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_mga';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Multiple Gravity Assist with deep space manouvres (MGA-1DSM)" href="udp_mga_1dsm.html" />
+    <link rel="next" title="Multiple Gravity Assist with one DSM (MGA-1DSM)" href="udp_mga_1dsm.html" />
     <link rel="prev" title="Planet to planet low-thrust" href="udp_pl2pl.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -185,7 +185,7 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple Gravity Assist (MGA)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 </ul>
 </details></li>
 </ul>
@@ -434,6 +434,16 @@ mimicking natural evolution.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="../trajopt.html#pykep.trajopt.mga" title="pykep.trajopt.mga"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga</span></code></a> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
+<p>In the <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding the <span class="math notranslate nohighlight">\(n\)</span> time of flights <span class="math notranslate nohighlight">\(T_i\)</span> are defined as:</p>
+<div class="math notranslate nohighlight">
+\[T_i = T \frac{\log\alpha_i }{ \sum_n\log\alpha_n}\]</div>
+<p>where <span class="math notranslate nohighlight">\(T\)</span> is the total time of flight. This encoding ensures that all possible grids are equally probable if the <span class="math notranslate nohighlight">\(\alpha\)</span> are uniformly distributed in [0,1].</p>
+<p>In the <span class="math notranslate nohighlight">\(\eta\)</span> encoding <span class="math notranslate nohighlight">\(n\)</span> time of flights <span class="math notranslate nohighlight">\(T_i\)</span> are defined as:</p>
+<div class="math notranslate nohighlight">
+\[
+T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(T_{max}\)</span> is the maximum total time of flight, which will only happen if <span class="math notranslate nohighlight">\(\eta_{n}=1\)</span>. This encoding DOES NOT ensure that all possible grids are equally probable if the <span class="math notranslate nohighlight">\(\eta\)</span> are uniformly distributed in [0,1].</p>
 <p>We start, as often, with some fundamental imports:</p>
 </div>
 <div class="cell docutils container">
@@ -643,7 +653,7 @@ Total DV:  3782.557283281636
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Multiple Gravity Assist with deep space manouvres (MGA-1DSM)</p>
+        <p class="prev-next-title">Multiple Gravity Assist with one DSM (MGA-1DSM)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
