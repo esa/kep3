@@ -3,6 +3,12 @@
 Trajectory Optimization Gym
 ###########################
 
+A number of interplanetary trajectory problems are provided in `pykep` in the form of 
+User Defined Problems (UDP) compatible with the `pygmo <https://esa.github.io/pygmo2/>`_ :cite:p:`pagmo` python package.
+All of the problems are instantiated upon import of the `pykep` module and can be used directly. The collection of all
+problems is called the "pykep gym" and hopes to become an established benchmark set to test the performances of evolutionary
+and traditional optimisation techniques on trajectory design problems.
+
 .. currentmodule:: pykep.trajopt.gym
 
 MGA problems
@@ -89,3 +95,25 @@ This is the same MGA-1DSM problem as :class:`~pykep.trajopt.gym.juice`, but with
 the alpha encoding for the time of flight variables (see :class:`~pykep.trajopt.gym.cassini1_a`).
 The problem is also muulti-objective, with the total time of flight as a second objective, leveragng the 
 alpha encoding to control the total time of flight (at the cost of evolvability).
+
+.. autoattribute:: pykep.trajopt.gym.messenger
+
+This an MGA-1DSM problem inspired by the messenger mission that orbited the planet Mercury between 2011 and 2015, studying Mercury's chemical composition,
+geology, and magnetic field. The name is a backronym for Mercury Surface, Space Environment, Geochemistry, and Ranging, and a reference to the messenger
+god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are concident to the actual Messenger mission.
+We have only omitted the first Earth fly-by that was used to correct for launcher performances, since we here do not make use of a launcher model.
+As far as chemical propelled interplanetary trajectories go, this particular one is particularly complex and difficult to design. 
+The time of flights among successive Mercury fly-bys allow for multiple rvolutions and resonances, making optimization techniques struggle to find the correct combination.
+The amount of specialistic knowledge that needs to be used to obtain a successful design is significant.
+Finding a global optimization approach able to find a good trajectory in complete autonomy without making
+use of additional problem knowledge is challenging but possible, but limiting the number of fitness call is difficult.
+
+Multiple impulse problem
+************************
+
+.. autoattribute:: pykep.trajopt.gym.e2m_3imp
+
+.. autoattribute:: pykep.trajopt.gym.e2m_5imp
+
+.. autoattribute:: pykep.trajopt.gym.e2m_7imp
+
