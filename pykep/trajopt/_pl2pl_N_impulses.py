@@ -32,11 +32,11 @@ class pl2pl_N_impulses:
         start=_pk.planet(_pk.udpla.jpl_lp("earth")),
         target=_pk.planet(_pk.udpla.jpl_lp("venus")),
         N_max=3,
-        tof=[20.0, 400.0],
-        DV_max=[0.0, 4.0],
+        tof_bounds=[20.0, 400.0],
+        DV_max_bounds=[0.0, 4.0],
         phase_free=True,
         multi_objective=False,
-        t0=None,
+        t0_bounds=None,
     ):
         """
         prob = pykep.trajopt.pl2pl_N_impulses(start='earth', target='venus', N_max=3, tof=[20., 400.], vinf=[0., 4.], phase_free=True, multi_objective=False, t0=None)
@@ -48,15 +48,15 @@ class pl2pl_N_impulses:
 
             *N_max* (:class:`int`): maximum number of impulses.
 
-            *tof* (:class:`list`): the box bounds [lower,upper] for the total time of flight (days).
+            *tof_bounds* (:class:`list`): the box bounds [lower,upper] for the total time of flight (days).
 
-            *DV_max* (:class:`list`): the box bounds [lower,upper] for each DV magnitude (km/sec).
+            *DV_max_bounds* (:class:`list`): the box bounds [lower,upper] for each DV magnitude (km/sec).
 
             *phase_free* (:class:`bool`): when True, no rendezvous condition are enforced and start and arrival anomalies will be free.
 
             *multi_objective* (:class:`bool`):  when True, a multi-objective problem is constructed with DV and time of flight as objectives.
 
-            *t0* (:class:`list`):  the box bounds on the launch window containing two pykep.epoch. This is not needed if phase_free is True.
+            *t0_bounds* (:class:`list`):  the box bounds on the launch window containing two pykep.epoch. This is not needed if phase_free is True.
         """
 
         # Sanity checks
@@ -69,15 +69,15 @@ class pl2pl_N_impulses:
         if N_max < 2:
             raise ValueError("Number of impulses N is less than 2")
         # 3) If phase_free is True, t0 does not make sense
-        if t0 is None and not phase_free:
+        if t0_bounds is None and not phase_free:
             t0 = [_pk.epoch(0), _pk.epoch(1000)]
-        if t0 is not None and phase_free:
+        if t0_bounds is not None and phase_free:
             raise ValueError("When phase_free is True no t0 can be specified")
         if not phase_free:
-            if type(t0[0]) != type(_pk.epoch(0)):
-                t0[0] = _pk.epoch(t0[0])
-            if type(t0[1]) != type(_pk.epoch(0)):
-                t0[1] = _pk.epoch(t0[1])
+            if type(t0_bounds[0]) != type(_pk.epoch(0)):
+                t0_bounds[0] = _pk.epoch(t0_bounds[0])
+            if type(t0_bounds[1]) != type(_pk.epoch(0)):
+                t0_bounds[1] = _pk.epoch(t0_bounds[1])
 
         self.obj_dim = multi_objective + 1
         # We then define all class data members
@@ -86,33 +86,33 @@ class pl2pl_N_impulses:
         self.N_max = N_max
         self.phase_free = phase_free
         self.multi_objective = multi_objective
-        self.DV_max = [s * 1000 for s in DV_max]
+        self.DV_max = [s * 1000 for s in DV_max_bounds]
 
         self.__common_mu = start.mu_central_body
 
         # And we compute the bounds
         if phase_free:
             self._lb = (
-                [0, tof[0]]
-                + [1e-3, 0.0, 0.0, DV_max[0] * 1000] * (N_max - 2)
+                [0, tof_bounds[0]]
+                + [1e-3, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
                 + [1e-3]
                 + [0]
             )
             self._ub = (
-                [2 * start.period() * _pk.SEC2DAY, tof[1]]
-                + [1.0 - 1e-3, 1.0, 1.0, DV_max[1] * 1000] * (N_max - 2)
+                [2 * start.period() * _pk.SEC2DAY, tof_bounds[1]]
+                + [1.0 - 1e-3, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
                 + [1.0 - 1e-3]
                 + [2 * target.period() * _pk.SEC2DAY]
             )
         else:
             self._lb = (
-                [t0[0].mjd2000, tof[0]]
-                + [1e-3, 0.0, 0.0, DV_max[0] * 1000] * (N_max - 2)
+                [t0_bounds[0].mjd2000, tof_bounds[0]]
+                + [1e-3, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
                 + [1e-3]
             )
             self._ub = (
-                [t0[1].mjd2000, tof[1]]
-                + [1.0 - 1e-3, 1.0, 1.0, DV_max[1] * 1000] * (N_max - 2)
+                [t0_bounds[1].mjd2000, tof_bounds[1]]
+                + [1.0 - 1e-3, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
                 + [1.0 - 1e-3]
             )
 
@@ -231,8 +231,8 @@ class pl2pl_N_impulses:
         else:
             r_target, v_target = self.target.eph(_pk.epoch(x[0] + x[1]))
 
-        _pk.plot.add_planet_orbit(pla=self.start, ax=ax, units=units, N=N, c=c_orbit)
-        _pk.plot.add_planet_orbit(pla=self.target, ax=ax, units=units, N=N, c=c_orbit)
+        _pk.plot.add_planet_orbit(pla=self.start, ax=ax, units=units, N=N, c=c_orbit, label="V1")
+        _pk.plot.add_planet_orbit(pla=self.target, ax=ax, units=units, N=N, c=c_orbit, label="V2")
 
         DV_list = x[5::4]
         maxDV = max(DV_list)
@@ -353,5 +353,6 @@ class pl2pl_N_impulses:
         DV_others.extend([DV1, DV2])
 
         print("Total DV (m/s): ", sum(DV_others))
-        print("Dvs (m/s): ", DV_others)
-        print("Tofs (days): ", T)
+        print("Dvs (m/s): ", [float(it) for it in DV_others])
+        print("Total DV (m/s): ", sum(T))
+        print("Tofs (days): ", [float(it) for it in T])
