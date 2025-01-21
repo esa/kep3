@@ -429,11 +429,12 @@
   <section class="tex2jax_ignore mathjax_ignore" id="multiple-impulses">
 <h1>Multiple impulses<a class="headerlink" href="#multiple-impulses" title="Permalink to this heading">#</a></h1>
 <p>In this tutorial, we use the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses</span></code> to study a single direct transfer between planets.</p>
-<p>The encoding is original with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> and makes use of a decision vector (chromosome) in the form:
-$<span class="math notranslate nohighlight">\(
+<p>The encoding is original with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> and makes use of a decision vector (chromosome) in the form:</p>
+<div class="math notranslate nohighlight">
+\[
 \mathbf x = [t_0,T] + \underbrace{[\alpha_0,u_0,v_0,\Delta V_0, ..... ]}_{\text{propagations}} + \underbrace{[\alpha_{N-1}]}_{\text{Lambert}} + \underbrace{([t_f])}_{\text{Optional phase term}}
-\)</span><span class="math notranslate nohighlight">\(
-to define an \)</span>N<span class="math notranslate nohighlight">\( impulse trajectory starting at \)</span>t_0<span class="math notranslate nohighlight">\( at the departure planet with a \)</span>\Delta V_0<span class="math notranslate nohighlight">\( and arriving at the target planet with a \)</span>\Delta V_{N-1}<span class="math notranslate nohighlight">\( and applying the remaining \)</span>\Delta V_i<span class="math notranslate nohighlight">\( at epochs encoded using the \)</span>\alpha$-encoding for times (see <a class="reference internal" href="udp_mga_1dsm.html"><span class="std std-doc">Multiple Gravity Assist (MGA)</span></a>).</p>
+\]</div>
+<p>to define an <span class="math notranslate nohighlight">\(N\)</span> impulse trajectory starting at <span class="math notranslate nohighlight">\(t_0\)</span> at the departure planet with a <span class="math notranslate nohighlight">\(\Delta V_0\)</span> and arriving at the target planet with a <span class="math notranslate nohighlight">\(\Delta V_{N-1}\)</span> and applying the remaining <span class="math notranslate nohighlight">\(\Delta V_i\)</span> at epochs encoded using the <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding for times (see <a class="reference internal" href="udp_mga_1dsm.html"><span class="std std-doc">Multiple Gravity Assist (MGA)</span></a>).</p>
 <p>This optimization problem is a nice tool to visualize and study the famous “How many impulses?” question which has a very complicated answer in general.</p>
 <p>We start, as often, with some fundamental imports:</p>
 <div class="cell docutils container">
@@ -501,7 +502,7 @@ to define an \)</span>N<span class="math notranslate nohighlight">\( impulse tra
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 6015.332075797623
+19 5986.3894642652765
 The best solution found has a DV of 5.98639e+00 km/s
 </pre></div>
 </div>
@@ -548,7 +549,7 @@ The best solution found has a DV of 5.98639e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5af9be175b70df3857db1dd3743b744864212484366c475135571ef474b63d7a.png" src="../_images/5af9be175b70df3857db1dd3743b744864212484366c475135571ef474b63d7a.png" />
+<img alt="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" src="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" />
 </div>
 </div>
 <p>… and quickly investigate a humar readable format for the solution found.</p>
@@ -559,10 +560,10 @@ The best solution found has a DV of 5.98639e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.3894567542975
-Dvs (m/s):  [219.50548717541758, 2899.336358455495, 2867.5476111233847]
-Total DV (m/s):  360.0
-Tofs (days):  [205.942754530339, 154.05724546966098]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.389457982905
+Dvs (m/s):  [219.52008646422854, 2899.3365788308042, 2867.532792687872]
+Total DV (m/s):  360.00000000000006
+Tofs (days):  [205.94359053771774, 154.05640946228232]
 </pre></div>
 </div>
 </div>
@@ -570,7 +571,8 @@ Tofs (days):  [205.942754530339, 154.05724546966098]
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="are-more-impulses-needed">
 <h1>Are more impulses needed?<a class="headerlink" href="#are-more-impulses-needed" title="Permalink to this heading">#</a></h1>
-<p>In the previous design we allowed maximum 3 impulses, but would more impulse be needed? We can quickly answer this question for this specidfic case by repeating the optimization allowing more impulses.</p>
+<p>In the previous design we allowed maximum 3 impulses, but would more impulse be needed? We can quickly answer this question for this speci
+fic case by repeating the optimization allowing more impulses.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp4</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pl2pl_N_impulses</span><span class="p">(</span>
@@ -595,7 +597,7 @@ Tofs (days):  [205.942754530339, 154.05724546966098]
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 5986.4429859569755
+19 6306.174013339038
 The best solution found has a DV of 5.93793e+00 km/s
 </pre></div>
 </div>
@@ -608,7 +610,7 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/05092644f5a014f969b5661c0f327eda30b1227166918b30e8d3ba6633d57e94.png" src="../_images/05092644f5a014f969b5661c0f327eda30b1227166918b30e8d3ba6633d57e94.png" />
+<img alt="../_images/48359f2ce78ee0d231fe69eebeb77d84cfd5848afaa14cb3e74d157c059720d7.png" src="../_images/48359f2ce78ee0d231fe69eebeb77d84cfd5848afaa14cb3e74d157c059720d7.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -618,10 +620,10 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927401550303
-Dvs (m/s):  [197.67866272605482, 2732.2724723889223, 230.95618532970028, 2777.020081105625]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927390874737
+Dvs (m/s):  [197.6511836438095, 2732.3481744646388, 231.03876966271096, 2776.8892631035783]
 Total DV (m/s):  360.0
-Tofs (days):  [209.6658167574209, 102.48578131688357, 47.848401925695526]
+Tofs (days):  [209.66471833695857, 102.5265381278393, 47.80874353520212]
 </pre></div>
 </div>
 </div>
