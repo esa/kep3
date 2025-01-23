@@ -383,8 +383,8 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tof") = kep3::pi / 2,
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_docstring().c_str());
-    m.def("propagate_lagrangian_v", &kep3::propagate_lagrangian_v, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
-        py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_v_docstring().c_str());
+    m.def("propagate_lagrangian_grid", &kep3::propagate_lagrangian_grid, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
+        py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_grid_docstring().c_str());
 
     // Exposing the Stark problem class
     py::class_<kep3::stark_problem> stark_problem(m, "stark_problem", pykep::stark_problem_docstring().c_str());

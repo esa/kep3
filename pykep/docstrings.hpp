@@ -102,7 +102,7 @@ std::string stark_problem_propagate_var_docstring();
 
 // Propagators
 std::string propagate_lagrangian_docstring();
-std::string propagate_lagrangian_v_docstring();
+std::string propagate_lagrangian_grid_docstring();
 
 // LEG
 // Sims Flanagan

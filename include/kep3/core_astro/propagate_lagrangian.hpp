@@ -33,7 +33,7 @@ kep3_DLL_PUBLIC std::pair<std::array<std::array<double, 3>, 2>, std::optional<st
 propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel, double tof, double mu, bool stm = false);
 
 kep3_DLL_PUBLIC std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>>
-propagate_lagrangian_v(const std::array<std::array<double, 3>, 2> &pos_vel, std::vector<double> tof, double mu,
+propagate_lagrangian_grid(const std::array<std::array<double, 3>, 2> &pos_vel, const std::vector<double> &time_grid, double mu,
                        bool stm = false);
 
 // These are backup functions that use a different algorithm to get the same as propagate_lagrangian.
