@@ -191,7 +191,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     planet_class.def("_cpp_extract", &pykep::generic_cpp_extract<kep3::planet, kep3::udpla::keplerian>,
                      py::return_value_policy::reference_internal);
     // repr().
-    planet_class.def("__repr__", [](const kep3::planet &pl){return pl.get_name();});
+    planet_class.def("__repr__", [](const kep3::planet &pl) { return pl.get_name(); });
     // Full info
     planet_class.def("info", &pykep::ostream_repr<kep3::planet>);
     // Copy and deepcopy.
@@ -248,11 +248,11 @@ PYBIND11_MODULE(core, m) // NOLINT
 
 #undef PYKEP3_EXPOSE_PLANET_GETTER
 
-// We also support the various quantities as attributes for compatibility with pykep 2 
+// We also support the various quantities as attributes for compatibility with pykep 2
 // and because its nicer syntax to have them as attributes.
-#define PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name)                                                                            \
-    planet_class.def_property_readonly(                                                                                 \
-        #name, [](const kep3::planet &pl) { return pl.get_##name(); },                                                  \
+#define PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name)                                                                           \
+    planet_class.def_property_readonly(                                                                                \
+        #name, [](const kep3::planet &pl) { return pl.get_##name(); },                                                 \
         pykep::planet_get_##name##_docstring().c_str());
 
     PYKEP3_EXPOSE_PLANET_ATTRIBUTE(name);
@@ -383,7 +383,42 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tof") = kep3::pi / 2,
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_docstring().c_str());
-    m.def("propagate_lagrangian_grid", &kep3::propagate_lagrangian_grid, py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
+
+    m.def("propagate_lagrangian_grid", [](const std::array<std::array<double, 3>, 2> &pos_vel, const std::vector<double> &time_grid, double mu,
+        bool request_stm){
+            auto retval_c = kep3::propagate_lagrangian_grid(pos_vel, time_grid, mu, request_stm);      
+            std::vector<py::tuple> retval_py{};
+            retval_py.reserve(time_grid.size());
+            for (decltype(time_grid.size()) i = 0u; i < time_grid.size(); ++i) {
+                if (request_stm) {
+                    // The stm was requested lets transfer ownership to python
+                    const std::array<double, 36> &stm = retval_c[i].second.value();
+
+                    // We create a capsule for the py::array_t to manage ownership change.
+                    auto vec_ptr = std::make_unique<std::array<double, 36>>(stm);
+
+                    py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                        const std::unique_ptr<std::array<double, 36>> vptr(static_cast<std::array<double, 36> *>(ptr));
+                    });
+
+                    // NOTE: at this point, the capsule has been created successfully (including
+                    // the registration of the destructor). We can thus release ownership from vec_ptr,
+                    // as now the capsule is responsible for destroying its contents. If the capsule constructor
+                    // throws, the destructor function is not registered/invoked, and the destructor
+                    // of vec_ptr will take care of cleaning up.
+                    auto *ptr = vec_ptr.release();
+
+                    auto computed_stm = py::array_t<double>(
+                        py::array::ShapeContainer{static_cast<py::ssize_t>(6), static_cast<py::ssize_t>(6)}, // shape
+                        ptr->data(), std::move(vec_caps));
+                    retval_py.push_back(py::make_tuple(retval_c[i].first, computed_stm));
+                } else {
+                    retval_py.push_back(py::make_tuple(retval_c[i].first[0], retval_c[i].first[1]));
+                }
+            }
+        return retval_py;
+        }
+        , py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_grid_docstring().c_str());
 
     // Exposing the Stark problem class
@@ -713,7 +748,7 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         pykep::leg_sf_hf_tc_grad_docstring().c_str());
     sims_flanagan_hf.def("get_state_history", &kep3::leg::sims_flanagan_hf::get_state_history,
-                      pykep::leg_sf_hf_get_state_history_docstring().c_str());
+                         pykep::leg_sf_hf_get_state_history_docstring().c_str());
     sims_flanagan_hf.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf::get_nseg,
                                            pykep::leg_sf_hf_nseg_docstring().c_str());
     sims_flanagan_hf.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf::get_nseg_fwd,

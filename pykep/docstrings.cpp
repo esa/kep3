@@ -1505,8 +1505,10 @@ std::string propagate_lagrangian_grid_docstring()
 {
     return R"(propagate_lagrangian_grid(rv = [[1,0,0], [0,1,0]], tofs = [pi/2], mu = 1, stm = False)
 
-    This is the vectorized version of :func:`pykep.propagate_lagrangian`. Vectorization allows to compute many
-    different time of flights at once. Note that this is not necessarily more efficient than calling
+    This function calls :func:`pykep.propagate_lagrangian` in a loop to provide the results on a time grid containing several epochs. 
+    The main advantage is in the API which is convenient and reminiscent of the :func:`heyoka.propagate_grid` interface.
+
+    Note that this function is not necessarily more efficient than calling
     :func:`pykep.propagate_lagrangian` in a loop, since there is no parallelization nor SIMD magic implemented atm. 
     Nevertheless we offer this interface for cenvenience as it may allow more compact code. 
 
