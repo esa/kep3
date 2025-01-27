@@ -194,23 +194,19 @@ class mga:
     def _decode_tofs(self, x: List[float]) -> List[float]:
         if self.tof_encoding == "alpha":
             # decision vector is  [t0, T, a1, a2, ....]
-            T = _np.log(x[2:])
-            return T / sum(T) * x[1]
+            return _pk.utils.alpha2direct(x[2:], x[1])
         elif self.tof_encoding == "direct":
             # decision vector is  [t0, T1, T2, T3, ... ]
             return x[1:]
         elif self.tof_encoding == "eta":
             # decision vector is  [t0, n1, n2, n3, ... ]
-            dt = self.tof
-            T = [0] * self._n_legs
-            T[0] = dt * x[1]
-            for i in range(1, len(T)):
-                T[i] = (dt - sum(T[:i])) * x[i + 1]
-            return T
+            return _pk.utils.eta2direct(x[1:], self.tof)
 
     @staticmethod
     def alpha2direct(x):
         """alpha2direct(x)
+
+        Cpnverts the full MGA chromosome into a different encoding.
 
         Args:
             *x* (``array-like``): a chromosome encoding an MGA trajectory in the alpha encoding
@@ -218,8 +214,7 @@ class mga:
         Returns:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
         """
-        T = _np.log(x[2:])
-        retval = T / sum(T) * x[1]
+        retval = _pk.utils.alpha2direct(x[2:], x[1])
         retval = _np.insert(retval, 0, x[0])
         return retval
 
@@ -233,8 +228,7 @@ class mga:
         Returns:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the alpha encoding
         """
-        T = _np.sum(x[1:])
-        alphas = _np.exp(x[1:] / (-T))
+        alphas, T = _pk.utils.direct2alpha(x[1:])
         retval = _np.insert(alphas, 0, [x[0], T])
         return retval
 
@@ -254,12 +248,7 @@ class mga:
             raise ValueError("cannot call this method if the tof_encoding is not 'eta'")
 
         # decision vector is  [t0, n1, n2, n3, ... ]
-        n = len(x) - 1
-        dt = self.tof
-        T = [0] * n
-        T[0] = dt * x[1]
-        for i in range(1, len(T)):
-            T[i] = (dt - sum(T[:i])) * x[i + 1]
+        T = _pk.eta2direct(x[1:], self.tof)
         T = _np.insert(T, 0, x[0])
         return T
 
@@ -280,9 +269,7 @@ class mga:
         from copy import deepcopy
 
         retval = deepcopy(x)
-        retval[1] = x[1] / self.tof
-        for i in range(2, len(x)):
-            retval[i] = x[i] / (self.tof - sum(x[1:i]))
+        retval[1:] = _pk.utils.direct2eta(x[1:], self.tof)
         return retval
 
     def _compute_dvs(self, x: List[float]) -> Tuple[

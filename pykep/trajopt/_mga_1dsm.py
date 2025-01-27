@@ -220,21 +220,13 @@ class mga_1dsm:
         # 1 - we decode the times of flight
         if self._tof_encoding == "alpha":
             # decision vector is  [t0] + [u, v, Vinf, eta1, a1] + [beta, rp/rV, eta2, a2] + ... + [T]
-            T = list([0] * (self.n_legs))
-            for i in range(len(T)):
-                T[i] = -log(x[5 + 4 * i])
-            alpha_sum = sum(T)
-            retval_T = [x[-1] * time / alpha_sum for time in T]
+            retval_T = _pk.utils.alpha2direct(x[5::4], x[-1])
         elif self._tof_encoding == "direct":
             # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
             retval_T = x[5::4]
         elif self._tof_encoding == "eta":
             # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
-            dt = self._tof
-            T = [0] * self.n_legs
-            for i in range(self.n_legs):
-                T[i] = (dt - sum(T[:i])) * x[5 + 4 * i]
-            retval_T = T
+            retval_T = _pk.utils.eta2direct(x[5::4], self._tof)
 
         # 2 - We decode the hyperbolic velocity at departure
         theta = 2 * pi * x[1]
@@ -261,9 +253,8 @@ class mga_1dsm:
             :class:`numpy.ndarray`: a chromosome encoding the MGA1DSM trajectory using the direct encoding
         """
         # decision vector is  [t0] + [u, v, Vinf, eta1, a1] + [beta, rp/rV, eta2, a2] + ... + [T]
-        alphas = _np.log(x[5::4])
         retval = deepcopy(x)
-        retval[5::4] = alphas / sum(alphas) * x[-1]
+        retval[5::4] = _pk.utils.alpha2direct(x[5::4], x[-1])
         retval = _np.delete(retval, -1)
         return retval
 
@@ -278,9 +269,8 @@ class mga_1dsm:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the alpha encoding
         """
         # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
-        T = sum(x[5::4])
         retval = deepcopy(x)
-        retval[5::4] = _np.exp(x[5::4] / (-T))
+        retval[5::4], T = _pk.utils.direct2alpha(x[5::4])
         retval = _np.append(retval,T)
         return retval
 
@@ -295,15 +285,8 @@ class mga_1dsm:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
         """
         # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
-        n = 2
         retval = deepcopy(x)
-        # we assemble the times of flight
-        T = [0] * n
-        T[0] = max_tof * x[5]
-        for i in range(1, len(T)):
-            T[i] = (max_tof - sum(T[:i])) * x[5::4][i]
-        # ... and finally we replace the n1..n2 variables with the times of flight
-        retval[5::4] = T
+        retval[5::4] = _pk.utils.eta2direct(x[5::4], max_tof)
         return retval
 
     @staticmethod
@@ -317,9 +300,7 @@ class mga_1dsm:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the eta encoding
         """
         retval = deepcopy(x)
-        retval[5] = x[5] / max_tof
-        for i in range(1, len(x[5::4])):
-            retval[5::4][i] = x[5::4][i] / (max_tof - sum(x[5::4][:i]))
+        retval[5::4] = _pk.utils.direct2eta(x[5::4], max_tof)
         return retval
 
     def _compute_dvs(self, x: List[float]) -> Tuple[
