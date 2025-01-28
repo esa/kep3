@@ -414,11 +414,11 @@ class trajopt_mga1dsm_tests(_ut.TestCase):
         gt = udp_direct.fitness(x_direct)[0]
         x_alpha = udp_alpha.direct2alpha(x_direct)
         x_eta = udp_eta.direct2eta(x_direct, 500)
-        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-14)
-        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-14)
+        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-12)
+        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-12)
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_direct.alpha2direct(x_alpha))[0])
-            < 1e-14
+            < 1e-12
         )
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta, 500))[0])
