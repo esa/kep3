@@ -18,6 +18,9 @@ from ._mga import mga
 from ._mga_1dsm import mga_1dsm
 from ._pl2pl_N_impulses import pl2pl_N_impulses
 
+# MIT (multiple Impulse Trajectories)
+from ._primer_vector import primer_vector
+
 # The launchers models
 from ._launchers import _launchers
 launchers = _launchers()

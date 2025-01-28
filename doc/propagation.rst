@@ -19,7 +19,7 @@ Keplerian
 
 .. autofunction:: propagate_lagrangian
 
-.. autofunction:: propagate_lagrangian_v
+.. autofunction:: propagate_lagrangian_grid
 
 ---------------------------------------------------------
 

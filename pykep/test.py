@@ -9,6 +9,7 @@
 
 import unittest as _ut
 from .test_trajopt import *
+from .test_utils import *
 
 def float_abs_error(a: float, b: float):
     return abs(a - b)
@@ -505,6 +506,9 @@ def run_test_suite():
     suite.addTest(tl.loadTestsFromTestCase(trajopt_mga1dsm_tests))
     suite.addTest(tl.loadTestsFromTestCase(vsop2013_test))
     suite.addTest(tl.loadTestsFromTestCase(gym_tests))
+    suite.addTest(tl.loadTestsFromTestCase(encoding_tests))
+    suite.addTest(tl.loadTestsFromTestCase(mit_tests))
+
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
     return test_result

@@ -94,14 +94,14 @@ class pl2pl_N_impulses:
         if phase_free:
             self._lb = (
                 [0, tof_bounds[0]]
-                + [1e-3, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
-                + [1e-3]
+                + [0.0, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
+                + [0]
                 + [0]
             )
             self._ub = (
                 [2 * start.period() * _pk.SEC2DAY, tof_bounds[1]]
-                + [1.0 - 1e-3, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
-                + [1.0 - 1e-3]
+                + [1.0, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
+                + [1.0]
                 + [2 * target.period() * _pk.SEC2DAY]
             )
         else:
@@ -122,15 +122,14 @@ class pl2pl_N_impulses:
     def get_bounds(self):
         return (self._lb, self._ub)
 
-    def fitness(self, x):
-        # 1 -  we 'decode' the chromosome into the various deep space
-        # maneuvers times (days) in the list T
-        T = list([0] * (self.N_max - 1))
-
-        for i in range(len(T)):
-            T[i] = log(x[2 + 4 * i])
-        total = sum(T)
-        T = [x[1] * time / total for time in T]
+    def decode(self, x):
+        """
+        Args:
+            *x* (:class:`list`): The decision vector in the correct tof encoding.
+        """
+        retval = []
+        # 1 We decode the tofs
+        T = _pk.utils.alpha2direct(x[2::4], x[1])
 
         # 2 - We compute the starting and ending position
         r_start, v_start = self.start.eph(_pk.epoch(x[0]))
@@ -143,15 +142,11 @@ class pl2pl_N_impulses:
         rsc = r_start
         vsc = v_start
         for i, time in enumerate(T[:-1]):
-            theta = 2 * pi * x[3 + 4 * i]
-            phi = acos(2 * x[4 + 4 * i] - 1) - pi / 2
-
-            Vinfx = x[5 + 4 * i] * cos(phi) * cos(theta)
-            Vinfy = x[5 + 4 * i] * cos(phi) * sin(theta)
-            Vinfz = x[5 + 4 * i] * sin(phi)
+            DV = _pk.utils.uvV2cartesian(x[3 + 4 * i : 6 + 4 * i])
+            retval.append([[rsc, vsc], DV, T[i]])
 
             # We apply the (i+1)-th impulse
-            vsc = [a + b for a, b in zip(vsc, [Vinfx, Vinfy, Vinfz])]
+            vsc = [a + b for a, b in zip(vsc, DV)]
             rsc, vsc = _pk.propagate_lagrangian(
                 [rsc, vsc], T[i] * _pk.DAY2SEC, self.__common_mu
             )
@@ -161,17 +156,24 @@ class pl2pl_N_impulses:
         # Lambert arc to reach seq[1]
         dt = T[-1] * _pk.DAY2SEC
         l = _pk.lambert_problem(rsc, r_target, dt, self.__common_mu, cw, False)
-        v_end_l = l.v1[0]
         v_beg_l = l.v0[0]
+        v_end_l = l.v1[0]
 
-        DV1 = norm([a - b for a, b in zip(v_beg_l, vsc)])
-        DV2 = norm([a - b for a, b in zip(v_end_l, v_target)])
+        DV1 = [a - b for a, b in zip(v_beg_l, vsc)]
+        retval.append([[rsc, vsc], DV1, T[-1]])
 
-        DV_others = sum(x[5::4])
+        DV2 = [a - b for a, b in zip(v_target, v_end_l)]
+        retval.append([[r_target, v_end_l], DV2, 0])
+        return retval
+
+    def fitness(self, x):
+        mit = self.decode(x)
+
+        DVs = [norm(node[1]) for node in mit]
         if self.obj_dim == 1:
-            return (DV1 + DV2 + DV_others,)
+            return (sum(DVs),)
         else:
-            return (DV1 + DV2 + DV_others, x[1])
+            return (sum(DVs), x[1])
 
     def plot(
         self,
@@ -215,144 +217,54 @@ class pl2pl_N_impulses:
         # Adding the main central body (Sun-like)
         _pk.plot.add_sun(ax=ax)
 
-        # 1 -  we 'decode' the chromosome recording the various deep space
-        # maneuvers timing (days) in the list T
-        T = list([0] * (self.N_max - 1))
+        _pk.plot.add_planet_orbit(
+            pla=self.start, ax=ax, units=units, N=N, c=c_orbit, label=self.start.name
+        )
+        _pk.plot.add_planet_orbit(
+            pla=self.target, ax=ax, units=units, N=N, c=c_orbit, label=self.target.name
+        )
 
-        for i in range(len(T)):
-            T[i] = log(x[2 + 4 * i])
-        total = sum(T)
-        T = [x[1] * time / total for time in T]
+        # We decode the chromosome
+        mit = self.decode(x)  # [[r,v], DV, DT]
 
-        # 2 - We compute the starting and ending position
-        r_start, v_start = self.start.eph(_pk.epoch(x[0]))
-        if self.phase_free:
-            r_target, v_target = self.target.eph(_pk.epoch(x[-1]))
-        else:
-            r_target, v_target = self.target.eph(_pk.epoch(x[0] + x[1]))
+        DVs = [norm(node[1]) for node in mit]
+        maxDV = max(DVs)
+        DVs = [s / maxDV * 30 for s in DVs]
 
-        _pk.plot.add_planet_orbit(pla=self.start, ax=ax, units=units, N=N, c=c_orbit, label="V1")
-        _pk.plot.add_planet_orbit(pla=self.target, ax=ax, units=units, N=N, c=c_orbit, label="V2")
-
-        DV_list = x[5::4]
-        maxDV = max(DV_list)
-        DV_list = [s / maxDV * 30 for s in DV_list]
-
-        # 3 - We loop across inner impulses
-        rsc = r_start
-        vsc = v_start
-        for i, _ in enumerate(T[:-1]):
-            theta = 2 * pi * x[3 + 4 * i]
-            phi = acos(2 * x[4 + 4 * i] - 1) - pi / 2
-
-            Vinfx = x[5 + 4 * i] * cos(phi) * cos(theta)
-            Vinfy = x[5 + 4 * i] * cos(phi) * sin(theta)
-            Vinfz = x[5 + 4 * i] * sin(phi)
-
-            # We apply the (i+1)-th impulse
-            vsc = [a + b for a, b in zip(vsc, [Vinfx, Vinfy, Vinfz])]
+        # 3 - We loop across grid nodes
+        for i, node in enumerate(mit):
             ax.scatter(
-                rsc[0] / _pk.AU,
-                rsc[1] / _pk.AU,
-                rsc[2] / _pk.AU,
+                node[0][0][0] / units,
+                node[0][0][1] / units,
+                node[0][0][2] / units,
                 color="k",
-                s=DV_list[i],
+                s=DVs[i],
             )
 
+            r_after_dsm = node[0][0]
+            v_after_dsm = [a + b for a, b in zip(node[0][1], node[1])]
             _pk.plot.add_ballistic_arc(
                 ax,
-                [rsc, vsc],
-                T[i] * _pk.DAY2SEC,
+                [r_after_dsm, v_after_dsm],
+                node[2] * _pk.DAY2SEC,
                 self.__common_mu,
                 N=N,
                 units=units,
                 c=c_segments[i % len(c_segments)],
                 **kwargs
             )
-            rsc, vsc = _pk.propagate_lagrangian(
-                [rsc, vsc], T[i] * _pk.DAY2SEC, self.__common_mu
-            )
-
-        cw = _pk.ic2par([rsc, vsc], self.start.mu_central_body)[2] > pi / 2
-        # We now compute the remaining two final impulses
-        # Lambert arc to reach seq[1]
-        dt = T[-1] * _pk.DAY2SEC
-        l = _pk.lambert_problem(rsc, r_target, dt, self.__common_mu, cw, False)
-        _pk.plot.add_lambert(
-            ax, lp=l, sol=0, units=units, N=300, c=c_segments[(i+1) % len(c_segments)], **kwargs
-        )
-
-        v_end_l = l.v1[0]
-        v_beg_l = l.v0[0]
-        DV1 = norm([a - b for a, b in zip(v_beg_l, vsc)])
-        DV2 = norm([a - b for a, b in zip(v_end_l, v_target)])
-
-        ax.scatter(
-            rsc[0] / _pk.AU,
-            rsc[1] / _pk.AU,
-            rsc[2] / _pk.AU,
-            color="k",
-            s=min(DV1 / maxDV * 30, 40),
-        )
-        ax.scatter(
-            r_target[0] / _pk.AU,
-            r_target[1] / _pk.AU,
-            r_target[2] / _pk.AU,
-            color="k",
-            s=min(DV2 / maxDV * 30, 40),
-        )
-
         return ax
 
     def pretty(self, x):
-        # 1 -  we 'decode' the chromosome recording the various deep space
-        # maneuvers timing (days) in the list T
-        T = list([0] * (self.N_max - 1))
+        # We decode the chromosome
+        mit = self.decode(x)  # [[r,v], DV, DT]
 
-        for i in range(len(T)):
-            T[i] = log(x[2 + 4 * i])
-        total = sum(T)
-        T = [x[1] * time / total for time in T]
+        DVs = [norm(node[1]) for node in mit]
+        T = [node[2] for node in mit]
 
-        # 2 - We compute the starting and ending position
-        r_start, v_start = self.start.eph(_pk.epoch(x[0]))
-        if self.phase_free:
-            r_target, v_target = self.target.eph(_pk.epoch(x[-1]))
-        else:
-            r_target, v_target = self.target.eph(_pk.epoch(x[0] + x[1]))
-
-        # 3 - We loop across inner impulses
-        rsc = r_start
-        vsc = v_start
-        for i, time in enumerate(T[:-1]):
-            theta = 2 * pi * x[3 + 4 * i]
-            phi = acos(2 * x[4 + 4 * i] - 1) - pi / 2
-
-            Vinfx = x[5 + 4 * i] * cos(phi) * cos(theta)
-            Vinfy = x[5 + 4 * i] * cos(phi) * sin(theta)
-            Vinfz = x[5 + 4 * i] * sin(phi)
-
-            # We apply the (i+1)-th impulse
-            vsc = [a + b for a, b in zip(vsc, [Vinfx, Vinfy, Vinfz])]
-            rsc, vsc = _pk.propagate_lagrangian(
-                [rsc, vsc], T[i] * _pk.DAY2SEC, self.__common_mu
-            )
-        cw = _pk.ic2par([rsc, vsc], self.start.mu_central_body)[2] > pi / 2
-
-        # We now compute the remaining two final impulses
-        # Lambert arc to reach seq[1]
-        dt = T[-1] * _pk.DAY2SEC
-        l = _pk.lambert_problem(rsc, r_target, dt, self.__common_mu, cw, False)
-        v_end_l = l.v1[0]
-        v_beg_l = l.v0[0]
-
-        DV1 = norm([a - b for a, b in zip(v_beg_l, vsc)])
-        DV2 = norm([a - b for a, b in zip(v_end_l, v_target)])
-
-        DV_others = list(x[5::4])
-        DV_others.extend([DV1, DV2])
-
-        print("Total DV (m/s): ", sum(DV_others))
-        print("Dvs (m/s): ", [float(it) for it in DV_others])
-        print("Total DV (m/s): ", sum(T))
-        print("Tofs (days): ", [float(it) for it in T])
+        print("Total DV (m/s): ", sum(DVs))
+        print("Dvs (m/s): ", [float(it) for it in DVs])
+        print("Total DT (m/s): ", sum(T))
+        print(
+            "Tofs (days): ", [float(it) for it in T[:-1]]
+        )  # last node has a zero TOF by convention

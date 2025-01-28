@@ -67,10 +67,10 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
         // This initial guess was developed applying Lagrange expansion theorem to
         // the Kepler's equation in DE. We stopped at 3rd order.
         double const IG = DM_cropped + c0 * sinDM - s0 * (1 - cosDM)
-                    + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
-                    + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
-                          * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
-                             - (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
+                          + (c0 * cosDM - s0 * sinDM) * (c0 * sinDM + s0 * cosDM - s0)
+                          + 0.5 * (c0 * sinDM + s0 * cosDM - s0)
+                                * (2 * std::pow(c0 * cosDM - s0 * sinDM, 2)
+                                   - (c0 * sinDM + s0 * cosDM - s0) * (c0 * sinDM + s0 * cosDM));
 
         // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
         const int digits = std::numeric_limits<double>::digits;
@@ -156,13 +156,13 @@ propagate_lagrangian(const std::array<std::array<double, 3>, 2> &pos_vel0, const
 }
 
 std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>>
-propagate_lagrangian_v(const std::array<std::array<double, 3>, 2> &pos_vel, std::vector<double> tof, double mu,
-                       bool stm)
+propagate_lagrangian_grid(const std::array<std::array<double, 3>, 2> &pos_vel, const std::vector<double> &time_grid,
+                       double mu, bool stm)
 {
-    auto n = tof.size();
+    auto n = time_grid.size();
     std::vector<std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>> retval(n);
     for (decltype(n) i = 0u; i < n; ++i) {
-        retval[i] = kep3::propagate_lagrangian(pos_vel, tof[i], mu, stm);
+        retval[i] = kep3::propagate_lagrangian(pos_vel, time_grid[i] - time_grid[0], mu, stm);
     }
     return retval;
 }
@@ -263,7 +263,7 @@ propagate_lagrangian_u(const std::array<std::array<double, 3>, 2> &pos_vel0, con
  * such a high factor ..investigate?)
  */
 std::pair<std::array<std::array<double, 3>, 2>, std::optional<std::array<double, 36>>>
-propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu,  // NOLINT
+propagate_keplerian(const std::array<std::array<double, 3>, 2> &pos_vel0, const double dt, const double mu, // NOLINT
                     bool)
 {
     // 1 - Compute the orbital parameters at t0
