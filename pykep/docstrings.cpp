@@ -698,6 +698,68 @@ std::string f2zeta_v_doc()
 )";
 }
 
+std::string alpha2direct_doc()
+{
+    return R"(alpha2direct(alphas)
+
+    Converts from alpha encoded to transfer times.
+
+    Args:
+        *alphas* (:class:`list`): a sequence of transfer times encoded using the alpha encoding.
+
+        *T* (:class:`float`): the total transfer time.
+
+    Returns:
+        :class:`list`:: The encoded transfer times
+)";
+}
+
+std::string direct2alpha_doc()
+{
+    return R"(direct2alpha(tofs)
+
+    Converts from transfer times to alpha encoded.
+
+    Args:
+        *tofs* (:class:`list`): a sequence of transfer times.
+
+    Returns:
+        :class:`list`:, :class:`float`: The alpha-encoded transfer times, the total transfer time (for cenvenience)
+)";
+}
+
+std::string eta2direct_doc()
+{
+    return R"(eta2direct(etas, max_tof)
+
+    Converts from eta encoded to transfer times.
+
+    Args:
+        *etas* (:class:`list`): a sequence of transfer times encoded using the eta encoding.
+
+        *max_tof* (:class:`float`): maximum time of flight (might actually be less according to the value of the last eta.)
+
+    Returns:
+        :class:`list`: The encoded transfer times
+)";
+}
+
+std::string direct2eta_doc()
+{
+    return R"(direct2eta(tofs, max_tof)
+
+      Converts from transfer times to eta encoded.
+
+    Args:
+        *tofs* (:class:`list`):  a sequence of transfer times
+
+        *max_tof* (:class:`float`): maximum time of flight (might actually be less according to the value of the last eta.)
+
+    Returns:
+        :class:`list`: The eta-encoded transfer times
+)";
+}
+
 std::string epoch_from_float_doc()
 {
     return R"(__init__(when: float, julian_type = MJD2000)

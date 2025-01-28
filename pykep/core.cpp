@@ -18,6 +18,7 @@
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
+#include <kep3/core_astro/encodings.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
@@ -109,13 +110,19 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("zeta2f_v", py::vectorize(kep3::zeta2f), pk::zeta2f_v_doc().c_str());
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
 
-    // Eposing element conversions
+    // Exposing element conversions
     m.def("ic2par", &kep3::ic2par);
     m.def("par2ic", &kep3::par2ic);
     m.def("ic2eq", &kep3::ic2eq);
     m.def("eq2ic", &kep3::eq2ic);
     m.def("par2eq", &kep3::par2eq);
     m.def("eq2par", &kep3::eq2par);
+
+    // Exposing encoding conversions
+    m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());
+    m.def("direct2alpha", &kep3::direct2alpha, py::arg("tofs") , pk::direct2alpha_doc().c_str());
+    m.def("eta2direct", &kep3::eta2direct, py::arg("etas"), py::arg("max_tof"), pk::eta2direct_doc().c_str());
+    m.def("direct2eta", &kep3::direct2eta, py::arg("tofs"), py::arg("max_tof"), pk::direct2eta_doc().c_str());
 
     // Class epoch
     py::class_<kep3::epoch> epoch_class(m, "epoch", "Represents a specific point in time.");

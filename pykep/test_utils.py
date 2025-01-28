@@ -23,15 +23,15 @@ class encoding_tests(_ut.TestCase):
         import pykep as pk
 
         tofs = [12.34, 232.2, 23.45, 134.3]
-        alphas, T = pk.utils.direct2alpha(tofs)
-        tofs_from_alphas = pk.utils.alpha2direct(alphas, T)
+        alphas, T = pk.direct2alpha(tofs)
+        tofs_from_alphas = pk.alpha2direct(alphas, T)
         err = [a - b for a, b in zip(tofs, tofs_from_alphas)]
         err = np.linalg.norm(err)
         self.assertTrue(err < 1e-13)
 
         tofs = np.random.random((4,)) * 20
-        alphas, T = pk.utils.direct2alpha(tofs)
-        tofs_from_alphas = pk.utils.alpha2direct(alphas, T)
+        alphas, T = pk.direct2alpha(tofs)
+        tofs_from_alphas = pk.alpha2direct(alphas, T)
         err = [a - b for a, b in zip(tofs, tofs_from_alphas)]
         err = np.linalg.norm(err)
         self.assertTrue(err < 1e-13)
@@ -41,16 +41,16 @@ class encoding_tests(_ut.TestCase):
 
         tofs = [12.34, 232.2, 23.45, 134.3]
         tmax = 300
-        etas = pk.utils.direct2eta(tofs, tmax)
-        tofs_from_etas = pk.utils.eta2direct(etas, tmax)
+        etas = pk.direct2eta(tofs, tmax)
+        tofs_from_etas = pk.eta2direct(etas, tmax)
         err = [a - b for a, b in zip(tofs, tofs_from_etas)]
         err = np.linalg.norm(err)
         self.assertTrue(err < 1e-13)
 
         tofs = np.random.random((4,)) * 100
         tmax = 400
-        etas = pk.utils.direct2eta(tofs, tmax)
-        tofs_from_etas = pk.utils.eta2direct(etas, tmax)
+        etas = pk.direct2eta(tofs, tmax)
+        tofs_from_etas = pk.eta2direct(etas, tmax)
         err = [a - b for a, b in zip(tofs, tofs_from_etas)]
         err = np.linalg.norm(err)
         self.assertTrue(err < 1e-13)

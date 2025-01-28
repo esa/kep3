@@ -54,6 +54,12 @@ std::string f2h_v_doc();
 std::string zeta2f_v_doc();
 std::string f2zeta_v_doc();
 
+// Encodings
+std::string alpha2direct_doc();
+std::string direct2alpha_doc();
+std::string eta2direct_doc();
+std::string direct2eta_doc();
+
 // Epoch
 std::string epoch_from_float_doc();
 std::string epoch_from_datetime_doc();

@@ -153,6 +153,7 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/eq2par2eq.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/stm.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/encodings.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/stark.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/cr3bp.cpp"
 )

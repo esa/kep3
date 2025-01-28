@@ -9,7 +9,6 @@ target_compile_options(kep3_test PRIVATE
 
 find_package(Pagmo REQUIRED)
 
-
 function(ADD_kep3_TESTCASE arg1)
   add_executable(${arg1} ${arg1}.cpp)
   target_link_libraries(${arg1} PRIVATE kep3_test kep3 xtensor xtensor-blas Boost::boost Pagmo::pagmo)
@@ -45,3 +44,5 @@ ADD_kep3_TESTCASE(leg_sims_flanagan_hf_test)
 ADD_kep3_TESTCASE(ta_stark_test)
 ADD_kep3_TESTCASE(ta_cr3bp_test)
 ADD_kep3_TESTCASE(flyby_test)
+ADD_kep3_TESTCASE(encodings_test)
+

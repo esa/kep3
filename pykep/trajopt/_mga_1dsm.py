@@ -220,13 +220,13 @@ class mga_1dsm:
         # 1 - we decode the times of flight
         if self._tof_encoding == "alpha":
             # decision vector is  [t0] + [u, v, Vinf, eta1, a1] + [beta, rp/rV, eta2, a2] + ... + [T]
-            retval_T = _pk.utils.alpha2direct(x[5::4], x[-1])
+            retval_T = _pk.alpha2direct(x[5::4], x[-1])
         elif self._tof_encoding == "direct":
             # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
             retval_T = x[5::4]
         elif self._tof_encoding == "eta":
             # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
-            retval_T = _pk.utils.eta2direct(x[5::4], self._tof)
+            retval_T = _pk.eta2direct(x[5::4], self._tof)
 
         # 2 - We decode the hyperbolic velocity at departure
         theta = 2 * pi * x[1]
@@ -254,7 +254,7 @@ class mga_1dsm:
         """
         # decision vector is  [t0] + [u, v, Vinf, eta1, a1] + [beta, rp/rV, eta2, a2] + ... + [T]
         retval = deepcopy(x)
-        retval[5::4] = _pk.utils.alpha2direct(x[5::4], x[-1])
+        retval[5::4] = _pk.alpha2direct(x[5::4], x[-1])
         retval = _np.delete(retval, -1)
         return retval
 
@@ -270,7 +270,7 @@ class mga_1dsm:
         """
         # decision vector is  [t0] + [u, v, Vinf, eta1, T1] + [beta, rp/rV, eta2, T2] + ...
         retval = deepcopy(x)
-        retval[5::4], T = _pk.utils.direct2alpha(x[5::4])
+        retval[5::4], T = _pk.direct2alpha(x[5::4])
         retval = _np.append(retval,T)
         return retval
 
@@ -286,7 +286,7 @@ class mga_1dsm:
         """
         # decision vector is [t0] + [u, v, Vinf, eta1, n1] + [beta, rp/rV, eta2, n2] + ...
         retval = deepcopy(x)
-        retval[5::4] = _pk.utils.eta2direct(x[5::4], max_tof)
+        retval[5::4] = _pk.eta2direct(x[5::4], max_tof)
         return retval
 
     @staticmethod
@@ -300,7 +300,7 @@ class mga_1dsm:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the eta encoding
         """
         retval = deepcopy(x)
-        retval[5::4] = _pk.utils.direct2eta(x[5::4], max_tof)
+        retval[5::4] = _pk.direct2eta(x[5::4], max_tof)
         return retval
 
     def _compute_dvs(self, x: List[float]) -> Tuple[

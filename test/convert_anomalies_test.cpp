@@ -8,11 +8,9 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <cmath>
-#include <iostream>
 #include <random>
 
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <stdexcept>
 
 #include "catch.hpp"
 
