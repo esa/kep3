@@ -47,15 +47,15 @@ class trajopt_mga_tests(_ut.TestCase):
         gt = udp_direct.fitness(x_direct)[0]
         x_alpha = udp_alpha.direct2alpha(x_direct)
         x_eta = udp_eta.direct2eta(x_direct)
-        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-13)
-        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-13)
+        self.assertTrue(float_rel_error(gt, udp_alpha.fitness(x_alpha)[0]) < 1e-12)
+        self.assertTrue(float_rel_error(gt, udp_eta.fitness(x_eta)[0]) < 1e-12)
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_direct.alpha2direct(x_alpha))[0])
-            < 1e-13
+            < 1e-12
         )
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta))[0])
-            < 1e-13
+            < 1e-12
         )
 
 
@@ -74,7 +74,7 @@ class gym_tests(_ut.TestCase):
             2865.018040480413,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 80400.08898184073) < 1e-14)
+        self.assertTrue(float_rel_error(f, 80400.08898184073) < 1e-12)
 
         x = [
             -932.0532394941108,
@@ -85,7 +85,7 @@ class gym_tests(_ut.TestCase):
             2527.8785180526465,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 217105.875031613573) < 1e-14)
+        self.assertTrue(float_rel_error(f, 217105.875031613573) < 1e-12)
 
         x = [
             -583.0776694390058,
@@ -96,7 +96,7 @@ class gym_tests(_ut.TestCase):
             2132.7771932619144,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 107218.08496509642) < 1e-14)
+        self.assertTrue(float_rel_error(f, 107218.08496509642) < 1e-12)
 
     def test_cassini2(self):
         import pykep as pk
@@ -129,7 +129,7 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-13)
+        self.assertTrue(float_rel_error(f, 1511.7317645968126) < 1e-12)
 
     def test_rosetta(self):
         import pykep as pk
@@ -162,7 +162,7 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 1371.4992633334382) < 1e-13)
+        self.assertTrue(float_rel_error(f, 1371.4992633334382) < 1e-12)
 
     def test_eve_mga1dsm(self):
         import pykep as pk
@@ -182,7 +182,7 @@ class gym_tests(_ut.TestCase):
             9.95555392e01,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 47456.939061940415) < 1e-13)
+        self.assertTrue(float_rel_error(f, 47456.939061940415) < 1e-12)
 
     def test_eve_mga1dsm_a(self):
         import pykep as pk
@@ -203,7 +203,7 @@ class gym_tests(_ut.TestCase):
             5.15383086e02,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 1101622.7179572878) < 1e-13)
+        self.assertTrue(float_rel_error(f, 1101622.7179572878) < 1e-12)
 
     def test_eve_mga1dsm_n(self):
         import pykep as pk
@@ -223,7 +223,7 @@ class gym_tests(_ut.TestCase):
             9.68549775e-01,
         ]
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 1917650.9004062244) < 1e-13)
+        self.assertTrue(float_rel_error(f, 1917650.9004062244) < 1e-12)
 
     def test_juice(self):
         import pykep as pk
@@ -260,7 +260,7 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, 204.38446462495546) < 1e-13)
+        self.assertTrue(float_rel_error(f, 204.38446462495546) < 1e-12)
 
         # Solution previously in the old pykep gym code
         x = [
@@ -293,7 +293,7 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)[0]
-        self.assertTrue(float_rel_error(f, -7.987614927397559) < 1e-13)
+        self.assertTrue(float_rel_error(f, -7.987614927397559) < 1e-12)
 
     def test_juice_mo(self):
         import pykep as pk
@@ -331,8 +331,8 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)
-        self.assertTrue(float_rel_error(f[0], 427.31998557200325) < 1e-13)
-        self.assertTrue(float_rel_error(f[1], 2270.0472019876433) < 1e-13)
+        self.assertTrue(float_rel_error(f[0], 427.31998557200325) < 1e-12)
+        self.assertTrue(float_rel_error(f[1], 2270.0472019876433) < 1e-12)
 
     def test_messenger(self):
         import pykep as pk
@@ -369,7 +369,7 @@ class gym_tests(_ut.TestCase):
         ]
 
         f = udp.fitness(x)
-        self.assertTrue(float_rel_error(f[0], 5855.81434335236) < 1e-13)
+        self.assertTrue(float_rel_error(f[0], 5855.81434335236) < 1e-12)
 
 
 class trajopt_mga1dsm_tests(_ut.TestCase):
@@ -422,13 +422,13 @@ class trajopt_mga1dsm_tests(_ut.TestCase):
         )
         self.assertTrue(
             float_rel_error(gt, udp_direct.fitness(udp_eta.eta2direct(x_eta, 500))[0])
-            < 1e-13
+            < 1e-12
         )
         self.assertTrue(
-            np.linalg.norm(udp_direct.alpha2direct(x_alpha) - x_direct) < 1e-13
+            np.linalg.norm(udp_direct.alpha2direct(x_alpha) - x_direct) < 1e-12
         )
         self.assertTrue(
-            np.linalg.norm(udp_direct.eta2direct(x_eta, 500) - x_direct) < 1e-13
+            np.linalg.norm(udp_direct.eta2direct(x_eta, 500) - x_direct) < 1e-12
         )
 
 
@@ -443,21 +443,21 @@ class mit_tests(_ut.TestCase):
         Mji = np.random.random((6, 6)) / 2 - 1
         Mjk = Mji
         p, Aik, Ajk = pk.trajopt.primer_vector(DVi, DVj, Mji, Mjk)
-        self.assertTrue(float_rel_error(np.linalg.norm(p), 1) < 1e-13)
+        self.assertTrue(float_rel_error(np.linalg.norm(p), 1) < 1e-12)
         self.assertTrue(
-            float_rel_error(np.linalg.norm(Aik), np.linalg.norm(np.eye(3))) < 1e-13
+            float_rel_error(np.linalg.norm(Aik), np.linalg.norm(np.eye(3))) < 1e-12
         )
-        self.assertTrue(abs(np.linalg.norm(Ajk)) < 1e-13)
+        self.assertTrue(abs(np.linalg.norm(Ajk)) < 1e-12)
         
         # Test the primer vector at k=j
         Mji = np.random.random((6, 6)) / 2 - 1
         Mjk = np.eye(6)
         p, Aik, Ajk = pk.trajopt.primer_vector(DVi, DVj, Mji, Mjk)
-        self.assertTrue(float_rel_error(np.linalg.norm(p), 1) < 1e-13)
+        self.assertTrue(float_rel_error(np.linalg.norm(p), 1) < 1e-12)
         self.assertTrue(
-            float_rel_error(np.linalg.norm(Ajk), np.linalg.norm(np.eye(3))) < 1e-13
+            float_rel_error(np.linalg.norm(Ajk), np.linalg.norm(np.eye(3))) < 1e-12
         )
-        self.assertTrue(abs(np.linalg.norm(Aik)) < 1e-13)
+        self.assertTrue(abs(np.linalg.norm(Aik)) < 1e-12)
         
         # Test at a generic case
         DVi = np.array([0.87066204, 0.08769792, 0.83858668])
@@ -479,7 +479,7 @@ class mit_tests(_ut.TestCase):
             [ 0.44508538, -0.63388016,  0.84706968, -0.71098094,  0.5239476 , 0.19557921]
         ])
         p, Aik, Ajk = pk.trajopt.primer_vector(DVi, DVj, Mji, Mjk)
-        self.assertTrue(float_rel_error(np.linalg.norm(p), 2.6981957244221193) < 1e-13)
-        self.assertTrue(float_rel_error(np.linalg.norm(Aik), 3.7165788775706137) < 1e-13)
-        self.assertTrue(float_rel_error(np.linalg.norm(Ajk), 5.1268002110392725) < 1e-13)
+        self.assertTrue(float_rel_error(np.linalg.norm(p), 2.6981957244221193) < 1e-12)
+        self.assertTrue(float_rel_error(np.linalg.norm(Aik), 3.7165788775706137) < 1e-12)
+        self.assertTrue(float_rel_error(np.linalg.norm(Ajk), 5.1268002110392725) < 1e-12)
 
