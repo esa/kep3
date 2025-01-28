@@ -94,14 +94,14 @@ class pl2pl_N_impulses:
         if phase_free:
             self._lb = (
                 [0, tof_bounds[0]]
-                + [1e-3, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
-                + [1e-3]
+                + [0.0, 0.0, 0.0, DV_max_bounds[0] * 1000] * (N_max - 2)
+                + [0]
                 + [0]
             )
             self._ub = (
                 [2 * start.period() * _pk.SEC2DAY, tof_bounds[1]]
-                + [1.0 - 1e-3, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
-                + [1.0 - 1e-3]
+                + [1.0, 1.0, 1.0, DV_max_bounds[1] * 1000] * (N_max - 2)
+                + [1.0]
                 + [2 * target.period() * _pk.SEC2DAY]
             )
         else:
