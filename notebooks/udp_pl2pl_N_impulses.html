@@ -50,6 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_pl2pl_N_impulses';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Revisiting the Primer Vector" href="primer_vector.html" />
     <link rel="prev" title="Multiple Gravity Assist with one DSM (MGA-1DSM)" href="udp_mga_1dsm.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -187,6 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple impulses</a></li>
 
+<li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Revisiting the Primer Vector</a></li>
 </ul>
 </details></li>
 </ul>
@@ -432,7 +434,7 @@
 <p>The encoding is original with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> and makes use of a decision vector (chromosome) in the form:</p>
 <div class="math notranslate nohighlight">
 \[
-\mathbf x = [t_0,T] + \underbrace{[\alpha_0,u_0,v_0,\Delta V_0, ..... ]}_{\text{propagations}} + \underbrace{[\alpha_{N-1}]}_{\text{Lambert}} + \underbrace{([t_f])}_{\text{Optional phase term}}
+\mathbf x = [t_0,T] + \underbrace{[\alpha_0,u_0,v_0,\Delta V_0] + [\alpha_1,u_1,v_1,\Delta V_1] + ...}_{\text{propagations}} + \underbrace{[\alpha_{N-1}]}_{\text{Lambert}} + \underbrace{([t_f])}_{\text{Optional phase term}}
 \]</div>
 <p>to define an <span class="math notranslate nohighlight">\(N\)</span> impulse trajectory starting at <span class="math notranslate nohighlight">\(t_0\)</span> at the departure planet with a <span class="math notranslate nohighlight">\(\Delta V_0\)</span> and arriving at the target planet with a <span class="math notranslate nohighlight">\(\Delta V_{N-1}\)</span> and applying the remaining <span class="math notranslate nohighlight">\(\Delta V_i\)</span> at epochs encoded using the <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding for times (see <a class="reference internal" href="udp_mga_1dsm.html"><span class="std std-doc">Multiple Gravity Assist (MGA)</span></a>).</p>
 <p>This optimization problem is a nice tool to visualize and study the famous “How many impulses?” question which has a very complicated answer in general.</p>
@@ -453,7 +455,7 @@
 <span class="n">target</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;venus&quot;</span><span class="p">))</span>
 
 <span class="n">tof_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">360.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">]</span>
-<span class="n">DV_max_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
+<span class="n">DV_max_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 <span class="n">phase_free</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">multi_objective</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">t0_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">140</span><span class="p">,</span> <span class="mf">140.</span><span class="p">]</span>
@@ -474,9 +476,9 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="n">udp</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="n">udp</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
     <span class="c1"># We use CMA-ES </span>
-    <span class="n">uda</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">cmaes</span><span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="n">force_bounds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sigma0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
+    <span class="n">uda</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">cmaes</span><span class="p">(</span><span class="mi">4500</span><span class="p">,</span> <span class="n">force_bounds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sigma0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
     <span class="c1"># But if you prefer a self adaptive version of differential evolution thats also OK.</span>
     <span class="c1">#uda = pg.sade(2500, ftol=1e-4, xtol=1e-4)</span>
     <span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
@@ -484,7 +486,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Multi-start:&quot;</span><span class="p">)</span>
 
     <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
         <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">udp</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
         <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">])</span>
@@ -514,12 +516,6 @@ The best solution found has a DV of 5.98639e+00 km/s
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">visualise</span><span class="p">(</span><span class="n">udp</span><span class="p">,</span> <span class="n">best_x</span><span class="p">):</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-    <span class="c1"># Generate some sample data</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-    <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">y3</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
 
     <span class="c1"># Create the figure and define the grid</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
@@ -552,7 +548,7 @@ The best solution found has a DV of 5.98639e+00 km/s
 <img alt="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" src="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" />
 </div>
 </div>
-<p>… and quickly investigate a humar readable format for the solution found.</p>
+<p>… and quickly investigate a human readable format for the solution found.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp3</span><span class="o">.</span><span class="n">pretty</span><span class="p">(</span><span class="n">best_x_3</span><span class="p">)</span>
@@ -591,7 +587,7 @@ fic case by repeating the optimization allowing more impulses.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_x_4</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">udp4</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_x_4</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">udp4</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -651,6 +647,15 @@ Tofs (days):  [209.66471833695857, 102.5265381278393, 47.80874353520212]
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">Multiple Gravity Assist with one DSM (MGA-1DSM)</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="primer_vector.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Revisiting the Primer Vector</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>

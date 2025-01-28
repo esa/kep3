@@ -188,6 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
+<li class="toctree-l2"><a class="reference internal" href="notebooks/primer_vector.html">Revisiting the Primer Vector</a></li>
 </ul>
 </details></li>
 </ul>
@@ -405,6 +406,7 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities">Utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.primer_vector"><code class="docutils literal notranslate"><span class="pre">primer_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers"><code class="docutils literal notranslate"><span class="pre">_launchers</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers.ariane5"><code class="docutils literal notranslate"><span class="pre">_launchers.ariane5()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers.atlas501"><code class="docutils literal notranslate"><span class="pre">_launchers.atlas501()</span></code></a></li>
@@ -678,6 +680,28 @@ r, v = sc.eph(7000.)</p>
 <h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">#</a></h2>
 <p>In order to facilitate the use of the classes in this module, some utilities are provided.</p>
 <hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.trajopt.primer_vector">
+<span class="sig-prename descclassname"><span class="pre">pykep.trajopt.</span></span><span class="sig-name descname"><span class="pre">primer_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DVi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DVj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mji</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mjk</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.primer_vector" title="Permalink to this definition">#</a></dt>
+<dd><p>This function computes the primer vector in a point k, relative
+to impulses given at i and j.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>DVi</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> - (3,)): the impulse at point i.</p>
+<p><em>DVj</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> - (3,)): the impulse at point j.</p>
+<p><em>Mji</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> - (6,6)): the state transition matrix from i to j (dxj = Mji dxi).</p>
+<p><em>Mjk</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> - (6,6)): the state transition matrix from k to j (dxj = Mji dxi).</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: The primer vector, the Aik matrix, the Ajk matrix.</p>
+</dd>
+<dt>Note:</dt><dd><p>The impulse transfer matrix Anm is defined as those matrices that allow to compute the
+variation of the impulse at point n given the variation of the impulse at point m. In formal terms, 
+dDVn = Anm dDVm. All variations are such that the terminal state is kept fixed.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.trajopt._launchers">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.trajopt.</span></span><span class="sig-name descname"><span class="pre">_launchers</span></span><a class="headerlink" href="#pykep.trajopt._launchers" title="Permalink to this definition">#</a></dt>
@@ -825,6 +849,7 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities">Utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.primer_vector"><code class="docutils literal notranslate"><span class="pre">primer_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers"><code class="docutils literal notranslate"><span class="pre">_launchers</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers.ariane5"><code class="docutils literal notranslate"><span class="pre">_launchers.ariane5()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt._launchers.atlas501"><code class="docutils literal notranslate"><span class="pre">_launchers.atlas501()</span></code></a></li>

@@ -188,6 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
+<li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Revisiting the Primer Vector</a></li>
 </ul>
 </details></li>
 </ul>
@@ -501,16 +502,16 @@ T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3784.5101977008676
-1 4705.043952239474
-2 3782.557283281636
-3 3784.532718276872
-4 3788.9239423070926
-5 4705.044657292304
-6 4705.044107630107
-7 3788.5143651174744
-8 3787.803009405878
-9 3784.8076519016845
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 3786.7458551422774
+1 3786.218184219337
+2 4705.045732119015
+3 3786.233933114831
+4 3785.3512909367346
+5 4705.04384112345
+6 3783.628351330871
+7 3780.2606531715405
+8 3788.2488859850346
+9 3781.6632434710045
 </pre></div>
 </div>
 </div>
@@ -527,7 +528,7 @@ T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" src="../_images/99f1a863bdeb8abb2582117e4b0575729afe45c8a1ce70beb2e0900d35d27b39.png" />
+<img alt="../_images/0b651a8893e01f98c875686921f7fa6dcaa6c4eb46a3f0357e9507321ce798b3.png" src="../_images/0b651a8893e01f98c875686921f7fa6dcaa6c4eb46a3f0357e9507321ce798b3.png" />
 </div>
 </div>
 <p>If we need to disentangle the sequence of the varioous legs we may also subdivide them in subplots:</p>
@@ -551,7 +552,7 @@ T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" src="../_images/63df1e4424deb27151c028900ecabf07191344e6bf4ea8930c33ebe41881c3f2.png" />
+<img alt="../_images/feef776d3675871eee4e622036d06fef3241b9b924331e55fa22329ea6234cc0.png" src="../_images/feef776d3675871eee4e622036d06fef3241b9b924331e55fa22329ea6234cc0.png" />
 </div>
 </div>
 <p>… or show the various xy, xy, xz views as well as a full 3D one:</p>
@@ -584,7 +585,7 @@ T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" src="../_images/873353abe3a043adad46b2529e11f2b710e6f23ac23cdb70818533fe4ae15732.png" />
+<img alt="../_images/5c43047aa5909e71d8472735c1f49a62945faf16689d9c89b5bd94e0f3ed0c8d.png" src="../_images/5c43047aa5909e71d8472735c1f49a62945faf16689d9c89b5bd94e0f3ed0c8d.png" />
 </div>
 </div>
 </section>
@@ -603,26 +604,26 @@ T_i = \left(T_{max} - \sum_{j=0}^{(i-1)}T_j\right) \eta_i
 	Encoding for tofs:  direct
 	Orbit Insertion:  False
 Departure:  earth(jpl_lp)
-	Epoch:  944.5900947312232  [mjd2000]
-	Spacecraft velocity:  [20377.954757865893, 17267.375991881287, 2927.6581254372268] [m/s]
-	Hyperbolic velocity:  3942.0019711155164 [m/s]
+	Epoch:  930.5878294431398  [mjd2000]
+	Spacecraft velocity:  [24206.92086018095, 11157.529321513191, 3127.8072467220413] [m/s]
+	Hyperbolic velocity:  4237.286663380736 [m/s]
 	Initial DV:  0 [m/s]
 Fly-by:  venus(jpl_lp)
-	Epoch:  1080.451629586074  [mjd2000]
-	DV:  0.00046151242713676766 [m/s]
+	Epoch:  1075.2823144231038  [mjd2000]
+	DV:  0.00591890929172223 [m/s]
 Fly-by:  mars(jpl_lp)
-	Epoch:  1235.102937062856  [mjd2000]
-	DV:  3.8450598367489874e-06 [m/s]
+	Epoch:  1233.4115036750925  [mjd2000]
+	DV:  6.6990614868700504e-06 [m/s]
 Fly-by:  venus(jpl_lp)
-	Epoch:  1534.6847170103094  [mjd2000]
-	DV:  0.0002847293799277395 [m/s]
+	Epoch:  1534.40975856382  [mjd2000]
+	DV:  0.00018808474578690948 [m/s]
 Arrival:  earth(jpl_lp)
-	Epoch:  1691.3679239438504  [mjd2000]
-	Spacecraft velocity:  [15478.924184098158, 21751.80200637948, 2470.7569522966114] [m/s]
-	Arrival DV:  3782.556533194769 [m/s]
-Time of flights:  [135.86153485 154.65130748 299.58177995 156.68320693] [days]
+	Epoch:  1690.8404998839233  [mjd2000]
+	Spacecraft velocity:  [15698.476684341098, 21590.630802652595, 2455.156994214102] [m/s]
+	Arrival DV:  3780.2545394784415 [m/s]
+Time of flights:  [144.69448498 158.12918925 300.99825489 156.43074132] [days]
 
-Total DV:  3782.557283281636
+Total DV:  3780.2606531715405
 </pre></div>
 </div>
 </div>
