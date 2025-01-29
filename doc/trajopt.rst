@@ -10,7 +10,8 @@ version of Pontryagin Maximum Principle. The evolutionary encoding are mostly ba
 performed at `ESA' Advanced Concepts Team <https://www.esa.int/gsp/ACT/>`_ (:cite:p:`izzo2010global`, :cite:p:`izzo2013search`).
 
 Most of the classes in this Trajectory Optimization module are provided as
-optimization problems (NLP) compatible to the pagmo software suite.
+optimization problems (NLPs) in the for of User Defined Problems (UDP) compatible
+with the `pygmo <https://esa.github.io/pygmo2/>`_ :cite:p:`pagmo` python package.
 
 .. currentmodule:: pykep.trajopt
 
