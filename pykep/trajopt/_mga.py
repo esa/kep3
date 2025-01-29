@@ -194,13 +194,13 @@ class mga:
     def _decode_tofs(self, x: List[float]) -> List[float]:
         if self.tof_encoding == "alpha":
             # decision vector is  [t0, T, a1, a2, ....]
-            return _pk.utils.alpha2direct(x[2:], x[1])
+            return _pk.alpha2direct(x[2:], x[1])
         elif self.tof_encoding == "direct":
             # decision vector is  [t0, T1, T2, T3, ... ]
             return x[1:]
         elif self.tof_encoding == "eta":
             # decision vector is  [t0, n1, n2, n3, ... ]
-            return _pk.utils.eta2direct(x[1:], self.tof)
+            return _pk.eta2direct(x[1:], self.tof)
 
     @staticmethod
     def alpha2direct(x):
@@ -214,7 +214,7 @@ class mga:
         Returns:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the direct encoding
         """
-        retval = _pk.utils.alpha2direct(x[2:], x[1])
+        retval = _pk.alpha2direct(x[2:], x[1])
         retval = _np.insert(retval, 0, x[0])
         return retval
 
@@ -228,7 +228,7 @@ class mga:
         Returns:
             :class:`numpy.ndarray`: a chromosome encoding the MGA trajectory using the alpha encoding
         """
-        alphas, T = _pk.utils.direct2alpha(x[1:])
+        alphas, T = _pk.direct2alpha(x[1:])
         retval = _np.insert(alphas, 0, [x[0], T])
         return retval
 
@@ -269,7 +269,7 @@ class mga:
         from copy import deepcopy
 
         retval = deepcopy(x)
-        retval[1:] = _pk.utils.direct2eta(x[1:], self.tof)
+        retval[1:] = _pk.direct2eta(x[1:], self.tof)
         return retval
 
     def _compute_dvs(self, x: List[float]) -> Tuple[

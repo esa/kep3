@@ -1,8 +1,8 @@
 from copy import deepcopy as _deepcopy
 from math import log, exp, cos, acos, sin, pi, sqrt, atan2, asin
 
-def alpha2direct(alphas, T):
-    """alpha2direct(x)
+def alpha2direct_py(alphas, T):
+    """alpha2direct_py(x)
 
     Args:
         *alphas* (``array-like``): a sequence of transfer times encoded using the alpha encoding.
@@ -17,7 +17,7 @@ def alpha2direct(alphas, T):
     return retval
 
 
-def direct2alpha(x):
+def direct2alpha_py(x):
     """direct2alpha(x)
 
     Args:
@@ -31,7 +31,7 @@ def direct2alpha(x):
     return retval, T
 
 
-def eta2direct(x, max_tof):
+def eta2direct_py(x, max_tof):
     """eta2direct(x)
 
     Args:
@@ -51,7 +51,7 @@ def eta2direct(x, max_tof):
     return T
 
 
-def direct2eta(x, max_tof):
+def direct2eta_py(x, max_tof):
     """direct2eta(x)
 
     Args:
@@ -67,7 +67,6 @@ def direct2eta(x, max_tof):
     for i in range(1, len(x)):
         retval[i] = x[i] / (max_tof - sum(x[:i]))
     return retval
-
 
 def uvV2cartesian(uvV):
     """This function converts the uvV encoding of a vector to cartesian coordinates

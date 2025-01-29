@@ -1,5 +1,6 @@
 import pykep as _pk
 import numpy as _np
+import matplotlib.pyplot as _plt
 
 from math import pi, cos, sin, log, acos, sqrt
 
@@ -129,7 +130,7 @@ class pl2pl_N_impulses:
         """
         retval = []
         # 1 We decode the tofs
-        T = _pk.utils.alpha2direct(x[2::4], x[1])
+        T = _pk.alpha2direct(x[2::4], x[1])
 
         # 2 - We compute the starting and ending position
         r_start, v_start = self.start.eph(_pk.epoch(x[0]))
@@ -268,3 +269,91 @@ class pl2pl_N_impulses:
         print(
             "Tofs (days): ", [float(it) for it in T[:-1]]
         )  # last node has a zero TOF by convention
+
+    def plot_primer_vector(self, x, N=200, ax=None):
+        """Plots the primer vector magnitude along the trajectory encoded in *x*.
+        
+        Args:
+            *x* (:class:`list`): The decision vector in the correct tof encoding.
+
+            *N* (:class:`int`, optional): The number of points to use when plotting the primer vector. Defaults to 200.
+
+            *ax* (:class:`matplotlib.axes.Axes`, optional): The axis to plot on. Defaults to None.
+            
+        Returns:
+            :class:`matplotlib.axes.Axes`: The axis where the primer vector was plotted. 
+            :class:`tuple`: A tuple containing the grid and the primer vector magnitude.
+        """
+        # We start by decoding the chromosome into the structure [[r,v], DV, DT]
+        decoded = self.decode(x)
+        
+        # We explicitly extract the encoded information
+        dts = [it[2] * _pk.DAY2SEC for it in decoded]
+        DVs = [it[1] for it in decoded]
+        posvels = [it[0] for it in decoded]
+
+        # We create one grid er segment (e.g. part of the trajectory between two impulses)
+        # (this is not guaranteed to have the requested size N, nor has uniform spacing, since all impulses
+        # must belong to the grid points)
+        N = N + len(DVs)  # heuristic to make sure we are close to the requested number of points
+        tgrids = [
+            _np.linspace(
+                sum(dts[:i]),
+                sum(dts[: i + 1]),
+                max(int(dts[i] // (sum(dts) / (N - 1))), 5), # we force a minimum 5 points per segment
+            )
+            for i in range(len(dts) - 1)
+        ]
+        # We assemble all the grids into one single final_grid
+        final_grid = _np.array([0])
+        for i in range(len(dts) - 1):
+            final_grid = _np.concatenate((final_grid, tgrids[i][1:]))
+
+        # These are the indices of the final_grid where the impulses are given.
+        idxs = [0] + [len(tgrids[0]) - 1]
+        for grid in tgrids[1:]:
+            idxs += [idxs[-1] + len(grid) - 1]
+
+        # We now compute the various STMs.
+        retvals = []
+        for posvel, DV, tgrid in zip(posvels, DVs, tgrids):
+            ic = [posvel[0], [a + b for a, b in zip(posvel[1], DV)]]
+            retvals.append(
+                _pk.propagate_lagrangian_grid(ic, tgrid, mu=_pk.MU_SUN, stm=True)
+            )
+
+        # And now assemble them in correspondance to the final_grid and in the Mn0 form.
+        posvels = [item[0] for item in retvals[0]]
+        stms = [item[1] for item in retvals[0]]
+
+        M = stms[-1]
+        for retval in retvals[1:]:
+            posvels = posvels + [item[0] for item in retval[1:]]
+            stms = stms + [item[1] @ M for item in retval[1:]]
+            M = stms[-1]
+
+        res = []
+        # When computing the primer vector we must choose which impulses to use. 
+        # We choose the first and last impulse. But we could choose any pair of impulses,
+        # and if the trajectory is optimal (locally) the primer vector would not change.
+        idx_i = idxs[0]
+        idx_j = idxs[-1]
+        DVi = DVs[0]
+        DVj = DVs[-1]
+        for idx_k, _ in enumerate(final_grid):
+            Mji = stms[idx_j] @ _np.linalg.inv(stms[idx_i])
+            Mjk = stms[idx_j] @ _np.linalg.inv(stms[idx_k])
+            res.append(
+                _np.linalg.norm(_pk.trajopt.primer_vector(DVi, DVj, Mji, Mjk)[0])
+            )
+
+        if ax is None:
+            ax = _plt.figure().add_subplot()
+        ax.plot(res, label="primer vector magnitude")
+        ax.vlines(0, 0.8, 1.2, "k", linestyles="dashed", label="impulse")
+        for idx in idxs:
+            ax.vlines(idx, 0.8, 1.2, "k", linestyles="dashed")
+
+        ax.hlines(1, 0, len(final_grid), "r")
+        ax.legend(loc="lower right")
+        return ax, (final_grid, res)
