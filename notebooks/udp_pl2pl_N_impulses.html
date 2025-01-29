@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_pl2pl_N_impulses';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Revisiting the Primer Vector" href="primer_vector.html" />
+    <link rel="next" title="Primer Vector" href="primer_vector.html" />
     <link rel="prev" title="Multiple Gravity Assist with one DSM (MGA-1DSM)" href="udp_mga_1dsm.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -188,7 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Revisiting the Primer Vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 </ul>
 </details></li>
 </ul>
@@ -504,7 +504,7 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 5986.3894642652765
+19 6312.5821298412195
 The best solution found has a DV of 5.98639e+00 km/s
 </pre></div>
 </div>
@@ -545,7 +545,7 @@ The best solution found has a DV of 5.98639e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" src="../_images/0beefd19280686d9b14826eb9fcd9a341d246675d0f0236aae2cc982f73f04cd.png" />
+<img alt="../_images/dc6f0857b5c7eac2a728fdedc26c08eb6b350daae94d39e0ae2c72c43419264d.png" src="../_images/dc6f0857b5c7eac2a728fdedc26c08eb6b350daae94d39e0ae2c72c43419264d.png" />
 </div>
 </div>
 <p>… and quickly investigate a human readable format for the solution found.</p>
@@ -556,10 +556,10 @@ The best solution found has a DV of 5.98639e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.389457982905
-Dvs (m/s):  [219.52008646422854, 2899.3365788308042, 2867.532792687872]
-Total DV (m/s):  360.00000000000006
-Tofs (days):  [205.94359053771774, 154.05640946228232]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.389457396789
+Dvs (m/s):  [219.5201622093484, 2899.3388627999943, 2867.5304323874466]
+Total DT (m/s):  360.0
+Tofs (days):  [205.9435135734575, 154.0564864265425]
 </pre></div>
 </div>
 </div>
@@ -567,8 +567,18 @@ Tofs (days):  [205.94359053771774, 154.05640946228232]
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="are-more-impulses-needed">
 <h1>Are more impulses needed?<a class="headerlink" href="#are-more-impulses-needed" title="Permalink to this heading">#</a></h1>
-<p>In the previous design we allowed maximum 3 impulses, but would more impulse be needed? We can quickly answer this question for this speci
-fic case by repeating the optimization allowing more impulses.</p>
+<p>In the previous design we allowed maximum 3 impulses, but would more impulse be needed? We can quickly answer this question for this specific case by looking at the primer vector.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">udp3</span><span class="o">.</span><span class="n">plot_primer_vector</span><span class="p">(</span><span class="n">best_x_3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ca75889f2a7e3f261ff31bf6cdeb1b000c5e407f375a43702d309053f4147bcf.png" src="../_images/ca75889f2a7e3f261ff31bf6cdeb1b000c5e407f375a43702d309053f4147bcf.png" />
+</div>
+</div>
+<p>… the primer vector goes above one this trajevtory IS NOT OPTIMAL. We need more impulses. Lets add one.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp4</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pl2pl_N_impulses</span><span class="p">(</span>
@@ -593,7 +603,7 @@ fic case by repeating the optimization allowing more impulses.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 6306.174013339038
+19 5986.389456287089
 The best solution found has a DV of 5.93793e+00 km/s
 </pre></div>
 </div>
@@ -606,7 +616,7 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/48359f2ce78ee0d231fe69eebeb77d84cfd5848afaa14cb3e74d157c059720d7.png" src="../_images/48359f2ce78ee0d231fe69eebeb77d84cfd5848afaa14cb3e74d157c059720d7.png" />
+<img alt="../_images/83b2407dfa0fed582e7433c8a291a03fb751499e7bd5578e1191c4e964636b0f.png" src="../_images/83b2407dfa0fed582e7433c8a291a03fb751499e7bd5578e1191c4e964636b0f.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -616,16 +626,28 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927390874737
-Dvs (m/s):  [197.6511836438095, 2732.3481744646388, 231.03876966271096, 2776.8892631035783]
-Total DV (m/s):  360.0
-Tofs (days):  [209.66471833695857, 102.5265381278393, 47.80874353520212]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927390088956
+Dvs (m/s):  [197.65765144324607, 2732.3258592198454, 231.02221674962183, 2776.9216626762422]
+Total DT (m/s):  360.0
+Tofs (days):  [209.66400763089803, 102.52543608353949, 47.810556285562484]
 </pre></div>
 </div>
 </div>
 </div>
 <p>We found a better solution! Four impulses are better than 4 in this case! This is quite rare and interesting as a case and its here found as the optimization problem was defined to have a fixed duration and starting date. Typically, when freeing these degrees of freedom, three impulses are enough.</p>
 <p>Try to find other interesting cases where the number of impulses matter, and do not be fooled by artefacts. Some times impulses with zero <span class="math notranslate nohighlight">\(\Delta V\)</span> are added to move around the starting date outside of the bounds. Whats the maximum number of impulses you can find to be optimal?</p>
+<p>We conclude showing the primer vector for this case:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">udp4</span><span class="o">.</span><span class="n">plot_primer_vector</span><span class="p">(</span><span class="n">best_x_4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/df9aa7da0ea2853035e2d21130c9a3c63bddeee5ca1b99d3d90c4b396fb90e42.png" src="../_images/df9aa7da0ea2853035e2d21130c9a3c63bddeee5ca1b99d3d90c4b396fb90e42.png" />
+</div>
+</div>
+<p>The very same trajectory is also studied in <a class="reference internal" href="primer_vector.html"><span class="std std-doc">the notebook dedicated to the primer vector</span></a> where the whole theory is also developed and coded as to show its inner workings.</p>
 </section>
 
 
@@ -653,7 +675,7 @@ Tofs (days):  [209.66471833695857, 102.5265381278393, 47.80874353520212]
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Revisiting the Primer Vector</p>
+        <p class="prev-next-title">Primer Vector</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
