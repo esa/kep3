@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Trajectory Optimization Gym" href="gym.html" />
-    <link rel="prev" title="Taylor adaptive propagators" href="taylor_adaptive.html" />
+    <link rel="prev" title="Interplanetary transfer legs" href="leg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -154,13 +154,13 @@
 <li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planet class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">User defined planets (UDPLAs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
@@ -435,7 +435,8 @@ based on the “Sims” transcription <span id="id1">[<a class="reference intern
 version of Pontryagin Maximum Principle. The evolutionary encoding are mostly based on the work
 performed at <a class="reference external" href="https://www.esa.int/gsp/ACT/">ESA’ Advanced Concepts Team</a> (<span id="id2">[<a class="reference internal" href="bibliography.html#id13" title="Dario Izzo. Global optimization and space pruning for spacecraft trajectory design. Spacecraft Trajectory Optimization, 1:178–200, 2010.">Izz10</a>]</span>, <span id="id3">[<a class="reference internal" href="bibliography.html#id12" title="Dario Izzo, Luis F Simoes, Marcus Martens, Guido CHE de Croon, Aurelie Heritier, and Chit Hong Yam. Search for a grand tour of the jupiter galilean moons. Proceedings of the 15th annual conference on Genetic and evolutionary computation, pages 1301–1308, 2013.">ISM+13</a>]</span>).</p>
 <p>Most of the classes in this Trajectory Optimization module are provided as
-optimization problems (NLP) compatible to the pagmo software suite.</p>
+optimization problems (NLPs) in the for of User Defined Problems (UDP) compatible
+with the <a class="reference external" href="https://esa.github.io/pygmo2/">pygmo</a> <span id="id4">[<a class="reference internal" href="bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> python package.</p>
 <section id="direct">
 <h2>Direct<a class="headerlink" href="#direct" title="Permalink to this heading">#</a></h2>
 <p>When solving optimal control problems (OCPs), the unknown is a function (i.e. the control),
@@ -578,8 +579,8 @@ and the controls as to link the two planets with a low-thrust trajectory.</p>
 <section id="evolutionary-encodings">
 <h2>Evolutionary Encodings<a class="headerlink" href="#evolutionary-encodings" title="Permalink to this heading">#</a></h2>
 <p>Some type of interplanetary trajectories can be <em>evolved</em>: shocking?.
-This AI approach to trajectory design resulted in two silver (<span id="id4">[<a class="reference internal" href="bibliography.html#id10" title="Richard J Terrile, Hrand Aghazarian, Michael I Ferguson, Wolfgang Fink, Terrance L Huntsberger, Didier Keymeulen, Gerhard Klimeck, Mark A Kordon, Seungwon Lee, and Paul von Allmen. Evolutionary computation technologies for the automated design of space systems. 2005 NASA/DoD Conference on Evolvable Hardware (EH'05), pages 131–138, 2005.">TAF+05</a>]</span>, <span id="id5">[<a class="reference internal" href="bibliography.html#id11" title="Anastassios Petropoulos, Daniel Grebow, Drew Jones, Gregory Lantoine, Austin Nicholas, Javier Roa, Juan Senent, Jeffrey Stuart, Nitin Arora, Thomas Pavlak, and others. GTOC9: Methods and results from the Jet Propulsion Laboratory team. Acta Futura, 11:25–35, 2018.">PGJ+18</a>]</span>)
-and one gold (<span id="id6">[<a class="reference internal" href="bibliography.html#id12" title="Dario Izzo, Luis F Simoes, Marcus Martens, Guido CHE de Croon, Aurelie Heritier, and Chit Hong Yam. Search for a grand tour of the jupiter galilean moons. Proceedings of the 15th annual conference on Genetic and evolutionary computation, pages 1301–1308, 2013.">ISM+13</a>]</span>)
+This AI approach to trajectory design resulted in two silver (<span id="id5">[<a class="reference internal" href="bibliography.html#id10" title="Richard J Terrile, Hrand Aghazarian, Michael I Ferguson, Wolfgang Fink, Terrance L Huntsberger, Didier Keymeulen, Gerhard Klimeck, Mark A Kordon, Seungwon Lee, and Paul von Allmen. Evolutionary computation technologies for the automated design of space systems. 2005 NASA/DoD Conference on Evolvable Hardware (EH'05), pages 131–138, 2005.">TAF+05</a>]</span>, <span id="id6">[<a class="reference internal" href="bibliography.html#id11" title="Anastassios Petropoulos, Daniel Grebow, Drew Jones, Gregory Lantoine, Austin Nicholas, Javier Roa, Juan Senent, Jeffrey Stuart, Nitin Arora, Thomas Pavlak, and others. GTOC9: Methods and results from the Jet Propulsion Laboratory team. Acta Futura, 11:25–35, 2018.">PGJ+18</a>]</span>)
+and one gold (<span id="id7">[<a class="reference internal" href="bibliography.html#id12" title="Dario Izzo, Luis F Simoes, Marcus Martens, Guido CHE de Croon, Aurelie Heritier, and Chit Hong Yam. Search for a grand tour of the jupiter galilean moons. Proceedings of the 15th annual conference on Genetic and evolutionary computation, pages 1301–1308, 2013.">ISM+13</a>]</span>)
 <a class="reference external" href="https://www.human-competitive.org">Humies award</a>  for human-competitive
 results that were produced by any form of genetic and evolutionary computation.
 In <cite>pykep</cite> we offer some classes that help instantiating these type of transfers
@@ -792,12 +793,12 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="taylor_adaptive.html"
+       href="leg.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Taylor adaptive propagators</p>
+        <p class="prev-next-title">Interplanetary transfer legs</p>
       </div>
     </a>
     <a class="right-next"

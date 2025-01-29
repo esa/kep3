@@ -13,13 +13,13 @@ pykep API is designed to maximize its usability. Let us know what you think abou
    constants
    elements
    epoch
-   lambert
-   flyby
-   leg
    planet
    udpla
+   lambert
+   flyby
    propagation
    taylor_adaptive 
+   leg
    trajopt
    gym
    plot
