@@ -164,6 +164,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
+
+
+
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
@@ -189,6 +193,8 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multiple impulses</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
+
 </ul>
 </details></li>
 </ul>
@@ -430,7 +436,7 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="multiple-impulses">
 <h1>Multiple impulses<a class="headerlink" href="#multiple-impulses" title="Permalink to this heading">#</a></h1>
-<p>In this tutorial, we use the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses</span></code> to study a single direct transfer between planets.</p>
+<p>In this tutorial, we use the <a class="reference internal" href="../trajopt.html#pykep.trajopt.pl2pl_N_impulses" title="pykep.trajopt.pl2pl_N_impulses"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses</span></code></a> to study a single direct transfer between planets.</p>
 <p>The encoding is original with <code class="docutils literal notranslate"><span class="pre">pykep</span></code> and makes use of a decision vector (chromosome) in the form:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -504,7 +510,7 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 6312.5821298412195
+19 5986.389457561951
 The best solution found has a DV of 5.98639e+00 km/s
 </pre></div>
 </div>
@@ -519,33 +525,36 @@ The best solution found has a DV of 5.98639e+00 km/s
 
     <span class="c1"># Create the figure and define the grid</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-    <span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span>
+        <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.01</span>
+    <span class="p">)</span>
 
     <span class="c1"># Top view (spans rows and columns)</span>
-    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
     <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">best_x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
 
     <span class="c1"># Ecliptic view 1</span>
-    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
     <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">best_x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
 
     <span class="c1"># Ecliptic view 2</span>
-    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
     <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">best_x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
     <span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fig</span>
+
 
 <span class="n">visualise</span><span class="p">(</span><span class="n">udp3</span><span class="p">,</span> <span class="n">best_x_3</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dc6f0857b5c7eac2a728fdedc26c08eb6b350daae94d39e0ae2c72c43419264d.png" src="../_images/dc6f0857b5c7eac2a728fdedc26c08eb6b350daae94d39e0ae2c72c43419264d.png" />
+<img alt="../_images/4c3fb999c8c80ea9ac5ab6524c03c466a23ce66d71e59fbf34fe6427d0197b29.png" src="../_images/4c3fb999c8c80ea9ac5ab6524c03c466a23ce66d71e59fbf34fe6427d0197b29.png" />
 </div>
 </div>
 <p>… and quickly investigate a human readable format for the solution found.</p>
@@ -556,10 +565,10 @@ The best solution found has a DV of 5.98639e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.389457396789
-Dvs (m/s):  [219.5201622093484, 2899.3388627999943, 2867.5304323874466]
-Total DT (m/s):  360.0
-Tofs (days):  [205.9435135734575, 154.0564864265425]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5986.389457561951
+Dvs (m/s):  [219.52486107466606, 2899.304957414648, 2867.559639072637]
+Total DT (m/s):  31104000.000000004
+Tofs (days):  [17793484.53088946, 13310515.469110545]
 </pre></div>
 </div>
 </div>
@@ -575,7 +584,7 @@ Tofs (days):  [205.9435135734575, 154.0564864265425]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ca75889f2a7e3f261ff31bf6cdeb1b000c5e407f375a43702d309053f4147bcf.png" src="../_images/ca75889f2a7e3f261ff31bf6cdeb1b000c5e407f375a43702d309053f4147bcf.png" />
+<img alt="../_images/85ea9528ae1d8b1ff996122a9e42ffe78d9baa34ca20d10e633d8eeb943fdc33.png" src="../_images/85ea9528ae1d8b1ff996122a9e42ffe78d9baa34ca20d10e633d8eeb943fdc33.png" />
 </div>
 </div>
 <p>… the primer vector goes above one this trajevtory IS NOT OPTIMAL. We need more impulses. Lets add one.</p>
@@ -603,7 +612,7 @@ Tofs (days):  [205.9435135734575, 154.0564864265425]
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
-19 5986.389456287089
+19 5986.3894562564655
 The best solution found has a DV of 5.93793e+00 km/s
 </pre></div>
 </div>
@@ -616,7 +625,7 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/83b2407dfa0fed582e7433c8a291a03fb751499e7bd5578e1191c4e964636b0f.png" src="../_images/83b2407dfa0fed582e7433c8a291a03fb751499e7bd5578e1191c4e964636b0f.png" />
+<img alt="../_images/4e289e0103b1c80d640048f09d3864fcf5bfa062a3d10a82839f49519514a2a5.png" src="../_images/4e289e0103b1c80d640048f09d3864fcf5bfa062a3d10a82839f49519514a2a5.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -626,10 +635,10 @@ The best solution found has a DV of 5.93793e+00 km/s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927390088956
-Dvs (m/s):  [197.65765144324607, 2732.3258592198454, 231.02221674962183, 2776.9216626762422]
-Total DT (m/s):  360.0
-Tofs (days):  [209.66400763089803, 102.52543608353949, 47.810556285562484]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total DV (m/s):  5937.927393778519
+Dvs (m/s):  [197.65819561032322, 2732.3138722882486, 230.93079262863296, 2777.024533251314]
+Total DT (m/s):  31103999.999999996
+Tofs (days):  [18114971.603645075, 8855996.979107073, 4133031.4172478495]
 </pre></div>
 </div>
 </div>
@@ -644,7 +653,7 @@ Tofs (days):  [209.66400763089803, 102.52543608353949, 47.810556285562484]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/df9aa7da0ea2853035e2d21130c9a3c63bddeee5ca1b99d3d90c4b396fb90e42.png" src="../_images/df9aa7da0ea2853035e2d21130c9a3c63bddeee5ca1b99d3d90c4b396fb90e42.png" />
+<img alt="../_images/9c419e39ab1d9d66e797d37b7d9104e5e2b16149861f5af5f953853ec78d813b.png" src="../_images/9c419e39ab1d9d66e797d37b7d9104e5e2b16149861f5af5f953853ec78d813b.png" />
 </div>
 </div>
 <p>The very same trajectory is also studied in <a class="reference internal" href="primer_vector.html"><span class="std std-doc">the notebook dedicated to the primer vector</span></a> where the whole theory is also developed and coded as to show its inner workings.</p>

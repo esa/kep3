@@ -161,6 +161,10 @@
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+
+
+
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
@@ -186,6 +190,8 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/primer_vector.html">Primer Vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
+
 </ul>
 </details></li>
 </ul>
@@ -357,6 +363,7 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#X"><strong>X</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
@@ -383,13 +390,15 @@
 </li>
       <li><a href="plot.html#pykep.plot.add_sf_hf_leg">add_sf_hf_leg() (in module pykep.plot)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plot.html#pykep.plot.add_sf_leg">add_sf_leg() (in module pykep.plot)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plot.html#pykep.plot.add_solar_system">add_solar_system() (in module pykep.plot)</a>
 </li>
       <li><a href="plot.html#pykep.plot.add_sun">add_sun() (in module pykep.plot)</a>
+</li>
+      <li><a href="utils.html#pykep.alpha2direct">alpha2direct() (in module pykep)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt._launchers.ariane5">ariane5() (pykep.trajopt._launchers method)</a>
 </li>
@@ -411,6 +420,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.utils.cartesian2uvV">cartesian2uvV() (in module pykep.utils)</a>
+</li>
       <li><a href="gym.html#pykep.trajopt.gym.cassini1">cassini1 (pykep.trajopt.gym attribute)</a>
 </li>
       <li><a href="gym.html#pykep.trajopt.gym.cassini1_a">cassini1_a (pykep.trajopt.gym attribute)</a>
@@ -461,8 +472,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="udpla.html#pykep.udpla.de440s">de440s (class in pykep.udpla)</a>
 </li>
+      <li><a href="utils.html#pykep.direct2alpha">direct2alpha() (in module pykep)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.direct2eta">direct2eta() (in module pykep)</a>
+</li>
       <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl">direct_pl2pl (class in pykep.trajopt)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt.direct_point2point">direct_point2point (class in pykep.trajopt)</a>
@@ -517,6 +532,8 @@
 </li>
       <li><a href="elements.html#pykep.eq2par">eq2par() (in module pykep)</a>
 </li>
+      <li><a href="utils.html#pykep.eta2direct">eta2direct() (in module pykep)</a>
+</li>
       <li><a href="gym.html#pykep.trajopt.gym.eve_mga1dsm">eve_mga1dsm (pykep.trajopt.gym attribute)</a>
 </li>
       <li><a href="gym.html#pykep.trajopt.gym.eve_mga1dsm_a">eve_mga1dsm_a (pykep.trajopt.gym attribute)</a>
@@ -545,10 +562,10 @@
 </li>
       <li><a href="anomalies.html#pykep.f2m_v">f2m_v() (in module pykep)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="anomalies.html#pykep.f2n">f2n() (in module pykep)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="anomalies.html#pykep.f2n_v">f2n_v() (in module pykep)</a>
 </li>
       <li><a href="anomalies.html#pykep.f2zeta">f2zeta() (in module pykep)</a>
@@ -560,6 +577,8 @@
       <li><a href="flyby.html#pykep.fb_dv">fb_dv() (in module pykep)</a>
 </li>
       <li><a href="flyby.html#pykep.fb_vout">fb_vout() (in module pykep)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.framename2naifid">framename2naifid() (in module pykep.utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -639,10 +658,12 @@
 </li>
       <li><a href="elements.html#pykep.ic2par">ic2par() (in module pykep)</a>
 </li>
-      <li><a href="planet.html#pykep.planet.is_">is_() (pykep.planet method)</a>
+      <li><a href="utils.html#pykep.utils.inspect_spice_kernel">inspect_spice_kernel() (in module pykep.utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="planet.html#pykep.planet.is_">is_() (pykep.planet method)</a>
+</li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.isp">isp (pykep.leg.sims_flanagan property)</a>
 
       <ul>
@@ -688,6 +709,10 @@
       <li><a href="lambert.html#pykep.lambert_problem">lambert_problem (class in pykep)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.utils.load_spice_kernels">load_spice_kernels() (in module pykep.utils)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
@@ -717,9 +742,11 @@
         <li><a href="leg.html#pykep.leg.sims_flanagan_hf.mf">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
       </ul></li>
+      <li><a href="trajopt.html#pykep.trajopt.mga">mga (class in pykep.trajopt)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="trajopt.html#pykep.trajopt.mga">mga (class in pykep.trajopt)</a>
+      <li><a href="trajopt.html#pykep.trajopt.mga_1dsm">mga_1dsm (class in pykep.trajopt)</a>
 </li>
       <li><a href="epoch.html#pykep.epoch.mjd">mjd (pykep.epoch property)</a>
 </li>
@@ -759,14 +786,18 @@
 </li>
       <li><a href="anomalies.html#pykep.n2h_v">n2h_v() (in module pykep)</a>
 </li>
+      <li><a href="utils.html#pykep.utils.naifid2name">naifid2name() (in module pykep.utils)</a>
+</li>
       <li><a href="planet.html#pykep.planet.name">name (pykep.planet property)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.name2naifid">name2naifid() (in module pykep.utils)</a>
 </li>
       <li><a href="lambert.html#pykep.lambert_problem.Nmax">Nmax (pykep.lambert_problem property)</a>
 </li>
-      <li><a href="epoch.html#pykep.epoch.now">now() (pykep.epoch static method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="epoch.html#pykep.epoch.now">now() (pykep.epoch static method)</a>
+</li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.nseg">nseg (pykep.leg.sims_flanagan property)</a>
 
       <ul>
@@ -799,7 +830,11 @@
 </li>
       <li><a href="planet.html#pykep.planet.period">period() (pykep.planet method)</a>
 </li>
+      <li><a href="trajopt.html#pykep.trajopt.pl2pl_N_impulses">pl2pl_N_impulses (class in pykep.trajopt)</a>
+</li>
       <li><a href="planet.html#pykep.planet">planet (class in pykep)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.planet_to_keplerian">planet_to_keplerian() (in module pykep.utils)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl.plot">plot() (pykep.trajopt.direct_pl2pl method)</a>
 
@@ -808,9 +843,15 @@
 </li>
         <li><a href="trajopt.html#pykep.trajopt.mga.plot">(pykep.trajopt.mga method)</a>
 </li>
+        <li><a href="trajopt.html#pykep.trajopt.mga_1dsm.plot">(pykep.trajopt.mga_1dsm method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.pl2pl_N_impulses.plot">(pykep.trajopt.pl2pl_N_impulses method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="trajopt.html#pykep.trajopt.pl2pl_N_impulses.plot_primer_vector">plot_primer_vector() (pykep.trajopt.pl2pl_N_impulses method)</a>
+</li>
       <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl.pretty">pretty() (pykep.trajopt.direct_pl2pl method)</a>
 
       <ul>
@@ -818,8 +859,12 @@
 </li>
         <li><a href="trajopt.html#pykep.trajopt.mga.pretty">(pykep.trajopt.mga method)</a>
 </li>
+        <li><a href="trajopt.html#pykep.trajopt.mga_1dsm.pretty">(pykep.trajopt.mga_1dsm method)</a>
+</li>
       </ul></li>
       <li><a href="trajopt.html#pykep.trajopt.primer_vector">primer_vector() (in module pykep.trajopt)</a>
+</li>
+      <li><a href="trajopt.html#pykep.trajopt.primer_vector_surrogate">primer_vector_surrogate() (in module pykep.trajopt)</a>
 </li>
       <li><a href="propagation.html#pykep.stark_problem.propagate">propagate() (pykep.stark_problem method)</a>
 </li>
@@ -846,6 +891,8 @@
 </li>
       </ul></li>
       <li><a href="gym.html#pykep.trajopt.gym.rosetta">rosetta (pykep.trajopt.gym attribute)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.rotation_matrix">rotation_matrix() (in module pykep.utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -881,13 +928,15 @@
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan_hf">sims_flanagan_hf (class in pykep.leg)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="trajopt.html#pykep.trajopt._launchers.soyuzf">soyuzf() (pykep.trajopt._launchers method)</a>
 </li>
       <li><a href="udpla.html#pykep.udpla.spice">spice (class in pykep.udpla)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.spice_version">spice_version() (in module pykep.utils)</a>
 </li>
       <li><a href="taylor_adaptive.html#pykep.ta.stark_dyn">stark_dyn() (in module pykep.ta)</a>
 </li>
@@ -925,6 +974,18 @@
         <li><a href="propagation.html#pykep.stark_problem.tol">(pykep.stark_problem property)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.utils.unload_spice_kernels">unload_spice_kernels() (in module pykep.utils)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.utils.uvV2cartesian">uvV2cartesian() (in module pykep.utils)</a>
+</li>
   </ul></td>
 </tr></table>
 

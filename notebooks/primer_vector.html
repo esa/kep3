@@ -50,6 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/primer_vector';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Surrogate Primer Vector" href="surrogate_primer_vector.html" />
     <link rel="prev" title="Multiple impulses" href="udp_pl2pl_N_impulses.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -163,6 +164,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
+
+
+
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
@@ -188,6 +193,8 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Primer Vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
+
 </ul>
 </details></li>
 </ul>
@@ -418,8 +425,8 @@
   <section class="tex2jax_ignore mathjax_ignore" id="primer-vector">
 <h1>Primer Vector<a class="headerlink" href="#primer-vector" title="Permalink to this heading">#</a></h1>
 <p>In this notebook we revisit the primer vector theory from Lawden from the lens of first order variations. We then construct manually, for a specific test case, the state transition matrices needed to call <a class="reference internal" href="../trajopt.html#pykep.trajopt.primer_vector" title="pykep.trajopt.primer_vector"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.trajopt.primer_vector()</span></code></a> and show
-its use. The same plot can also be obtained, without having to go through the math intensive developments, using the <code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses.plot_primer_vector()</span></code> method of the Multiple Impulse Transfer UDP <code class="docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses</span></code></p>
-<p>Classically, the result of the primer vector is derived using Pontryagin maximum principle, here we present an original derivation building on the work from Bauregard et al. <span id="id1">[<a class="reference internal" href="../bibliography.html#id14" title="Laurent Beauregard, Dario Izzo, and Giacomo Acciarini. Breaking traditions: introducing a surrogate primer vector in non keplerian dynamics. arXiv preprint arXiv:2405.18903, 2024.">BIA24</a>]</span>, which allows also to extend the primer vector to new, previously untreated, cases (see the notebook <a class="reference internal" href="#./primer_vector_surrogate.ipynb"><span class="xref myst">A primer vector surrogate</span></a>).</p>
+its use. The same plot can also be obtained, without having to go through the math intensive developments, using the <a class="reference internal" href="../trajopt.html#pykep.trajopt.pl2pl_N_impulses.plot_primer_vector" title="pykep.trajopt.pl2pl_N_impulses.plot_primer_vector"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses.plot_primer_vector()</span></code></a> method of the Multiple Impulse Transfer UDP <code class="docutils literal notranslate"><span class="pre">pykep.trajopt.pl2pl_N_impulses</span></code></p>
+<p>Classically, the result of the primer vector is derived using Pontryagin maximum principle, here we present an original derivation building on the work from Bauregard, Acciarini and Izzo <span id="id1">[<a class="reference internal" href="../bibliography.html#id14" title="Laurent Beauregard, Dario Izzo, and Giacomo Acciarini. Breaking traditions: introducing a surrogate primer vector in non keplerian dynamics. arXiv preprint arXiv:2405.18903, 2024.">BIA24</a>]</span>, which allows also to extend the primer vector to new, previously untreated, cases (see the notebook <a class="reference internal" href="surrogate_primer_vector.html"><span class="std std-doc">A primer vector surrogate</span></a>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The developments are here shown in details as they can be extended to more generic cases that use different dynamics and number of impulses. The user must in that case provide the state ransition matrices and DVs on a time grid as constructed below.</p>
@@ -622,29 +629,6 @@ We need to propagate at each impulse, add the impulse, then proceed. The various
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.12807793e+01,  1.80447033e+01,  6.65907703e-03,
-        -9.08505426e+07,  5.95064147e+07,  1.92133860e+06],
-       [-1.28990875e+00, -1.31576055e+00, -3.66387114e-02,
-         1.15887081e+07, -5.09339048e+06,  2.07784246e+05],
-       [-3.36261520e-01, -3.88616536e-01,  6.55461044e-01,
-         2.34553875e+06, -9.85626328e+05,  1.43519303e+06],
-       [ 3.35679528e-07,  8.01570626e-07, -1.32855560e-08,
-        -2.43465805e+00,  2.52926261e+00,  2.17349840e-01],
-       [ 3.32734693e-06,  5.70909432e-06, -6.71155865e-09,
-        -2.83015440e+01,  1.97666678e+01,  5.07564715e-01],
-       [ 2.55788135e-08,  2.62452949e-08, -1.13916259e-07,
-        -2.42108745e-01,  9.65279820e-02,  1.26130568e+00]])
-</pre></div>
-</div>
-</div>
-</div>
 <p>We visualize now the whole trajectory.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -709,7 +693,7 @@ We need to propagate at each impulse, add the impulse, then proceed. The various
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f9c10e467b0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f2bc9b6a900&gt;
 </pre></div>
 </div>
 <img alt="../_images/6dc10dffce98bc508ed2fb5904f84e14184d6254c62f91e03ab08cb824f21778.png" src="../_images/6dc10dffce98bc508ed2fb5904f84e14184d6254c62f91e03ab08cb824f21778.png" />
@@ -739,6 +723,15 @@ The fact this is not the case at the starting and ending conditions, hints to th
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">Multiple impulses</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="surrogate_primer_vector.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Surrogate Primer Vector</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>

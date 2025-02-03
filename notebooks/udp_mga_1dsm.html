@@ -164,6 +164,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html">The plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
+
+
+
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
@@ -189,6 +193,8 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
+
 </ul>
 </details></li>
 </ul>
@@ -429,12 +435,12 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="multiple-gravity-assist-with-one-dsm-mga-1dsm">
 <h1>Multiple Gravity Assist with one DSM (MGA-1DSM)<a class="headerlink" href="#multiple-gravity-assist-with-one-dsm-mga-1dsm" title="Permalink to this heading">#</a></h1>
-<p>In this tutorial, we use the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code> to design an interplanetary trajectory. The MGA-1DSM encoding of an interplanetary trajectory models multiple (pre-defined) planetary encounters, and enables for propulsion manovures in the form of one instantaneous <span class="math notranslate nohighlight">\(\Delta V\)</span> at any time along each leg.</p>
+<p>In this tutorial, we use the <a class="reference internal" href="../trajopt.html#pykep.trajopt.mga_1dsm" title="pykep.trajopt.mga_1dsm"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code></a> to design an interplanetary trajectory. The MGA-1DSM encoding of an interplanetary trajectory models multiple (pre-defined) planetary encounters, and enables for propulsion manovures in the form of one instantaneous <span class="math notranslate nohighlight">\(\Delta V\)</span> at any time along each leg.</p>
 <p>The specific encoding used, described in the book Chapter <span id="id1">[<a class="reference internal" href="../bibliography.html#id13" title="Dario Izzo. Global optimization and space pruning for spacecraft trajectory design. Spacecraft Trajectory Optimization, 1:178–200, 2010.">Izz10</a>]</span> by Izzo D., is useful as a preliminar mission design tool automating the search for good planetary geometries giving the possibility to design trajectories through a process mimicking natural evolution.</p>
 <p>This encoding has also been used in the past to define instances of real-world optimization problems to be used in benchmarking optimization tools suitable for interplanetary mission design.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
+<p><a class="reference internal" href="../trajopt.html#pykep.trajopt.mga_1dsm" title="pykep.trajopt.mga_1dsm"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code></a> also implements different (unpublished) encodings for the time of flights, namely called <span class="math notranslate nohighlight">\(\alpha\)</span>-encoding and <span class="math notranslate nohighlight">\(\eta\)</span>-encoding which, albeit less studied and creating a more complex fitness landscape, are interesting in multiple ways: a) they show how the encoding influences evolvability in a drastic way b) they allow to box-bound the total trajectory time of flight c) they remove problem knowledge exploitation.</p>
 <p>We start, as often, with some fundamental imports:</p>
 </div>
 <div class="cell docutils container">
