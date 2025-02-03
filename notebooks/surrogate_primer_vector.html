@@ -542,14 +542,16 @@ of the infinitesimal <span class="math notranslate nohighlight">\(\delta \Delta 
 \delta J = |\delta\Delta \mathbf V_j| \left(1 - (\mathbf b \cdot \hat {\mathbf u} - |\mathbf B\hat {\mathbf u}|  \right)
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf B:=\mathbf A_{ij}\)</span>, <span class="math notranslate nohighlight">\(\mathbf b = -\mathbf A_{kj}^T\frac{\Delta\mathbf V_k}{|\Delta \mathbf V_k|}\)</span>.</p>
-<p>We now introduce the vectors:
-$<span class="math notranslate nohighlight">\(
+<p>We now introduce the vectors:</p>
+<div class="math notranslate nohighlight">
+\[
 \boxed{\hat {\mathbf u}^* = \argmax_{|\hat {\mathbf u}|=1}\left(\mathbf b\cdot \hat {\mathbf u} - |\mathbf B\hat {\mathbf u}|\right)}
-\)</span><span class="math notranslate nohighlight">\(
-and,
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>and,</p>
+<div class="math notranslate nohighlight">
+\[
 \boxed{\tilde{\mathbf p} = (\mathbf b \cdot \hat {\mathbf u}^* - |\mathbf B\hat {\mathbf u}^*| ) \hat {\mathbf u}^*}
-\)</span>$</p>
+\]</div>
 <p>which we call <strong>surrogate primer vector</strong>, since <span class="math notranslate nohighlight">\(\delta J = (1-|\tilde{\mathbf p}|) |\delta\Delta \mathbf V_j|\)</span> as in the
 classical case where the <strong>primer vector</strong> <span class="math notranslate nohighlight">\(\mathbf p\)</span> is introduced.</p>
 <p>From the expression of <span class="math notranslate nohighlight">\(\delta J\)</span> it appears clear that if we want to be able to decrease the overall <span class="math notranslate nohighlight">\(\Delta V\)</span> adding in <span class="math notranslate nohighlight">\(i,j\)</span> two
@@ -577,14 +579,9 @@ impulses, it is necessary for the norm of the surrogate primer vector (computed 
 <span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 <span class="n">DVk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 <span class="n">DVk_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">DVk</span><span class="p">)</span>
+<span class="c1"># Impulse is applied at the end of the trajectory</span>
+<span class="n">idx_k</span> <span class="o">=</span> <span class="n">n_points</span><span class="o">-</span><span class="mi">1</span>
 <span class="n">t_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
-
-<span class="c1"># DV is applied at the end</span>
-<span class="n">idx_k</span> <span class="o">=</span> <span class="n">n_points</span> <span class="o">-</span> <span class="mi">1</span>
-
-<span class="c1"># We first work out the surrogate primer vector for the following j,k</span>
-<span class="n">idx_i</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">idx_j</span> <span class="o">=</span> <span class="mi">20</span>
 </pre></div>
 </div>
 </div>
@@ -593,8 +590,6 @@ impulses, it is necessary for the norm of the surrogate primer vector (computed 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">retval</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian_grid</span><span class="p">([</span><span class="n">r0</span><span class="p">,</span> <span class="n">v0</span><span class="p">],</span> <span class="n">t_grid</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">stm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1">#retval1 = pk.propagate_lagrangian_grid(retval[0][0], np.flip(t_grid), mu=1., stm=True)</span>
-<span class="c1">#retval1.reverse()</span>
 <span class="n">stm_n0</span> <span class="o">=</span> <span class="p">[</span><span class="n">it</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">retval</span><span class="p">]</span> <span class="c1"># Mn0</span>
 </pre></div>
 </div>
@@ -658,7 +653,7 @@ Larger then one! -&gt; Trajectory can be improved
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f4b76372120&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f63584da120&gt;
 </pre></div>
 </div>
 <img alt="../_images/9cba524f0643af76aea1e271ecf5afc2fb9c944084dc3201743e66fa933dcdda.png" src="../_images/9cba524f0643af76aea1e271ecf5afc2fb9c944084dc3201743e66fa933dcdda.png" />
@@ -753,8 +748,8 @@ Larger then one! -&gt; Trajectory can be improved
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.3312983888901816
-The best solution found has a DV of 3.31298e-01
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.31053831778827745
+The best solution found has a DV of 3.10538e-01
 </pre></div>
 </div>
 </div>
@@ -783,7 +778,7 @@ The best solution found has a DV of 3.31298e-01
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b2186fe059c3d865aff69942f16f39a2d74f3c731967c44df5c57bd3cbc5d377.png" src="../_images/b2186fe059c3d865aff69942f16f39a2d74f3c731967c44df5c57bd3cbc5d377.png" />
+<img alt="../_images/84eccd77f7c80ddfe5536c8f6126a0e4ba7bac67fcd9d1c7fd382aecf3dbba68.png" src="../_images/84eccd77f7c80ddfe5536c8f6126a0e4ba7bac67fcd9d1c7fd382aecf3dbba68.png" />
 </div>
 </div>
 <p>The <strong>surrogate primer vector</strong> correctly had us try to add impulses and, in this case, halved the needed <span class="math notranslate nohighlight">\(\Delta V\)</span>!</p>
