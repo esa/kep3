@@ -1,8 +1,11 @@
 .. _utils:
 
+Utils
+###############################################################################
+
 .. currentmodule:: pykep.utils
 
-Spice
+Spice Utils
 ###############################################################################
 
 .. autofunction:: spice_version
@@ -20,3 +23,27 @@ Spice
 .. autofunction:: rotation_matrix
 
 .. Autofunction:: naifid2name
+
+.. currentmodule:: pykep
+
+Encoding Utils
+###############################################################################
+
+.. autofunction:: alpha2direct
+
+.. autofunction:: direct2alpha
+
+.. autofunction:: eta2direct
+
+.. autofunction:: direct2eta
+
+.. currentmodule:: pykep.utils
+
+.. autofunction:: uvV2cartesian
+
+.. autofunction:: cartesian2uvV
+
+Miscellanea
+###############################################################################
+
+.. autofunction:: planet_to_keplerian

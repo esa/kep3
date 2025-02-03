@@ -94,7 +94,7 @@ class pl2pl_N_impulses:
         self.multi_objective = multi_objective
         self.DV_max = [s * 1000 for s in DV_max_bounds]
 
-        self.__common_mu = start.mu_central_body
+        self._common_mu = start.mu_central_body
 
         # And we compute the bounds
         if phase_free:
@@ -149,24 +149,24 @@ class pl2pl_N_impulses:
         vsc = v_start
         for i, time in enumerate(T[:-1]):
             DV = _pk.utils.uvV2cartesian(x[3 + 4 * i : 6 + 4 * i])
-            retval.append([[rsc, vsc], DV, T[i]])
+            retval.append([[rsc, vsc], DV, T[i] * _pk.DAY2SEC])
 
             # We apply the (i+1)-th impulse
             vsc = [a + b for a, b in zip(vsc, DV)]
             rsc, vsc = _pk.propagate_lagrangian(
-                [rsc, vsc], T[i] * _pk.DAY2SEC, self.__common_mu
+                [rsc, vsc], T[i] * _pk.DAY2SEC, self._common_mu
             )
         cw = _pk.ic2par([rsc, vsc], self.start.mu_central_body)[2] > pi / 2
 
         # We now compute the remaining two final impulses
         # Lambert arc to reach seq[1]
         dt = T[-1] * _pk.DAY2SEC
-        l = _pk.lambert_problem(rsc, r_target, dt, self.__common_mu, cw, False)
+        l = _pk.lambert_problem(rsc, r_target, dt, self._common_mu, cw, False)
         v_beg_l = l.v0[0]
         v_end_l = l.v1[0]
 
         DV1 = [a - b for a, b in zip(v_beg_l, vsc)]
-        retval.append([[rsc, vsc], DV1, T[-1]])
+        retval.append([[rsc, vsc], DV1, T[-1] * _pk.DAY2SEC])
 
         DV2 = [a - b for a, b in zip(v_target, v_end_l)]
         retval.append([[r_target, v_end_l], DV2, 0])
@@ -210,8 +210,6 @@ class pl2pl_N_impulses:
 
             *figsize* (:class:`tuple`): The figure size (only used if a*ax* is None and axis have to be created.), Defaults to (5, 5).
 
-            *leg_ids* (:class:`list`): selects the legs to plot. Optional, defaults to all legs.
-
             *\\*\\*kwargs*: Additional keyword arguments to pass to the trajectory plot (common to Lambert arcs and ballistic arcs)
 
         Returns:
@@ -221,44 +219,21 @@ class pl2pl_N_impulses:
             ax = _pk.plot.make_3Daxis(figsize=figsize)
 
         # Adding the main central body (Sun-like)
-        _pk.plot.add_sun(ax=ax)
+        ax = _pk.plot.add_sun(ax=ax)
 
-        _pk.plot.add_planet_orbit(
+        ax = _pk.plot.add_planet_orbit(
             pla=self.start, ax=ax, units=units, N=N, c=c_orbit, label=self.start.name
         )
-        _pk.plot.add_planet_orbit(
+        ax = _pk.plot.add_planet_orbit(
             pla=self.target, ax=ax, units=units, N=N, c=c_orbit, label=self.target.name
         )
 
         # We decode the chromosome
         mit = self.decode(x)  # [[r,v], DV, DT]
 
-        DVs = [norm(node[1]) for node in mit]
-        maxDV = max(DVs)
-        DVs = [s / maxDV * 30 for s in DVs]
-
-        # 3 - We loop across grid nodes
-        for i, node in enumerate(mit):
-            ax.scatter(
-                node[0][0][0] / units,
-                node[0][0][1] / units,
-                node[0][0][2] / units,
-                color="k",
-                s=DVs[i],
-            )
-
-            r_after_dsm = node[0][0]
-            v_after_dsm = [a + b for a, b in zip(node[0][1], node[1])]
-            _pk.plot.add_ballistic_arc(
-                ax,
-                [r_after_dsm, v_after_dsm],
-                node[2] * _pk.DAY2SEC,
-                self.__common_mu,
-                N=N,
-                units=units,
-                c=c_segments[i % len(c_segments)],
-                **kwargs
-            )
+        ax = _pk.plot.add_mit(
+            ax, mit, self._common_mu, units=units, c_segments=c_segments, N=N, **kwargs
+        )
         return ax
 
     def pretty(self, x):
@@ -293,16 +268,18 @@ class pl2pl_N_impulses:
         decoded = self.decode(x)
 
         # We explicitly extract the encoded information
-        dts = [it[2] * _pk.DAY2SEC for it in decoded]
+        dts = [it[2] for it in decoded]
         DVs = [it[1] for it in decoded]
+        norm_DVs = [norm(it) for it in DVs]
+
         posvels = [it[0] for it in decoded]
 
-        if min(DVs) < 1e-3:
+        if min(norm_DVs) < 1e-3:
             raise ValueError(
                 "Impulse magnitude too small, primer vector computation is not possible. Decrease the number of impulses."
             )
 
-        # We create one grid er segment (e.g. part of the trajectory between two impulses)
+        # We create one grid per segment (e.g. part of the trajectory between two impulses)
         # (this is not guaranteed to have the requested size N, nor has uniform spacing, since all impulses
         # must belong to the grid points)
         N = N + len(

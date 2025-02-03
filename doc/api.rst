@@ -23,4 +23,5 @@ pykep API is striving to maximize its usability. Let us know what you think abou
    trajopt
    gym
    plot
+   utils
 

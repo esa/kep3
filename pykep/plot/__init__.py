@@ -32,7 +32,6 @@ def add_sun(ax, **kwargs):
     """
     kwargs.setdefault("c", "y")
     kwargs.setdefault("s", 30)
-    kwargs.setdefault("label", "Sun")
 
     ax.scatter(0, 0, 0, **kwargs)
     return ax
