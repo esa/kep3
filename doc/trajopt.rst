@@ -51,6 +51,12 @@ amenable to evolutionary techniques.
 .. autoclass:: mga
     :members: pretty, plot, to_planet
 
+.. autoclass:: mga_1dsm
+    :members: pretty, plot, to_planet
+
+.. autoclass:: pl2pl_N_impulses
+    :members: pretty, plot, plot_primer_vector
+
 Utilities
 *********
 In order to facilitate the use of the classes in this module, some utilities are provided.
