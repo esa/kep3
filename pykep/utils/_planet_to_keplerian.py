@@ -12,7 +12,9 @@ def planet_to_keplerian(pla, when: _pk.epoch, mu=None):
 
     Args:
         *pla* (:class:`~pykep.planet`): the input planet.
+        
         *when* (:class:`~pykep.epoch`): the epoch to match the osculating elements.
+        
         *mu* (:class:`float`, optional): the central body parameter. Defaults to the one computed from the input :class:`~pykep.planet`.
 
     Returns:

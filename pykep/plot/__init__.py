@@ -9,6 +9,7 @@ from ._lambert import add_lambert
 from ._ballistic import add_ballistic_arc
 from ._sf_leg import add_sf_leg
 from ._sf_leg import add_sf_hf_leg
+from ._mit import add_mit
 
 def make_3Daxis(**kwargs):
     """Constructs and returns a 3D axis.  All kwargs are forwarded to the call to `figure()` in matplotlib.
@@ -31,7 +32,6 @@ def add_sun(ax, **kwargs):
     """
     kwargs.setdefault("c", "y")
     kwargs.setdefault("s", 30)
-    kwargs.setdefault("label", "Sun")
 
     ax.scatter(0, 0, 0, **kwargs)
     return ax

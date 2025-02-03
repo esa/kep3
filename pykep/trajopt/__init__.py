@@ -19,7 +19,8 @@ from ._mga_1dsm import mga_1dsm
 from ._pl2pl_N_impulses import pl2pl_N_impulses
 
 # MIT (multiple Impulse Trajectories)
-from ._primer_vector import primer_vector
+from ._primer_vector import primer_vector, primer_vector_surrogate
+from ._min_Bu_bu import minBu_bu_p, minBu_bu
 
 # The launchers models
 from ._launchers import _launchers
