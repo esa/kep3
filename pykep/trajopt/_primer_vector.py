@@ -3,7 +3,7 @@ import pykep as _pk
 
 def primer_vector(DVi, DVj, Mji, Mjk):
     """This function computes the primer vector in a point k, relative
-    to impulses given at i and j.
+    to finite impulses in i and j.
     
     Args:
         *DVi* (:class:`ndarray` - (3,)): the impulse at point i.
@@ -28,6 +28,25 @@ def primer_vector(DVi, DVj, Mji, Mjk):
     return p, Aik, Ajk
 
 def primer_vector_surrogate(DVk, Mki, Mkj):
+    """This function computes the surrogate primer vector at two points i and j, 
+    corresponding to a single finite impulse at point k.
+    
+    Args:
+        *DVk* (:class:`ndarray` - (3,)): the impulse at point k.
+        
+        *Mki* (:class:`ndarray` - (6,6)): the state transition matrix from i to k (dxk = Mki dxi).
+        
+        *Mkj* (:class:`ndarray` - (6,6)): the state transition matrix from j to k (dxk = Mkj dxj).
+        
+        Returns:
+            :class:`tuple`: The surrogate primer vector, the Aij matrix, the Akj matrix.
+            
+        Note:
+            The impulse transfer matrix Anm is defined as that matrix that allows to compute 
+            (in this surrogate case) the variation of the impulse at point n given the 
+            variation of the impulse at point m. In formal terms, dDVn = Anm dDVm. 
+            All variations are such that the terminal state is kept fixed.
+    """
     Aij = -(_np.linalg.inv(Mki[:3, 3:]) @ Mkj[:3, 3:])
     Akj = -(Mki[3:, 3:] @ Aij + Mkj[3:, 3:])
     B = Aij

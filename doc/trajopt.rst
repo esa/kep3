@@ -59,5 +59,7 @@ In order to facilitate the use of the classes in this module, some utilities are
 
 .. autofunction:: primer_vector
 
+.. autofunction:: primer_vector_surrogate
+
 .. autoclass:: _launchers
     :members: atlas501, atlas551, soyuzf, ariane5

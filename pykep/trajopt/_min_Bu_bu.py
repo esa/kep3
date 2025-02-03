@@ -152,7 +152,7 @@ def minBu_bu_p(B, b):
     b_norm = np.linalg.norm(b)
     # Easy way out
     if b_norm < 1:
-        return -b_norm, np.array([0, 0, 0])
+        return -b_norm, np.array([np.nan]*3)
 
     # Compute the singular value decomposition (used to bound |Bu| as well as to provide one IG)
     svd = np.linalg.svd(B)
