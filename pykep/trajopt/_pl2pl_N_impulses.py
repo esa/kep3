@@ -61,6 +61,11 @@ class pl2pl_N_impulses:
         """
 
         # Sanity checks
+        # 0) This is not working for only two impulses
+        if N_max <= 2:
+            raise ValueError(
+                "This UDP is not wsuitable for only two impulse trajectories. Lambert multiple revolutions should be allowed for that (to be implemented)."
+            )
         # 1) all planets need to have the same mu_central_body
         if start.mu_central_body != target.mu_central_body:
             raise ValueError(
@@ -272,35 +277,44 @@ class pl2pl_N_impulses:
 
     def plot_primer_vector(self, x, N=200, ax=None):
         """Plots the primer vector magnitude along the trajectory encoded in *x*.
-        
+
         Args:
             *x* (:class:`list`): The decision vector in the correct tof encoding.
 
             *N* (:class:`int`, optional): The number of points to use when plotting the primer vector. Defaults to 200.
 
             *ax* (:class:`matplotlib.axes.Axes`, optional): The axis to plot on. Defaults to None.
-            
+
         Returns:
-            :class:`matplotlib.axes.Axes`: The axis where the primer vector was plotted. 
+            :class:`matplotlib.axes.Axes`: The axis where the primer vector was plotted.
             :class:`tuple`: A tuple containing the grid and the primer vector magnitude.
         """
         # We start by decoding the chromosome into the structure [[r,v], DV, DT]
         decoded = self.decode(x)
-        
+
         # We explicitly extract the encoded information
         dts = [it[2] * _pk.DAY2SEC for it in decoded]
         DVs = [it[1] for it in decoded]
         posvels = [it[0] for it in decoded]
 
+        if min(DVs) < 1e-3:
+            raise ValueError(
+                "Impulse magnitude too small, primer vector computation is not possible. Decrease the number of impulses."
+            )
+
         # We create one grid er segment (e.g. part of the trajectory between two impulses)
         # (this is not guaranteed to have the requested size N, nor has uniform spacing, since all impulses
         # must belong to the grid points)
-        N = N + len(DVs)  # heuristic to make sure we are close to the requested number of points
+        N = N + len(
+            DVs
+        )  # heuristic to make sure we are close to the requested number of points
         tgrids = [
             _np.linspace(
                 sum(dts[:i]),
                 sum(dts[: i + 1]),
-                max(int(dts[i] // (sum(dts) / (N - 1))), 5), # we force a minimum 5 points per segment
+                max(
+                    int(dts[i] // (sum(dts) / (N - 1))), 5
+                ),  # we force a minimum 5 points per segment
             )
             for i in range(len(dts) - 1)
         ]
@@ -333,7 +347,7 @@ class pl2pl_N_impulses:
             M = stms[-1]
 
         res = []
-        # When computing the primer vector we must choose which impulses to use. 
+        # When computing the primer vector we must choose which impulses to use.
         # We choose the first and last impulse. But we could choose any pair of impulses,
         # and if the trajectory is optimal (locally) the primer vector would not change.
         idx_i = idxs[0]
