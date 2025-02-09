@@ -55,6 +55,10 @@ the various `pykep` objects and functionalities.
      - pykep.DAY2SEC
      - --
      - 86400.0
+   * - Days in one second
+     - pykep.SEC2DAY
+     - --
+     - 1.1574074074074073e-05
    * - Degrees in one radians
      - pykep.RAD2DEG
      - --
@@ -63,3 +67,11 @@ the various `pykep` objects and functionalities.
      - pykep.DEG2RAD
      - --
      - 0.017453292519943295
+   * - Days in one year
+     - pykep.YEAR2DAY
+     - --
+     - 365.25
+   * - Years in one day
+     - pykep.DAY2YEAR
+     - --
+     - 0.0027378507871321013

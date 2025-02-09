@@ -36,7 +36,8 @@ inline constexpr double DEG2RAD = (pi / 180.0);
 inline constexpr double RAD2DEG = (180.0 / pi);
 inline constexpr double DAY2SEC = 86400.0;
 inline constexpr double SEC2DAY = (1. / DAY2SEC);
-inline constexpr double DAY2YEAR = (1. / 365.25);
+inline constexpr double YEAR2DAY = (365.25);
+inline constexpr double DAY2YEAR = (1. / YEAR2DAY);
 inline constexpr double G0 = 9.80665; // Acceleration at Earth's surface (m/s^2)
 inline constexpr double CR3BP_EARTH_MOON = 0.01215058439470971; // (M_moon + M_Earth) / M_Earth
 
