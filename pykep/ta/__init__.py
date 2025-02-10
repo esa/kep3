@@ -30,6 +30,22 @@ get_cr3bp_var = _core._get_cr3bp_var
 get_cr3bp_var.__module__ = "ta"
 cr3bp_dyn = _core._cr3bp_dyn
 cr3bp_dyn.__module__ = "ta"
+
+get_pc = _core._get_pc
+get_pc.__module__ = "ta"
+get_pc_var = _core._get_pc_var
+get_pc_var.__module__ = "ta"
+pc_dyn = _core._pc_dyn
+pc_dyn.__module__ = "ta"
+get_pc_H_cfunc = _core._get_pc_H_cfunc
+get_pc_H_cfunc.__module__ = "ta"
+get_pc_SF_cfunc = _core._get_pc_SF_cfunc
+get_pc_SF_cfunc.__module__ = "ta"
+get_pc_u_cfunc = _core._get_pc_u_cfunc
+get_pc_u_cfunc.__module__ = "ta"
+get_pc_i_vers_cfunc = _core._get_pc_i_vers_cfunc
+get_pc_H_cfunc.__module__ = "ta"
+
 # Removing core from the list of imported symbols.
 del _core
 del _hy

@@ -156,6 +156,8 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/encodings.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/stark.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/cr3bp.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/pontryagin_cartesian.cpp"
+
 )
 
 # Setup of the kep3 shared library.

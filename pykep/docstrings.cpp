@@ -1346,7 +1346,7 @@ Examples:
 
 std::string get_stark_docstring()
 {
-    return R"(get_stark(tol)
+    return R"(ta.get_stark(tol)
 
 Returns a Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
@@ -1380,7 +1380,7 @@ Examples:
 
 std::string get_stark_var_docstring()
 {
-    return R"(get_stark_var(tol)
+    return R"(ta.get_stark_var(tol)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
 
@@ -1438,7 +1438,7 @@ Returns:
 
 std::string get_cr3bp_docstring()
 {
-    return R"(get_cr3bp(tol)
+    return R"(ta.get_cr3bp(tol)
 
 Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
 
@@ -1469,7 +1469,7 @@ Examples:
 
 std::string get_cr3bp_var_docstring()
 {
-    return R"(get_cr3bp_var(tol)
+    return R"(ta.get_cr3bp_var(tol)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
 
@@ -1525,6 +1525,70 @@ The equations are non-dimensional with units :math:`L = r_{12}` (distance betwee
    \end{array}\right.
 
 where :math:`\mu` is the only parameter.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string pc_dyn_docstring()
+{
+    return R"(ta.pc_dyn()
+
+The augmented dynamics of the TPBVP originating when applying an indirect method
+to the low-thrust transfer problem in Cartesian coordinates.
+
+The (non-augmented) dynamics is,
+
+.. math::
+   \left\{
+   \begin{array}{l}
+        \dot{\mathbf r} = \mathbf f_r = \mathbf v \\
+        \dot{\mathbf v} = \mathbf f_v = -\frac{mu}{r^3}\mathbf r + c_1 \frac um \hat{\mathbf i}\\
+        \dot{m} = f_m = - c_2 u
+   \end{array}
+   \right.
+
+The state, containing the spacecraft state and the co-states,  is:
+
+.. math::
+   \mathbf x = [\mathbf r, \mathbf v, m] = [x,y,z,v_x,v_y,v_z,l_x,l_y,l_z,l_{vx},l_{vy},l_{vz},l_m]
+
+While the parameters:
+
+.. math::
+   \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
+
+describe, respectively, the gravitational parameter, the maximum thrust, the ratio between the maximum
+thrust and the effective velocity (product of the specific impulse :math:`I_{sp}` by :math:`g_0`),
+an homotopy parameter and a factor multiplying the instantaneous cost (in theory this can be any positive number, 
+the solution of the problem will not change)
+
+The controls, representing magnitude and direction of the spacecraft thrust are:
+
+.. math::
+   \mathbf u = [u, \hat{\mathbf i}]
+
+The final equations of motion to be possibly used in a shooting method, are derived from the Hamiltonian:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \left(u + \epsilon\log(u(1-u))\right)
+
+by taking the derivatives:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot{\mathbf x} = \frac{\partial \mathcal H}{\partial \mathbf \lambda} \\
+   \dot{\mathbf \lambda} = - \frac{\partial \mathcal H}{\partial \mathbf x} \\
+   \end{array}\right.
+
+and then made independent of the controls applying Pontryagin minimum principle:
+
+.. math::
+   \mathbf u^* = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
+
+and substituting in the equations the optimal controls found as function of the augmented system state.
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]

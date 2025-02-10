@@ -92,6 +92,14 @@ std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
 
+inline std::string get_pc_docstring(){return "";};
+inline std::string get_pc_var_docstring(){return "";};
+std::string pc_dyn_docstring();
+inline std::string get_pc_H_cfunc_docstring(){return "";};
+inline std::string get_pc_SF_cfunc_docstring(){return "";};
+inline std::string get_pc_u_cfunc_docstring(){return "";};
+inline std::string get_pc_i_vers_cfunc_docstring(){return "";};
+
 // Lambert Problem
 std::string lambert_problem_docstring();
 
