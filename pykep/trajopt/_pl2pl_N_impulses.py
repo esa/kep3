@@ -39,8 +39,7 @@ class pl2pl_N_impulses:
         multi_objective=False,
         t0_bounds=None,
     ):
-        """
-        prob = pykep.trajopt.pl2pl_N_impulses(start='earth', target='venus', N_max=3, tof=[20., 400.], vinf=[0., 4.], phase_free=True, multi_objective=False, t0=None)
+        """pykep.trajopt.pl2pl_N_impulses(start='earth', target='venus', N_max=3, tof=[20., 400.], vinf=[0., 4.], phase_free=True, multi_objective=False, t0=None)
 
         Args:
             *start* (:class:`~pykep.planet`): initial body.

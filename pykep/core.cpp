@@ -13,12 +13,12 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
+#include <kep3/core_astro/encodings.hpp>
 #include <kep3/core_astro/eq2par2eq.hpp>
 #include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
-#include <kep3/core_astro/encodings.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
@@ -27,6 +27,7 @@
 #include <kep3/stark_problem.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/stark.hpp>
+#include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -63,6 +64,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("DEG2RAD") = py::float_(kep3::DEG2RAD);
     m.attr("DAY2SEC") = py::float_(kep3::DAY2SEC);
     m.attr("SEC2DAY") = py::float_(kep3::SEC2DAY);
+    m.attr("YEAR2DAY") = py::float_(kep3::YEAR2DAY);
     m.attr("DAY2YEAR") = py::float_(kep3::DAY2YEAR);
     m.attr("G0") = py::float_(kep3::G0);
     m.attr("CR3BP_EARTH_MOON") = py::float_(kep3::CR3BP_EARTH_MOON);
@@ -120,7 +122,7 @@ PYBIND11_MODULE(core, m) // NOLINT
 
     // Exposing encoding conversions
     m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());
-    m.def("direct2alpha", &kep3::direct2alpha, py::arg("tofs") , pk::direct2alpha_doc().c_str());
+    m.def("direct2alpha", &kep3::direct2alpha, py::arg("tofs"), pk::direct2alpha_doc().c_str());
     m.def("eta2direct", &kep3::eta2direct, py::arg("etas"), py::arg("max_tof"), pk::eta2direct_doc().c_str());
     m.def("direct2eta", &kep3::direct2eta, py::arg("tofs"), py::arg("max_tof"), pk::direct2eta_doc().c_str());
 
@@ -356,6 +358,28 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol") = 1e-16, pykep::get_cr3bp_var_docstring().c_str());
     m.def("_cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
+    // Pontryagin Cartesian 
+    m.def(
+        "_get_pc",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_pc(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_pc_docstring().c_str());
+    m.def(
+        "_get_pc_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_pc_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol") = 1e-16, pykep::get_pc_var_docstring().c_str());
+    m.def("_pc_dyn", &kep3::ta::pc_dyn, pykep::pc_dyn_docstring().c_str());
+    m.def("_get_pc_H_cfunc", &kep3::ta::get_pc_H_cfunc, pykep::get_pc_H_cfunc_docstring().c_str());
+    m.def("_get_pc_SF_cfunc", &kep3::ta::get_pc_SF_cfunc, pykep::get_pc_SF_cfunc_docstring().c_str());
+    m.def("_get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
+    m.def("_get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(

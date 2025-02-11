@@ -36,6 +36,20 @@ to then solve it using numerical solvers available for the task.
 
 -------------------------------------------------------
 
+Indirect
+******************
+Indirect methods are based on the Pontryagin Maximum Principle (PMP), which provides necessary conditions for optimality in control problems. 
+These methods involve deriving the optimal control laws and the corresponding state trajectories by solving a two point boundary value problem
+(TPBVP) derived from the PMP.
+
+-------------------------------------------------------
+
+.. autoclass:: pontryagin_cartesian
+    :members: plot_trajectory, plot_misc
+
+-------------------------------------------------------
+
+
 Evolutionary Encodings
 ************************
 Some type of interplanetary trajectories can be *evolved*: shocking?. 

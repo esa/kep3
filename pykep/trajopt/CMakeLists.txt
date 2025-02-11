@@ -6,6 +6,7 @@ set(PYKEP_TRAJOPT_PYTHON_FILES
     _min_Bu_bu.py 
     _launchers.py 
     _pl2pl_N_impulses.py
+    _pontryagin_cartesian.py
     _primer_vector.py)
     
 install(FILES ${PYKEP_TRAJOPT_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR}/trajopt)
