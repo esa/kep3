@@ -192,6 +192,7 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian.html">Low-thrust transfers via indirect methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -474,9 +475,17 @@
 <span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
     <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;EARTH&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
 <span class="p">)</span>
+
 <span class="n">mars</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
     <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;MARS&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
 <span class="p">)</span>
+
+<span class="n">venus</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
+    <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;venus&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="p">[</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">mu_central_body</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">))</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="p">[</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="o">*</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">3.</span><span class="p">],</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">mu_central_body</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">))</span>
 
 <span class="c1"># Initial state</span>
 <span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
@@ -499,9 +508,9 @@
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
         <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">6700.0</span><span class="p">,</span> <span class="mf">6800.0</span><span class="p">],</span>
-        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1300.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
-        <span class="n">vinfs</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+        <span class="n">vinfs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
         <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
@@ -512,18 +521,18 @@
 <span class="p">)</span>
 
 <span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
-        <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
-        <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
+        <span class="n">pls</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span>
+        <span class="n">plf</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span>
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
-        <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
+        <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
         <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
-        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">6700.0</span><span class="p">,</span> <span class="mf">6800.0</span><span class="p">],</span>
-        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">],</span>
-        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1300.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
-        <span class="n">vinfs</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">7360</span><span class="p">,</span> <span class="mf">8300.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">250.0</span><span class="p">],</span>
+        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
+        <span class="n">vinfs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-        <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
+        <span class="n">nseg</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
         <span class="n">mass_scaling</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">r_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
@@ -555,7 +564,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>166 μs ± 239 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>337 μs ± 676 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -569,7 +578,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.03 ms ± 618 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.08 ms ± 9.79 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -583,7 +592,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.12 ms ± 34.8 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.18 ms ± 4.79 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -643,14 +652,54 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.......x..
-Best mass is:  1344.393538122888
-Worst mass is:  1300.026710328152
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>....x.x...
+Best mass is:  1260.0379732879646
+Worst mass is:  1235.8224576648008
 </pre></div>
 </div>
 </div>
 </div>
 <p>And we plot the trajectory found:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp_g</span><span class="o">.</span><span class="n">pretty</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Low-thrust NEP transfer
+Departure: unknown UDPLA
+Arrival: unknown UDPLA
+
+Launch epoch: 7604.00035 MJD2000, a.k.a. 2020-10-26T00:00:29.824280
+Arrival epoch: 7854.00035 MJD2000, a.k.a. 2021-07-03T00:00:29.824280
+Time of flight (days): 250.00000 
+
+Launch DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
+Arrival DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
+Final mass (kg): 1260.0379732879646
+
+Details on the low-thrust leg: 
+Number of segments: 30
+Number of fwd segments: 18
+Number of bck segments: 12
+Maximum thrust: 0.6
+Central body gravitational parameter: 1.3271244004127942e+20
+Specific impulse: 3000
+
+Time of flight: 21600000
+Initial mass: 1500
+Final mass: 1260.0379732879646
+State at departure: [[34110913367.783306, -139910016918.87585, -14037825669.025244], [29090.9902134693, 10000.390168313803, 1003.3858682643288]]
+State at arrival: [[-159018773159.22266, -18832495968.945133, 15781467087.350443], [2781.182556622003, -28898.40730995848, -483.4533989771214]]
+Throttles values: [-0.07023251523987217, 0.034332943410028266, -0.9969396384936693, -0.07349327132621603, 0.004224313047079454, -0.9972867663060554, -0.07489321217845256, -0.029502285081097313, -0.996755046109509, -0.07327428477042026, -0.06902296178046946, -0.9949204540759232, 4.14852860193033e-11, 3.5375341469855814e-11, -8.573095243669458e-10, -6.097393163681223e-14, -8.725143678860424e-13, -8.530411920612091e-13, -3.5966763318418805e-13, -4.172922015609591e-13, -4.54973592586823e-13, 2.0924877610202944e-14, -2.467932517679902e-14, 7.35196456915747e-14, -2.580650764945926e-13, 7.246512042075852e-15, -5.189539995941978e-14, 2.1752198564410137e-15, 1.8385238359951235e-13, 5.743416788241826e-13, -1.60509960791611e-13, 4.1198517362607954e-13, -2.026023346330085e-13, -1.1184930109794683e-12, 9.594547251332383e-13, -1.181718936270026e-12, -4.1414130130008956e-13, 4.85513091991763e-13, -1.2522447283419034e-13, -8.135556053330194e-14, -8.966147992694586e-15, 4.593367831993075e-14, 6.73517222273945e-14, 1.3625494210431208e-13, -1.6489275837928297e-13, -3.6699427066577824e-13, -1.275297442390812e-14, 2.5593837660061043e-13, -1.8766394774289837e-13, -2.171373641866431e-13, 3.1636194888875857e-12, 0.036625211870962626, -0.09856986056750797, 0.2767546026747471, 0.09145022442209139, -0.3320461406426424, 0.9388195870014002, 0.06532231206241622, -0.3449043390930958, 0.9363621053960609, 0.04587879077616351, -0.36948129299890947, 0.9281049028428225, 0.03391378321832844, -0.40424843449756015, 0.9140202724854073, 0.030389835076269082, -0.44790181702766474, 0.8935661252686014, 0.03640723409019633, -0.499146619541211, 0.865752369622257, 0.05315208094921412, -0.5564836075119695, 0.8291567106773935, 0.08180081258596507, -0.6179607686375264, 0.7819418875373135, 0.12333545749953842, -0.6808810671449723, 0.7219344411559026, 0.1782251655774031, -0.7414995754436315, 0.646849418312967, 0.2459398876888526, -0.7948250864559712, 0.5547672066587716, 0.3243837104350158, -0.8347583842214152, 0.44491982241350736]
+
+Mismatch constraints: [-0.001232147216796875, 0.007049560546875, 0.021036148071289062, 3.4669938031584024e-09, 1.3099565876473207e-10, -3.423338057473302e-09, -1.5802470443304628e-10]
+Throttle constraints: [3.1086244689504383e-15, 1.3722356584366935e-13, 1.8252066524837574e-13, 2.0605739337042905e-13, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -0.912349466341452, 3.9968028886505635e-15, 1.687538997430238e-13, 1.141309269314661e-13, 2.0605739337042905e-13, 1.8829382497642655e-13, 6.994405055138486e-14, 1.2234657731369225e-13, 2.2315482794965646e-13, 1.8207657603852567e-13, 2.4424906541753444e-15, 1.234568003383174e-13, 3.1086244689504383e-15]
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">udp_g</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">],</span> <span class="n">show_gridpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -659,7 +708,35 @@ Worst mass is:  1300.026710328152
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3dae57626a3b567cad10e9de720686602dd4cc325f35023bee1f01b70102c20e.png" src="../_images/3dae57626a3b567cad10e9de720686602dd4cc325f35023bee1f01b70102c20e.png" />
+<img alt="../_images/b0471104483fbccdd38e12460e538f3c49ab6154ba6ccb3f530abde3d805a8b2.png" src="../_images/b0471104483fbccdd38e12460e538f3c49ab6154ba6ccb3f530abde3d805a8b2.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[34110913367.783306, -139910016918.87585, -14037825669.025244],
+ [29090.9902134693, 10000.390168313803, 1003.3858682643288]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p2</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="o">+</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[-159018773159.22266, -18832495968.945133, 15781467087.350443],
+ [2781.182556622003, -28898.40730995848, -483.4533989771214]]
+</pre></div>
+</div>
 </div>
 </div>
 </section>
