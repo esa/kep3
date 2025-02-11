@@ -131,7 +131,7 @@ const taylor_adaptive<double> &get_ta_pc_var(double tol)
 
     // Lookup.
     if (auto it = ta_pc_var_cache.find(tol); it == ta_pc_var_cache.end()) {
-        auto [lx, ly, lz, lvx, lvy, lvz, lm] = make_vars("x", "y", "z", "vx", "vy", "vz", "lm");
+        auto [lx, ly, lz, lvx, lvy, lvz, lm] = make_vars("lx", "ly", "lz", "lvx", "lvy", "lvz", "lm");
         auto vsys = var_ode_sys(std::get<0>(pc_expression_factory()), {lx, ly, lz, lvx, lvy, lvz, lm, par[4]}, 1);
         // Cache miss, create new one.
         auto new_ta = taylor_adaptive<double>{vsys, heyoka::kw::tol = tol, heyoka::kw::compact_mode = true};
