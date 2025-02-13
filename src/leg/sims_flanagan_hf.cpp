@@ -175,6 +175,11 @@ void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
+
+    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
+    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
+    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
+
 }
 void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &it1,
                                      const std::vector<double>::const_iterator &it2)
@@ -193,6 +198,11 @@ void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
+
+    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
+    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
+    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
+
 }
 void sims_flanagan_hf::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
@@ -212,11 +222,13 @@ void sims_flanagan_hf::set_isp(double isp)
 {
     kep3::leg::_check_isp(isp);
     m_isp = isp;
+    *(m_tas.get_pars_data()+1l) = isp;
 }
 void sims_flanagan_hf::set_mu(double mu)
 {
     kep3::leg::_check_mu(mu);
     m_mu = mu;
+    *m_tas.get_pars_data() = mu;
 }
 void sims_flanagan_hf::set_cut(double cut)
 {
