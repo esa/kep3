@@ -429,11 +429,12 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
     for (auto i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
+
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -460,8 +461,8 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -583,8 +584,8 @@ sims_flanagan_hf::compute_all_gradients() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -618,8 +619,8 @@ sims_flanagan_hf::compute_all_gradients() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -838,8 +839,8 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -871,8 +872,8 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", (*m_tas.get_pars_data()), (*m_tas.get_pars_data() + 1l),
-                       (*m_tas.get_pars_data() + 2l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+                       *(m_tas.get_pars_data() + 4l));
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
@@ -900,7 +901,7 @@ std::ostream &operator<<(std::ostream &s, const sims_flanagan_hf &sf)
     s << fmt::format("State at departure: {}\n", sf.get_rvs());
     s << fmt::format("State at arrival: {}\n", sf.get_rvf());
     s << fmt::format("Throttles values: {}\n\n", sf.get_throttles());
-    // s << fmt::format("Mismatch constraints: {}\n", sf.compute_mismatch_constraints());
+    s << fmt::format("Mismatch constraints: {}\n", sf.compute_mismatch_constraints());
     s << fmt::format("Throttle constraints: {}\n\n", sf.compute_throttle_constraints());
     return s;
 }
