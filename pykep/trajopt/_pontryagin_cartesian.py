@@ -277,7 +277,7 @@ class pontryagin_cartesian:
         axs[1, 0].plot(t_grid, self.MASS*sol[-1][:, 6].T)
         # Plot throttle 
         throttle = u_func(_np.ascontiguousarray(sol[-1].T), pars=_np.ascontiguousarray(_np.tile(self.ta.pars, (N, 1)).T))
-        axs[0, 0].set_title("Throttle")
+        axs[0, 0].set_title("Throttle (log-scale)")
         axs[0, 0].semilogy(t_grid, _np.squeeze(throttle))
         # Plot thrust direction
         thrust_dir = i_vers_func(_np.ascontiguousarray(sol[-1][:, 10:13].T))
