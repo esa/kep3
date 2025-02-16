@@ -1,11 +1,10 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-// (bluescarni@gmail.com)
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// This Source Code Form is subject to the terms of the Mozilla
-// Public License v. 2.0. If a copy of the MPL was not distributed
-// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Mozilla Public License, version 2.0.
+// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #include <array>
 #include <cstddef>
@@ -458,7 +457,6 @@ std::vector<double> sims_flanagan_hf::compute_constraints() const
 std::array<double, 7> sims_flanagan_hf::get_state_derivative(const std::array<double, 7> &state,
                                                              const std::array<double, 3> &throttles) const
 {
-
     std::array<double, 3> thrusts{};
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
