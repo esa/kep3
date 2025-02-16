@@ -1,11 +1,10 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-// (bluescarni@gmail.com)
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// This Source Code Form is subject to the terms of the Mozilla
-// Public License v. 2.0. If a copy of the MPL was not distributed
-// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Mozilla Public License, version 2.0.
+// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #include <array>
 #include <cstddef>
@@ -46,9 +45,8 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                              double isp, double mu, double cut)
-    : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_rvf(rvf), m_mf(mf), m_tof(tof),
-      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut),
-      m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
+    : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_rvf(rvf), m_mf(mf), m_tof(tof), m_max_thrust(max_thrust),
+      m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
     kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
@@ -68,14 +66,7 @@ void sims_flanagan::set_ms(double mass)
 {
     m_ms = mass;
 }
-void sims_flanagan::set_throttles(const std::vector<double> &throttles)
-{
-    kep3::leg::_check_throttles(throttles);
-    m_throttles = throttles;
-    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
-    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
-    m_nseg_bck = m_nseg - m_nseg_fwd;
-}
+
 void sims_flanagan::set_throttles(const std::vector<double>::const_iterator &it1,
                                   const std::vector<double>::const_iterator &it2)
 {
@@ -88,6 +79,12 @@ void sims_flanagan::set_throttles(const std::vector<double>::const_iterator &it1
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
 }
+void sims_flanagan::set_throttles(const std::vector<double> &throttles)
+{
+    kep3::leg::_check_throttles(throttles);
+    set_throttles(throttles.begin(), throttles.end());
+}
+
 void sims_flanagan::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
     m_rvf = rv;

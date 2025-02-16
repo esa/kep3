@@ -1,11 +1,10 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-// (bluescarni@gmail.com)
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// This Source Code Form is subject to the terms of the Mozilla
-// Public License v. 2.0. If a copy of the MPL was not distributed
-// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Mozilla Public License, version 2.0.
+// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #ifndef PYKEP_DOCSTRINGS_HPP
 #define PYKEP_DOCSTRINGS_HPP
@@ -92,13 +91,13 @@ std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
 
-inline std::string get_pc_docstring(){return "";};
-inline std::string get_pc_var_docstring(){return "";};
+std::string get_pc_docstring();
+std::string get_pc_var_docstring();
 std::string pc_dyn_docstring();
-inline std::string get_pc_H_cfunc_docstring(){return "";};
-inline std::string get_pc_SF_cfunc_docstring(){return "";};
-inline std::string get_pc_u_cfunc_docstring(){return "";};
-inline std::string get_pc_i_vers_cfunc_docstring(){return "";};
+inline std::string get_pc_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+inline std::string get_pc_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
+inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
+inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
 
 // Lambert Problem
 std::string lambert_problem_docstring();
@@ -112,7 +111,6 @@ std::string fb_vout_docstring();
 std::string stark_problem_docstring();
 std::string stark_problem_propagate_docstring();
 std::string stark_problem_propagate_var_docstring();
-
 
 // Propagators
 std::string propagate_lagrangian_docstring();

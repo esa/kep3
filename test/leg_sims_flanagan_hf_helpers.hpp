@@ -11,6 +11,7 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_HELPERS_H
 
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
@@ -66,10 +67,11 @@ struct sf_hf_test_object {
     }
 
     explicit sf_hf_test_object(std::array<std::array<double, 3>, 2> rvs, double ms, std::vector<double> throttles,
-                               std::array<std::array<double, 3>, 2> rvf, double mf, double tof, double max_thrust,
-                               double isp, double mu, double cut, double tol)
-        : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_rvf(rvf), m_mf(mf), m_tof(tof), m_max_thrust(max_thrust),
-          m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
+                               std::array<std::array<double, 3>, 2> rvf,
+                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                               double mf, double tof, double max_thrust, double isp, double mu, double cut, double tol)
+        : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
+          m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
     {
         for (double m_throttle : m_throttles) {
             m_thrusts.push_back(m_throttle * m_max_thrust);
@@ -116,6 +118,23 @@ struct sf_hf_test_object {
         m_cut = cut;
     }
 
+    static std::vector<double> set_and_compute_constraints(kep3::leg::sims_flanagan_hf &leg,
+                                                           const std::vector<double> &dv)
+    {
+        auto nseg = leg.get_nseg();
+        std::array<double, 7> rvms{};
+        std::copy(dv.begin(), dv.begin() + 7, rvms.begin());
+        std::vector<double> throttles(nseg * 3l);
+        std::copy(dv.begin() + 7, dv.begin() + 7 + nseg * 3l, throttles.begin());
+        std::array<double, 7> rvmf{};
+        std::copy(dv.begin() + 7 + nseg * 3l, dv.begin() + 7 + nseg * 3l + 7, rvmf.begin());
+        double time_of_flight = dv[(7 + nseg * 3 + 7 + 1) - 1];
+        // Set relevant quantities before evaluating constraints
+        leg.set(rvms, throttles, rvmf, time_of_flight);
+        // Evaluate and return constraints
+        return leg.compute_constraints();
+    }
+
     [[nodiscard]] std::vector<double> compute_numerical_gradient()
     {
         // Create SF leg.
@@ -124,15 +143,15 @@ struct sf_hf_test_object {
         // Create chromosome
         std::vector<double> rvms_vec = std::vector<double>(m_rvms.begin(), m_rvms.end());
         std::vector<double> rvmf_vec = std::vector<double>(m_rvmf.begin(), m_rvmf.end());
-        std::vector<double> chromosome;
-        chromosome.insert(chromosome.end(), rvms_vec.begin(), rvms_vec.end());
-        chromosome.insert(chromosome.end(), m_throttles.begin(), m_throttles.end());
-        chromosome.insert(chromosome.end(), rvmf_vec.begin(), rvmf_vec.end());
-        chromosome.push_back(m_tof);
+        std::vector<double> dv;
+        dv.insert(dv.end(), rvms_vec.begin(), rvms_vec.end());
+        dv.insert(dv.end(), m_throttles.begin(), m_throttles.end());
+        dv.insert(dv.end(), rvmf_vec.begin(), rvmf_vec.end());
+        dv.push_back(m_tof);
 
         // Calculate numerical gradient
         return pagmo::estimate_gradient_h(
-            [&sf_num](const std::vector<double> &x) { return sf_num.set_and_compute_constraints(x); }, chromosome);
+            [&sf_num](const std::vector<double> &x) { return set_and_compute_constraints(sf_num, x); }, dv);
     }
 
     [[nodiscard]] std::vector<double> compute_analytical_gradient() const

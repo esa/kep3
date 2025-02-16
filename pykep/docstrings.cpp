@@ -1,11 +1,10 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-// (bluescarni@gmail.com)
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// This Source Code Form is subject to the terms of the Mozilla
-// Public License v. 2.0. If a copy of the MPL was not distributed
-// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Mozilla Public License, version 2.0.
+// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #include <string>
 
@@ -1528,6 +1527,74 @@ where :math:`\mu` is the only parameter.
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string get_pc_docstring()
+{
+    return R"(ta.get_pc(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
+
+Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
+
+Cartesian coordinates. If the requested propagator was never created, a call to this function will
+
+trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_pc(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta.pars[:] = [1., 0.01, 0.01, 0.5, 1.]
+  >>> tof = 1.2345
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_pc_var_docstring()
+{
+    return R"(ta.get_pc_var(tol)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
+
+from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
+
+(constant maximal thrust) in Cartesian coordinates. If the requested propagator was never created, 
+
+a call to this function will trigger its compilation. Otherwise, it will return the one from
+
+a global cache, thus avoiding jitting.
+
+.. note:
+   Variations are considered with respect to the initial conditions on the costates and to the
+   parameters :math:`\epsilon` and :math:`\lambda_0`.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta_var = pk.ta.get_pc_var(tol = 1e-16)
+  >>> ta_var.time = 0.
+  >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta_var.pars[:] = [1., 0.01, 0.01, 0.5, 1.]
+  >>> tof = 1.2345
+  >>> ta_var.propagate_until(tof)
 )";
 }
 
