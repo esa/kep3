@@ -131,7 +131,7 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_max_thrust() == 0.333);
         sf.set_isp(0.333);
         REQUIRE(sf.get_isp() == 0.333);
-        REQUIRE(sf.get_tas().get_pars()[1] == 0.333 );
+        REQUIRE(sf.get_tas().get_pars()[1] == 0.333 * kep3::G0);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
         REQUIRE(sf.get_tas().get_pars()[0] == 0.333 );
