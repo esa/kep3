@@ -60,17 +60,18 @@ TEST_CASE("dynamics")
     {
         // We test a meaningless case.
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
-        std::vector<double> ic = std::vector<double>(14, 1.1);
-        std::vector<double> pars = std::vector<double>(5., 1.1);
+        std::vector<double> ic = {1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.};
+        std::vector<double> pars = {1., 0.01, 0.01, 0.5, 1.};
         ta.set_time(0.);
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
 
         auto out = ta.propagate_until(1.2345);
         std::vector<double> const ground_truth
-            = {2.029941360178109,   2.029941360178109,   2.029941360178109,   0.5689078217624504, 0.5689078217624504,
-               0.5689078217624521,  0.3528524034536157,  1.006122986634364,   1.006122986634364,  1.0061229866343642,
-               -0.1651270482469866, -0.1651270482469866, -0.1651270482469868, -0.0106508243299225};
+            = {3.29796945478044e-01,  9.43846387947806e-01,  -6.98808299448645e-05, -9.44346244116373e-01,
+               3.29727154212398e-01,  -1.65088454784805e-05, 9.99636411645986e+00,  -2.93037901256056e-01,
+               1.61477939441094e-01,  1.27398659084316e+00,  9.47167118849066e-01,  1.85641413513971e-02,
+               -6.14020501980864e-01, 9.99960774095174e-01};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
         REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-13);
     }
