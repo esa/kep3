@@ -58,9 +58,6 @@ sims_flanagan_hf::sims_flanagan_hf()
     *(m_tas_var.get_pars_data() + 1) = m_isp * kep3::G0;
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
 }
 
 sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms,
