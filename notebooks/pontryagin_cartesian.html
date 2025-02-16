@@ -749,7 +749,7 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.8614051453724 
+Final mass is: 1259.8614051309653 
 </pre></div>
 </div>
 </div>
@@ -774,7 +774,7 @@ Final mass is: 1259.8614051453724
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8dd3a908c53c24784af85c6e174d345152649af09d5cc37930d4cf32eee9bd64.png" src="../_images/8dd3a908c53c24784af85c6e174d345152649af09d5cc37930d4cf32eee9bd64.png" />
+<img alt="../_images/cbfe04ffe96340ea8b0abba33903b179d2ade1ea91c7029b7a2a8c8479167cce.png" src="../_images/cbfe04ffe96340ea8b0abba33903b179d2ade1ea91c7029b7a2a8c8479167cce.png" />
 </div>
 </div>
 </section>
@@ -915,9 +915,9 @@ In that case homotopy methods can help t find a solution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.72e-12 | CPU time: 2.31e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 7.72e-12 | CPU time: 2.31e-01 | Epsilon = 9.2260e-05
-Total CPU time: 5.02e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.53e-11 | CPU time: 2.25e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 1.53e-11 | CPU time: 2.25e-01 | Epsilon = 9.2260e-05
+Total CPU time: 4.84e+00
 </pre></div>
 </div>
 </div>
@@ -943,7 +943,7 @@ this initial guess (the predictor) is poor, so that we are stuck with this. (you
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dfd934716ac0963f197ecb0e7d81ca64b7234399e55cd83ef358d5dde2e67eda.png" src="../_images/dfd934716ac0963f197ecb0e7d81ca64b7234399e55cd83ef358d5dde2e67eda.png" />
+<img alt="../_images/2f2a250e3041d1a2ca285fa5266860231facff5a2954a182f28db7f14ba48cf9.png" src="../_images/2f2a250e3041d1a2ca285fa5266860231facff5a2954a182f28db7f14ba48cf9.png" />
 </div>
 </div>
 </section>
@@ -960,16 +960,18 @@ also known as pseudo-arc continuation. In our case the details are as follows. A
 \[
 \mathbf c(\mathbf \lambda + \delta\mathbf\lambda, \epsilon + \delta\epsilon) = 0
 \]</div>
-<p>In the linear world this is:
-$<span class="math notranslate nohighlight">\(
+<p>In the linear world this is:</p>
+<div class="math notranslate nohighlight">
+\[
 \frac{\partial \mathbf c}{\partial \mathbf \lambda}\delta\mathbf\lambda + \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\delta\epsilon=0
-\)</span><span class="math notranslate nohighlight">\(
-hence:
-\)</span><span class="math notranslate nohighlight">\(
+\]</div>
+<p>hence:</p>
+<div class="math notranslate nohighlight">
+\[
 \delta \lambda = - \mathbf A^{-1}\mathbf B \delta \epsilon
-\)</span><span class="math notranslate nohighlight">\(
-where \)</span>\mathbf A = \frac{\partial \mathbf c}{\partial \mathbf \lambda}<span class="math notranslate nohighlight">\( and \)</span>\mathbf B = \frac{\partial \mathbf c}{\partial \mathbf \epsilon}<span class="math notranslate nohighlight">\(.
-Since the constraints are given directly on values of the final state, the matrices above can be computed seamlessly from a variational Taylor system. Only the last constraint \)</span>|\lambda_0|$ is a exception but its gradient is also easily computed.</p>
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf A = \frac{\partial \mathbf c}{\partial \mathbf \lambda}\)</span> and <span class="math notranslate nohighlight">\(\mathbf B = \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\)</span>.
+Since the constraints are given directly on values of the final state, the matrices above can be computed seamlessly from a variational Taylor system. Only the last constraint <span class="math notranslate nohighlight">\(|\lambda_0|\)</span> is a exception but its gradient is also easily computed.</p>
 <p>So lets build a variational integrator that helps here. <code class="docutils literal notranslate"><span class="pre">pykep</span></code> has the dynamics at hand in its <code class="docutils literal notranslate"><span class="pre">pykep.ta</span></code> module. We need to build a first order integrator to study variation of the variables: <span class="math notranslate nohighlight">\([\lambda_x, \lambda_y, \lambda_z, \lambda_{vx}, \lambda_{vy},\lambda_{vz}, \lambda_{m}, \lambda_{0}, \epsilon]\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1105,9 +1107,9 @@ Since the constraints are given directly on values of the final state, the matri
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.16e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 2.16e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
-Total CPU time: 4.30e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.61e-12 | CPU time: 1.85e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 1.61e-12 | CPU time: 1.85e-01 | Epsilon = 7.5254e-05
+Total CPU time: 3.90e+00
 </pre></div>
 </div>
 </div>
