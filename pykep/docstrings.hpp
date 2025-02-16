@@ -92,12 +92,12 @@ std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
 
 std::string get_pc_docstring();
-inline std::string get_pc_var_docstring(){return "";};
+std::string get_pc_var_docstring();
 std::string pc_dyn_docstring();
-inline std::string get_pc_H_cfunc_docstring(){return "";};
-inline std::string get_pc_SF_cfunc_docstring(){return "";};
-inline std::string get_pc_u_cfunc_docstring(){return "";};
-inline std::string get_pc_i_vers_cfunc_docstring(){return "";};
+inline std::string get_pc_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+inline std::string get_pc_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
+inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
+inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
 
 // Lambert Problem
 std::string lambert_problem_docstring();
@@ -111,7 +111,6 @@ std::string fb_vout_docstring();
 std::string stark_problem_docstring();
 std::string stark_problem_propagate_docstring();
 std::string stark_problem_propagate_var_docstring();
-
 
 // Propagators
 std::string propagate_lagrangian_docstring();
