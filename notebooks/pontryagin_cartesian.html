@@ -456,6 +456,36 @@
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="mf">1.2345</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 3.29796945478044e-01,  9.43846387947806e-01,
+       -6.98808299448645e-05, -9.44346244116373e-01,
+        3.29727154212398e-01, -1.65088454784805e-05,
+        9.99636411645986e+00, -2.93037901256056e-01,
+        1.61477939441094e-01,  1.27398659084316e+00,
+        9.47167118849066e-01,  1.85641413513971e-02,
+       -6.14020501980864e-01,  9.99960774095174e-01])
+</pre></div>
+</div>
+</div>
+</div>
 <section id="manual-construction-of-the-tpbvp">
 <h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Permalink to this heading">#</a></h2>
 <p>We consider the dynamics:</p>
@@ -719,9 +749,32 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.8614051312886 
+Final mass is: 1259.8614051453724 
 </pre></div>
 </div>
+</div>
+</div>
+<p>Let us have a look at what we found ….</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+<span class="n">ax3D</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/82954d1b820c71f88f9bbeef54ab2c19b8252842dc3dff414af46bcdf7a64b02.png" src="../_images/82954d1b820c71f88f9bbeef54ab2c19b8252842dc3dff414af46bcdf7a64b02.png" />
+</div>
+</div>
+<p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp</span><span class="o">.</span><span class="n">plot_misc</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8dd3a908c53c24784af85c6e174d345152649af09d5cc37930d4cf32eee9bd64.png" src="../_images/8dd3a908c53c24784af85c6e174d345152649af09d5cc37930d4cf32eee9bd64.png" />
 </div>
 </div>
 </section>
@@ -862,9 +915,9 @@ In that case homotopy methods can help t find a solution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.66e-12 | CPU time: 2.26e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 1.66e-12 | CPU time: 2.26e-01 | Epsilon = 9.2260e-05
-Total CPU time: 4.96e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.72e-12 | CPU time: 2.31e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 7.72e-12 | CPU time: 2.31e-01 | Epsilon = 9.2260e-05
+Total CPU time: 5.02e+00
 </pre></div>
 </div>
 </div>
@@ -890,7 +943,7 @@ this initial guess (the predictor) is poor, so that we are stuck with this. (you
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c21a8050ec708cc08c1121a02bc3ed72a1ad5dab026f1798abc3ae518db54cc9.png" src="../_images/c21a8050ec708cc08c1121a02bc3ed72a1ad5dab026f1798abc3ae518db54cc9.png" />
+<img alt="../_images/dfd934716ac0963f197ecb0e7d81ca64b7234399e55cd83ef358d5dde2e67eda.png" src="../_images/dfd934716ac0963f197ecb0e7d81ca64b7234399e55cd83ef358d5dde2e67eda.png" />
 </div>
 </div>
 </section>
@@ -1052,9 +1105,9 @@ Since the constraints are given directly on values of the final state, the matri
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.01e-12 | CPU time: 1.88e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 3.01e-12 | CPU time: 1.88e-01 | Epsilon = 7.5254e-05
-Total CPU time: 4.09e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.16e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 2.16e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
+Total CPU time: 4.30e+00
 </pre></div>
 </div>
 </div>
