@@ -91,7 +91,7 @@ std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
 
-inline std::string get_pc_docstring(){return "";};
+std::string get_pc_docstring();
 inline std::string get_pc_var_docstring(){return "";};
 std::string pc_dyn_docstring();
 inline std::string get_pc_H_cfunc_docstring(){return "";};

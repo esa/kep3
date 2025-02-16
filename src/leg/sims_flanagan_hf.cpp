@@ -89,8 +89,6 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &r
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
 
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     // Fill in m_rvm from m_rvs and m_ms
     std::copy(rvs[0].begin(), rvs[0].end(), m_rvms.begin());
     std::copy(rvs[1].begin(), rvs[1].end(), std::next(m_rvms.begin(), 3));
@@ -128,9 +126,6 @@ sims_flanagan_hf::sims_flanagan_hf(const std::array<double, 7> &rvms, const std:
     *(m_tas_var.get_pars_data() + 1) = m_isp * kep3::G0;
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
 }
 
 // Setters

@@ -1530,6 +1530,37 @@ Returns:
 )";
 }
 
+std::string get_pc_docstring()
+{
+    return R"(ta.get_pc(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
+
+Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
+
+Cartesian coordinates. If the requested propagator was never created, a call to this function will
+
+trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_pc(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:14] = ic_state # and costates
+  >>> ta.pars[:] = pars # [mu, c1, c2, eps, lambda0]
+  >>> tof = 5.7856656782589234
+  >>> ta.propagate_until(tof)
+)";
+}
+
 std::string pc_dyn_docstring()
 {
     return R"(ta.pc_dyn()
