@@ -26,33 +26,54 @@ using kep3::ta::get_ta_pc_cache_dim;
 using kep3::ta::get_ta_pc_var;
 using kep3::ta::get_ta_pc_var_cache_dim;
 
-using kep3_tests::L_infinity_norm_rel;
-
 // This needs to be the first test as cache dimension will be assumed to be zero here.
 TEST_CASE("caches")
 {
-    // The non variational one.
-    REQUIRE(get_ta_pc_cache_dim() == 0u);
-    auto ta_cached = get_ta_pc(1e-16);
-    REQUIRE(get_ta_pc_cache_dim() == 1u);
-    ta_cached = get_ta_pc(1e-16);
-    REQUIRE(get_ta_pc_cache_dim() == 1u);
-    ta_cached = get_ta_pc(1e-8);
-    REQUIRE(get_ta_pc_cache_dim() == 2u);
+    {
+        // MASS
+        //  The non variational one.
+        REQUIRE(get_ta_pc_cache_dim() == 0u);
+        auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 1u);
+        ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 1u);
+        ta_cached = get_ta_pc(1e-8, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 2u);
 
-    // The variational integrator.
-    REQUIRE(get_ta_pc_var_cache_dim() == 0u);
-    ta_cached = get_ta_pc_var(1e-16);
-    REQUIRE(get_ta_pc_var_cache_dim() == 1u);
-    ta_cached = get_ta_pc_var(1e-16);
-    REQUIRE(get_ta_pc_var_cache_dim() == 1u);
-    ta_cached = get_ta_pc_var(1e-8);
-    REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+        // The variational integrator.
+        REQUIRE(get_ta_pc_var_cache_dim() == 0u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 1u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 1u);
+        ta_cached = get_ta_pc_var(1e-8, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+    }
+    {
+        // TIME
+        //  The non variational one. (no cache is not empty)
+        REQUIRE(get_ta_pc_cache_dim() == 2u);
+        auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 3u);
+        ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 3u);
+        ta_cached = get_ta_pc(1e-8, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 4u);
+
+        // The variational integrator.
+        REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 3u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 3u);
+        ta_cached = get_ta_pc_var(1e-8, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 4u);
+    }
 }
 
-TEST_CASE("dynamics")
+TEST_CASE("dynamics_mass")
 {
-    auto ta_cached = get_ta_pc(1e-16);
+    auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
     REQUIRE(ta_cached.is_variational() == false);
     REQUIRE(ta_cached.get_dim() == 14);
     REQUIRE(ta_cached.get_pars().size() == 5); // [mu, c1, c2, eps, l0]
@@ -79,7 +100,7 @@ TEST_CASE("dynamics")
 
 TEST_CASE("variational_dynamics")
 {
-    auto ta_cached = get_ta_pc_var(1e-16);
+    auto ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
     REQUIRE(ta_cached.is_variational() == true);
     REQUIRE(ta_cached.get_dim() == 14 + 14 * 8);
     REQUIRE(ta_cached.get_pars().size() == 5);

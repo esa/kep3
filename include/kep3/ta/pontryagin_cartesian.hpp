@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -11,6 +11,7 @@
 
 #include <vector>
 
+#include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 
 #include <heyoka/expression.hpp>
@@ -25,16 +26,16 @@ namespace kep3::ta
 // Returns dynamics, hamiltonian, switching function control and control direction
 // as expressions of the state-costate
 kep3_DLL_PUBLIC std::tuple<std::vector<std::pair<heyoka::expression, heyoka::expression>>, heyoka::expression,
-                           heyoka::expression, heyoka::expression, std::vector<heyoka::expression>>
-pc_expression_factory();
+                           heyoka::expression, heyoka::expression, std::vector<heyoka::expression>, std::vector<heyoka::expression>>
+pc_expression_factory(kep3::optimality_type optimality);
 
 // Returns the dynamics only. Offered for convenience and consistency within the ta namespace.
-kep3_DLL_PUBLIC std::vector<std::pair<heyoka::expression, heyoka::expression>> pc_dyn();
+kep3_DLL_PUBLIC std::vector<std::pair<heyoka::expression, heyoka::expression>> pc_dyn(kep3::optimality_type optimality);
 
 // These return const references to function level static variables of type heyoka::taylor_adaptive<double>.
-kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_pc(double tol);
+kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_pc(double tol, kep3::optimality_type optimality);
 kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &
-get_ta_pc_var(double tol); // variational (lx,ly,lz,lvx,lvy,lvz,lm,l0) first order
+get_ta_pc_var(double tol, kep3::optimality_type optimality); // variational (lx,ly,lz,lvx,lvy,lvz,lm,l0) first order
 
 // Methods to access the cache dimensions.
 kep3_DLL_PUBLIC size_t get_ta_pc_cache_dim();
@@ -42,10 +43,11 @@ kep3_DLL_PUBLIC size_t get_ta_pc_var_cache_dim();
 
 // These return const references to function level static variables of type heyoka::cfunc<double>
 // useful in the context of this Pontryagin cartesian OCP
-kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_H_cfunc();
-kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_SF_cfunc();
-kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_u_cfunc();
-kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_i_vers_cfunc();
+kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_H_cfunc(kep3::optimality_type optimality);
+kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_SF_cfunc(kep3::optimality_type optimality);
+kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_u_cfunc(kep3::optimality_type optimality );
+kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_i_vers_cfunc(kep3::optimality_type optimality);
+kep3_DLL_PUBLIC const heyoka::cfunc<double> &get_pc_dyn_cfunc(kep3::optimality_type optimality);
 
 } // namespace kep3::ta
 
