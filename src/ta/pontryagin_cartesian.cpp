@@ -67,11 +67,11 @@ pc_expression_factory(kep3::optimality_type optimality)
     std::map<expression, expression> argmin_H_full{};
 
     if (optimality == kep3::optimality_type::MASS) {
-        rho = 1. - par[1] * lv_norm / m / par[4] - par[2] * lm / par[4];
+        rho = 1. - par[1] * lv_norm / m / par[4] - par[1] / par[2] * lm / par[4];
         // Hamiltonian (mass optimal with log barrier)
         H_full = lx * vx + ly * vy + lz * vz + lvx * (par[1] * u / m * ix - (par[0] / r3) * x)
                  + lvy * (par[1] * u / m * iy - (par[0] / r3) * y) + lvz * (par[1] * u / m * iz - (par[0] / r3) * z)
-                 - lm * par[2] * u + par[4] * (u - par[3] * log(u * (1. - u)));
+                 - lm * par[1] / par[2] * u + par[4] * (u - par[3] * log(u * (1. - u)));
         // We apply Pontryagin minimum principle (primer vector and u ^ * = 2eps / (rho + 2eps + sqrt(rho ^ 2 + 4 * eps
         // ^ 2)))
         argmin_H_full = {
@@ -82,11 +82,11 @@ pc_expression_factory(kep3::optimality_type optimality)
         };
 
     } else if (optimality == kep3::optimality_type::TIME) {
-        rho = -par[1] * lv_norm / m / par[4] - par[2] * lm / par[4];
+        rho = -par[1] * lv_norm / m / par[4] - par[1] / par[2] * lm / par[4];
         // Hamiltonian (time optimal)
         H_full = lx * vx + ly * vy + lz * vz + lvx * (par[1] * u / m * ix - (par[0] / r3) * x)
                  + lvy * (par[1] * u / m * iy - (par[0] / r3) * y) + lvz * (par[1] * u / m * iz - (par[0] / r3) * z)
-                 - lm * par[2] * u + par[4];
+                 - lm * par[1] / par[2] * u + par[4];
         // We apply Pontryagin minimum principle (primer vector and u ^ * = 1)
         argmin_H_full = {
             {ix, -lvx / lv_norm},

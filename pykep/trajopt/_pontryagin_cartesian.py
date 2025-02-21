@@ -76,7 +76,7 @@ class pontryagin_cartesian_mass:
         self.mu = mu / (L**3 / TIME**2)
         self.eps = eps
         self.c1 = T_max / (MASS * ACC)
-        self.c2 = (T_max / Isp / _pk.G0) / MASS * TIME
+        self.c2 = (Isp * _pk.G0) / VEL
 
         self.posvel0 = [[it / L for it in posvel0[0]], [it / VEL for it in posvel0[1]]]
         self.posvelf = [[it / L for it in posvelf[0]], [it / VEL for it in posvelf[1]]]
@@ -314,7 +314,6 @@ class pontryagin_cartesian_mass:
 
         return axs
 
-
 # Adding the osculating orbits to the initial conditions
 _pl0 = _pk.planet(
     _pk.udpla.keplerian(when=_pk.epoch(0), posvel=_posvel0, mu_central_body=_pk.MU_SUN)
@@ -324,7 +323,6 @@ _plf = _pk.planet(
         when=_pk.epoch(0) + 250, posvel=_posvelf, mu_central_body=_pk.MU_SUN
     )
 )
-
 
 class pontryagin_cartesian_time:
     """
@@ -390,7 +388,7 @@ class pontryagin_cartesian_time:
         # We redefine the user inputs in non dimensional units.
         self.mu = source.get_mu_central_body() / (L**3 / TIME**2)
         self.c1 = T_max / (MASS * ACC)
-        self.c2 = (T_max / Isp / _pk.G0) / MASS * TIME
+        self.c2 = (Isp * _pk.G0) / VEL
         self.m0 = m0 / MASS
         self.tof_guess = tof_guess * _pk.DAY2SEC / TIME
 

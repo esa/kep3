@@ -1555,7 +1555,7 @@ Examples:
   >>> ta = pk.ta.get_pc(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta.pars[:] = [1., 0.01, 0.01, 0.5, 1.]
+  >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.]
   >>> tof = 1.2345
   >>> ta.propagate_until(tof)
 )";
@@ -1592,7 +1592,7 @@ Examples:
   >>> ta_var = pk.ta.get_pc_var(tol = 1e-16)
   >>> ta_var.time = 0.
   >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta_var.pars[:] = [1., 0.01, 0.01, 0.5, 1.]
+  >>> ta_var.pars[:] = [1., 0.01, 1., 0.5, 1.]
   >>> tof = 1.2345
   >>> ta_var.propagate_until(tof)
 )";
@@ -1612,7 +1612,7 @@ The (non-augmented) dynamics is,
    \begin{array}{l}
         \dot{\mathbf r} = \mathbf f_r = \mathbf v \\
         \dot{\mathbf v} = \mathbf f_v = -\frac{mu}{r^3}\mathbf r + c_1 \frac um \hat{\mathbf i}\\
-        \dot{m} = f_m = - c_2 u
+        \dot{m} = f_m = - \frac{c_1}{c_2} u
    \end{array}
    \right.
 
@@ -1626,9 +1626,9 @@ While the parameters:
 .. math::
    \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
 
-describe, respectively, the gravitational parameter, the maximum thrust, the ratio between the maximum
-thrust and the effective velocity (product of the specific impulse :math:`I_{sp}` by :math:`g_0`),
-an homotopy parameter and a factor multiplying the instantaneous cost (in theory this can be any positive number, 
+describe, respectively, the gravitational parameter, the maximum thrust, the effective velocity
+(product of the specific impulse :math:`I_{sp}` by :math:`g_0`),
+an homotopy parameter and a factor multiplying the instantaneous cost (in theory this can be any positive number as 
 the solution of the problem will not change)
 
 The controls, representing magnitude and direction of the spacecraft thrust are:
