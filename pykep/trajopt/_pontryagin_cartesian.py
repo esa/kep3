@@ -384,7 +384,6 @@ class pontryagin_cartesian_time:
         ACC = VEL / TIME  # Unit for acceleration (1 AU/year^2)
         
         # Store user inputs
-        self.T_max = T_max
         self.Isp = Isp
         self.t0 = t0
 
@@ -412,7 +411,6 @@ class pontryagin_cartesian_time:
 
         # Compiled functions
         self.dyn_func = _pk.ta.get_pc_dyn_cfunc(_pk.optimality_type.TIME)
-        self.i_vers_func = _pk.ta.get_pc_i_vers_cfunc(_pk.optimality_type.MASS)
 
         # Non dimensional units
         self.MASS = MASS
@@ -457,7 +455,7 @@ class pontryagin_cartesian_time:
         self.ta_var.state[14:] = self.ic_var
 
     def fitness(self, x):
-        # x = [lx, ly, lz, lvx, lvy, lvz, lm, lJ, tof]ßßßßßßß
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, lJ, tof]
         # Single Shooting
         self.set_ta_state(x[:8])
         self.ta.propagate_until(x[8])
@@ -569,14 +567,15 @@ class pontryagin_cartesian_time:
         ax3D.scatter(rf[0], rf[1], rf[2])
         return ax3D
 
-    def plot_misc(self, x, N=100):
+    def plot_misc(self, x, N=100, **kwargs):
         """
-        This function plots the throttle, thrust direction, switching function, mass costate and Hamiltonian
+        This function plots the throttle, switching function and Hamiltonian
         of the trajectory encoded in the decision vector x.
 
         Args:
             *x* (:class:`list`): the decision vector.
             *N* (:class:`int`): the number of points to use in the plot.
+            *\\*\\*kwargs*: Additional keyword arguments to pass to the plt.subplots function.
 
         Returns:
             *axs* (:class:`list`): the list of axis of the plots.
@@ -589,33 +588,40 @@ class pontryagin_cartesian_time:
         sol = self.ta.propagate_grid(t_grid)
         # Retreive useful cfuncs
         # The Hamiltonian
-        # H_func = _pk.ta.get_pc_H_cfunc()
+        H_func = _pk.ta.get_pc_H_cfunc(_pk.optimality_type.TIME)
         # The switching function
-        # SF_func = _pk.ta.get_pc_SF_cfunc()
-        # The magnitude of the throttle
-        # u_func = _pk.ta.get_pc_u_cfunc()
+        SF_func = _pk.ta.get_pc_SF_cfunc(_pk.optimality_type.TIME)
         # The thrust direction
-        # i_vers_func = _pk.ta.get_pc_i_vers_cfunc()
+        i_vers_func = _pk.ta.get_pc_i_vers_cfunc(_pk.optimality_type.TIME)
+
         # Create axis
-        _, axs = plt.subplots(3, 2, figsize=(10, 10))
-        axs[1, 0].set_title("Mass")
-        axs[1, 0].plot(t_grid, self.MASS * sol[-1][:, 6].T)
+        _, axs = plt.subplots(2, 2, **kwargs)
+        axs[0, 0].set_title("Mass")
+        axs[0, 0].plot(t_grid, self.MASS * sol[-1][:, 6].T)
         # Plot thrust direction
-        thrust_dir = self.i_vers_func(_np.ascontiguousarray(sol[-1][:, 10:13].T))
+        thrust_dir = i_vers_func(_np.ascontiguousarray(sol[-1][:, 10:13].T))
+
         for i in range(3):
             axs[0, 1].plot(t_grid, thrust_dir[i, :])
         axs[0, 1].set_title("Thrust direction")
 
-        # Plot mass costate
-        axs[2, 0].set_title("lm")
-        axs[2, 0].plot(sol[-1][:, 13].T)
         # Plot Hamiltonian
-        # Ham = H_func(
-        #    _np.ascontiguousarray(sol[-1].T),
-        #   pars=_np.ascontiguousarray(_np.tile(self.ta.pars, (N, 1)).T),
-        # )
-        # axs[2, 1].set_title("Hamiltonian")
-        # axs[2, 1].plot(t_grid, _np.squeeze(Ham))
+        all_pars = list(self.ta.pars) + [1., x[-2]]
+        Ham = H_func(
+            _np.ascontiguousarray(sol[-1].T),
+           pars=_np.ascontiguousarray(_np.tile(all_pars, (N, 1)).T),
+         )
+        axs[1, 0].set_title("Hamiltonian")
+        axs[1, 0].plot(t_grid, _np.squeeze(Ham))
+        
+        # Plot switching function
+        SF = SF_func(
+            _np.ascontiguousarray(sol[-1].T),
+            pars=_np.ascontiguousarray(_np.tile(all_pars, (N, 1)).T),
+        )
+        axs[1, 1].set_title("Switching Function")
+        axs[1, 1].plot(t_grid, _np.squeeze(SF))
+        axs[1, 1].hlines(0, t_grid[0], t_grid[-1], "k")
 
         plt.tight_layout()
 
