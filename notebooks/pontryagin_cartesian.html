@@ -17,29 +17,26 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -54,7 +51,6 @@
     <link rel="prev" title="Multiple impulses" href="udp_pl2pl_N_impulses.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -70,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -79,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -86,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -103,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,17 +141,21 @@
     
     
     <img src="../_static/pykep_logo.png" class="logo__image only-light" alt="pykep 0.0.1 documentation - Home"/>
-    <img src="../_static/pykep_logo.png" class="logo__image only-dark pst-js-only" alt="pykep 0.0.1 documentation - Home"/>
+    <script>document.write(`<img src="../_static/pykep_logo.png" class="logo__image only-dark" alt="pykep 0.0.1 documentation - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Main</span></p>
@@ -206,14 +217,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -388,16 +394,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -440,7 +454,7 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods">
 <h1>Low-thrust transfers via indirect methods<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods" title="Permalink to this heading">#</a></h1>
-<p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed low-thrust interplanetary transfer employing an indirect method.</p>
+<p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed time low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are basically following the same template: starting from the dynamics an augmented system of ODE is built applying Pontryagin maximum (minimum, in our case) principle. A Two Point Boundary Value Problem is hence defined on the derived augmented system and solved by means of single or multiple shooting.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, and eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
 <div class="cell docutils container">
@@ -452,36 +466,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pygmo_plugins_nonfree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppnf</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">)</span>
-<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="mf">1.2345</span><span class="p">)</span>
-<span class="n">ta</span><span class="o">.</span><span class="n">state</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 3.29796945478044e-01,  9.43846387947806e-01,
-       -6.98808299448645e-05, -9.44346244116373e-01,
-        3.29727154212398e-01, -1.65088454784805e-05,
-        9.99636411645986e+00, -2.93037901256056e-01,
-        1.61477939441094e-01,  1.27398659084316e+00,
-        9.47167118849066e-01,  1.85641413513971e-02,
-       -6.14020501980864e-01,  9.99960774095174e-01])
 </pre></div>
 </div>
 </div>
@@ -533,7 +517,7 @@
 </div>
 </div>
 </div>
-<p>Note that various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
+<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
 <p>The dynamics can then be written as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -655,12 +639,28 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># The Taylor integrator</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># The Hamiltonian</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">H_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_H_cfunc</span><span class="p">()</span>
+
+<span class="ne">TypeError</span>: _get_pc(): incompatible function arguments. The following argument types are supported:
+<span class="g g-Whitespace">    </span><span class="mi">1</span><span class="o">.</span> <span class="p">(</span><span class="n">tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">optimality</span><span class="p">:</span> <span class="n">pykep</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">optimality_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">heyoka</span><span class="p">::</span><span class="n">v34</span><span class="p">::</span><span class="n">taylor_adaptive</span><span class="o">&lt;</span><span class="n">double</span><span class="o">&gt;</span>
+
+<span class="n">Invoked</span> <span class="k">with</span><span class="p">:</span> <span class="mf">1e-16</span>
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="solving-in-single-shooting">
 <h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
-<p>We use, as a test case, a simple transfer between two orbits at 1AU. The transfer is simple enough to allow fast convergence and to directly go for a mass optimal trajectory, without using continuation, so that: <span class="math notranslate nohighlight">\(\epsilon &lt;&lt; 1\)</span>.</p>
-<p>For convenience and comparison, we also leave a second case commented out where, insted, homotopy would be needed. This case has an <span class="math notranslate nohighlight">\(\epsilon\)</span> of <span class="math notranslate nohighlight">\(0.1\)</span>, which is not mass optimal. Using lower values directly will result in no convergence.</p>
+<p>We use, as a test case, a simple transfer between two orbits at 1AU. The transfer is simple enough to allow fast convergence and to directly go for a mass optimal trajectory, without using continuation, so that we can directly start using a value <span class="math notranslate nohighlight">\(\epsilon &lt;&lt; 1\)</span>.</p>
+<p>Later, we will also study a case where we need a continuation technique to bring <span class="math notranslate nohighlight">\(\epsilon\)</span> to low values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Testcase 1 (easy, no homotopy)</span>
@@ -720,7 +720,7 @@
 </div>
 </div>
 </div>
-<p>To solve the problem we use a loop, since this is in genral a good practice. In this specific case convergence is immediate and the loop would not be strictly necessary.</p>
+<p>To solve the problem here we use a multi-start teachnique, since this is in genral a good practice. In this specific case convergence is immediate and multiple starts are not strictly necessary.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
@@ -746,15 +746,14 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit https://github.com/coin-or/Ipopt
 ******************************************************************************
+
+. Success!!
+Final mass is: 1259.8614051357965 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.8614051309653 
-</pre></div>
 </div>
 </div>
-</div>
-<p>Let us have a look at what we found ….</p>
+<p>Let us visualize what we found ….</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
@@ -774,16 +773,16 @@ Final mass is: 1259.8614051309653
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cbfe04ffe96340ea8b0abba33903b179d2ade1ea91c7029b7a2a8c8479167cce.png" src="../_images/cbfe04ffe96340ea8b0abba33903b179d2ade1ea91c7029b7a2a8c8479167cce.png" />
+<img alt="../_images/d9ac6a0b7bc0fd6ef898dae3c41314026af32e490c4d1ee83d7f7ef10d190b03.png" src="../_images/d9ac6a0b7bc0fd6ef898dae3c41314026af32e490c4d1ee83d7f7ef10d190b03.png" />
 </div>
 </div>
 </section>
 <section id="homotopy">
 <h2>Homotopy<a class="headerlink" href="#homotopy" title="Permalink to this heading">#</a></h2>
-<p>The case above was easy for our single shooting technique. In may cases, especially when multiple revolutions appear or intricate switching functions describe the optimal solution, this will not be the case.
-In that case homotopy methods can help t find a solution.</p>
-<p>Here we show how to implement such methods. We use, as test case, a less easy case (coming from an Earth-Mars transfer) where solving directly for mass optimality (<span class="math notranslate nohighlight">\(\epsilon = 1e-4\)</span> would not work).</p>
-<p>The condiftions are as follows:</p>
+<p>The case above was an easy solve for our single shooting technique. In may cases, especially when multiple revolutions appear or intricate switching functions describe the optimal solution, this will not be the case.
+In that case homotopy (continuation) methods can help to find a solution.</p>
+<p>Here we show how to implement such methods. We use, as test case, a more complex case (coming from an Earth-Mars transfer) where solving directly for mass optimality (e.g. <span class="math notranslate nohighlight">\(\epsilon = 1e-4\)</span> would not work).</p>
+<p>The conditions are as follows:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Testcase 2 (less easy, homotopy needed) [Earth-Mars]</span>
@@ -795,7 +794,7 @@ In that case homotopy methods can help t find a solution.</p>
     <span class="p">[</span><span class="o">-</span><span class="mf">169327023332.1986</span><span class="p">,</span> <span class="o">-</span><span class="mf">161931354587.78766</span><span class="p">,</span> <span class="mf">763967345.9733696</span><span class="p">],</span>
     <span class="p">[</span><span class="mf">17656.297796509956</span><span class="p">,</span> <span class="o">-</span><span class="mf">15438.116653052988</span><span class="p">,</span> <span class="o">-</span><span class="mf">756.9165272457421</span><span class="p">],</span>
 <span class="p">]</span>
-<span class="n">tof</span> <span class="o">=</span> <span class="mi">550</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">550.</span> <span class="c1">#days</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
 <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-1</span>
 </pre></div>
@@ -805,7 +804,8 @@ In that case homotopy methods can help t find a solution.</p>
 </section>
 <section id="exponential-homotopy-on-epsilon">
 <h2>Exponential homotopy on <span class="math notranslate nohighlight">\(\epsilon\)</span><a class="headerlink" href="#exponential-homotopy-on-epsilon" title="Permalink to this heading">#</a></h2>
-<p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor for the new decision vector, i.e. the various initial co-state values, the old decision vector.</p>
+<p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor for the new decision vector corresponding to each successive new value of <span class="math notranslate nohighlight">\(\epsilon\)</span>, the previous decision vector. This method forces the step size on the epsilon exponential decrease to
+small values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We instantiate a new optimzation roblem (a pygmo UDP) with the new parameters:</span>
@@ -839,6 +839,7 @@ In that case homotopy methods can help t find a solution.</p>
 <span class="c1"># No initial guess</span>
 <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-1</span>
+<span class="n">decrease_factor</span> <span class="o">=</span> <span class="mf">0.85</span>
 
 <span class="c1"># Solve</span>
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -885,7 +886,7 @@ In that case homotopy methods can help t find a solution.</p>
         <span class="n">epsilon_previous</span> <span class="o">=</span> <span class="n">epsilon</span>
 
         <span class="c1"># Decrease epsilon</span>
-        <span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="mf">0.85</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="n">decrease_factor</span>
 
         <span class="c1"># Stopping condition (desired epsilon reached)</span>
         <span class="k">if</span> <span class="n">epsilon</span> <span class="o">&lt;</span> <span class="mf">1e-4</span><span class="p">:</span>
@@ -915,15 +916,15 @@ In that case homotopy methods can help t find a solution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.53e-11 | CPU time: 2.25e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 1.53e-11 | CPU time: 2.25e-01 | Epsilon = 9.2260e-05
-Total CPU time: 4.84e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.79e-11 | CPU time: 1.65e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 1.79e-11 | CPU time: 1.65e-01 | Epsilon = 9.2260e-05
+Total CPU time: 3.89e+00
 </pre></div>
 </div>
 </div>
 </div>
 <p>We could obtain a better total computational time if we could just use a higher exponential decrease factor … but we cannot as
-this initial guess (the predictor) is poor, so that we are stuck with this. (you can try to decrease the <span class="math notranslate nohighlight">\(0.85\)</span> and will see how its always rejected, triggering the code that increases <span class="math notranslate nohighlight">\(\epsilon\)</span>$)</p>
+the initial guess (the predictor used) is poor, so that we are stuck with this (you can try to decrease the decrease_factor and will see how failures in convergence appear and <span class="math notranslate nohighlight">\(\epsilon\)</span> gets to be increased.)</p>
 <p>Let us plot what we found …</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -943,14 +944,15 @@ this initial guess (the predictor) is poor, so that we are stuck with this. (you
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2f2a250e3041d1a2ca285fa5266860231facff5a2954a182f28db7f14ba48cf9.png" src="../_images/2f2a250e3041d1a2ca285fa5266860231facff5a2954a182f28db7f14ba48cf9.png" />
+<img alt="../_images/e57e55d54f909bf0d1d10f4fa84c1ddd20458822ad7f8859445da0117a087040.png" src="../_images/e57e55d54f909bf0d1d10f4fa84c1ddd20458822ad7f8859445da0117a087040.png" />
 </div>
 </div>
 </section>
 <section id="pseudo-arc-length-continuation">
 <h2>Pseudo-arc length continuation<a class="headerlink" href="#pseudo-arc-length-continuation" title="Permalink to this heading">#</a></h2>
-<p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor the tangent vector along the solution curve. This technique is
-also known as pseudo-arc continuation. In our case the details are as follows. Assume the final constraints of TPBVB to be indicated with:</p>
+<p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor the tangent vector along the solution curve.
+This technique is commonly referred to as pseudo-arc continuation. In our case the details are as follows.
+Assume the final constraints of TPBVB to be indicated with:</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf c(\mathbf \lambda, \epsilon) = 0
@@ -962,16 +964,14 @@ also known as pseudo-arc continuation. In our case the details are as follows. A
 \]</div>
 <p>In the linear world this is:</p>
 <div class="math notranslate nohighlight">
-\[
-\frac{\partial \mathbf c}{\partial \mathbf \lambda}\delta\mathbf\lambda + \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\delta\epsilon=0
+\[\frac{\partial \mathbf c}{\partial \mathbf \lambda}\delta\mathbf\lambda + \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\delta\epsilon=0
 \]</div>
 <p>hence:</p>
 <div class="math notranslate nohighlight">
-\[
-\delta \lambda = - \mathbf A^{-1}\mathbf B \delta \epsilon
+\[\delta \lambda = - \mathbf A^{-1}\mathbf B \delta \epsilon
 \]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathbf A = \frac{\partial \mathbf c}{\partial \mathbf \lambda}\)</span> and <span class="math notranslate nohighlight">\(\mathbf B = \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\)</span>.
-Since the constraints are given directly on values of the final state, the matrices above can be computed seamlessly from a variational Taylor system. Only the last constraint <span class="math notranslate nohighlight">\(|\lambda_0|\)</span> is a exception but its gradient is also easily computed.</p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf A = \frac{\partial \mathbf c}{\partial \mathbf \lambda}\)</span> and <span class="math notranslate nohighlight">\(\mathbf B = \frac{\partial \mathbf c}{\partial \mathbf \epsilon}\)</span>.</p>
+<p>Since the constraints are given directly on values of the final state, the matrices above can be computed seamlessly from a variational Taylor system. Only the last constraint <span class="math notranslate nohighlight">\(|\lambda_0|\)</span> is a exception but its gradient is also easily computed.</p>
 <p>So lets build a variational integrator that helps here. <code class="docutils literal notranslate"><span class="pre">pykep</span></code> has the dynamics at hand in its <code class="docutils literal notranslate"><span class="pre">pykep.ta</span></code> module. We need to build a first order integrator to study variation of the variables: <span class="math notranslate nohighlight">\([\lambda_x, \lambda_y, \lambda_z, \lambda_{vx}, \lambda_{vy},\lambda_{vz}, \lambda_{m}, \lambda_{0}, \epsilon]\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1015,6 +1015,7 @@ Since the constraints are given directly on values of the final state, the matri
 <span class="c1"># No initial guess</span>
 <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-1</span>
+<span class="n">decrease_factor</span> <span class="o">=</span> <span class="mf">0.75</span>
 
 <span class="c1"># Solve</span>
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -1082,7 +1083,7 @@ Since the constraints are given directly on values of the final state, the matri
         <span class="n">epsilon_previous</span> <span class="o">=</span> <span class="n">epsilon</span>
 
         <span class="c1"># Decrease epsilon</span>
-        <span class="n">f_decrease</span> <span class="o">=</span> <span class="mf">0.75</span>
+        <span class="n">f_decrease</span> <span class="o">=</span> <span class="n">decrease_factor</span>
         <span class="n">predicted_chromosome</span> <span class="o">=</span> <span class="n">predicted_chromosome</span> <span class="o">+</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_decrease</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="n">f_decrease</span>
 
@@ -1107,9 +1108,9 @@ Since the constraints are given directly on values of the final state, the matri
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.61e-12 | CPU time: 1.85e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 1.61e-12 | CPU time: 1.85e-01 | Epsilon = 7.5254e-05
-Total CPU time: 3.90e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.25e-12 | CPU time: 1.35e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 3.25e-12 | CPU time: 1.35e-01 | Epsilon = 7.5254e-05
+Total CPU time: 3.13e+00
 </pre></div>
 </div>
 </div>
@@ -1154,8 +1155,7 @@ Total CPU time: 3.90e+00
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1218,8 +1218,8 @@ By Dario Izzo and Francesco Biscani
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
