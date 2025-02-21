@@ -21,6 +21,12 @@ enum elements_type {
     MEQ_R,  // Modified Equinoctial Elements (retrogade)
     POSVEL, // position and Velocity
 };
+
+enum optimality_type {
+    MASS,  // Mass Optimality
+    TIME,  // Time Optimality
+};
+
 inline constexpr double pi = boost::math::constants::pi<double>();
 inline constexpr double half_pi = boost::math::constants::half_pi<double>();
 inline constexpr double AU = 149597870700.0;                 // Astronomical Unit (m) - IAU 2012 Resolution B1

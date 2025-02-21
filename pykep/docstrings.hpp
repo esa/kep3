@@ -98,6 +98,8 @@ inline std::string get_pc_H_cfunc_docstring(){return "The Hamiltonian along an o
 inline std::string get_pc_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
 inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
 inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
+inline std::string get_pc_dyn_cfunc_docstring(){return "The augmented dynamics.";};
+
 
 // Lambert Problem
 std::string lambert_problem_docstring();

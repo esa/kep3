@@ -44,7 +44,10 @@ get_pc_SF_cfunc.__module__ = "ta"
 get_pc_u_cfunc = _core._get_pc_u_cfunc
 get_pc_u_cfunc.__module__ = "ta"
 get_pc_i_vers_cfunc = _core._get_pc_i_vers_cfunc
-get_pc_H_cfunc.__module__ = "ta"
+get_pc_i_vers_cfunc.__module__ = "ta"
+get_pc_dyn_cfunc = _core._get_pc_dyn_cfunc
+get_pc_dyn_cfunc.__module__ = "ta"
+
 
 # Removing core from the list of imported symbols.
 del _core

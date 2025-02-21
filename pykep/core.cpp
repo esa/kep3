@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -25,8 +25,8 @@
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
 #include <kep3/ta/cr3bp.hpp>
-#include <kep3/ta/stark.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
+#include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -77,6 +77,11 @@ PYBIND11_MODULE(core, m) // NOLINT
                "Modified Equinoctial Elements (retrograde) :math:`[p,f,g,h,k,L]` (Mean "
                "Longitude)")
         .value("POSVEL", kep3::POSVEL, "Position and Velocity")
+        .export_values();
+
+    py::enum_<kep3::optimality_type>(m, "optimality_type", "")
+        .value("MASS", kep3::optimality_type::MASS, "Mass optimality")
+        .value("TIME", kep3::optimality_type::TIME, "Time optimality")
         .export_values();
 
     // We expose the various anomaly conversions
@@ -329,7 +334,7 @@ PYBIND11_MODULE(core, m) // NOLINT
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_stark_docstring().c_str());
+        py::arg("tol"), pykep::get_stark_docstring().c_str());
     m.def(
         "_get_stark_var",
         [](double tol) {
@@ -337,7 +342,7 @@ PYBIND11_MODULE(core, m) // NOLINT
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_stark_var_docstring().c_str());
+        py::arg("tol"), pykep::get_stark_var_docstring().c_str());
     m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
     // CR3BP
     m.def(
@@ -347,7 +352,7 @@ PYBIND11_MODULE(core, m) // NOLINT
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_cr3bp_docstring().c_str());
+        py::arg("tol"), pykep::get_cr3bp_docstring().c_str());
     m.def(
         "_get_cr3bp_var",
         [](double tol) {
@@ -355,30 +360,31 @@ PYBIND11_MODULE(core, m) // NOLINT
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_cr3bp_var_docstring().c_str());
+        py::arg("tol"), pykep::get_cr3bp_var_docstring().c_str());
     m.def("_cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
-    // Pontryagin Cartesian 
+    // Pontryagin Cartesian
     m.def(
         "_get_pc",
-        [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_pc(tol);
+        [](double tol, kep3::optimality_type optimality) {
+            auto ta_cache = kep3::ta::get_ta_pc(tol, optimality);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_pc_docstring().c_str());
+        py::arg("tol"), py::arg("optimality"), pykep::get_pc_docstring().c_str());
     m.def(
         "_get_pc_var",
-        [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_pc_var(tol);
+        [](double tol, kep3::optimality_type optimality) {
+            auto ta_cache = kep3::ta::get_ta_pc_var(tol, optimality);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol") = 1e-16, pykep::get_pc_var_docstring().c_str());
+        py::arg("tol"), py::arg("optimality"), pykep::get_pc_var_docstring().c_str());
     m.def("_pc_dyn", &kep3::ta::pc_dyn, pykep::pc_dyn_docstring().c_str());
     m.def("_get_pc_H_cfunc", &kep3::ta::get_pc_H_cfunc, pykep::get_pc_H_cfunc_docstring().c_str());
     m.def("_get_pc_SF_cfunc", &kep3::ta::get_pc_SF_cfunc, pykep::get_pc_SF_cfunc_docstring().c_str());
     m.def("_get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
     m.def("_get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
+    m.def("_get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(

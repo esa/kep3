@@ -26,33 +26,54 @@ using kep3::ta::get_ta_pc_cache_dim;
 using kep3::ta::get_ta_pc_var;
 using kep3::ta::get_ta_pc_var_cache_dim;
 
-using kep3_tests::L_infinity_norm_rel;
-
 // This needs to be the first test as cache dimension will be assumed to be zero here.
 TEST_CASE("caches")
 {
-    // The non variational one.
-    REQUIRE(get_ta_pc_cache_dim() == 0u);
-    auto ta_cached = get_ta_pc(1e-16);
-    REQUIRE(get_ta_pc_cache_dim() == 1u);
-    ta_cached = get_ta_pc(1e-16);
-    REQUIRE(get_ta_pc_cache_dim() == 1u);
-    ta_cached = get_ta_pc(1e-8);
-    REQUIRE(get_ta_pc_cache_dim() == 2u);
+    {
+        // MASS
+        //  The non variational one.
+        REQUIRE(get_ta_pc_cache_dim() == 0u);
+        auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 1u);
+        ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 1u);
+        ta_cached = get_ta_pc(1e-8, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_cache_dim() == 2u);
 
-    // The variational integrator.
-    REQUIRE(get_ta_pc_var_cache_dim() == 0u);
-    ta_cached = get_ta_pc_var(1e-16);
-    REQUIRE(get_ta_pc_var_cache_dim() == 1u);
-    ta_cached = get_ta_pc_var(1e-16);
-    REQUIRE(get_ta_pc_var_cache_dim() == 1u);
-    ta_cached = get_ta_pc_var(1e-8);
-    REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+        // The variational integrator.
+        REQUIRE(get_ta_pc_var_cache_dim() == 0u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 1u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 1u);
+        ta_cached = get_ta_pc_var(1e-8, kep3::optimality_type::MASS);
+        REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+    }
+    {
+        // TIME
+        //  The non variational one. (no cache is not empty)
+        REQUIRE(get_ta_pc_cache_dim() == 2u);
+        auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 3u);
+        ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 3u);
+        ta_cached = get_ta_pc(1e-8, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_cache_dim() == 4u);
+
+        // The variational integrator.
+        REQUIRE(get_ta_pc_var_cache_dim() == 2u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 3u);
+        ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 3u);
+        ta_cached = get_ta_pc_var(1e-8, kep3::optimality_type::TIME);
+        REQUIRE(get_ta_pc_var_cache_dim() == 4u);
+    }
 }
 
-TEST_CASE("dynamics")
+TEST_CASE("dynamics_mass")
 {
-    auto ta_cached = get_ta_pc(1e-16);
+    auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::MASS);
     REQUIRE(ta_cached.is_variational() == false);
     REQUIRE(ta_cached.get_dim() == 14);
     REQUIRE(ta_cached.get_pars().size() == 5); // [mu, c1, c2, eps, l0]
@@ -61,7 +82,7 @@ TEST_CASE("dynamics")
         // We test a meaningless case.
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
         std::vector<double> ic = {1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.};
-        std::vector<double> pars = {1., 0.01, 0.01, 0.5, 1.};
+        std::vector<double> pars = {1., 0.01, 1., 0.5, 1.};
         ta.set_time(0.);
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
@@ -77,9 +98,9 @@ TEST_CASE("dynamics")
     }
 }
 
-TEST_CASE("variational_dynamics")
+TEST_CASE("variational_dynamics_mass")
 {
-    auto ta_cached = get_ta_pc_var(1e-16);
+    auto ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::MASS);
     REQUIRE(ta_cached.is_variational() == true);
     REQUIRE(ta_cached.get_dim() == 14 + 14 * 8);
     REQUIRE(ta_cached.get_pars().size() == 5);
@@ -90,7 +111,7 @@ TEST_CASE("variational_dynamics")
         // We test a meaningless case.
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
         std::vector<double> ic = {1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.};
-        std::vector<double> pars = {1., 0.01, 0.01, 0.5, 1.};
+        std::vector<double> pars = {1., 0.01, 1., 0.5, 1.};
         ta.set_time(0.);
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
@@ -131,5 +152,89 @@ TEST_CASE("variational_dynamics")
                9.9999980316480919e-01,  2.1926164655457741e-07};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
         REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-13);
+    }
+}
+
+TEST_CASE("dynamics_time")
+{
+    auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
+    REQUIRE(ta_cached.is_variational() == false);
+    REQUIRE(ta_cached.get_dim() == 14);
+    REQUIRE(ta_cached.get_pars().size() == 3); // [mu, c1, c2, eps, l0]
+
+    {
+        // We test a meaningless case.
+        taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
+        std::vector<double> ic = {1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.};
+        std::vector<double> pars = {1., 0.01, 1.};
+        ta.set_time(0.);
+        std::copy(ic.begin(), ic.end(), ta.get_state_data());
+        std::copy(pars.begin(), pars.end(), ta.get_pars_data());
+
+        auto out = ta.propagate_until(1.2345);
+        std::vector<double> const ground_truth
+            = {3.29326772571214e-01,  9.43518279694245e-01,  -2.37243691077672e-04, -9.45216052816242e-01,
+               3.29089569819722e-01,  -5.58634286200389e-05, 9.98765500000000e+00,  -2.93073464383497e-01,
+               1.60767429870367e-01,  1.27401079872040e+00,  9.47277110771498e-01,  1.87535673100874e-02,
+               -6.14093196354726e-01, 9.99866710251057e-01};
+        REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
+        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-13);
+    }
+}
+
+TEST_CASE("variational_dynamics_time")
+{
+    auto ta_cached = get_ta_pc_var(1e-16, kep3::optimality_type::TIME);
+    REQUIRE(ta_cached.is_variational() == true);
+    REQUIRE(ta_cached.get_dim() == 14 + 14 * 8);
+    REQUIRE(ta_cached.get_pars().size() == 3);
+    REQUIRE(ta_cached.get_vorder() == 1);
+    REQUIRE(ta_cached.get_vargs().size() == 8);
+
+    {
+        // We test a meaningless case.
+        taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
+        std::vector<double> ic = {1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.};
+        std::vector<double> pars = {1., 0.01, 1.};
+        ta.set_time(0.);
+        std::copy(ic.begin(), ic.end(), ta.get_state_data());
+        std::copy(pars.begin(), pars.end(), ta.get_pars_data());
+
+        auto out = ta.propagate_until(1.2345);
+        std::vector<double> const ground_truth
+            = {3.29326772571214e-01,  9.43518279694245e-01,  -2.37243691077678e-04, -9.45216052816242e-01,
+               3.29089569819723e-01,  -5.58634286200446e-05, 9.98765500000000e+00,  -2.93073464383497e-01,
+               1.60767429870367e-01,  1.27401079872040e+00,  9.47277110771498e-01,  1.87535673100874e-02,
+               -6.14093196354726e-01, 9.99866710251056e-01,  8.41133971750316e-05,  -6.23805339365836e-05,
+               -4.35576346536962e-05, -2.91230168218841e-04, 1.30236152736551e-04,  1.82818786897539e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  -6.15912904833284e-05, 2.66032245545687e-04,
+               -4.43225236984674e-05, 1.34507269522455e-04,  -4.54930989076605e-04, 1.60305288190260e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  -2.62904019617088e-05, -2.65922554162050e-05,
+               2.44305289111464e-04,  1.25451303614909e-04,  9.83231934912956e-05,  -4.15197128839756e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  1.45747427272735e-04,  -3.84863004523546e-05,
+               2.03218553225493e-05,  -3.49785695279272e-04, 1.60038710912614e-05,  2.06198842045081e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  -3.42763969439676e-05, 7.55063066434171e-04,
+               -7.95411628295219e-05, -2.67105446050315e-05, -9.02168112273193e-04, 2.87633150217543e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  1.12967971828034e-04,  7.93937073268113e-06,
+               5.44943821249505e-04,  -1.05916110655104e-04, 1.98653792978839e-05,  -5.79800432453000e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  0.00000000000000e+00,  0.00000000000000e+00,
+               0.00000000000000e+00,  0.00000000000000e+00,  0.00000000000000e+00,  0.00000000000000e+00,
+               0.00000000000000e+00,  0.00000000000000e+00,  1.44196561049032e+00,  9.20877930716147e-01,
+               -1.62136878165076e-04, -1.54295185938881e+00, -1.11299681577074e+00, 1.93806447760147e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  1.26630644933279e+00,  1.60313599146158e+00,
+               -3.05364032176103e-04, -2.38639680762912e+00, -3.22452855839271e-01, 4.80016576560558e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  -2.59565205932807e-04, -2.18973016400636e-04,
+               3.29244288341037e-01,  4.08237064294930e-04,  9.12183025923601e-05,  9.44745593234806e-01,
+               0.00000000000000e+00,  0.00000000000000e+00,  -1.57652935813679e+00, -3.74079622523328e-01,
+               7.63176133867316e-05,  2.26516174045298e+00,  6.32816141123617e-01,  -1.68107758370038e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  -4.49254170142732e-01, -1.28907236682424e+00,
+               8.78481189862216e-05,  9.78050639895916e-01,  7.79112671238256e-01,  -1.71054976102050e-04,
+               0.00000000000000e+00,  0.00000000000000e+00,  7.56303455884195e-05,  5.74555043756629e-05,
+               -9.43788098497564e-01, -1.31402239732434e-04, -3.44548398801908e-05, 3.29727673372486e-01,
+               0.00000000000000e+00,  0.00000000000000e+00,  8.00334644311539e-05,  2.67404597714927e-05,
+               -2.55263719046308e-06, -1.53938341730639e-04, -5.93271855549472e-05, -2.42455086700587e-05,
+               1.00000000000000e+00,  0.00000000000000e+00};
+        REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
+        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-12);
     }
 }
