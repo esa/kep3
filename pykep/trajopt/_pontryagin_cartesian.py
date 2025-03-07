@@ -69,8 +69,8 @@ class pontryagin_cartesian_mass:
             *with_gradient* (:class:`bool`): whether to use the gradient of the constraints or not.
         """
         # Non-dimensional units
-        VEL = L / TIME  # Unit for velocity (1 AU/year)
-        ACC = VEL / TIME  # Unit for acceleration (1 AU/year^2)
+        VEL = L / TIME  # Unit for velocity 
+        ACC = VEL / TIME  # Unit for acceleration 
 
         # We redefine the user inputs in non dimensional units
         self.mu = mu / (L**3 / TIME**2)
@@ -177,7 +177,7 @@ class pontryagin_cartesian_mass:
     def get_nec(self):
         return 8
 
-    def plot_trajectory(self, x, N=100, ax3D=None):
+    def plot(self, x, N=100, ax3D=None):
         """
         This function plots the trajectory encoded in the decision vector x.
 
@@ -524,21 +524,21 @@ class pontryagin_cartesian_time:
     def get_nec(self):
         return 8
 
-    def plot_trajectory(self, x, N=100, ax3D=None):
+    def plot(self, x, ax3D=None,  N=100, **kwargs):
         """
         This function plots the trajectory encoded in the decision vector x.
 
         Args:
             *x* (:class:`list`): the decision vector.
-            *N* (:class:`int`): the number of points to use in the plot.
             *ax3D* (:class:`matplotlib.axes._axes.Axes`): the axis to use for the plot. If None, a new axis is created.
+            *N* (:class:`int`): the number of points to use in the plot.
+            *\\*\\*kwargs*: Additional keyword arguments to pass to the trajectory plot.
 
         Returns:
             *ax3D* (:class:`matplotlib.axes._axes.Axes`): the axis of the plot.
         """
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d.art3d import Line3DCollection
-        import matplotlib.colors as mcolors
 
         # Single Shooting
         self.set_ta_state(x[:8])
@@ -556,7 +556,7 @@ class pontryagin_cartesian_time:
         state = sol[-1]  # Extract (x, y, z) coordinates
         xx, yy, zz = state[:, 0], state[:, 1], state[:, 2]
 
-        ax3D.plot(xx, yy, zz)
+        ax3D.plot(xx, yy, zz, 'r')
 
         # Plotting the boundary conditions
         ax3D.scatter(self.posvel0[0][0], self.posvel0[0][1], self.posvel0[0][2])
