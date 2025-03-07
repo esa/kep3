@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Low-thrust transfers via indirect methods I (mass) &#8212; pykep 0.0.1 documentation</title>
+    <title>Low-thrust transfers via indirect methods I (mass-fixed time) &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_I';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Primer Vector" href="primer_vector.html" />
+    <link rel="next" title="Low-thrust transfers via indirect methods II (time)" href="pontryagin_cartesian_II.html" />
     <link rel="prev" title="Multiple impulses" href="udp_pl2pl_N_impulses.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -203,7 +203,8 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods I (mass)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -425,7 +426,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Low-thrust transfers via indirect methods I (mass)</h1>
+    <h1>Low-thrust transfers via indirect methods I (mass-fixed time)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -452,8 +453,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-i-mass">
-<h1>Low-thrust transfers via indirect methods I (mass)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass" title="Permalink to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-i-mass-fixed-time">
+<h1>Low-thrust transfers via indirect methods I (mass-fixed time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass-fixed-time" title="Permalink to this heading">#</a></h1>
 <p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed time low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle. The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
@@ -740,7 +741,7 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.9008822031467
+Final mass is: 1259.9008822030892
 Hamiltonian at the final point is: [-0.84850604] 
 </pre></div>
 </div>
@@ -766,7 +767,7 @@ Hamiltonian at the final point is: [-0.84850604]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/257c5bb02464be08357280dd3a4f52637673cc905392364dce8e9dc63d785042.png" src="../_images/257c5bb02464be08357280dd3a4f52637673cc905392364dce8e9dc63d785042.png" />
+<img alt="../_images/4ebc7467f7c3aa71913a367f0e5f29b5b5c70d9d3e4ec7937ce08137cbc86df7.png" src="../_images/4ebc7467f7c3aa71913a367f0e5f29b5b5c70d9d3e4ec7937ce08137cbc86df7.png" />
 </div>
 </div>
 </section>
@@ -909,9 +910,9 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.09e-12 | CPU time: 2.32e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 9.09e-12 | CPU time: 2.32e-01 | Epsilon = 9.2260e-05
-Total CPU time: 5.03e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.54e-12 | CPU time: 2.30e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 4.54e-12 | CPU time: 2.30e-01 | Epsilon = 9.2260e-05
+Total CPU time: 5.22e+00
 </pre></div>
 </div>
 </div>
@@ -937,7 +938,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/86d95bc8efbc081b5b593166335182c30d9937cca81ef87a29c4fabf493564b9.png" src="../_images/86d95bc8efbc081b5b593166335182c30d9937cca81ef87a29c4fabf493564b9.png" />
+<img alt="../_images/f24a0de739c7551fadea78e2fca1a8df4789f502863b99a2f2792a7024db92af.png" src="../_images/f24a0de739c7551fadea78e2fca1a8df4789f502863b99a2f2792a7024db92af.png" />
 </div>
 </div>
 </section>
@@ -1101,9 +1102,9 @@ $$</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.35e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 1.35e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
-Total CPU time: 4.14e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.62e-12 | CPU time: 1.96e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 6.62e-12 | CPU time: 1.96e-01 | Epsilon = 7.5254e-05
+Total CPU time: 4.17e+00
 </pre></div>
 </div>
 </div>
@@ -1133,11 +1134,11 @@ Total CPU time: 4.14e+00
       </div>
     </a>
     <a class="right-next"
-       href="primer_vector.html"
+       href="pontryagin_cartesian_II.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Primer Vector</p>
+        <p class="prev-next-title">Low-thrust transfers via indirect methods II (time)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -47,6 +47,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_II';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Primer Vector" href="primer_vector.html" />
+    <link rel="prev" title="Low-thrust transfers via indirect methods I (mass-fixed time)" href="pontryagin_cartesian_I.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,8 +110,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -184,7 +184,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
@@ -196,14 +196,15 @@
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods II (time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -751,8 +752,8 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 ******************************************************************************
 
 . Success!!
-Final mass is: 1049.4338611857222
-Final time is: 255.70280238443493
+Final mass is: 1049.4338611857306
+Final time is: 255.7028023844301
 </pre></div>
 </div>
 </div>
@@ -777,7 +778,7 @@ Final time is: 255.70280238443493
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d3c0dff298cb6378eed9491db2dc48d141edfbf58c6088e5c011831cab0b1092.png" src="../_images/d3c0dff298cb6378eed9491db2dc48d141edfbf58c6088e5c011831cab0b1092.png" />
+<img alt="../_images/2baf3d5e27eb364399777b2c32e8ab15712ca35b1cfb7b3ac1f3f60d0e42f159.png" src="../_images/2baf3d5e27eb364399777b2c32e8ab15712ca35b1cfb7b3ac1f3f60d0e42f159.png" />
 </div>
 </div>
 </section>
@@ -883,106 +884,85 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.49e-14 | CPU time: 7.87e-01 | T_max = 6.0000e-01 | Tof = 2.557028e+02 | mass = 1.049e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.88e-14 | CPU time: 3.10e-01 | T_max = 6.0000e-01 | Tof = 2.557028e+02 | mass = 1.049e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.28e-13 | CPU time: 4.35e-02 | T_max = 5.7000e-01 | Tof = 2.602438e+02 | mass = 1.064e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.59e-13 | CPU time: 4.98e-02 | T_max = 5.7000e-01 | Tof = 2.602438e+02 | mass = 1.064e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.15e-13 | CPU time: 4.32e-02 | T_max = 5.4150e-01 | Tof = 2.648824e+02 | mass = 1.079e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.25e-12 | CPU time: 4.32e-02 | T_max = 5.4150e-01 | Tof = 2.648824e+02 | mass = 1.079e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.85e-13 | CPU time: 4.91e-02 | T_max = 5.1442e-01 | Tof = 2.696447e+02 | mass = 1.093e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.48e-13 | CPU time: 4.93e-02 | T_max = 5.1442e-01 | Tof = 2.696447e+02 | mass = 1.093e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.10e-13 | CPU time: 4.86e-02 | T_max = 4.8870e-01 | Tof = 2.745708e+02 | mass = 1.106e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.69e-13 | CPU time: 4.88e-02 | T_max = 4.8870e-01 | Tof = 2.745708e+02 | mass = 1.106e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.07e-13 | CPU time: 4.84e-02 | T_max = 4.6427e-01 | Tof = 2.797276e+02 | mass = 1.119e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.95e-13 | CPU time: 4.80e-02 | T_max = 4.6427e-01 | Tof = 2.797276e+02 | mass = 1.119e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.38e-12 | CPU time: 4.89e-02 | T_max = 4.4106e-01 | Tof = 2.852372e+02 | mass = 1.131e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.32e-12 | CPU time: 4.88e-02 | T_max = 4.4106e-01 | Tof = 2.852372e+02 | mass = 1.131e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.09e-11 | CPU time: 4.89e-02 | T_max = 4.1900e-01 | Tof = 2.913367e+02 | mass = 1.142e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.28e-11 | CPU time: 4.86e-02 | T_max = 4.1900e-01 | Tof = 2.913367e+02 | mass = 1.142e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.23e-12 | CPU time: 4.93e-02 | T_max = 3.9805e-01 | Tof = 2.984896e+02 | mass = 1.151e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.55e-12 | CPU time: 4.93e-02 | T_max = 3.9805e-01 | Tof = 2.984896e+02 | mass = 1.151e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.59e-11 | CPU time: 4.90e-02 | T_max = 3.7815e-01 | Tof = 3.075125e+02 | mass = 1.158e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.31e-13 | CPU time: 5.53e-02 | T_max = 3.7815e-01 | Tof = 3.075125e+02 | mass = 1.158e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.24e-13 | CPU time: 5.59e-02 | T_max = 3.5924e-01 | Tof = 3.194991e+02 | mass = 1.163e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.57e-13 | CPU time: 5.57e-02 | T_max = 3.5924e-01 | Tof = 3.194991e+02 | mass = 1.163e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.45e-13 | CPU time: 5.57e-02 | T_max = 3.4128e-01 | Tof = 3.352061e+02 | mass = 1.164e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.35e-13 | CPU time: 5.54e-02 | T_max = 3.4128e-01 | Tof = 3.352061e+02 | mass = 1.164e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.78e-13 | CPU time: 6.29e-02 | T_max = 3.2422e-01 | Tof = 3.542919e+02 | mass = 1.163e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.35e-14 | CPU time: 6.25e-02 | T_max = 3.2422e-01 | Tof = 3.542919e+02 | mass = 1.163e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.62e-11 | CPU time: 5.61e-02 | T_max = 3.0801e-01 | Tof = 3.756890e+02 | mass = 1.16e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.86e-11 | CPU time: 5.57e-02 | T_max = 3.0801e-01 | Tof = 3.756890e+02 | mass = 1.16e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.25e-15 | CPU time: 5.57e-02 | T_max = 2.9260e-01 | Tof = 3.987081e+02 | mass = 1.157e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.86e-13 | CPU time: 5.58e-02 | T_max = 2.9260e-01 | Tof = 3.987081e+02 | mass = 1.157e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.35e-13 | CPU time: 5.47e-02 | T_max = 2.7797e-01 | Tof = 4.235387e+02 | mass = 1.154e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.95e-14 | CPU time: 5.50e-02 | T_max = 2.7797e-01 | Tof = 4.235387e+02 | mass = 1.154e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.49e-13 | CPU time: 5.28e-02 | T_max = 2.6408e-01 | Tof = 4.515117e+02 | mass = 1.15e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.09e-13 | CPU time: 5.36e-02 | T_max = 2.6408e-01 | Tof = 4.515117e+02 | mass = 1.15e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.06e-14 | CPU time: 5.08e-02 | T_max = 2.5087e-01 | Tof = 4.865749e+02 | mass = 1.142e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.60e-14 | CPU time: 5.14e-02 | T_max = 2.5087e-01 | Tof = 4.865749e+02 | mass = 1.142e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.16e-13 | CPU time: 5.60e-02 | T_max = 2.3833e-01 | Tof = 5.445600e+02 | mass = 1.119e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.14e-12 | CPU time: 5.63e-02 | T_max = 2.3833e-01 | Tof = 5.445600e+02 | mass = 1.119e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 8.80e-01 | CPU time: 2.62e-01 | T_max = 2.2641e-01 | Tof = 5.445600e+02 | mass = 1.138e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.72e-13 | CPU time: 8.27e-02 | T_max = 2.2641e-01 | Tof = 6.757014e+02 | mass = 1.051e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.18e-11 | CPU time: 6.03e-02 | T_max = 2.3237e-01 | Tof = 5.988161e+02 | mass = 1.091e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.20e-09 | CPU time: 9.61e-02 | T_max = 2.1509e-01 | Tof = 8.178073e+02 | mass = 983.4
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 9.75e-01 | CPU time: 2.43e-01 | T_max = 2.2075e-01 | Tof = 5.988161e+02 | mass = 1.112e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.90e-01 | CPU time: 3.18e-01 | T_max = 2.0434e-01 | Tof = 8.178073e+02 | mass = 1.009e+03
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.35e-13 | CPU time: 7.76e-02 | T_max = 2.2656e-01 | Tof = 6.736644e+02 | mass = 1.052e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 3.11e-01 | CPU time: 2.93e-01 | T_max = 2.0971e-01 | Tof = 8.178073e+02 | mass = 996.3
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 1.01e+00 | CPU time: 4.08e-01 | T_max = 2.1523e-01 | Tof = 6.736644e+02 | mass = 1.074e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.04e-13 | CPU time: 7.92e-02 | T_max = 2.1240e-01 | Tof = 8.458252e+02 | mass = 972.4
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.33e-10 | CPU time: 8.95e-02 | T_max = 2.2090e-01 | Tof = 7.493192e+02 | mass = 1.014e+03
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.77e-14 | CPU time: 1.53e-01 | T_max = 2.0178e-01 | Tof = 9.385610e+02 | mass = 943.8
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 8.55e-01 | CPU time: 2.87e-01 | T_max = 2.0985e-01 | Tof = 7.493192e+02 | mass = 1.038e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.46e-12 | CPU time: 1.20e-01 | T_max = 2.1537e-01 | Tof = 8.147246e+02 | mass = 984.7
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.97e-01 | CPU time: 3.02e-01 | T_max = 2.0461e-01 | Tof = 8.147246e+02 | mass = 1.01e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 3.14e-01 | CPU time: 3.72e-01 | T_max = 2.0999e-01 | Tof = 8.147246e+02 | mass = 997.6
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.98e-13 | CPU time: 7.94e-02 | T_max = 2.1268e-01 | Tof = 8.430146e+02 | mass = 973.5
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.96e-01 | CPU time: 4.93e-01 | T_max = 2.0205e-01 | Tof = 8.430146e+02 | mass = 999.8
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.86e-13 | CPU time: 1.29e-01 | T_max = 2.0737e-01 | Tof = 8.928553e+02 | mass = 956.3
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.86e-13 | CPU time: 1.29e-01 | T_max = 1.9700e-01 | Tof = 8.928553e+02 | mass = 956.3
-Total CPU time: 6.70e+00
-mass 956.2625643649544
-time 892.8553270470502
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.77e-14 | CPU time: 1.53e-01 | T_max = 1.9169e-01 | Tof = 9.385610e+02 | mass = 943.8
+Total CPU time: 3.88e+00
+mass 943.8161188934771
+time 938.5610353720501
 </pre></div>
 </div>
 </div>
@@ -998,7 +978,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ce0e87bc3c315eef05d2d7d73b6ef897caceb06a2cd91016c9830bdc303b1c2e.png" src="../_images/ce0e87bc3c315eef05d2d7d73b6ef897caceb06a2cd91016c9830bdc303b1c2e.png" />
+<img alt="../_images/65e90e3c7ac7dcb7759c0886172a203b97e8b08ab4a014d1b4ae76daec97abc3.png" src="../_images/65e90e3c7ac7dcb7759c0886172a203b97e8b08ab4a014d1b4ae76daec97abc3.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1008,7 +988,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0c401f72eaa3df7ce41b63f5dd4ee9db328406f22c9acbd77631f3dca50f446e.png" src="../_images/0c401f72eaa3df7ce41b63f5dd4ee9db328406f22c9acbd77631f3dca50f446e.png" />
+<img alt="../_images/a44bed51a16fe3ff92c83f9eee2a5d32841e51ce9050257b6df30077ad93eef2.png" src="../_images/a44bed51a16fe3ff92c83f9eee2a5d32841e51ce9050257b6df30077ad93eef2.png" />
 </div>
 </div>
 </section>
@@ -1025,6 +1005,24 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="pontryagin_cartesian_I.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Low-thrust transfers via indirect methods I (mass-fixed time)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="primer_vector.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Primer Vector</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
