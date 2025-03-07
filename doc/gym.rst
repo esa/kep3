@@ -10,7 +10,7 @@ problems is called the "pykep gym" and hopes to become an established benchmark 
 and traditional optimisation techniques on trajectory design problems.
 
 .. currentmodule:: pykep.trajopt.gym
-
+ 
 MGA problems
 ************************
 
