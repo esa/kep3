@@ -454,8 +454,8 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-ii-time">
 <h1>Low-thrust transfers via indirect methods II (time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-ii-time" title="Permalink to this heading">#</a></h1>
 <p>In this notebook we show how to solve the <strong>minimum time</strong> Optimal Control Problem (OCP) for a low-thrust interplanetary transfer employing an indirect method.</p>
-<p>Indirect methods are basically following the same template: starting from the dynamics an augmented system of ODE is built applying Pontryagin maximum (minimum, in our case) principle. A Two Point Boundary Value Problem is hence defined on the derived augmented system and solved by means of single or multiple shooting.</p>
-<p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, and eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
+<p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle (PMP). The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
+<p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
 <p>We highlight the differences with respect to the developments presented in the <a class="reference internal" href="pontryagin_cartesian.html"><span class="std std-doc">mass optimal</span></a> version of the very same indirect method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -472,19 +472,19 @@ document.write(`
 </div>
 <section id="manual-construction-of-the-tpbvp">
 <h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Permalink to this heading">#</a></h2>
-<p>We consider the dynamics:</p>
+<p>We consider the dynamics of a spacecraft moving around a massive primary and equipped with a low-thrust propulsion system capable of delivering a constant thrust <span class="math notranslate nohighlight">\(T_{max}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \left\{
 \begin{array}{l}
 \dot{\mathbf r}  = \mathbf v \\
-\dot{\mathbf v} = -\frac{mu}{r^3}\mathbf r + c_1 \frac um \hat{\mathbf i}\\
-\dot{m} = - c_2 u
+\dot{\mathbf v} = -\frac{\mu}{r^3}\mathbf r + c_1 \frac um \hat{\mathbf i}\\
+\dot{m} = - \frac{c_1}{c_2} u
 \end{array}
 \right.
 \end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(c_1=T_{max}\)</span> is the maximum thrust that the spacecarft propulsion can deliver, while <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp} g_0}\)</span>.</p>
-<p>We also introduce as many auxiliary functions <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> (the co-states) are there are state variables. Using <code class="docutils literal notranslate"><span class="pre">heyoka</span></code> as a symbolic manipulator, let us introduce symbols for all the time dependent quantities:</p>
+<p>where <span class="math notranslate nohighlight">\(c_1=T_{max}\)</span> is the maximum thrust that the spacecarft propulsion can deliver, while <span class="math notranslate nohighlight">\(c_2 = I_{sp} g_0\)</span>.</p>
+<p>We introduce, following Pontryagin theory, as many auxiliary functions <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> (the co-states) as there are state variables. Using <code class="docutils literal notranslate"><span class="pre">heyoka</span></code> as a symbolic manipulator, let us introduce symbols for all the time dependent quantities:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The state</span>
@@ -516,20 +516,20 @@ document.write(`
 </div>
 </div>
 </div>
-<p>For consistency to the mass optimal case we keep the space for an <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter (index 3) but we will not use it here since the optimality principle is simply:</p>
+<p>For consistency to the mass optimal case we keep the space for an <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter (index 3) but we will not use it here since the optimality principle is, in our case, simply:</p>
 <div class="math notranslate nohighlight">
 \[
-J = \lambda_0 \int_0^T dt
+J = \lambda_J \int_0^T dt
 \]</div>
-<p>and results already in a smooth trajectory (no need to introduce a continuation parameter).</p>
-<p>Note how the various constants of our problem are thus considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
+<p>and results already in a smooth trajectory (no need to introduce a continuation parameter). <span class="math notranslate nohighlight">\(\lambda_J\)</span> is a positive number which can be set to any value without changing the nature of our optimality principle (e.g. minimzing time or three times the time must result in the same solution). We use it here explicilty as it adds one degree of freedom which can be used in the numerical implementation to normalize the problem.</p>
+<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
 <p>The dynamics can then be written as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dynamics</span>
 <span class="n">fr</span> <span class="o">=</span> <span class="n">v</span>
 <span class="n">fv</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span> <span class="o">/</span> <span class="n">m</span> <span class="o">*</span> <span class="n">i_vers</span> <span class="o">-</span> <span class="p">(</span><span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">r3</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span>
-<span class="n">fm</span> <span class="o">=</span> <span class="o">-</span><span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span>
+<span class="n">fm</span> <span class="o">=</span> <span class="o">-</span><span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span>
 </pre></div>
 </div>
 </div>
@@ -537,7 +537,7 @@ J = \lambda_0 \int_0^T dt
 <p>We introduce the Hamiltonian (<span class="math notranslate nohighlight">\(\mathbf x\)</span> is the whole state, <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> is the whole co-state, and <span class="math notranslate nohighlight">\(\mathbf u\)</span> represent are all the controls),</p>
 <div class="math notranslate nohighlight">
 \[
-\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0
+\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_J
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -572,7 +572,7 @@ J = \lambda_0 \int_0^T dt
 <p>The minimum principle from Pontryagin requires to find the mimimum in the admissible control space of the Hamiltonian:</p>
 <div class="math notranslate nohighlight">
 \[
-\mathbf u^* = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
+\mathbf u^* (\mathbf x, \mathbf \lambda) = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
 \]</div>
 <p>which, in our case, results in:</p>
 <div class="cell docutils container">
@@ -593,6 +593,10 @@ J = \lambda_0 \int_0^T dt
 <p>The above is the first and main difference with respect to the development made for a mass optimal trajectory. The Pontryagin minimum principle here dictates the same extpressions we had for the thrust direction and simply a full throttle always. this last result comes from the solution of the Hamiltonian minimization once we realize that the corresponding swithing function is always negative and thus the throttle is always on.</p>
 </div>
 <p>Thanks to the above relations, the control is now a continuous differentiable function of the states and costates and thus the dynamics as well as the Hamiltonian can be reworked:</p>
+<div class="math notranslate nohighlight">
+\[
+H(\mathbf x, \mathbf \lambda) = \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u^*)
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rhs</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">argmin_H_full</span><span class="p">)</span>
@@ -604,7 +608,7 @@ J = \lambda_0 \int_0^T dt
 </div>
 </div>
 </div>
-<p>The following code block thus instantiate the heyoka integrator as well as other convenience functions.</p>
+<p>The following code block instantiate the heyoka integrator for the augmented dynamics as well as other convenience functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We compile the Hamiltonian into a C function (to be called with pars = [mu, c1, c2, eps, l0])</span>
@@ -657,9 +661,9 @@ for analysis of specific cases, but in general they are used internally by the v
 </section>
 <section id="solving-in-single-shooting">
 <h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
-<p>We use, as a test case, a simple transfer between two orbits at 1AU. We start with a relatively high value of the thrust <span class="math notranslate nohighlight">\(T_{max}\)</span></p>
-<p>Later, we will also study a case where we need a continuation technique to decrease <span class="math notranslate nohighlight">\(T_{max}\)</span> to low values.</p>
-<p>We instantiate the shooting method using the UDP provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code>:</p>
+<p>We use, as a test case, a simple transfer between the Earth and Mars. We start with a relatively high value of the thrust <span class="math notranslate nohighlight">\(T_{max}\)</span></p>
+<p>Later, we will use a continuation technique to decrease <span class="math notranslate nohighlight">\(T_{max}\)</span> to lower values.</p>
+<p>We instantiate a single shooting problem for this case using the UDP (User Defined Problem in the <code class="docutils literal notranslate"><span class="pre">pygmo</span></code> jargon) provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Factory for the pygmo udp.</span>
@@ -689,7 +693,7 @@ for analysis of specific cases, but in general they are used internally by the v
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ip</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">ipopt</span><span class="p">()</span>
 <span class="c1">#ip.set_numeric_option(&quot;tol&quot;, 1e-1)  # Change the relative convergence tolerance</span>
-<span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;max_iter&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># Change the maximum iterations</span>
+<span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;max_iter&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>  <span class="c1"># Change the maximum iterations</span>
 <span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;print_level&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Makes Ipopt unverbose</span>
 <span class="n">ip</span><span class="o">.</span><span class="n">set_string_option</span><span class="p">(</span>
     <span class="s2">&quot;nlp_scaling_method&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span>
@@ -697,18 +701,21 @@ for analysis of specific cases, but in general they are used internally by the v
 <span class="n">ip</span><span class="o">.</span><span class="n">set_string_option</span><span class="p">(</span>
     <span class="s2">&quot;mu_strategy&quot;</span><span class="p">,</span> <span class="s2">&quot;adaptive&quot;</span>
 <span class="p">)</span>  <span class="c1"># Alternative is to tune the initial mu value</span>
-<span class="n">ipopt</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+<span class="n">ipopt200</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+<span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;max_iter&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># Change the maximum iterations</span>
+<span class="n">ipopt20</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
 
-<span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
-<span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Iterations limit&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major optimality tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-11</span><span class="p">)</span>
 
-<span class="c1">#uda = pg.nlopt(&quot;slsqp&quot;)</span>
-<span class="n">snopt</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
-<span class="n">algo</span><span class="o">=</span><span class="n">snopt</span>
+<span class="c1">#snopt72 = &quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
+<span class="c1">#uda = ppnf.snopt7(library=snopt72, minor_version=2, screen_output=False)</span>
+<span class="c1">#uda.set_integer_option(&quot;Major iterations limit&quot;, 200)</span>
+<span class="c1">#uda.set_integer_option(&quot;Iterations limit&quot;, 200)</span>
+<span class="c1">#uda.set_numeric_option(&quot;Major optimality tolerance&quot;, 1e-3)</span>
+<span class="c1">#uda.set_numeric_option(&quot;Major feasibility tolerance&quot;, 1e-11)#</span>
+
+<span class="c1">##uda = pg.nlopt(&quot;slsqp&quot;)</span>
+<span class="c1">#snopt = pg.algorithm(uda)</span>
+<span class="n">algo</span><span class="o">=</span><span class="n">ipopt200</span>
 </pre></div>
 </div>
 </div>
@@ -737,34 +744,19 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>---------------------------------------------------------------------------
-ValueError                                Traceback (most recent call last)
-Cell In[13], line 7
-      5 for i in range(100):
-      6     pop = pg.population(prob, 1)
-----&gt; 7     pop = algo.evolve(pop)
-      8     if prob.feasibility_f(pop.champion_f):
-      9         print(&quot;. Success!!&quot;, end=&quot;&quot;)
-
-ValueError: 
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 603
-what: 
-An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
-reasons:
-
-- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
-a valid shared library?)
- - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
-at run-time.
-
-We report the exact text of the original exception thrown:
-
- 
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 553
-what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
-
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit https://github.com/coin-or/Ipopt
+******************************************************************************
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
+Final mass is: 1049.4338611857306
+Final time is: 255.70280238443075
 </pre></div>
 </div>
 </div>
@@ -772,16 +764,16 @@ what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/lib
 <p>Let us visualize what we found ….</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_cartesian_time</span><span class="p">)</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_cartesian_time</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
 <span class="n">ax3D</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/22ee8f830f16a1b5a6dcdc0598b5312f3cce8a811e2155677ba056093d9b3ad0.png" src="../_images/22ee8f830f16a1b5a6dcdc0598b5312f3cce8a811e2155677ba056093d9b3ad0.png" />
+<img alt="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" src="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" />
 </div>
 </div>
-<p>The throttle is always on as indicated by the red color of the trajectory.</p>
+<p>The throttle is always on as dictated by the PMP as the trajectory is time optimal.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp</span><span class="o">.</span><span class="n">plot_misc</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">));</span>
@@ -789,7 +781,7 @@ what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/lib
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d0fd3c8275abbda327a30df256ac76c1f2c687d30a587f9317617df1b22587bb.png" src="../_images/d0fd3c8275abbda327a30df256ac76c1f2c687d30a587f9317617df1b22587bb.png" />
+<img alt="../_images/2c88da597865b1209bbc293846fffc9e39f0a66a53cbede01cbaeef5fc2961d8.png" src="../_images/2c88da597865b1209bbc293846fffc9e39f0a66a53cbede01cbaeef5fc2961d8.png" />
 </div>
 </div>
 </section>
@@ -812,7 +804,7 @@ small values.</p>
 <span class="n">T_max</span> <span class="o">=</span> <span class="mf">0.6</span>
 <span class="n">tof_guess_days</span> <span class="o">=</span> <span class="mi">250</span>
 <span class="n">decrease_factor</span> <span class="o">=</span> <span class="mf">0.95</span>
-<span class="n">algo</span><span class="o">=</span><span class="n">snopt</span>
+<span class="n">algo</span><span class="o">=</span><span class="n">ipopt200</span>
 
 <span class="c1"># Solve</span>
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -845,7 +837,8 @@ small values.</p>
     <span class="c1"># If we find a feasible solution (either the first or a continued one, we log and start the predictor)</span>
     <span class="k">if</span> <span class="n">prob</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
-            <span class="n">algo</span><span class="o">=</span><span class="n">ipopt</span>
+            <span class="c1"># We decrease the number of iteration as to favour quick multistarts</span>
+            <span class="n">algo</span><span class="o">=</span><span class="n">ipopt20</span>
             <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">tof_guess_days</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">udp</span><span class="o">.</span><span class="n">TIME</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">SEC2DAY</span>
         <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
@@ -894,17 +887,106 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.00e-13 | CPU time: 2.65e-01 | T_max = 6.0000e-01 | Tof = 2.557028e+02 | mass = 1.049e+03
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit https://github.com/coin-or/Ipopt
-******************************************************************************
-
-. Success!! | Error: 5.38e-11 | CPU time: 1.06e-01 | T_max = 1.9185e-01 | Tof = 9.372847e+02 | mass = 944.1+033
-Total CPU time: 3.73e+00
-mass 944.1179975065692
-time 937.2846754609351
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.48e-14 | CPU time: 9.81e-01 | T_max = 6.0000e-01 | Tof = 2.557028e+02 | mass = 1.049e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.64e-13 | CPU time: 4.42e-02 | T_max = 5.7000e-01 | Tof = 2.602438e+02 | mass = 1.064e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.21e-13 | CPU time: 4.43e-02 | T_max = 5.4150e-01 | Tof = 2.648824e+02 | mass = 1.079e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.13e-14 | CPU time: 4.96e-02 | T_max = 5.1442e-01 | Tof = 2.696447e+02 | mass = 1.093e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.91e-13 | CPU time: 5.00e-02 | T_max = 4.8870e-01 | Tof = 2.745708e+02 | mass = 1.106e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.65e-14 | CPU time: 4.94e-02 | T_max = 4.6427e-01 | Tof = 2.797276e+02 | mass = 1.119e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.64e-12 | CPU time: 4.99e-02 | T_max = 4.4106e-01 | Tof = 2.852372e+02 | mass = 1.131e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.15e-11 | CPU time: 5.03e-02 | T_max = 4.1900e-01 | Tof = 2.913367e+02 | mass = 1.142e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.19e-12 | CPU time: 5.12e-02 | T_max = 3.9805e-01 | Tof = 2.984896e+02 | mass = 1.151e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.20e-13 | CPU time: 5.59e-02 | T_max = 3.7815e-01 | Tof = 3.075125e+02 | mass = 1.158e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.84e-14 | CPU time: 5.69e-02 | T_max = 3.5924e-01 | Tof = 3.194991e+02 | mass = 1.163e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.95e-13 | CPU time: 5.60e-02 | T_max = 3.4128e-01 | Tof = 3.352061e+02 | mass = 1.164e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.71e-14 | CPU time: 6.36e-02 | T_max = 3.2422e-01 | Tof = 3.542919e+02 | mass = 1.163e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.71e-11 | CPU time: 5.67e-02 | T_max = 3.0801e-01 | Tof = 3.756890e+02 | mass = 1.16e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.20e-13 | CPU time: 5.68e-02 | T_max = 2.9260e-01 | Tof = 3.987081e+02 | mass = 1.157e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.71e-13 | CPU time: 5.62e-02 | T_max = 2.7797e-01 | Tof = 4.235387e+02 | mass = 1.154e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.41e-13 | CPU time: 5.45e-02 | T_max = 2.6408e-01 | Tof = 4.515117e+02 | mass = 1.15e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.27e-13 | CPU time: 5.25e-02 | T_max = 2.5087e-01 | Tof = 4.865749e+02 | mass = 1.142e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.77e-13 | CPU time: 5.82e-02 | T_max = 2.3833e-01 | Tof = 5.445600e+02 | mass = 1.119e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 8.80e-01 | CPU time: 2.31e-01 | T_max = 2.2641e-01 | Tof = 5.445600e+02 | mass = 1.138e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.18e-11 | CPU time: 6.17e-02 | T_max = 2.3237e-01 | Tof = 5.988161e+02 | mass = 1.091e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 9.75e-01 | CPU time: 2.90e-01 | T_max = 2.2075e-01 | Tof = 5.988161e+02 | mass = 1.112e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.85e-13 | CPU time: 7.94e-02 | T_max = 2.2656e-01 | Tof = 6.736644e+02 | mass = 1.052e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 1.01e+00 | CPU time: 2.83e-01 | T_max = 2.1523e-01 | Tof = 6.736644e+02 | mass = 1.074e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.17e-10 | CPU time: 9.13e-02 | T_max = 2.2090e-01 | Tof = 7.493192e+02 | mass = 1.014e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 8.55e-01 | CPU time: 2.23e-01 | T_max = 2.0985e-01 | Tof = 7.493192e+02 | mass = 1.038e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.12e-12 | CPU time: 1.22e-01 | T_max = 2.1537e-01 | Tof = 8.147246e+02 | mass = 984.7
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.97e-01 | CPU time: 3.04e-01 | T_max = 2.0461e-01 | Tof = 8.147246e+02 | mass = 1.01e+03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 3.14e-01 | CPU time: 3.81e-01 | T_max = 2.0999e-01 | Tof = 8.147246e+02 | mass = 997.6
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.46e-13 | CPU time: 8.20e-02 | T_max = 2.1268e-01 | Tof = 8.430146e+02 | mass = 973.5
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.96e-01 | CPU time: 4.26e-01 | T_max = 2.0205e-01 | Tof = 8.430146e+02 | mass = 999.8
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.41e-13 | CPU time: 1.31e-01 | T_max = 2.0737e-01 | Tof = 8.928553e+02 | mass = 956.3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.41e-13 | CPU time: 1.31e-01 | T_max = 1.9700e-01 | Tof = 8.928553e+02 | mass = 956.3
+Total CPU time: 6.83e+00
+mass 956.2625643649244
+time 892.8553270471011
 </pre></div>
 </div>
 </div>
@@ -914,13 +996,13 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 <p>Let us plot what we found …</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <span class="n">ax3D</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3d1f3714c508920bdc8f393417e3a593b2ec603ac8ed8c7cb79c65d1144d07fd.png" src="../_images/3d1f3714c508920bdc8f393417e3a593b2ec603ac8ed8c7cb79c65d1144d07fd.png" />
+<img alt="../_images/ce0e87bc3c315eef05d2d7d73b6ef897caceb06a2cd91016c9830bdc303b1c2e.png" src="../_images/ce0e87bc3c315eef05d2d7d73b6ef897caceb06a2cd91016c9830bdc303b1c2e.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -930,23 +1012,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/10261578db7dad003abc6fc44fabc0f7f5e0301549f30d10b4302feffd50d6e2.png" src="../_images/10261578db7dad003abc6fc44fabc0f7f5e0301549f30d10b4302feffd50d6e2.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">pc_dyn</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
-<span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">lvx</span><span class="p">,</span> <span class="n">lvy</span><span class="p">,</span> <span class="n">lvz</span><span class="p">,</span> <span class="n">lm</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">make_vars</span><span class="p">(</span><span class="s2">&quot;lx&quot;</span><span class="p">,</span> <span class="s2">&quot;ly&quot;</span><span class="p">,</span> <span class="s2">&quot;lz&quot;</span><span class="p">,</span> <span class="s2">&quot;lvx&quot;</span><span class="p">,</span> <span class="s2">&quot;lvy&quot;</span><span class="p">,</span> <span class="s2">&quot;lvz&quot;</span><span class="p">,</span> <span class="s2">&quot;lm&quot;</span><span class="p">)</span>
-<span class="n">var_sys</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">var_ode_sys</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="p">[</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">lvx</span><span class="p">,</span> <span class="n">lvy</span><span class="p">,</span> <span class="n">lvz</span><span class="p">,</span> <span class="n">lm</span><span class="p">,</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-<span class="n">ta_var</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">taylor_adaptive</span><span class="p">(</span><span class="n">var_sys</span><span class="p">,</span> <span class="n">compact_mode</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">ic_var</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ta_var</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">14</span><span class="p">:])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;heyoka.core.var_ode_sys at 0x31bc9ef90&gt;
-</pre></div>
-</div>
+<img alt="../_images/0fa54e183c14aab08ea71bd93ef42fafefc9d4f2d93237ba06f4b0a529277459.png" src="../_images/0fa54e183c14aab08ea71bd93ef42fafefc9d4f2d93237ba06f4b0a529277459.png" />
 </div>
 </div>
 </section>

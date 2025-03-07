@@ -455,8 +455,8 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-i-mass">
 <h1>Low-thrust transfers via indirect methods I (mass)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass" title="Permalink to this heading">#</a></h1>
 <p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed time low-thrust interplanetary transfer employing an indirect method.</p>
-<p>Indirect methods are basically following the same template: starting from the dynamics an augmented system of ODE is built applying Pontryagin maximum (minimum, in our case) principle. A Two Point Boundary Value Problem is hence defined on the derived augmented system and solved by means of single or multiple shooting.</p>
-<p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, and eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
+<p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle. The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
+<p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
@@ -740,8 +740,8 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.900881223057
-Hamiltonian at the final point is: [-0.84850611] 
+Final mass is: 1259.900881867444
+Hamiltonian at the final point is: [-0.84850607] 
 </pre></div>
 </div>
 </div>
@@ -749,13 +749,13 @@ Hamiltonian at the final point is: [-0.84850611]
 <p>Let us visualize what we found ….</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 <span class="n">ax3D</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cf4c8c7867ec15f891eb768df482c5b5d8b362535e28cdbf04eac6ac34d2e996.png" src="../_images/cf4c8c7867ec15f891eb768df482c5b5d8b362535e28cdbf04eac6ac34d2e996.png" />
+<img alt="../_images/335b8b2ad7d4e373b4d6cc23703b96a7dc5297ecb29f45d7244b65c9dcd88b8a.png" src="../_images/335b8b2ad7d4e373b4d6cc23703b96a7dc5297ecb29f45d7244b65c9dcd88b8a.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -766,7 +766,7 @@ Hamiltonian at the final point is: [-0.84850611]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f53c6c0f0d1cc4bd294e8821393580cc9f88b91f979c4f0ae3071f136183007b.png" src="../_images/f53c6c0f0d1cc4bd294e8821393580cc9f88b91f979c4f0ae3071f136183007b.png" />
+<img alt="../_images/8e32b4787ae3ec0f2b4975c78510e95e159c5334953079114212b667d915f183.png" src="../_images/8e32b4787ae3ec0f2b4975c78510e95e159c5334953079114212b667d915f183.png" />
 </div>
 </div>
 </section>
@@ -909,9 +909,9 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.24e-12 | CPU time: 2.31e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 7.24e-12 | CPU time: 2.31e-01 | Epsilon = 9.2260e-05
-Total CPU time: 5.24e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.12e-12 | CPU time: 2.33e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 9.12e-12 | CPU time: 2.33e-01 | Epsilon = 9.2260e-05
+Total CPU time: 5.18e+00
 </pre></div>
 </div>
 </div>
@@ -921,13 +921,13 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 <p>Let us plot what we found …</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot_trajectory</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax3D</span> <span class="o">=</span> <span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 <span class="n">ax3D</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/6c60cfa29eefd7e99b1a994895852a33391c64c20c84a4977cf9031e47b11786.png" src="../_images/6c60cfa29eefd7e99b1a994895852a33391c64c20c84a4977cf9031e47b11786.png" />
+<img alt="../_images/d420927aeec5e647417860d505d015bf4135650f4ff65dac38434ba96c1402d0.png" src="../_images/d420927aeec5e647417860d505d015bf4135650f4ff65dac38434ba96c1402d0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -937,7 +937,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5ff7f997ce1c0ffebaf2468542245a57395034312f25a157f5be4d1c84e50a47.png" src="../_images/5ff7f997ce1c0ffebaf2468542245a57395034312f25a157f5be4d1c84e50a47.png" />
+<img alt="../_images/3fd21ef0101da7d4d8502df669ee8004086ae4680cf44aebdedc7f8a0e80b7dc.png" src="../_images/3fd21ef0101da7d4d8502df669ee8004086ae4680cf44aebdedc7f8a0e80b7dc.png" />
 </div>
 </div>
 </section>
@@ -1101,8 +1101,8 @@ $$</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.26e-11 | CPU time: 1.92e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 1.26e-11 | CPU time: 1.92e-01 | Epsilon = 7.5254e-05
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.74e-12 | CPU time: 1.91e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 6.74e-12 | CPU time: 1.91e-01 | Epsilon = 7.5254e-05
 Total CPU time: 4.18e+00
 </pre></div>
 </div>

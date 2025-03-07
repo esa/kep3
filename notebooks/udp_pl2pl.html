@@ -572,7 +572,7 @@ document.write(`
 <p>First the analytical gradient:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
 <span class="n">udp_g</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -586,7 +586,7 @@ document.write(`
 <p>Then a simple numerical gradient based on finite differences:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
 <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient</span><span class="p">(</span><span class="n">udp_g</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -600,7 +600,7 @@ document.write(`
 <p>Then a higher order numerical gradient:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
 <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="n">udp_g</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">pop_g</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 </pre></div>
 </div>
