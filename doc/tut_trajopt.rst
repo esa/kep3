@@ -32,6 +32,6 @@ Trajectory Optimization
   notebooks/udp_mga_1dsm
   notebooks/udp_pl2pl_N_impulses
   notebooks/pontryagin_cartesian_I
-   notebooks/pontryagin_cartesian_II
+  notebooks/pontryagin_cartesian_II
   notebooks/primer_vector
   notebooks/surrogate_primer_vector
