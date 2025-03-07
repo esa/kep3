@@ -47,6 +47,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_I';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Primer Vector" href="primer_vector.html" />
+    <link rel="prev" title="Multiple impulses" href="udp_pl2pl_N_impulses.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,8 +110,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -184,7 +184,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
@@ -196,14 +196,14 @@
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian.html">Low-thrust transfers via indirect methods</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods I (mass)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -740,8 +740,8 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.900881867444
-Hamiltonian at the final point is: [-0.84850607] 
+Final mass is: 1259.9008822031467
+Hamiltonian at the final point is: [-0.84850604] 
 </pre></div>
 </div>
 </div>
@@ -766,7 +766,7 @@ Hamiltonian at the final point is: [-0.84850607]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8e32b4787ae3ec0f2b4975c78510e95e159c5334953079114212b667d915f183.png" src="../_images/8e32b4787ae3ec0f2b4975c78510e95e159c5334953079114212b667d915f183.png" />
+<img alt="../_images/257c5bb02464be08357280dd3a4f52637673cc905392364dce8e9dc63d785042.png" src="../_images/257c5bb02464be08357280dd3a4f52637673cc905392364dce8e9dc63d785042.png" />
 </div>
 </div>
 </section>
@@ -909,9 +909,9 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.12e-12 | CPU time: 2.33e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 9.12e-12 | CPU time: 2.33e-01 | Epsilon = 9.2260e-05
-Total CPU time: 5.18e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.09e-12 | CPU time: 2.32e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 9.09e-12 | CPU time: 2.32e-01 | Epsilon = 9.2260e-05
+Total CPU time: 5.03e+00
 </pre></div>
 </div>
 </div>
@@ -937,7 +937,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3fd21ef0101da7d4d8502df669ee8004086ae4680cf44aebdedc7f8a0e80b7dc.png" src="../_images/3fd21ef0101da7d4d8502df669ee8004086ae4680cf44aebdedc7f8a0e80b7dc.png" />
+<img alt="../_images/86d95bc8efbc081b5b593166335182c30d9937cca81ef87a29c4fabf493564b9.png" src="../_images/86d95bc8efbc081b5b593166335182c30d9937cca81ef87a29c4fabf493564b9.png" />
 </div>
 </div>
 </section>
@@ -1101,9 +1101,9 @@ $$</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.74e-12 | CPU time: 1.91e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 6.74e-12 | CPU time: 1.91e-01 | Epsilon = 7.5254e-05
-Total CPU time: 4.18e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.35e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 1.35e-11 | CPU time: 1.89e-01 | Epsilon = 7.5254e-05
+Total CPU time: 4.14e+00
 </pre></div>
 </div>
 </div>
@@ -1123,6 +1123,24 @@ Total CPU time: 4.18e+00
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="udp_pl2pl_N_impulses.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Multiple impulses</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="primer_vector.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Primer Vector</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
