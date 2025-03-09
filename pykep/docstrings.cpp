@@ -697,6 +697,43 @@ std::string f2zeta_v_doc()
 )";
 }
 
+std::string mima_doc()
+{
+    return R"(mima(dv1, dv2, tof, Tmax, veff)
+    
+    The Maximum Initial Mass Approximation.
+
+    Having computed a two-impulse transfer, this approximation allows to compute
+    the maximum initial mass that a spacecraft can have as to be able to perform
+    that transfer in low-thrust.
+
+    Args:
+        *dv1* (:class:`numpy.ndarray`): First  vectorial delta v (m/s, or Any velocity units)
+
+        *dv2* (:class:`numpy.ndarray`): Second vectorial delta v (m/s or Any velocity units)
+
+        *tof* (:class:`float`): Time of flight (Any time units)
+
+        *Tmax* (:class:`float`, optional): Maximum spacecraft thrust.
+
+        *veff* (:class:`float`, optional): Isp*G0.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
+        (units induced by the inputs)
+
+    Example:
+        # Say that your two-impulses have been computed and:
+        dv1 = np.array([320,-345,43]) #m/s
+        dv2 = np.array([-510,175,87]) #m/s
+        tof = 150*24*60*60 #seconds
+        # Then call
+        mima, a_required  = gt12.mima(dv1,dv2,tof, Tmax = 0.6)
+        print("Maximum initial mass:",mima,"kg")
+        print("Required acceleration:", a_required*1000,"mm/s)
+)";
+}
+
 std::string alpha2direct_doc()
 {
     return R"(alpha2direct(alphas)
@@ -1315,7 +1352,7 @@ It also computes the system State Transition Matrix:
 as well as the gradients of the final states with respect to the thrust direction.
 
 .. math::
-    \mathbf U = = \frac{d\mathbf x_f}{d\mathbf u}
+    \mathbf U = \frac{d\mathbf x_f}{d\mathbf u}
 
 Args:
     *rvm_state* (:class:`list` (7,)): position, velocity and mass flattened into a 7D list. 
@@ -1532,7 +1569,7 @@ Returns:
 
 std::string get_pc_docstring()
 {
-    return R"(ta.get_pc(tol)
+    return R"(ta.get_pc(tol, optimality)
 
 Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
 
@@ -1544,16 +1581,21 @@ trigger its compilation. Otherwise, it will return the one from a global cache, 
 
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
 
+Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
+
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 
 Returns:
     :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_pc(tol = 1e-16)
+  >>> ta = pk.ta.get_pc(tol = 1e-16, optimality = pk.optimality_type.TIME)
   >>> ta.time = 0.
+  >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
   >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.]
   >>> tof = 1.2345
@@ -1563,7 +1605,7 @@ Examples:
 
 std::string get_pc_var_docstring()
 {
-    return R"(ta.get_pc_var(tol)
+    return R"(ta.get_pc_var(tol, optimality)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
 
@@ -1577,12 +1619,15 @@ a global cache, thus avoiding jitting.
 
 .. note:
    Variations are considered with respect to the initial conditions on the costates and to the
-   parameters :math:`\epsilon` and :math:`\lambda_0`.
+   parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
+   is still considered a parameter (for consistency) but it is not used.
 
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 
 Returns:
     :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.

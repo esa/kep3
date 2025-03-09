@@ -17,6 +17,7 @@
 #include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/lambert_problem.hpp>
@@ -123,6 +124,10 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("eq2ic", &kep3::eq2ic);
     m.def("par2eq", &kep3::par2eq);
     m.def("eq2par", &kep3::eq2par);
+
+    // Exposing mima functions
+    m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),
+          pk::mima_doc().c_str());
 
     // Exposing encoding conversions
     m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());
