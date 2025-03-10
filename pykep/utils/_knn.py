@@ -84,7 +84,7 @@ class knn():
             :class:`scipy.spatial.cKDTree`: kd-tree data structure.
 
         See also:
-            http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html
+            https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html
             https://en.wikipedia.org/wiki/K-d_tree
 
         Examples::
@@ -170,12 +170,12 @@ class knn():
         query_type = 'knn':
             The kwarg 'k' determines how many k-nearest neighbours are returned.
             For arguments, see:
-            http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query.html
+            https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query.html
 
         query_type = 'ball':
             The kwarg 'r' determines the distance within which all asteroids are returned.
             For arguments, see:
-            http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query_ball_point.html
+            https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query_ball_point.html
         """
         if type(query_planet) == int:
             query_planet = self._asteroids[query_planet]

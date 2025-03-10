@@ -63,7 +63,7 @@ TEST_CASE("mima2")
         std::array<double, 3> vt = {2.725105661271001009e+04, 1.599599495457483499e+04, 6.818440757625087826e+03};
         double tof = 3.311380772794449854e+02 * kep3::DAY2SEC;
         double Tmax = 0.6;
-        double veff = kep3::G0 * 4000;
+        double veff = kep3::G0 * 4000.;
         auto lp = kep3::lambert_problem(rs, rt, tof, kep3::MU_SUN);
         std::array<double, 3> dv1 = {lp.get_v0()[0][0] - vs[0], lp.get_v0()[0][1] - vs[1], lp.get_v0()[0][2] - vs[2]};
         std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};

@@ -52,11 +52,11 @@ std::pair<double, double> compute_transfer_approximation(double x, const std::ar
     using xt::linalg::inv;
 
     // Start of the algorithm (see the paper for details)
-    double tau = (x / std::sqrt(x * x + 1) + 1) / 2;
+    double tau = (x / std::sqrt(x * x + 1.) + 1.) / 2.;
     double t1 = tof * tau;
-    double t2 = tof * (1 - tau);
-    auto res12 = propagate_lagrangian(posvel1, t1 / 2, mu, true);
-    auto res22 = propagate_lagrangian(posvel1, tof - t2 / 2, mu, true);
+    double t2 = tof * (1. - tau);
+    auto res12 = propagate_lagrangian(posvel1, t1 / 2., mu, true);
+    auto res22 = propagate_lagrangian(posvel1, tof - t2 / 2., mu, true);
     auto res11 = propagate_lagrangian(posvel1, t1, mu, true);
     auto res21 = propagate_lagrangian(posvel1, tof - t2, mu, true);
     auto res3 = propagate_lagrangian(posvel1, tof, mu, true);
@@ -78,9 +78,9 @@ std::pair<double, double> compute_transfer_approximation(double x, const std::ar
     // Simpson's rule
     mat66 &stm0 = M3; // alias for convenience
     mat66 tmp = inv(M11) + 4 * inv(M12);
-    mat66 stm1 = (_dot(M3, tmp) + M3) / 6;
+    mat66 stm1 = (_dot(M3, tmp) + M3) / 6.;
     mat66 tmp2 = inv(M21) + 4 * inv(M22);
-    mat66 stm2 = (_dot(M3, tmp2) + xt::eye<double>(6)) / 6;
+    mat66 stm2 = (_dot(M3, tmp2) + xt::eye<double>(6)) / 6.;
     // b = np.hstack((stm0[0:3, 3:6]@dv1, dv2+stm0[3:6, 3:6]@dv1))
     mat33 b1_tmp = xt::view(stm0, xt::range(0, 3), xt::range(3, 6));
     mat31 b1 = _dot(b1_tmp, dv1);
@@ -103,7 +103,7 @@ std::pair<double, double> compute_transfer_approximation(double x, const std::ar
     mat66 invM = inv(M);
     mat61 dvs = _dot(invM, b);
     mat31 a1 = xt::view(dvs, xt::range(0, 3)) / tau / tof;
-    mat31 a2 = xt::view(dvs, xt::range(3, 6)) / (1 - tau) / tof;
+    mat31 a2 = xt::view(dvs, xt::range(3, 6)) / (1. - tau) / tof;
 
     double err = tau * tau * (1 - tau) * (1 - tau)
                  * (a2(0, 0) * a2(0, 0) + a2(1, 0) * a2(1, 0) + a2(2, 0) * a2(2, 0) - a1(0, 0) * a1(0, 0)
@@ -111,32 +111,14 @@ std::pair<double, double> compute_transfer_approximation(double x, const std::ar
     return {err, std::sqrt(a1(0, 0) * a1(0, 0) + a1(1, 0) * a1(1, 0) + a1(2, 0) * a1(2, 0))};
 }
 
-std::array<double, 2> return_mima2_bracket(const std::array<std::array<double, 3>, 2> &posvel1, double tof,
-                                           const std::array<double, 3> &dv1, const std::array<double, 3> &dv2,
-                                           double mu)
-{
-    double sign_e0 = std::signbit(compute_transfer_approximation(0, posvel1, tof, dv1, dv2, mu).first) ? -1 : 1;
-    double dir = -sign_e0;
-    double k = 1.;
-    while (true) {
-        double sign_e
-            = std::signbit(compute_transfer_approximation(dir * k, posvel1, tof, dv1, dv2, mu).first) ? -1 : 1;
-        if (sign_e0 != sign_e) {
-            break;
-        }
-        k = k + 1;
-    }
-    return {std::min(dir * (k - 1), dir * k), std::max(dir * (k - 1), dir * k)};
-}
-
 kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<double, 3>, 2> &posvel1,
                                                 const std::array<double, 3> &dv1, const std::array<double, 3> &dv2,
                                                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                                 double tof, double Tmax, double veff, double mu)
 {
-    const boost::uintmax_t maxit = 100;
+    const boost::uintmax_t maxit = 100u;
     boost::uintmax_t it = maxit;
-    unsigned digits = 8;                                        // No need to compute this approximation precisely
+    unsigned digits = 10u;                                        // No need to compute this approximation precisely
     boost::math::tools::eps_tolerance<double> tol(digits); // Set the tolerance.
     auto r = boost::math::tools::bracket_and_solve_root(
         [&](double x) { return compute_transfer_approximation(x, posvel1, tof, dv1, dv2, mu).first; }, 0.5, 2., true,
@@ -147,7 +129,7 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
     }
     auto root = r.first + (r.second - r.first) / 2; // Midway between brackets.
     auto acc = compute_transfer_approximation(root, posvel1, tof, dv1, dv2, mu).second;
-    auto mima2 = 2 * Tmax / acc / (1 + std::exp(-acc * tof / veff));
+    auto mima2 = 2. * Tmax / acc / (1. + std::exp(-acc * tof / veff));
     return {mima2, acc};
 }
 
