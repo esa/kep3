@@ -9,6 +9,7 @@
 #include <string>
 
 #include "docstrings.hpp"
+#include "kep3/core_astro/basic_transfers.hpp"
 
 namespace pykep
 {
@@ -694,6 +695,34 @@ std::string f2zeta_v_doc()
       >>> zetas = pk.f2zeta_v(fs, ecc)
       >>> np.shape(zetas)
       (100,)
+)";
+}
+
+std::string hohmann_doc()
+{
+    return R"(hohmann(r1, r2, mu)
+
+    Computes the delta v required for a Hohmann transfer between two circular orbits.
+
+    Args:
+        *r1* (:class:`float`): radius of the first orbit
+
+        *r2* (:class:`float`): radius of the second orbit
+
+        *mu* (:class:`float`): gravitational parameter of the central body
+
+    Returns:
+        [:class:`float`, [:class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v]]
+
+    Examples:
+      >>> import pykep as pk
+      >>> r1 = 7000000
+      >>> r2 = 9000000
+      >>> mu = pk.MU_EARTH
+      >>> dv_total, [dv1, dv2] = pk.hohmann(r1, r2, mu)
+      >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("First delta v:", dv1, "m/s")
+      >>> print("Second delta v:", dv2, "m/s")
 )";
 }
 

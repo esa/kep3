@@ -18,6 +18,7 @@
 #include <kep3/core_astro/ic2eq2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/mima.hpp>
+#include <kep3/core_astro/basic_transfers.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/lambert_problem.hpp>
@@ -125,11 +126,12 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("par2eq", &kep3::par2eq);
     m.def("eq2par", &kep3::eq2par);
 
-    // Exposing mima functions
+    // Exposing mima functions and basic transfer functionalities
     m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),
           pk::mima_doc().c_str());
     m.def("mima2", &kep3::mima2, py::arg("posvel1"), py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"), py::arg("mu"),
           pk::mima2_doc().c_str());
+    m.def("hohmann", &kep3::hohmann, py::arg("r1"), py::arg("r2"), py::arg("mu"), pk::hohmann_doc().c_str());
 
     // Exposing encoding conversions
     m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());

@@ -3,7 +3,7 @@ coverage:
   - "test/.*"
   - "include/kep3/detail/tanuki.hpp"
 codecov: 
- token: 60883dbc-866d-4da4-9306-8df7ac9b1360
+ token: c29e9be0-08f0-46b6-aa0d-6dd1aa3bfc9f
 
 comment:                  # this is a top-level key
   layout: " diff, flags, files"
