@@ -169,8 +169,11 @@
 <li class="toctree-l2"><a class="reference internal" href="udpla.html">User defined planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="taylor_adaptive.html">Taylor adaptive propagators</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
@@ -418,7 +421,19 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect">Indirect</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect">Indirect</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass.plot"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass.plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass.plot_misc"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass.plot_misc()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time.plot"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time.plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time.plot_misc"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time.plot_misc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evolutionary-encodings">Evolutionary Encodings</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.mga"><code class="docutils literal notranslate"><span class="pre">mga</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.mga.plot"><code class="docutils literal notranslate"><span class="pre">mga.plot()</span></code></a></li>
@@ -612,10 +627,130 @@ and the controls as to link the two planets with a low-thrust trajectory.</p>
 <hr class="docutils" />
 <section id="indirect">
 <h2>Indirect<a class="headerlink" href="#indirect" title="Permalink to this heading">#</a></h2>
-<p>Indirect methods are based on the Pontryagin Maximum Principle (PMP), which provides necessary conditions for optimality in control problems.
-These methods involve deriving the optimal control laws and the corresponding state trajectories by solving a two point boundary value problem
+<p>Indirect methods are based on the Pontryagin Maximum Principle (PMP), which provides necessary conditions
+for optimality. These methods involve deriving the optimal control laws and
+the corresponding state trajectories by solving a two point boundary value problem
 (TPBVP) derived from the PMP.</p>
 <hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_mass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.trajopt.</span></span><span class="sig-name descname"><span class="pre">pontryagin_cartesian_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[34110913367.783306,</span> <span class="pre">-139910016918.87585,</span> <span class="pre">-14037825669.025244],</span> <span class="pre">[29090.9902134693,</span> <span class="pre">10000.390168313803,</span> <span class="pre">1003.3858682643288]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posvelf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[-159018773159.22266,</span> <span class="pre">-18832495968.945133,</span> <span class="pre">15781467087.350443],</span> <span class="pre">[2781.182556622003,</span> <span class="pre">-28898.40730995848,</span> <span class="pre">-483.4533989771214]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.3271244004127942e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Isp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TIME</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">31557600.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MASS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_mass" title="Permalink to this definition">#</a></dt>
+<dd><p>This class is a pygmo (<a class="reference external" href="http://esa.github.io/pygmo/">http://esa.github.io/pygmo/</a>) UDP representing a single-shooting indirect method
+for the minimum mass, fixed time, optimization of a low-thrust trajectory.</p>
+<p>The decision vector is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">lvx</span><span class="p">,</span> <span class="n">lvy</span><span class="p">,</span> <span class="n">lvz</span><span class="p">,</span> <span class="n">lm</span><span class="p">,</span> <span class="n">l0</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Gradients are also provided via the variational version of the augmented dynamics.</p>
+</div>
+<p>pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)</p>
+<dl>
+<dt>Args:</dt><dd><p><em>posvel0</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the initial position and velocity of the spacecraft.</p>
+<p><em>posvelf</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the final position and velocity of the spacecraft.</p>
+<p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the time of flight of the trajectory (in days).</p>
+<p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the gravitational parameter of the central body.</p>
+<p><em>eps</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the accuracy of the numerical integrator.</p>
+<p><em>T_max</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the maximum thrust of the spacecraft.</p>
+<p><em>Isp</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the specific impulse of the spacecraft.</p>
+<p><em>m0</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the initial mass of the spacecraft.</p>
+<p><em>L</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for length. All inputs will be scaled to these units and must be of the same order as to obtain a well scaled problem.</p>
+<p><em>TIME</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for time. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.</p>
+<p><em>MASS</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for mass. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.</p>
+<p><em>with_gradient</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): whether to use the gradient of the constraints or not.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_mass.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax3D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_mass.plot" title="Permalink to this definition">#</a></dt>
+<dd><p>This function plots the trajectory encoded in the decision vector x.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
+<em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.
+<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.</p>
+</dd>
+<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_mass.plot_misc">
+<span class="sig-name descname"><span class="pre">plot_misc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_mass.plot_misc" title="Permalink to this definition">#</a></dt>
+<dd><p>This function plots the throttle, thrust direction, switching function, mass costate and Hamiltonian
+of the trajectory encoded in the decision vector x.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
+<em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.</p>
+</dd>
+<dt>Returns:</dt><dd><p><em>axs</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the list of axis of the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_time">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.trajopt.</span></span><span class="sig-name descname"><span class="pre">pontryagin_cartesian_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source=unknown</span> <span class="pre">UDPLA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target=unknown</span> <span class="pre">UDPLA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0=2000-01-01T00:00:00.000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof_guess=250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_max=0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Isp=3000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m0=1500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L=149597870700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TIME=31557600.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MASS=1500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_gradient=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_time" title="Permalink to this definition">#</a></dt>
+<dd><p>This class is a pygmo (<a class="reference external" href="http://esa.github.io/pygmo/">http://esa.github.io/pygmo/</a>) UDP representing a single-shooting indirect method
+for the minimum time, optimization of a low-thrust trajectory.</p>
+<p>The decision vector is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lz</span><span class="p">,</span> <span class="n">lvx</span><span class="p">,</span> <span class="n">lvy</span><span class="p">,</span> <span class="n">lvz</span><span class="p">,</span> <span class="n">lm</span><span class="p">,</span> <span class="n">lJ</span><span class="p">,</span> <span class="n">tof</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Gradients are also provided via the variational version of the augmented dynamics.</p>
+</div>
+<p>pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)</p>
+<dl>
+<dt>Args:</dt><dd><p><em>source</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the initial planet.</p>
+<p><em>target</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the final planet.</p>
+<p><em>t0</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code>): the initial epoch.</p>
+<p><em>tof_guess</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): a guess for the time of flight. Bound will be defined as tof_guess/2 and 2*tof_guess.</p>
+<p><em>T_max</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the maximum thrust of the spacecraft.</p>
+<p><em>Isp</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the specific impulse of the spacecraft.</p>
+<p><em>m0</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the initial mass of the spacecraft.</p>
+<p><em>L</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for length. All inputs will be scaled to these units and must be of the same order as to obtain a well scaled problem.</p>
+<p><em>TIME</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for time. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.</p>
+<p><em>MASS</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): units for mass. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.</p>
+<p><em>with_gradient</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): whether to use the gradient of the constraints or not.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_time.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax3D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_time.plot" title="Permalink to this definition">#</a></dt>
+<dd><p>This function plots the trajectory encoded in the decision vector x.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
+<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.
+<em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.
+<em>**kwargs</em>: Additional keyword arguments to pass to the trajectory plot.</p>
+</dd>
+<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.trajopt.pontryagin_cartesian_time.plot_misc">
+<span class="sig-name descname"><span class="pre">plot_misc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.pontryagin_cartesian_time.plot_misc" title="Permalink to this definition">#</a></dt>
+<dd><p>This function plots the throttle, switching function and Hamiltonian
+of the trajectory encoded in the decision vector x.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
+<em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.
+<em>**kwargs</em>: Additional keyword arguments to pass to the plt.subplots function.</p>
+</dd>
+<dt>Returns:</dt><dd><p><em>axs</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the list of axis of the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <hr class="docutils" />
 <section id="evolutionary-encodings">
@@ -1045,7 +1180,19 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect">Indirect</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indirect">Indirect</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass.plot"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass.plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_mass.plot_misc"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_mass.plot_misc()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time.plot"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time.plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.pontryagin_cartesian_time.plot_misc"><code class="docutils literal notranslate"><span class="pre">pontryagin_cartesian_time.plot_misc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evolutionary-encodings">Evolutionary Encodings</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.mga"><code class="docutils literal notranslate"><span class="pre">mga</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.trajopt.mga.plot"><code class="docutils literal notranslate"><span class="pre">mga.plot()</span></code></a></li>

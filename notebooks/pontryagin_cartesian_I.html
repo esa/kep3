@@ -169,8 +169,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../udpla.html">User defined planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flyby.html">Fly-by routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../taylor_adaptive.html">Taylor adaptive propagators</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
@@ -738,10 +741,9 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit https://github.com/coin-or/Ipopt
 ******************************************************************************
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.9008822030892
+
+. Success!!
+Final mass is: 1259.9008822026458
 Hamiltonian at the final point is: [-0.84850604] 
 </pre></div>
 </div>
@@ -756,7 +758,7 @@ Hamiltonian at the final point is: [-0.84850604]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/335b8b2ad7d4e373b4d6cc23703b96a7dc5297ecb29f45d7244b65c9dcd88b8a.png" src="../_images/335b8b2ad7d4e373b4d6cc23703b96a7dc5297ecb29f45d7244b65c9dcd88b8a.png" />
+<img alt="../_images/cf4c8c7867ec15f891eb768df482c5b5d8b362535e28cdbf04eac6ac34d2e996.png" src="../_images/cf4c8c7867ec15f891eb768df482c5b5d8b362535e28cdbf04eac6ac34d2e996.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -767,7 +769,7 @@ Hamiltonian at the final point is: [-0.84850604]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4ebc7467f7c3aa71913a367f0e5f29b5b5c70d9d3e4ec7937ce08137cbc86df7.png" src="../_images/4ebc7467f7c3aa71913a367f0e5f29b5b5c70d9d3e4ec7937ce08137cbc86df7.png" />
+<img alt="../_images/db9652d73b69c9f86b44e85186eda402d172a6ad0af8c8b19a66893dce016c0a.png" src="../_images/db9652d73b69c9f86b44e85186eda402d172a6ad0af8c8b19a66893dce016c0a.png" />
 </div>
 </div>
 </section>
@@ -910,9 +912,9 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.54e-12 | CPU time: 2.30e-01 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 4.54e-12 | CPU time: 2.30e-01 | Epsilon = 9.2260e-05
-Total CPU time: 5.22e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.99e-11 | CPU time: 1.67e-01 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 1.99e-11 | CPU time: 1.67e-01 | Epsilon = 9.2260e-05
+Total CPU time: 3.82e+00
 </pre></div>
 </div>
 </div>
@@ -928,7 +930,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d420927aeec5e647417860d505d015bf4135650f4ff65dac38434ba96c1402d0.png" src="../_images/d420927aeec5e647417860d505d015bf4135650f4ff65dac38434ba96c1402d0.png" />
+<img alt="../_images/6c60cfa29eefd7e99b1a994895852a33391c64c20c84a4977cf9031e47b11786.png" src="../_images/6c60cfa29eefd7e99b1a994895852a33391c64c20c84a4977cf9031e47b11786.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -938,7 +940,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f24a0de739c7551fadea78e2fca1a8df4789f502863b99a2f2792a7024db92af.png" src="../_images/f24a0de739c7551fadea78e2fca1a8df4789f502863b99a2f2792a7024db92af.png" />
+<img alt="../_images/727b0484df55a7aa4f605db30ec826156243b4414f7780910c1dda578f81d2a9.png" src="../_images/727b0484df55a7aa4f605db30ec826156243b4414f7780910c1dda578f81d2a9.png" />
 </div>
 </div>
 </section>
@@ -1102,9 +1104,9 @@ $$</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.62e-12 | CPU time: 1.96e-01 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 6.62e-12 | CPU time: 1.96e-01 | Epsilon = 7.5254e-05
-Total CPU time: 4.17e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.08e-11 | CPU time: 1.45e-01 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 2.08e-11 | CPU time: 1.45e-01 | Epsilon = 7.5254e-05
+Total CPU time: 3.15e+00
 </pre></div>
 </div>
 </div>

@@ -169,8 +169,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../udpla.html">User defined planets (UDPLAs)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lambert.html">Lambert class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flyby.html">Fly-by routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../taylor_adaptive.html">Taylor adaptive propagators</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
@@ -457,7 +460,7 @@ document.write(`
 <p>In this notebook we show how to solve the <strong>minimum time</strong> Optimal Control Problem (OCP) for a low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle (PMP). The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
-<p>We highlight the differences with respect to the developments presented in the <a class="reference internal" href="pontryagin_cartesian.html"><span class="std std-doc">mass optimal</span></a> version of the very same indirect method.</p>
+<p>We highlight the differences with respect to the developments presented in the <a class="reference internal" href="pontryagin_cartesian_I.html"><span class="std std-doc">mass optimal</span></a> version of the very same indirect method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
@@ -745,15 +748,9 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit https://github.com/coin-or/Ipopt
-******************************************************************************
-
-. Success!!
-Final mass is: 1049.4338611857306
-Final time is: 255.7028023844301
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
+Final mass is: 1049.4338611857243
+Final time is: 255.70280238443416
 </pre></div>
 </div>
 </div>
@@ -767,7 +764,7 @@ Final time is: 255.7028023844301
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" src="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" />
+<img alt="../_images/519a1f3c2ecb6ec8ccc2e21b6dab4304a81c6b6513825de919258fe83db27e3b.png" src="../_images/519a1f3c2ecb6ec8ccc2e21b6dab4304a81c6b6513825de919258fe83db27e3b.png" />
 </div>
 </div>
 <p>The throttle is always on as dictated by the PMP as the trajectory is time optimal.</p>
@@ -778,7 +775,7 @@ Final time is: 255.7028023844301
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2baf3d5e27eb364399777b2c32e8ab15712ca35b1cfb7b3ac1f3f60d0e42f159.png" src="../_images/2baf3d5e27eb364399777b2c32e8ab15712ca35b1cfb7b3ac1f3f60d0e42f159.png" />
+<img alt="../_images/f9382fb6125a4a74a949a8fd2f79f11a7329cee275ac43ff178ff0a192a03969.png" src="../_images/f9382fb6125a4a74a949a8fd2f79f11a7329cee275ac43ff178ff0a192a03969.png" />
 </div>
 </div>
 </section>
@@ -884,85 +881,10 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.88e-14 | CPU time: 3.10e-01 | T_max = 6.0000e-01 | Tof = 2.557028e+02 | mass = 1.049e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.59e-13 | CPU time: 4.98e-02 | T_max = 5.7000e-01 | Tof = 2.602438e+02 | mass = 1.064e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.25e-12 | CPU time: 4.32e-02 | T_max = 5.4150e-01 | Tof = 2.648824e+02 | mass = 1.079e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.48e-13 | CPU time: 4.93e-02 | T_max = 5.1442e-01 | Tof = 2.696447e+02 | mass = 1.093e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.69e-13 | CPU time: 4.88e-02 | T_max = 4.8870e-01 | Tof = 2.745708e+02 | mass = 1.106e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.95e-13 | CPU time: 4.80e-02 | T_max = 4.6427e-01 | Tof = 2.797276e+02 | mass = 1.119e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.32e-12 | CPU time: 4.88e-02 | T_max = 4.4106e-01 | Tof = 2.852372e+02 | mass = 1.131e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.28e-11 | CPU time: 4.86e-02 | T_max = 4.1900e-01 | Tof = 2.913367e+02 | mass = 1.142e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.55e-12 | CPU time: 4.93e-02 | T_max = 3.9805e-01 | Tof = 2.984896e+02 | mass = 1.151e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.31e-13 | CPU time: 5.53e-02 | T_max = 3.7815e-01 | Tof = 3.075125e+02 | mass = 1.158e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.57e-13 | CPU time: 5.57e-02 | T_max = 3.5924e-01 | Tof = 3.194991e+02 | mass = 1.163e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.35e-13 | CPU time: 5.54e-02 | T_max = 3.4128e-01 | Tof = 3.352061e+02 | mass = 1.164e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.35e-14 | CPU time: 6.25e-02 | T_max = 3.2422e-01 | Tof = 3.542919e+02 | mass = 1.163e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.86e-11 | CPU time: 5.57e-02 | T_max = 3.0801e-01 | Tof = 3.756890e+02 | mass = 1.16e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.86e-13 | CPU time: 5.58e-02 | T_max = 2.9260e-01 | Tof = 3.987081e+02 | mass = 1.157e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 7.95e-14 | CPU time: 5.50e-02 | T_max = 2.7797e-01 | Tof = 4.235387e+02 | mass = 1.154e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.09e-13 | CPU time: 5.36e-02 | T_max = 2.6408e-01 | Tof = 4.515117e+02 | mass = 1.15e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.60e-14 | CPU time: 5.14e-02 | T_max = 2.5087e-01 | Tof = 4.865749e+02 | mass = 1.142e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.14e-12 | CPU time: 5.63e-02 | T_max = 2.3833e-01 | Tof = 5.445600e+02 | mass = 1.119e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 5.72e-13 | CPU time: 8.27e-02 | T_max = 2.2641e-01 | Tof = 6.757014e+02 | mass = 1.051e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 2.20e-09 | CPU time: 9.61e-02 | T_max = 2.1509e-01 | Tof = 8.178073e+02 | mass = 983.4
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 5.90e-01 | CPU time: 3.18e-01 | T_max = 2.0434e-01 | Tof = 8.178073e+02 | mass = 1.009e+03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x Failedd!! | Error: 3.11e-01 | CPU time: 2.93e-01 | T_max = 2.0971e-01 | Tof = 8.178073e+02 | mass = 996.3
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.04e-13 | CPU time: 7.92e-02 | T_max = 2.1240e-01 | Tof = 8.458252e+02 | mass = 972.4
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.77e-14 | CPU time: 1.53e-01 | T_max = 2.0178e-01 | Tof = 9.385610e+02 | mass = 943.8
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 9.77e-14 | CPU time: 1.53e-01 | T_max = 1.9169e-01 | Tof = 9.385610e+02 | mass = 943.8
-Total CPU time: 3.88e+00
-mass 943.8161188934771
-time 938.5610353720501
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.57e-11 | CPU time: 1.08e-01 | T_max = 1.9182e-01 | Tof = 9.375351e+02 | mass = 944.1+033
+Total CPU time: 3.78e+00
+mass 944.0585504569914
+time 937.5351323586224
 </pre></div>
 </div>
 </div>
@@ -978,7 +900,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/65e90e3c7ac7dcb7759c0886172a203b97e8b08ab4a014d1b4ae76daec97abc3.png" src="../_images/65e90e3c7ac7dcb7759c0886172a203b97e8b08ab4a014d1b4ae76daec97abc3.png" />
+<img alt="../_images/07ec9f7f48a79357f223034701b549f19590c2ce55bf6dd370b0931a0fea0fec.png" src="../_images/07ec9f7f48a79357f223034701b549f19590c2ce55bf6dd370b0931a0fea0fec.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -988,7 +910,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a44bed51a16fe3ff92c83f9eee2a5d32841e51ce9050257b6df30077ad93eef2.png" src="../_images/a44bed51a16fe3ff92c83f9eee2a5d32841e51ce9050257b6df30077ad93eef2.png" />
+<img alt="../_images/d21222de27b639e01a26aac42e29be4a00d217d2da8ace3cd0967e94f6adb5ce.png" src="../_images/d21222de27b639e01a26aac42e29be4a00d217d2da8ace3cd0967e94f6adb5ce.png" />
 </div>
 </div>
 </section>
