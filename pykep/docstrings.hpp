@@ -55,6 +55,7 @@ std::string f2zeta_v_doc();
 
 // MIMA
 std::string mima_doc();
+std::string mima2_doc();
 
 // Encodings
 std::string alpha2direct_doc();

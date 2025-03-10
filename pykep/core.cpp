@@ -128,6 +128,8 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing mima functions
     m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),
           pk::mima_doc().c_str());
+    m.def("mima2", &kep3::mima2, py::arg("posvel1"), py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"), py::arg("mu"),
+          pk::mima2_doc().c_str());
 
     // Exposing encoding conversions
     m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());
@@ -417,7 +419,7 @@ PYBIND11_MODULE(core, m) // NOLINT
                 auto computed_stm = py::array_t<double>(
                     py::array::ShapeContainer{static_cast<py::ssize_t>(6), static_cast<py::ssize_t>(6)}, // shape
                     ptr->data(), std::move(vec_caps));
-                return py::make_tuple(pl_retval.first, computed_stm);
+                return py::make_tuple(py::make_tuple(pl_retval.first[0], pl_retval.first[1]), computed_stm);
             } else {
                 return py::make_tuple(pl_retval.first[0], pl_retval.first[1]);
             }

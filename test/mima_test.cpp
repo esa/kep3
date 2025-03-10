@@ -51,3 +51,40 @@ TEST_CASE("mima")
         REQUIRE(mima_res.first == Approx(mima_from_zenodo_db).epsilon(1e-8));
     }
 }
+
+TEST_CASE("mima2")
+{
+    // We take the first item from the zeonodo database https://zenodo.org/records/11502524 containing
+    // independent cases reporting the mima2 values.
+    {
+        std::array<double, 3> rs = {3.574644002632926178e+10, -5.688222150272903442e+10, -1.304897435568400574e+10};
+        std::array<double, 3> vs = {4.666425901145393436e+04, 2.375697019573154466e+04, 1.165422004315219965e+04};
+        std::array<double, 3> rt = {7.672399994418635559e+10, -1.093562401274179382e+11, 4.796635567684053421e+09};
+        std::array<double, 3> vt = {2.725105661271001009e+04, 1.599599495457483499e+04, 6.818440757625087826e+03};
+        double tof = 3.311380772794449854e+02 * kep3::DAY2SEC;
+        double Tmax = 0.6;
+        double veff = kep3::G0 * 4000;
+        auto lp = kep3::lambert_problem(rs, rt, tof, kep3::MU_SUN);
+        std::array<double, 3> dv1 = {lp.get_v0()[0][0] - vs[0], lp.get_v0()[0][1] - vs[1], lp.get_v0()[0][2] - vs[2]};
+        std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};
+        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
+        double mima2_from_zenodo_db = 1.397851641912264995e+02;
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
+    }
+    {   // This second case is also from the Zenodo db
+        std::array<double, 3> rs = { 8.899464427764886475e+10,-4.581927411496286621e+11,2.048886307096130981e+11};
+        std::array<double, 3> vs = {1.385571222713435418e+04,6.481857970028194359e+03,2.812533151527441078e+03};
+        std::array<double, 3> rt = {3.668961862639051514e+11,-2.093798042740150452e+11,4.217417200463520050e+10};
+        std::array<double, 3> vt = {5.115925672273307100e+03,1.436244285179517283e+04,-7.297450556937028523e+03};
+        double tof = 3.024673748374755746e+02 * kep3::DAY2SEC;
+        double Tmax = 0.6;
+        double veff = kep3::G0 * 4000;
+        auto lp = kep3::lambert_problem(rs, rt, tof, kep3::MU_SUN);
+        std::array<double, 3> dv1 = {lp.get_v0()[0][0] - vs[0], lp.get_v0()[0][1] - vs[1], lp.get_v0()[0][2] - vs[2]};
+        std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};
+        vs[0]+=dv1[0]; vs[1]+=dv1[1]; vs[2]+=dv1[2];
+        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
+        double mima2_from_zenodo_db = 1092.1862621801;
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
+    }
+}

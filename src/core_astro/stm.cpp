@@ -122,8 +122,10 @@ std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2>
         dGt = -(1 - coshDH) / Rf * da + a / Rf / Rf * (1 - coshDH) * dRf + a / Rf * sinhDH * dDH;
     }
     // 3 - And finally assemble the state transition matrix
-    mat36 Mr = F * dr0 + _dot(mat31(xt::transpose(r0)), dF) + G * dv0 + _dot(mat31(xt::transpose(v0)), dG);
-    mat36 Mv = Ft * dr0 + _dot(mat31(xt::transpose(r0)), dFt) + Gt * dv0 + _dot(mat31(xt::transpose(v0)), dGt);
+    mat31 r0T = xt::transpose(r0);
+    mat31 v0T = xt::transpose(v0);
+    mat36 Mr = F * dr0 + _dot(r0T, dF) + G * dv0 + _dot(v0T, dG);
+    mat36 Mv = Ft * dr0 + _dot(r0T, dFt) + Gt * dv0 + _dot(v0T, dGt);
     mat66 M{};
     xt::view(M, xt::range(0, 3), xt::all()) = Mr;
     xt::view(M, xt::range(3, 6), xt::all()) = Mv;
@@ -178,9 +180,11 @@ std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &
     mat66 retval{};
     // auto retval_xt = xt::adapt(retval, shape66);
     //  Compute the STM using Reynolds' Cartesian Representation
-    auto Y = _compute_Y(r0, v0, rf, vf, tof, mu);
-    auto Y0 = _compute_Y(r0, v0, r0, v0, 0., mu);
-    retval = _dot(Y, mat66(inv(Y0)));
+    mat66 Y = _compute_Y(r0, v0, rf, vf, tof, mu);
+    mat66 Y0 = _compute_Y(r0, v0, r0, v0, 0., mu);
+    mat66 Y0inv = inv(Y0);
+     
+    retval = _dot(Y, Y0inv);
     // return retval;
     std::array<double, 36> ret{};
     std::copy(retval.begin(), retval.end(), ret.begin());

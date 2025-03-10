@@ -1724,7 +1724,7 @@ std::string propagate_lagrangian_docstring()
 
     Returns:
           :class:`tuple` (:class:`list`, :class:`list`): r and v, that is the final position and velocity after the propagation. (if *stm* is False)
-          :class:`tuple` (:class:`list` [:class:`list`, :class:`list`], :class:`numpy.ndarray` (6,6)): [r,v] and the STM. (if *stm* is True)
+          :class:`tuple` (:class:`tuple` (:class:`list`, :class:`list`), :class:`numpy.ndarray` (6,6)): (r,v) and the STM. (if *stm* is True)
 
     Examples:
         >>> import pykep as pk
