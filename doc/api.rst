@@ -17,6 +17,7 @@ pykep API is striving to maximize its usability. Let us know what you think abou
    udpla
    lambert
    flyby
+   approximations
    propagation
    leg
    trajopt

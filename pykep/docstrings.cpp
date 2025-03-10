@@ -708,9 +708,9 @@ std::string mima_doc()
     that transfer in low-thrust.
 
     Args:
-        *dv1* (:class:`numpy.ndarray`): First  vectorial delta v (m/s, or Any velocity units)
+        *dv1* (:class:`list`): First  vectorial delta v (m/s, or Any velocity units)
 
-        *dv2* (:class:`numpy.ndarray`): Second vectorial delta v (m/s or Any velocity units)
+        *dv2* (:class:`list`): Second vectorial delta v (m/s or Any velocity units)
 
         *tof* (:class:`float`): Time of flight (Any time units)
 
@@ -731,6 +731,40 @@ std::string mima_doc()
         mima, a_required  = gt12.mima(dv1,dv2,tof, Tmax = 0.6)
         print("Maximum initial mass:",mima,"kg")
         print("Required acceleration:", a_required*1000,"mm/s)
+)";
+}
+
+std::string mima2_doc()
+{
+    return R"(mima2(posvel1, dv1, dv2, tof, Tmax, veff, mu)
+    
+    More accurate approximation of mima.
+
+    Having computed a two-impulse transfer, this approximation allows to compute
+    the maximum initial mass that a spacecraft can have as to be able to perform
+    that transfer in low-thrust.
+
+    Izzo, D., ... & Yam, C. H. (2025). Asteroid mining: ACT&Friends’ results for the GTOC12 problem. Astrodynamics, 9(1),
+    19-40.  (https://arxiv.org/pdf/2410.20839)
+
+    Args:
+        *posvel1* (:class:`list` [:class:`list`, :class:`list`]): initial position and velocty along the Lambert transfer (IMPORTANT).
+
+        *dv1* (:class:`numpy.ndarray`): First delta v (m/s, or Any velocity units)
+
+        *dv2* (:class:`numpy.ndarray`): Second delta v (m/s or Any velocity units)
+
+        *tof* (:class:`float`): Time of flight (Any time units)
+
+        *Tmax* (:class:`float`): Maximum spacecraft thrust. Defaults to 0.6 N.
+
+        *veff* (:class:`float`): Isp*G0. defaults to the gtoc12 value for Isp*G0 in m/s
+
+        *mu* (:class:`float`): gravitational parameter of the central body.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
+        (units induced by the inputs)
 )";
 }
 
