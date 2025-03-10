@@ -9,3 +9,5 @@ from ._spice_utils import inspect_spice_kernel, naifid2name, name2naifid, framen
 from ._planet_to_keplerian import planet_to_keplerian
 
 from ._encoding_conversions import uvV2cartesian, cartesian2uvV
+
+from ._knn import knn

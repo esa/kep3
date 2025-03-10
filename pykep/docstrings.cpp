@@ -9,6 +9,7 @@
 #include <string>
 
 #include "docstrings.hpp"
+#include "kep3/core_astro/basic_transfers.hpp"
 
 namespace pykep
 {
@@ -697,6 +698,105 @@ std::string f2zeta_v_doc()
 )";
 }
 
+std::string hohmann_doc()
+{
+    return R"(hohmann(r1, r2, mu)
+
+    Computes the delta v required for a Hohmann transfer between two circular orbits.
+
+    Args:
+        *r1* (:class:`float`): radius of the first orbit
+
+        *r2* (:class:`float`): radius of the second orbit
+
+        *mu* (:class:`float`): gravitational parameter of the central body
+
+    Returns:
+        [:class:`float`, [:class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v]]
+
+    Examples:
+      >>> import pykep as pk
+      >>> r1 = 7000000
+      >>> r2 = 9000000
+      >>> mu = pk.MU_EARTH
+      >>> dv_total, [dv1, dv2] = pk.hohmann(r1, r2, mu)
+      >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("First delta v:", dv1, "m/s")
+      >>> print("Second delta v:", dv2, "m/s")
+)";
+}
+
+std::string mima_doc()
+{
+    return R"(mima(dv1, dv2, tof, Tmax, veff)
+    
+    The Maximum Initial Mass Approximation.
+
+    Having computed a two-impulse transfer, this approximation allows to compute
+    the maximum initial mass that a spacecraft can have as to be able to perform
+    that transfer in low-thrust.
+
+    Args:
+        *dv1* (:class:`list`): First  vectorial delta v (m/s, or Any velocity units)
+
+        *dv2* (:class:`list`): Second vectorial delta v (m/s or Any velocity units)
+
+        *tof* (:class:`float`): Time of flight (Any time units)
+
+        *Tmax* (:class:`float`, optional): Maximum spacecraft thrust.
+
+        *veff* (:class:`float`, optional): Isp*G0.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
+        (units induced by the inputs)
+
+    Examples:
+      >>> import numpy as np
+      >>> import pykep as pk
+      >>> dv1 = np.array([320,-345,43]) #m/s
+      >>> dv2 = np.array([-510,175,87]) #m/s
+      >>> tof = 150*24*60*60 #seconds
+      >>> mima, a_required  = pk.mima(dv1, dv2, tof, Tmax = 0.6, veff=3000*pk.G0)
+      >>> print("Maximum initial mass:", mima, "kg")
+      >>> print("Required acceleration:", a_required*1000, "mm/s)
+)";
+}
+
+std::string mima2_doc()
+{
+    return R"(mima2(posvel1, dv1, dv2, tof, Tmax, veff, mu)
+    
+    More accurate approximation of mima.
+
+    Having computed a two-impulse transfer, this approximation allows to compute
+    the maximum initial mass that a spacecraft can have as to be able to perform
+    that transfer in low-thrust.
+
+    Izzo, D., ... & Yam, C. H. (2025). Asteroid mining: ACT&Friends’ results for the GTOC12 problem. Astrodynamics, 9(1),
+    19-40.  (https://arxiv.org/pdf/2410.20839)
+
+    Args:
+        *posvel1* (:class:`list` [:class:`list`, :class:`list`]): initial position and velocty ALONG THE LAMBERT TRANSFER.
+
+        *dv1* (:class:`numpy.ndarray`): First delta v (m/s, or Any velocity units)
+
+        *dv2* (:class:`numpy.ndarray`): Second delta v (m/s or Any velocity units)
+
+        *tof* (:class:`float`): Time of flight (Any time units)
+
+        *Tmax* (:class:`float`): Maximum spacecraft thrust.
+
+        *veff* (:class:`float`): Isp*G0.
+
+        *mu* (:class:`float`): gravitational parameter of the central body.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
+        (units induced by the inputs)
+)";
+}
+
 std::string alpha2direct_doc()
 {
     return R"(alpha2direct(alphas)
@@ -1315,7 +1415,7 @@ It also computes the system State Transition Matrix:
 as well as the gradients of the final states with respect to the thrust direction.
 
 .. math::
-    \mathbf U = = \frac{d\mathbf x_f}{d\mathbf u}
+    \mathbf U = \frac{d\mathbf x_f}{d\mathbf u}
 
 Args:
     *rvm_state* (:class:`list` (7,)): position, velocity and mass flattened into a 7D list. 
@@ -1532,7 +1632,7 @@ Returns:
 
 std::string get_pc_docstring()
 {
-    return R"(ta.get_pc(tol)
+    return R"(ta.get_pc(tol, optimality)
 
 Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
 
@@ -1544,16 +1644,21 @@ trigger its compilation. Otherwise, it will return the one from a global cache, 
 
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
 
+Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
+
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 
 Returns:
     :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_pc(tol = 1e-16)
+  >>> ta = pk.ta.get_pc(tol = 1e-16, optimality = pk.optimality_type.TIME)
   >>> ta.time = 0.
+  >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
   >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.]
   >>> tof = 1.2345
@@ -1563,7 +1668,7 @@ Examples:
 
 std::string get_pc_var_docstring()
 {
-    return R"(ta.get_pc_var(tol)
+    return R"(ta.get_pc_var(tol, optimality)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
 
@@ -1577,12 +1682,15 @@ a global cache, thus avoiding jitting.
 
 .. note:
    Variations are considered with respect to the initial conditions on the costates and to the
-   parameters :math:`\epsilon` and :math:`\lambda_0`.
+   parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
+   is still considered a parameter (for consistency) but it is not used.
 
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 
 Returns:
     :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
@@ -1679,7 +1787,7 @@ std::string propagate_lagrangian_docstring()
 
     Returns:
           :class:`tuple` (:class:`list`, :class:`list`): r and v, that is the final position and velocity after the propagation. (if *stm* is False)
-          :class:`tuple` (:class:`list` [:class:`list`, :class:`list`], :class:`numpy.ndarray` (6,6)): [r,v] and the STM. (if *stm* is True)
+          :class:`tuple` (:class:`tuple` (:class:`list`, :class:`list`), :class:`numpy.ndarray` (6,6)): (r,v) and the STM. (if *stm* is True)
 
     Examples:
         >>> import pykep as pk

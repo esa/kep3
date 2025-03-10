@@ -46,4 +46,4 @@ ADD_kep3_TESTCASE(ta_cr3bp_test)
 ADD_kep3_TESTCASE(ta_pontryagin_cartesian_test)
 ADD_kep3_TESTCASE(flyby_test)
 ADD_kep3_TESTCASE(encodings_test)
-
+ADD_kep3_TESTCASE(mima_test)
