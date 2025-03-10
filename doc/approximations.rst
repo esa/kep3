@@ -13,6 +13,13 @@ be found in our papers, e.g. :cite:p:`approximations`, :cite:p:`gtoc12`.
 
 .. currentmodule:: pykep
 
+Basic transfers
+----------------
+Sometimes basic ideal transfers models can be used to get some bounds or information on the possible
+difficulty of a certain orbital geometry.
+
+.. autofunction:: hohmann
+
 Maximum initial mass approximation (MIMA)
 -----------------------------------------
 If we are computing the low-thrust transfer between two arbitrary orbits and we know the starting and final time of arrival,
