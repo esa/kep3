@@ -10,7 +10,7 @@ Lambert's problem, low-thrust problems, multiple asteroid randezvous problems an
 [Heyoka](https://bluescarni.github.io/heyoka.py/index.html) Taylor integration suite is provided.
 
 **pykep** has been used by the European Space Agency's [Advanced Concepts Team](https://www.esa.int/gsp/ACT/index.html)
-during different Global Trajectory Optimization Competitions [GTOC](http://sophia.estec.esa.int/gtoc_portal), 
+during different Global Trajectory Optimization Competitions [GTOC](https://sophia.estec.esa.int/gtoc_portal), 
 several research papers as well as for the optimization of preliminary mission scenarios such as in 
 the M-ARGO interplanetary cubesat concept, the phase 0 study for the the Titan and Enceladus Mission (TandEM)
 and for preliminary mission analysis of the HERA mission.
