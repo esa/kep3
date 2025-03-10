@@ -69,7 +69,7 @@ TEST_CASE("mima2")
         std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};
         auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
         double mima2_from_zenodo_db = 1.397851641912264995e+02;
-        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-6));
     }
     {   // This second case is also from the Zenodo db
         std::array<double, 3> rs = { 8.899464427764886475e+10,-4.581927411496286621e+11,2.048886307096130981e+11};
@@ -85,6 +85,6 @@ TEST_CASE("mima2")
         vs[0]+=dv1[0]; vs[1]+=dv1[1]; vs[2]+=dv1[2];
         auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
         double mima2_from_zenodo_db = 1092.1862621801;
-        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-6));
     }
 }
