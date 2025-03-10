@@ -20,3 +20,4 @@ dependencies:
   - spiceypy
   - matplotlib
   - pygmo_plugins_nonfree
+  - scipy

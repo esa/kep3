@@ -25,6 +25,10 @@ but that requires learning from a vast database of precomputed trajectories and 
 
 .. autofunction:: mima2
 
-Orbital phasing metric
+Phasing indicators
 ----------------------
-tbd
+
+.. currentmodule:: pykep.utils
+
+.. autoclass:: knn
+    :members: find_neighbours

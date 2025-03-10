@@ -136,7 +136,7 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
 {
     const boost::uintmax_t maxit = 100;
     boost::uintmax_t it = maxit;
-    int digits = 8;                                        // No need to compute this approximation precisely
+    unsigned digits = 8;                                        // No need to compute this approximation precisely
     boost::math::tools::eps_tolerance<double> tol(digits); // Set the tolerance.
     auto r = boost::math::tools::bracket_and_solve_root(
         [&](double x) { return compute_transfer_approximation(x, posvel1, tof, dv1, dv2, mu).first; }, 0.5, 2., true,
