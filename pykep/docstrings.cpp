@@ -722,15 +722,15 @@ std::string mima_doc()
         :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
         (units induced by the inputs)
 
-    Example:
-        # Say that your two-impulses have been computed and:
-        dv1 = np.array([320,-345,43]) #m/s
-        dv2 = np.array([-510,175,87]) #m/s
-        tof = 150*24*60*60 #seconds
-        # Then call
-        mima, a_required  = gt12.mima(dv1,dv2,tof, Tmax = 0.6)
-        print("Maximum initial mass:",mima,"kg")
-        print("Required acceleration:", a_required*1000,"mm/s)
+    Examples:
+      >>> import numpy as np
+      >>> import pykep as pk
+      >>> dv1 = np.array([320,-345,43]) #m/s
+      >>> dv2 = np.array([-510,175,87]) #m/s
+      >>> tof = 150*24*60*60 #seconds
+      >>> mima, a_required  = pk.mima(dv1, dv2, tof, Tmax = 0.6, veff=3000*pk.G0)
+      >>> print("Maximum initial mass:", mima, "kg")
+      >>> print("Required acceleration:", a_required*1000, "mm/s)
 )";
 }
 
@@ -748,7 +748,7 @@ std::string mima2_doc()
     19-40.  (https://arxiv.org/pdf/2410.20839)
 
     Args:
-        *posvel1* (:class:`list` [:class:`list`, :class:`list`]): initial position and velocty along the Lambert transfer (IMPORTANT).
+        *posvel1* (:class:`list` [:class:`list`, :class:`list`]): initial position and velocty ALONG THE LAMBERT TRANSFER.
 
         *dv1* (:class:`numpy.ndarray`): First delta v (m/s, or Any velocity units)
 
@@ -756,9 +756,9 @@ std::string mima2_doc()
 
         *tof* (:class:`float`): Time of flight (Any time units)
 
-        *Tmax* (:class:`float`): Maximum spacecraft thrust. Defaults to 0.6 N.
+        *Tmax* (:class:`float`): Maximum spacecraft thrust.
 
-        *veff* (:class:`float`): Isp*G0. defaults to the gtoc12 value for Isp*G0 in m/s
+        *veff* (:class:`float`): Isp*G0.
 
         *mu* (:class:`float`): gravitational parameter of the central body.
 
