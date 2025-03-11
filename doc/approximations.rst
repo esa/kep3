@@ -20,6 +20,8 @@ difficulty of a certain orbital geometry.
 
 .. autofunction:: hohmann
 
+.. autofunction:: bielliptic
+
 Maximum initial mass approximation (MIMA)
 -----------------------------------------
 If we are computing the low-thrust transfer between two arbitrary orbits and we know the starting and final time of arrival,

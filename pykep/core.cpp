@@ -132,7 +132,8 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("mima2", &kep3::mima2, py::arg("posvel1"), py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"),
           py::arg("veff"), py::arg("mu"), pk::mima2_doc().c_str());
     m.def("hohmann", &kep3::hohmann, py::arg("r1"), py::arg("r2"), py::arg("mu"), pk::hohmann_doc().c_str());
-
+    m.def("bielliptic", &kep3::bielliptic, py::arg("r1"), py::arg("r2"), py::arg("rb"), py::arg("mu"),
+          pk::bielliptic_doc().c_str());
     // Exposing encoding conversions
     m.def("alpha2direct", &kep3::alpha2direct, py::arg("alphas"), py::arg("tof"), pk::alpha2direct_doc().c_str());
     m.def("direct2alpha", &kep3::direct2alpha, py::arg("tofs"), pk::direct2alpha_doc().c_str());

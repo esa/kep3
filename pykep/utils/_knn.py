@@ -7,21 +7,27 @@
 
 import pykep as _pk
 
-class knn():
+class knn:
     R"""
-    The class finds the k-nearest neighbours to a given planet from a list of planets.
-    The problem of finding who is "close-by" under a given metrc can be efficiently solved
+    The class finds the k-nearest neighbours to a given planet
+    at some epoch from a list of planets.
+    The idea being that under some definition of "closeness"
+    close-by planets are good candidates for orbital transfers (i.e. resulting in a low :math:`\Delta V`).
+    The use of this class is thus in preliminary mission phases of
+    multiple randevous trajectories where target selection is to be performed efficiently.
+
+    The problem of finding who is "close-by" under a given metric can be efficiently solved
     using appropriate data structures. Here a kdtree is employed bringing complexity down to O(log N).
-    The k-d-tree can then be queried efficiently for all asteroid within a given distance ('ball' query) 
+    The k-d-tree can then be queried efficiently for all asteroid within a given distance ('ball' query)
     or for all k closest asteroids ('knn' query).
 
     The notion of distance used (metric) can be:
 
-    - 'euclidean': the simple Euclidean distance over the asteroid's (r,v). 
+    - 'euclidean': the simple Euclidean distance over the asteroid's (r,v).
       The position and velocity vectors are scaled w.r.t. some reference values.
 
     - 'orbital', the distance is computed with respect to :math:`\frac{r}{T} + v`, :math:`\frac{r}{T}`,
-      corresponding to the :math:`\Delta V` computed over a linear model of the orbital transfer. 
+      corresponding to the :math:`\Delta V` computed over a linear model of the orbital transfer.
       The distance returned will thus be in m/s.
 
     The class is initialized with a list of planets, an epoch, and the metric to be used.
@@ -62,7 +68,7 @@ class knn():
 
         Args:
             *r* (:class:`list`): position vector.
-            
+
             *v* (:class:`list`): velocity vector.
 
         Returns:
@@ -96,11 +102,10 @@ class knn():
         from scipy.spatial import cKDTree
         import numpy as np
 
-        if self._metric == 'euclidean':
+        if self._metric == "euclidean":
             e = np.array([a.eph(t) for a in self._asteroids])
         else:
-            e = np.array([self._orbital_metric(*a.eph(t))
-                          for a in self._asteroids])
+            e = np.array([self._orbital_metric(*a.eph(t)) for a in self._asteroids])
 
         # reshape memory area, so each asteroid's ephemeride gets represented by
         # a single 6 dimensional vector
@@ -108,26 +113,34 @@ class knn():
 
         # normalize the full matrix
         # (if the `normalize_f` is set to None, no normalization takes place)
-        if self._metric == 'euclidean':
+        if self._metric == "euclidean":
             self._eph_normalize(e)
 
         return cKDTree(e)
 
-    def __init__(self, planet_list, when, metric='orbital', ref_r=_pk.AU, ref_v=_pk.EARTH_VELOCITY, tof=180.0):
+    def __init__(
+        self,
+        planet_list,
+        when,
+        metric="orbital",
+        ref_r=_pk.AU,
+        ref_v=_pk.EARTH_VELOCITY,
+        tof=180.0,
+    ):
         """
         Initializes the knn class.
 
         Args:
             *planet_list* (:class:`list` of :class:`~pykep.planet`): list of pykep planets (typically thousands).
-            
+
             *when* (:class:`~pykep.epoch`): epoch.
-            
+
             *metric* (:class:`str`, optional): one of ['euclidean', 'orbital']. Defaults to 'orbital'.
-            
+
             *ref_r* (:class:`float`, optional): reference radius (used as a scaling factor for r if the metric is 'euclidean'). Defaults to AU.
-            
+
             *ref_v* (:class:`float`, optional): reference velocity (used as a scaling factor for v if the metric is 'euclidean'). Defaults to EARTH_VELOCITY.
-            
+
             *tof* (:class:`float`, optional): average transfer time in days (used in the definition of the 'orbital' metric). Defaults to 180.0.
 
         Example::
@@ -140,6 +153,7 @@ class knn():
         """
         import numpy as np
         import pykep as pk
+
         self._asteroids = np.array(planet_list, dtype=np.object)
         self._ref_r = ref_r
         self._ref_v = ref_v
@@ -148,16 +162,16 @@ class knn():
         self._tof = tof
         self._kdtree = self._make_kdtree(self._when)
 
-    def find_neighbours(self, query_planet, query_type='knn', *args, **kwargs):
+    def find_neighbours(self, query_planet, query_type="knn", *args, **kwargs):
         """
         Finds the neighbours of a given planet at a given epoch. The user may query for the
         k-nearest neighbours or for all neighbours within a given distance.
 
         Args:
             *query_planet* (:class:`~pykep.planet` or :class:`int`): the planet we want to find neighbours of. Can be an integer, in which case it refers to the idx in self.asteroid_list.
-            
+
             *query_type* (:class:`str`, optional): one of 'knn' or 'ball'. Defaults to 'knn'.
-            
+
             *\\*args*: according to the query type (read below).
 
             *\\*\\*kwargs*: according to the query type (read below).
@@ -182,23 +196,23 @@ class knn():
 
         # generate the query vector
         x = query_planet.eph(self.when)
-        if self._metric == 'euclidean':
+        if self._metric == "euclidean":
             x = self._eph_normalize(x)
         else:
             DV1, DV2 = self._orbital_metric(x[0], x[1])
             x = DV1 + DV2
 
-        if query_type == 'knn':
+        if query_type == "knn":
             # Query for the k nearest neighbors
             # http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query.html
             dists, idxs = self._kdtree.query(x, *args, **kwargs)
-        elif query_type == 'ball':
+        elif query_type == "ball":
             # Query for all neighbors within a sphere of given radius
             # http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.query_ball_point.html
             idxs = self._kdtree.query_ball_point(x, *args, **kwargs)
             dists = [None] * len(idxs)
         else:
-            raise Exception('Unrecognized query type: %s' % str(query_type))
+            raise Exception("Unrecognized query type: %s" % str(query_type))
 
         neighb = [
             # (ast. object, ast. ID, distance)
@@ -208,7 +222,6 @@ class knn():
 
         # split into three lists, one of objects, one of IDs, and one for
         # distances
-        neighb, neighb_ids, dists = list(
-            zip(*neighb)) if neighb != [] else ([], [], [])
+        neighb, neighb_ids, dists = list(zip(*neighb)) if neighb != [] else ([], [], [])
 
         return neighb, neighb_ids, dists
