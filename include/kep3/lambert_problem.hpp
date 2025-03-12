@@ -10,7 +10,6 @@
 #define kep3_LAMBERT_PROBLEM_H
 
 #include <array>
-#include <cmath>
 #include <vector>
 
 #include <fmt/ostream.h>

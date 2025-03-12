@@ -10,7 +10,6 @@
 #define kep3_UDPLA_KEPLERIAN_H
 
 #include <array>
-#include <utility>
 
 #include <fmt/ostream.h>
 

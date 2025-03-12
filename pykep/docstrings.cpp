@@ -1268,7 +1268,7 @@ Args:
 
     *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
 
-    *el_type* (:class:`~pykep.el_type`): the elements type. Deafulets to osculating Keplerian (a ,e ,i, W, w, f) with true anomaly.
+    *el_type* (:class:`~pykep.el_type`): the elements type. Defaults to osculating Keplerian (a ,e ,i, W, w, f) with true anomaly.
 
 Examples:
     >>> import pykep as pk
