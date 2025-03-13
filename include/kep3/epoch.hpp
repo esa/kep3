@@ -10,7 +10,6 @@
 #define kep3_EPOCH_HPP
 
 #include <chrono>
-#include <concepts>
 #include <cstdint>
 #include <iostream>
 #include <limits>

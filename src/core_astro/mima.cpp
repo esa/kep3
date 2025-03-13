@@ -6,6 +6,7 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
+#include "kep3/core_astro/constants.hpp"
 #include <cmath>
 
 #include <boost/math/tools/roots.hpp>
@@ -18,6 +19,7 @@
 
 #include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
+#include <kep3/lambert_problem.hpp>
 #include <kep3/linalg.hpp>
 #include <xtensor/xbuilder.hpp>
 
@@ -36,6 +38,21 @@ std::pair<double, double> mima(const std::array<double, 3> &dv1, const std::arra
     double ad = std::sqrt(aa + 2 * bb + 2 * std::sqrt((ab * ab + bb * bb))) / tof;
     double mima = 2 * Tmax / ad / (1 + std::exp(-ad * tof / veff));
     return {mima, ad};
+}
+
+std::pair<double, double> mima_from_hop(const kep3::planet &pl_s, const kep3::planet &pl_f, const kep3::epoch &when_s,
+                                        const kep3::epoch &when_f,
+                                        double Tmax, // NOLINT
+                                        double veff) // NOLINT
+{
+    double tof = (when_f.mjd2000() - when_s.mjd2000()) * kep3::DAY2SEC;
+    double mu = pl_s.get_mu_central_body();
+    const auto &[r_s, v_s] = pl_s.eph(when_s);
+    const auto &[r_f, v_f] = pl_f.eph(when_f);
+    auto l = kep3::lambert_problem(r_s, r_f, tof, mu, false, 0u);
+    std::array<double, 3> dv1 = {l.get_v0()[0][0] - v_s[0], l.get_v0()[0][1] - v_s[1], l.get_v0()[0][2] - v_s[2]};
+    std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
+    return mima(dv1, dv2, tof, Tmax, veff);
 }
 
 std::pair<double, double> compute_transfer_approximation(double x, const std::array<std::array<double, 3>, 2> &posvel1,
@@ -118,10 +135,11 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
 {
     const boost::uintmax_t maxit = 100u;
     boost::uintmax_t it = maxit;
-    unsigned digits = 10u;                                        // No need to compute this approximation precisely
+    unsigned digits = 10u;                                 // No need to compute this approximation precisely
     boost::math::tools::eps_tolerance<double> tol(digits); // Set the tolerance.
+    double guess = compute_transfer_approximation(0., posvel1, tof, dv1, dv2, mu).first > 0 ? -0.5 : 0.5;
     auto r = boost::math::tools::bracket_and_solve_root(
-        [&](double x) { return compute_transfer_approximation(x, posvel1, tof, dv1, dv2, mu).first; }, 0.5, 2., true,
+        [&](double x) { return compute_transfer_approximation(x, posvel1, tof, dv1, dv2, mu).first; }, guess, 2., true,
         tol, it);
 
     if (it >= maxit) { //
@@ -131,6 +149,21 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
     auto acc = compute_transfer_approximation(root, posvel1, tof, dv1, dv2, mu).second;
     auto mima2 = 2. * Tmax / acc / (1. + std::exp(-acc * tof / veff));
     return {mima2, acc};
+}
+
+std::pair<double, double> mima2_from_hop(const kep3::planet &pl_s, const kep3::planet &pl_f, const kep3::epoch &when_s,
+                                         const kep3::epoch &when_f,
+                                         double Tmax, // NOLINT
+                                         double veff) // NOLINT
+{
+    double tof = (when_f.mjd2000() - when_s.mjd2000()) * kep3::DAY2SEC;
+    double mu = pl_s.get_mu_central_body();
+    const auto &[r_s, v_s] = pl_s.eph(when_s);
+    const auto &[r_f, v_f] = pl_f.eph(when_f);
+    auto l = kep3::lambert_problem(r_s, r_f, tof,  mu, false, 0u);
+    std::array<double, 3> dv1 = {l.get_v0()[0][0] - v_s[0], l.get_v0()[0][1] - v_s[1], l.get_v0()[0][2] - v_s[2]};
+    std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
+    return mima2({r_s, l.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, mu);
 }
 
 } // namespace kep3

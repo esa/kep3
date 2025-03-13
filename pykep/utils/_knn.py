@@ -74,7 +74,7 @@ class knn:
         Returns:
             :class:`tuple`[:class:`list`, :class:`list`]: (DV1, DV2) where DV1 and DV2 are components of the orbital metric.
         """
-        DV2 = [a / (self.tof * _pk.DAY2SEC) for a in r]
+        DV2 = [a / (self._tof * _pk.DAY2SEC) for a in r]
         DV1 = [a + b for a, b in zip(DV2, v)]
         return (DV1, DV2)
 
@@ -152,9 +152,8 @@ class knn:
             neighb, ids, _ = knn.find_neighbours(pl_list[ast_0], query_type='ball', r=5000)
         """
         import numpy as np
-        import pykep as pk
 
-        self._asteroids = np.array(planet_list, dtype=np.object)
+        self._asteroids = np.array(planet_list)
         self._ref_r = ref_r
         self._ref_v = ref_v
         self._when = when
@@ -195,7 +194,7 @@ class knn:
             query_planet = self._asteroids[query_planet]
 
         # generate the query vector
-        x = query_planet.eph(self.when)
+        x = query_planet.eph(self._when)
         if self._metric == "euclidean":
             x = self._eph_normalize(x)
         else:

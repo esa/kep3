@@ -14,6 +14,7 @@
 #include <kep3/lambert_problem.hpp>
 
 #include "catch.hpp"
+#include "kep3/udpla/keplerian.hpp"
 
 TEST_CASE("mima")
 {
@@ -52,6 +53,24 @@ TEST_CASE("mima")
     }
 }
 
+TEST_CASE("mima_from_hop")
+{
+    kep3::epoch when{64328.0, kep3::epoch::julian_type::MJD};
+    std::array<double, 6> el_s
+        = {286031128778.39996, 0.0763, 0.3153809958353754, 4.70313873534912, 5.27246513734967, 2.9460074243530188};
+    std::array<double, 6> el_f
+        = {270472950225.6, 0.066, 0.39968039870670147, 4.255287249287375, 3.9732420421650914, 2.3813298840517};
+    kep3::planet pl_s{kep3::udpla::keplerian(when, el_s, kep3::MU_SUN)};
+    kep3::planet pl_f{kep3::udpla::keplerian(when, el_f, kep3::MU_SUN)};
+    double Tmax = 0.6;
+    double veff = kep3::G0 * 4000;
+    kep3::epoch when_s{5500.0, kep3::epoch::julian_type::MJD2000};
+    kep3::epoch when_f{5700.0, kep3::epoch::julian_type::MJD2000};
+    auto mima_res = kep3::mima_from_hop(pl_s, pl_f, when_s, when_f, Tmax, veff);
+    double ground_truth = 1270.16102850;
+    REQUIRE(mima_res.first == Approx(ground_truth).epsilon(1e-8));
+}
+
 TEST_CASE("mima2")
 {
     // We take the first item from the zeonodo database https://zenodo.org/records/11502524 containing
@@ -67,24 +86,44 @@ TEST_CASE("mima2")
         auto lp = kep3::lambert_problem(rs, rt, tof, kep3::MU_SUN);
         std::array<double, 3> dv1 = {lp.get_v0()[0][0] - vs[0], lp.get_v0()[0][1] - vs[1], lp.get_v0()[0][2] - vs[2]};
         std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};
-        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
+        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, kep3::MU_SUN);
         double mima2_from_zenodo_db = 1.397851641912264995e+02;
-        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-6));
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
     }
-    {   // This second case is also from the Zenodo db
-        std::array<double, 3> rs = { 8.899464427764886475e+10,-4.581927411496286621e+11,2.048886307096130981e+11};
-        std::array<double, 3> vs = {1.385571222713435418e+04,6.481857970028194359e+03,2.812533151527441078e+03};
-        std::array<double, 3> rt = {3.668961862639051514e+11,-2.093798042740150452e+11,4.217417200463520050e+10};
-        std::array<double, 3> vt = {5.115925672273307100e+03,1.436244285179517283e+04,-7.297450556937028523e+03};
+    { // This second case is also from the Zenodo db
+        std::array<double, 3> rs = {8.899464427764886475e+10, -4.581927411496286621e+11, 2.048886307096130981e+11};
+        std::array<double, 3> vs = {1.385571222713435418e+04, 6.481857970028194359e+03, 2.812533151527441078e+03};
+        std::array<double, 3> rt = {3.668961862639051514e+11, -2.093798042740150452e+11, 4.217417200463520050e+10};
+        std::array<double, 3> vt = {5.115925672273307100e+03, 1.436244285179517283e+04, -7.297450556937028523e+03};
         double tof = 3.024673748374755746e+02 * kep3::DAY2SEC;
         double Tmax = 0.6;
         double veff = kep3::G0 * 4000;
         auto lp = kep3::lambert_problem(rs, rt, tof, kep3::MU_SUN);
         std::array<double, 3> dv1 = {lp.get_v0()[0][0] - vs[0], lp.get_v0()[0][1] - vs[1], lp.get_v0()[0][2] - vs[2]};
         std::array<double, 3> dv2 = {vt[0] - lp.get_v1()[0][0], vt[1] - lp.get_v1()[0][1], vt[2] - lp.get_v1()[0][2]};
-        vs[0]+=dv1[0]; vs[1]+=dv1[1]; vs[2]+=dv1[2];
-        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff,kep3::MU_SUN);
+        vs[0] += dv1[0];
+        vs[1] += dv1[1];
+        vs[2] += dv1[2];
+        auto mima2_res = kep3::mima2({rs, lp.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, kep3::MU_SUN);
         double mima2_from_zenodo_db = 1092.1862621801;
-        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-6));
+        REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
     }
+}
+
+TEST_CASE("mima2_from_hop")
+{
+    kep3::epoch when{64328.0, kep3::epoch::julian_type::MJD};
+    std::array<double, 6> el_s
+        = {286031128778.39996, 0.0763, 0.3153809958353754, 4.70313873534912, 5.27246513734967, 2.9460074243530188};
+    std::array<double, 6> el_f
+        = {270472950225.6, 0.066, 0.39968039870670147, 4.255287249287375, 3.9732420421650914, 2.3813298840517};
+    kep3::planet pl_s{kep3::udpla::keplerian(when, el_s, kep3::MU_SUN)};
+    kep3::planet pl_f{kep3::udpla::keplerian(when, el_f, kep3::MU_SUN)};
+    double Tmax = 0.6;
+    double veff = kep3::G0 * 4000;
+    kep3::epoch when_s{5500.0, kep3::epoch::julian_type::MJD2000};
+    kep3::epoch when_f{5700.0, kep3::epoch::julian_type::MJD2000};
+    auto mima2_res = kep3::mima2_from_hop(pl_s, pl_f, when_s, when_f, Tmax, veff);
+    double ground_truth = 1336.53752329;
+    REQUIRE(mima2_res.first == Approx(ground_truth).epsilon(1e-8));
 }

@@ -10,7 +10,6 @@
 #define kep3_STARK_PROBLEM_H
 
 #include <array>
-#include <utility>
 #include <vector>
 
 #include <fmt/ostream.h>

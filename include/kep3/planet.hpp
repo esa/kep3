@@ -9,7 +9,6 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
-#include <concepts>
 #include <string>
 #include <typeinfo>
 

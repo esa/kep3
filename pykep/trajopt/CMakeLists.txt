@@ -5,6 +5,7 @@ set(PYKEP_TRAJOPT_PYTHON_FILES
     _mga.py _mga_1dsm.py
     _min_Bu_bu.py 
     _launchers.py 
+    _mim.py
     _pl2pl_N_impulses.py
     _pontryagin_cartesian.py
     _primer_vector.py)
