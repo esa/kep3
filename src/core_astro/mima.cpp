@@ -52,11 +52,6 @@ std::pair<double, double> mima_from_hop(const kep3::planet &pl_s, const kep3::pl
     auto l = kep3::lambert_problem(r_s, r_f, tof, mu, false, 0u);
     std::array<double, 3> dv1 = {l.get_v0()[0][0] - v_s[0], l.get_v0()[0][1] - v_s[1], l.get_v0()[0][2] - v_s[2]};
     std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
-    fmt::print("dv1: {}\n", dv1);
-    fmt::print("dv2: {}\n", dv2);
-    fmt::print("tof: {}\n", tof);
-    fmt::print("Tmax: {}\n", Tmax);
-    fmt::print("veff: {}\n", veff);
     return mima(dv1, dv2, tof, Tmax, veff);
 }
 
@@ -167,7 +162,7 @@ std::pair<double, double> mima2_from_hop(const kep3::planet &pl_s, const kep3::p
     const auto &[r_f, v_f] = pl_f.eph(when_f);
     auto l = kep3::lambert_problem(r_s, r_f, tof,  mu, false, 0u);
     std::array<double, 3> dv1 = {l.get_v0()[0][0] - v_s[0], l.get_v0()[0][1] - v_s[1], l.get_v0()[0][2] - v_s[2]};
-    std::array<double, 3> dv2 = {-l.get_v0()[1][0] + v_f[0], -l.get_v0()[1][1] + v_f[1], -l.get_v0()[1][2] + v_f[2]};
+    std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
     return mima2({r_s, l.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, mu);
 }
 

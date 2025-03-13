@@ -76,6 +76,7 @@ from . import plot
 
 # Import the trajopt module
 from . import trajopt
+mim_from_hop = trajopt.mim_from_hop # we want mim also in the same namespace as mima(s)
 
 # We import the unit test submodule
 from . import test

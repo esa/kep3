@@ -109,3 +109,21 @@ TEST_CASE("mima2")
         REQUIRE(mima2_res.first == Approx(mima2_from_zenodo_db).epsilon(1e-8));
     }
 }
+
+TEST_CASE("mima2_from_hop")
+{
+    kep3::epoch when{64328.0, kep3::epoch::julian_type::MJD};
+    std::array<double, 6> el_s
+        = {286031128778.39996, 0.0763, 0.3153809958353754, 4.70313873534912, 5.27246513734967, 2.9460074243530188};
+    std::array<double, 6> el_f
+        = {270472950225.6, 0.066, 0.39968039870670147, 4.255287249287375, 3.9732420421650914, 2.3813298840517};
+    kep3::planet pl_s{kep3::udpla::keplerian(when, el_s, kep3::MU_SUN)};
+    kep3::planet pl_f{kep3::udpla::keplerian(when, el_f, kep3::MU_SUN)};
+    double Tmax = 0.6;
+    double veff = kep3::G0 * 4000;
+    kep3::epoch when_s{5500.0, kep3::epoch::julian_type::MJD2000};
+    kep3::epoch when_f{5700.0, kep3::epoch::julian_type::MJD2000};
+    auto mima2_res = kep3::mima2_from_hop(pl_s, pl_f, when_s, when_f, Tmax, veff);
+    double ground_truth = 1336.53752329;
+    REQUIRE(mima2_res.first == Approx(ground_truth).epsilon(1e-8));
+}

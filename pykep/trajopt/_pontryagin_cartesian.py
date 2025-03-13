@@ -84,8 +84,8 @@ class pontryagin_cartesian_mass:
         self.m0 = m0 / MASS
         self.tof = tof * _pk.DAY2SEC / TIME
 
-        self.ta = _deepcopy(_pk.ta.get_pc(1e-16, _pk.optimality_type.MASS))
-        self.ta_var = _deepcopy(_pk.ta.get_pc_var(1e-8, _pk.optimality_type.MASS))
+        self.ta = _pk.ta.get_pc(1e-16, _pk.optimality_type.MASS)
+        self.ta_var = _pk.ta.get_pc_var(1e-8, _pk.optimality_type.MASS)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
 
         self.MASS = MASS
@@ -403,8 +403,8 @@ class pontryagin_cartesian_time:
         self.target = target
 
         # And the Taylor integrators
-        self.ta = _deepcopy(_pk.ta.get_pc(1e-16, _pk.optimality_type.TIME))
-        self.ta_var = _deepcopy(_pk.ta.get_pc_var(1e-8, _pk.optimality_type.TIME))
+        self.ta = _pk.ta.get_pc(1e-16, _pk.optimality_type.TIME)
+        self.ta_var = _pk.ta.get_pc_var(1e-8, _pk.optimality_type.TIME)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
 
         # Compiled functions
