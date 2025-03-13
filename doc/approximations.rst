@@ -32,7 +32,11 @@ but that requires learning from a vast database of precomputed trajectories and 
 
 .. autofunction:: mima
 
+.. autofunction:: mima_from_hop
+
 .. autofunction:: mima2
+
+.. autofunction:: mima2_from_hop
 
 Phasing indicators
 ----------------------

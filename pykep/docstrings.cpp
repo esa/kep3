@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -765,6 +765,10 @@ std::string mima_doc()
     
     The Maximum Initial Mass Approximation.
 
+    Izzo, D., Hennes, D., Simões, L. F., & Märtens, M. (2016). Designing complex interplanetary trajectories
+    for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, 151-176.
+    https://www.esa.int/gsp/ACT/doc/MAD/pub/ACT-RPR-MAD-2016-SSCI-Fast_approximators.pdf
+
     Having computed a two-impulse transfer, this approximation allows to compute
     the maximum initial mass that a spacecraft can have as to be able to perform
     that transfer in low-thrust.
@@ -791,6 +795,48 @@ std::string mima_doc()
       >>> dv2 = np.array([-510,175,87]) #m/s
       >>> tof = 150*24*60*60 #seconds
       >>> mima, a_required  = pk.mima(dv1, dv2, tof, Tmax = 0.6, veff=3000*pk.G0)
+      >>> print("Maximum initial mass:", mima, "kg")
+      >>> print("Required acceleration:", a_required*1000, "mm/s)
+)";
+}
+
+std::string mima_from_hop_doc()
+{
+    return R"(mima_from_hop(pl_s, pl_t, when_s, when_t, Tmax, veff, mu)
+
+    The Maximum Initial Mass Approximation from a hop transfer. A hop transfer is fixed time randevouz between two planets.
+
+    Izzo, D., Hennes, D., Simões, L. F., & Märtens, M. (2016). Designing complex interplanetary trajectories
+    for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, 151-176.
+    https://www.esa.int/gsp/ACT/doc/MAD/pub/ACT-RPR-MAD-2016-SSCI-Fast_approximators.pdf
+
+    Args:
+        *pl_s* (:class:`~pykep.planet`): the source planet
+
+        *pl_t* (:class:`~pykep.planet`): the target planet
+
+        *when_s* (:class:`~pykep.epoch`): the departure epoch
+
+        *when_t* (:class:`~pykep.epoch`): the arrival epoch
+
+        *Tmax* (:class:`float`, optional): Maximum spacecraft thrust.
+
+        *veff* (:class:`float`, optional): Isp*G0.
+
+        *mu* (:class:`float`, optional): gravitational parameter of the central body.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required
+
+    Examples:
+      >>> import pykep as pk
+      >>> ... # assuming to have two planets pl_s and pl_t
+      >>> when_s = pk.epoch(0.0)
+      >>> when_t = pk.epoch(100.0)
+      >>> Tmax = 0.6
+      >>> veff = 3000*pk.G0
+      >>> mu = pk.MU_SUN
+      >>> mima, a_required = pk.mima_from_hop(pl_s, pl_t, when_s, when_t, Tmax, veff, mu)
       >>> print("Maximum initial mass:", mima, "kg")
       >>> print("Required acceleration:", a_required*1000, "mm/s)
 )";
@@ -827,6 +873,47 @@ std::string mima2_doc()
     Returns:
         :class:`float`, :class:`float`: mima and magnitude of the acceleration required 
         (units induced by the inputs)
+)";
+}
+
+std::string mima2_from_hop_doc()
+{
+    return R"(mima2_from_hop(pl_s, pl_t, when_s, when_t, Tmax, veff, mu)
+
+    More accurate approximation of mima from a hop transfer. A hop transfer is fixed time transfer between two planets.
+
+    Izzo, D., ... & Yam, C. H. (2025). Asteroid mining: ACT&Friends’ results for the GTOC12 problem. Astrodynamics, 9(1),
+    19-40.  (https://arxiv.org/pdf/2410.20839)
+
+    Args:
+        *pl_s* (:class:`~pykep.planet`): the source planet
+
+        *pl_t* (:class:`~pykep.planet`): the target planet
+
+        *when_s* (:class:`~pykep.epoch`): the departure epoch
+
+        *when_t* (:class:`~pykep.epoch`): the arrival epoch
+
+        *Tmax* (:class:`float`, optional): Maximum spacecraft thrust.
+
+        *veff* (:class:`float`, optional): Isp*G0.
+
+        *mu* (:class:`float`, optional): gravitational parameter of the central body.
+
+    Returns:
+        :class:`float`, :class:`float`: mima and magnitude of the acceleration required
+
+    Examples:
+      >>> import pykep as pk
+      >>> ... # assuming to have two planets pl_s and pl_t
+      >>> when_s = pk.epoch(0.0)
+      >>> when_t = pk.epoch(100.0)
+      >>> Tmax = 0.6
+      >>> veff = 3000*pk.G0
+      >>> mu = pk.MU_SUN
+      >>> mima2, a_required = pk.mima2_from_hop(pl_s, pl_t, when_s, when_t, Tmax, veff, mu)
+      >>> print("Maximum initial mass:", mima, "kg")
+      >>> print("Required acceleration:", a_required*1000, "mm/s)
 )";
 }
 
