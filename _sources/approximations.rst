@@ -30,9 +30,16 @@ In other words if our spacecraft is fat (heavier than the MIM), the transfer wil
 In general the best way to approximate the MIM is via neural method and machine learning :cite:p:`acciarini2024computing`,
 but that requires learning from a vast database of precomputed trajectories and sometimes we do not have that luxury.
 
+.. autofunction:: mim_from_hop
+
 .. autofunction:: mima
 
+.. autofunction:: mima_from_hop
+
 .. autofunction:: mima2
+
+.. autofunction:: mima2_from_hop
+
 
 Phasing indicators
 ----------------------
