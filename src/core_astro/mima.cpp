@@ -55,7 +55,7 @@ std::pair<double, double> mima_from_hop(const kep3::planet &pl_s, const kep3::pl
     return mima(dv1, dv2, tof, Tmax, veff);
 }
 
-std::pair<double, double> compute_transfer_approximation(double x, const std::array<std::array<double, 3>, 2> &posvel1,
+std::pair<double, double> _mima_compute_transfer(double x, const std::array<std::array<double, 3>, 2> &posvel1,
                                                          double tof, const std::array<double, 3> &dv1_flat,
                                                          const std::array<double, 3> &dv2_flat, double mu)
 {
@@ -137,16 +137,16 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
     boost::uintmax_t it = maxit;
     unsigned digits = 10u;                                 // No need to compute this approximation precisely
     boost::math::tools::eps_tolerance<double> tol(digits); // Set the tolerance.
-    double guess = compute_transfer_approximation(0., posvel1, tof, dv1, dv2, mu).first > 0 ? -0.5 : 0.5;
+    double guess = _mima_compute_transfer(0., posvel1, tof, dv1, dv2, mu).first > 0 ? -0.5 : 0.5;
     auto r = boost::math::tools::bracket_and_solve_root(
-        [&](double x) { return compute_transfer_approximation(x, posvel1, tof, dv1, dv2, mu).first; }, guess, 2., true,
+        [&](double x) { return _mima_compute_transfer(x, posvel1, tof, dv1, dv2, mu).first; }, guess, 2., true,
         tol, it);
 
     if (it >= maxit) { //
         throw std::domain_error("Maximum number of iterations exceeded when computing mima2");
     }
     auto root = r.first + (r.second - r.first) / 2; // Midway between brackets.
-    auto acc = compute_transfer_approximation(root, posvel1, tof, dv1, dv2, mu).second;
+    auto acc = _mima_compute_transfer(root, posvel1, tof, dv1, dv2, mu).second;
     auto mima2 = 2. * Tmax / acc / (1. + std::exp(-acc * tof / veff));
     return {mima2, acc};
 }
@@ -165,5 +165,7 @@ std::pair<double, double> mima2_from_hop(const kep3::planet &pl_s, const kep3::p
     std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
     return mima2({r_s, l.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, mu);
 }
+
+
 
 } // namespace kep3

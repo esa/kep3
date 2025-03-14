@@ -4,7 +4,7 @@ import matplotlib.pyplot as _plt
 from mpl_toolkits.mplot3d import axes3d as _axes3d
 import numpy as _np
 
-from ._planet import add_planet_orbit, add_planet, add_solar_system
+from ._planet import add_planet_orbit, add_planet, add_solar_system, add_planets
 from ._lambert import add_lambert
 from ._ballistic import add_ballistic_arc
 from ._sf_leg import add_sf_leg
