@@ -51,7 +51,7 @@ class knn:
         """
         import numpy as np
 
-        if type(eph) == tuple:
+        if type(eph) == list:
             eph = np.hstack(eph)
         e = eph.reshape(-1, 6)
 

@@ -40,7 +40,7 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2_from_hop(const kep3::planet &pl_
                                                         const kep3::epoch &when_s, const kep3::epoch &when_f,
                                                         double Tmax, double veff);
 
-std::pair<double, double> compute_transfer_approximation(double x, const std::array<std::array<double, 3>, 2> &posvel1,
+std::pair<double, double> _mima_compute_transfer(double x, const std::array<std::array<double, 3>, 2> &posvel1,
                                                          double tof, const std::array<double, 3> &dv1,
                                                          const std::array<double, 3> &dv2, double mu);
 

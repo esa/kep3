@@ -37,6 +37,46 @@ def add_planet(ax, pla: _pk.planet, when, units=_pk.AU, **kwargs):
     # Returning the axes.
     return ax
 
+def add_planets(ax, plas: _pk.planet, when, units=_pk.AU, **kwargs):
+    """Adds multiple planets to *ax*.  All kwargs are forwarded to the scatter method of *ax*.
+    This method is significantly faster than using :class:`~pykep.planet.add_planet` in a loop.
+
+    Args:
+        *ax* (:class:`mpl_toolkits.mplot3d.axes3d.Axes3D`): the 3D axis.
+
+        *plas* (:class:list:[:class:`~pykep.planet`]): a list of planets.
+
+        *when* (:class:`~pykep.epoch` or :class:`float`): the epoch (in mjd2000 if float).
+
+        *units* (:class:`float`, optional): length units to be used. Defaults to pk.AU.
+        
+        *\\*\\*kwargs*: Additional keyword arguments to pass to the Axes3D.plot function.
+
+    Returns:
+        :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: the 3D axis.
+
+    Examples:
+        >>> import pykep as pk
+        >>> ax = pk.plot.make_3Daxis()
+        >>> pk.plot.add_sun(ax, label="Sun")
+        >>> udpla = pk.udpla.jpl_lp(body="EARTH")
+        >>> earth = pk.planet(udpla)
+        >>> planets = [earth, ....]
+        >>> pk.plot.add_planets(ax, planets, when = pk.epoch(0), c = "royalblue")
+    """
+    # We compute the ephemerides 
+    pos = []
+    for pla in plas:
+        r, _ = pla.eph(when)
+        pos.append(r)
+    pos = _np.array(pos)
+
+    # And plot them as a scatter3D
+    ax.scatter(pos[:, 0] / units, pos[:, 1] / units, pos[:, 2] / units, **kwargs)
+
+    # Returning the axes.
+    return ax
+
 
 def add_planet_orbit(
     ax,

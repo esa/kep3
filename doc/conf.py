@@ -75,7 +75,8 @@ nb_execution_excludepatterns = [
     "udp_point2point*",
     "udp_pl2pl*",
     "udp_mga*",
-    "pontryagin_cartesian*"
+    "pontryagin_cartesian*",
+    "approximations*"
 ]
 
 latex_engine = "xelatex"
