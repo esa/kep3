@@ -515,7 +515,7 @@ speed up the plot creation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/601af6adecad526554c9918e9ec2094fa22d46e5ff8cf41851ab3528fa900134.png" src="../_images/601af6adecad526554c9918e9ec2094fa22d46e5ff8cf41851ab3528fa900134.png" />
+<img alt="../_images/b0ec8faa990494c5fe4828f646b92199b983b2eab77af49eb087ef77aa389043.png" src="../_images/b0ec8faa990494c5fe4828f646b92199b983b2eab77af49eb087ef77aa389043.png" />
 </div>
 </div>
 <section id="the-orbital-metric">
@@ -526,7 +526,7 @@ speed up the plot creation.</p>
 <li><p>Fix some time of flight <span class="math notranslate nohighlight">\(T\)</span> and solve all Lambert transfers to all targets. Consider the resulting <span class="math notranslate nohighlight">\(\Delta V\)</span> as a ranking of good transfer options. (This option is actually not bad, but is very sensitive to the chosen <span class="math notranslate nohighlight">\(T\)</span>, requires to solve a lot of Lambert Problems and is not a metric: thus it does not possess a number of nice and useful properties)</p></li>
 <li><p>Define a concept of metric between orbiting objects, one that accounts for physical proximity (in the phase space) as well as directionality, and use that to find neighbours and clusters.</p></li>
 </ul>
-<p>In the work <span id="id1">[<a class="reference internal" href="../bibliography.html#id18" title="Dario Izzo, Daniel Hennes, Luís F Simões, and Marcus Märtens. Designing complex interplanetary trajectories for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, pages 151–176, 2016.">IHSimoesMartens16</a>]</span> the concept of the <em>orbital metric</em> is introduced , which is a metric in the phase space of the two-body problem that is able to capture the physical proximity of two objects, including phasing.</p>
+<p>In the work <span id="id1">[<a class="reference internal" href="../bibliography.html#id18" title="Dario Izzo, Daniel Hennes, Luís F Simões, and Marcus Märtens. Designing complex interplanetary trajectories for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, pages 151–176, 2016.">IHSimoesMartens16</a>]</span> the concept of an <em>orbital metric</em> is introduced, which is a metric in the phase space of the two-body problem that is able to capture the physical proximity of two objects, including phasing.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We check what asteroids are close to each other at epoch mjd2000 = 5500 under the orbital metric</span>
@@ -555,10 +555,10 @@ speed up the plot creation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fcbb4ba82e0a6e452da658bda5e5349ff42c1691e8c464a69f9639746c51754b.png" src="../_images/fcbb4ba82e0a6e452da658bda5e5349ff42c1691e8c464a69f9639746c51754b.png" />
+<img alt="../_images/61b993780aaac800b68bf99f575c73a7712c67075f5b5d05190d677d961595a1.png" src="../_images/61b993780aaac800b68bf99f575c73a7712c67075f5b5d05190d677d961595a1.png" />
 </div>
 </div>
-<p>Clearly the neighbours found are approximately well phased asteroids that can be considered for a transfer (a hop). The above computation is extremely quick to make, so that for the asteroids found we can afford to complexify our trajectory model. For example computing now the transfer Maximum initial mass approximations (which are also computationally light as they require only Lambert arc computations)</p>
+<p>Clearly the neighbours found are well phased asteroids that can thus be considered for a transfer (a hop). The above computation is extremely quick to make, so that for the asteroids found we can afford to complexify our trajectory model. For example computing now the transfer Maximum initial mass approximations (which are also computationally light as they require only Lambert arc computations)</p>
 <p>We measure the computational cost of running the orbital metric:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -573,7 +573,7 @@ speed up the plot creation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>208 ms ± 2.31 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>142 ms ± 1.77 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre></div>
 </div>
 </div>
@@ -602,11 +602,11 @@ speed up the plot creation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>idx: 56806: mima: 1270.16102850, mima2: 1336.53752329, lambert_estimate: 1980.95464032
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>idx: 56806: mima: 1270.16102850, mima2: 1336.53752330, lambert_estimate: 1980.95464032
 idx: 21298: mima: 1376.28433396, mima2: 1349.12057368, lambert_estimate: 2365.34798345
-idx: 11241: mima: 805.84627823, mima2: 764.22499061, lambert_estimate: 1413.08850455
+idx: 11241: mima: 805.84627823, mima2: 764.22499060, lambert_estimate: 1413.08850455
 idx: 17333: mima: 966.96031125, mima2: 942.28767024, lambert_estimate: 1720.34149613
-idx: 58382: mima: 899.57118064, mima2: 981.70709084, lambert_estimate: 1196.73301555
+idx: 58382: mima: 899.57118064, mima2: 981.70709099, lambert_estimate: 1196.73301555
 idx: 9791: mima: 952.07569132, mima2: 939.52952745, lambert_estimate: 1490.11499765
 idx: 59398: mima: 868.63412492, mima2: 849.81378715, lambert_estimate: 1446.03050794
 idx: 13156: mima: 892.72968973, mima2: 899.41910901, lambert_estimate: 1491.10483402
@@ -619,8 +619,8 @@ idx: 55344: mima: 838.49574444, mima2: 808.47917624, lambert_estimate: 1322.6546
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The ranking produced by the various criteria is sensitive to the value set for the time of flight.</p>
-<p>We profile the computational cost of the MIMA(s) computation (this referes to one only asteroid id.)</p>
 </div>
+<p>We profile the computational cost of the MIMA(s) computation (this referes to one only asteroid id.)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%timeit</span>
@@ -629,7 +629,7 @@ idx: 55344: mima: 838.49574444, mima2: 808.47917624, lambert_estimate: 1322.6546
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>986 ns ± 2.32 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>678 ns ± 21.1 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -642,12 +642,12 @@ idx: 55344: mima: 838.49574444, mima2: 808.47917624, lambert_estimate: 1322.6546
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>214 μs ± 155 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>119 μs ± 1.73 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </pre></div>
 </div>
 </div>
 </div>
-<p>The cost of running MIMA for one asteroid is compatible (actually faster) to the cost of running the orbital metric on all asteroid couples!</p>
+<p>The cost of running MIMA for one asteroid is compatible (only marginally faster) to the cost of running the orbital metric on all asteroid couples. Thus its typicaly considered as a refinement step to the ranking of targets provided by the orbital metric.</p>
 </section>
 <section id="the-mim-not-approximated">
 <h2>The MIM (not approximated)<a class="headerlink" href="#the-mim-not-approximated" title="Permalink to this heading">#</a></h2>
@@ -667,15 +667,15 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
          For more information visit https://github.com/coin-or/Ipopt
 ******************************************************************************
 
-idx: 56806: mim: 1305.48253105
-idx: 21298: mim: 1324.55555110
-idx: 11241: mim: 734.44278513
-idx: 17333: mim: 918.53292482
-idx: 58382: mim: 1042.69839674
-idx: 9791: mim: 969.96309969
-idx: 59398: mim: 851.56426979
-idx: 13156: mim: 888.99010167
-idx: 55344: mim: 815.63354619
+idx: 56806: mim: 1305.48251156
+idx: 21298: mim: 1324.55556079
+idx: 11241: mim: 734.44287902
+idx: 17333: mim: 918.53324856
+idx: 58382: mim: 1042.69839087
+idx: 9791: mim: 969.96271512
+idx: 59398: mim: 851.56392999
+idx: 13156: mim: 888.98947395
+idx: 55344: mim: 815.63354491
 </pre></div>
 </div>
 </div>
@@ -689,7 +689,7 @@ idx: 55344: mim: 815.63354619
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>210 ms ± 23.5 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>283 ms ± 93.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 </pre></div>
 </div>
 </div>
@@ -769,7 +769,7 @@ idx: 58382: minumum time: 236.69, mass: 1082.94
 idx: 9791: minumum time: 247.80, mass: 1063.37
 idx: 59398: minumum time: 276.69, mass: 1012.46
 idx: 13156: minumum time: 282.90, mass: 1001.51
-xidx: 55344: minumum time: 292.73, mass: 984.18
+idx: 55344: minumum time: 292.73, mass: 984.18
 </pre></div>
 </div>
 </div>
