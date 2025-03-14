@@ -192,6 +192,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
@@ -411,6 +412,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planets"><code class="docutils literal notranslate"><span class="pre">add_planets()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
 </ul>
@@ -483,6 +485,33 @@ document.write(`
 <span class="gp">&gt;&gt;&gt; </span><span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet_orbit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">earth</span><span class="p">,</span> <span class="n">plot_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">365.25</span><span class="p">],</span> <span class="n">c</span> <span class="o">=</span> <span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">earth</span><span class="p">,</span> <span class="n">when</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span> <span class="o">=</span> <span class="s2">&quot;royalblue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.plot.add_planets">
+<span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_planets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="planet.html#pykep.planet" title="pykep.core.planet"><span class="pre">planet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_planets" title="Permalink to this definition">#</a></dt>
+<dd><p>Adds multiple planets to <em>ax</em>.  All kwargs are forwarded to the scatter method of <em>ax</em>.
+This method is significantly faster than using <code class="xref py py-class docutils literal notranslate"><span class="pre">add_planet</span></code> in a loop.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>): the 3D axis.</p>
+<p><em>plas</em> (:class:list:[<a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>]): a list of planets.</p>
+<p><em>when</em> (<a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the epoch (in mjd2000 if float).</p>
+<p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): length units to be used. Defaults to pk.AU.</p>
+<p><em>**kwargs</em>: Additional keyword arguments to pass to the Axes3D.plot function.</p>
+</dd>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: the 3D axis.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">make_3Daxis</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_sun</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Sun&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;EARTH&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">planets</span> <span class="o">=</span> <span class="p">[</span><span class="n">earth</span><span class="p">,</span> <span class="o">....</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planets</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">planets</span><span class="p">,</span> <span class="n">when</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span> <span class="o">=</span> <span class="s2">&quot;royalblue&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -686,6 +715,7 @@ The resulting trajectory is plotted on the given Axes object using the provided 
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-planets">Plotting planets</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sun"><code class="docutils literal notranslate"><span class="pre">add_sun()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet"><code class="docutils literal notranslate"><span class="pre">add_planet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planets"><code class="docutils literal notranslate"><span class="pre">add_planets()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_planet_orbit"><code class="docutils literal notranslate"><span class="pre">add_planet_orbit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_solar_system"><code class="docutils literal notranslate"><span class="pre">add_solar_system()</span></code></a></li>
 </ul>
