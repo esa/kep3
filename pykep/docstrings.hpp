@@ -146,6 +146,9 @@ std::string leg_sf_tc_grad_docstring();
 std::string leg_sf_nseg_docstring();
 std::string leg_sf_nseg_fwd_docstring();
 std::string leg_sf_nseg_bck_docstring();
+// Alpha
+std::string leg_sf_alpha_docstring();
+std::string leg_sf_talphas_docstring();
 
 // LEG
 // Sims Flanagan High-Fidelity
