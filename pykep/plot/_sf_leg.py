@@ -34,6 +34,8 @@ def add_sf_leg(
 
         *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
 
+        *use_alpha* (:class:`bool`, optional): If True, Alpha encoding was used for leg segments (changes propagation times to sf.talphas). Default is False.
+
         *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
