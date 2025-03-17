@@ -1,10 +1,11 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
-// Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// Licensed under the Mozilla Public License, version 2.0.
-// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <algorithm>
 #include <stdexcept>
@@ -120,6 +121,9 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_throttles() == throttles);
         sf.set_throttles(throttles2.begin(), throttles2.end());
         REQUIRE(sf.get_throttles() == throttles2);
+        REQUIRE(sf.get_tas().get_pars()[2] == throttles2[0]*sf.get_max_thrust());
+        REQUIRE(sf.get_tas().get_pars()[3] == throttles2[1]*sf.get_max_thrust());
+        REQUIRE(sf.get_tas().get_pars()[4] == throttles2[2]*sf.get_max_thrust());
         REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
         sf.set_cut(0.333);
         REQUIRE(sf.get_cut() == 0.333);
@@ -128,9 +132,11 @@ TEST_CASE("getters_and_setters")
         sf.set_isp(0.333);
         REQUIRE(sf.get_isp() == 0.333);
         REQUIRE(sf.get_tas().get_pars()[1] == 0.333 * kep3::G0);
+        REQUIRE(sf.get_tas_var().get_pars()[1] == 0.333 * kep3::G0);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
         REQUIRE(sf.get_tas().get_pars()[0] == 0.333 );
+        REQUIRE(sf.get_tas_var().get_pars()[0] == 0.333 );
         sf.set_tof(0.333);
         REQUIRE(sf.get_tof() == 0.333);
         sf.set_tol(1e-4);

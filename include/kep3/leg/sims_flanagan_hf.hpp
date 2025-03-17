@@ -1,18 +1,18 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
-// Francesco Biscani (bluescarni@gmail.com)
+// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
+// (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// Licensed under the Mozilla Public License, version 2.0.
-// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
+// This Source Code Form is subject to the terms of the Mozilla
+// Public License v. 2.0. If a copy of the MPL was not distributed
+// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #ifndef kep3_LEG_SIMS_FLANAGAN_HF_H
 #define kep3_LEG_SIMS_FLANAGAN_HF_H
 
 #include <array>
-#include <vector>
-
 #include <fmt/ostream.h>
+#include <vector>
 
 #include <heyoka/taylor.hpp>
 
@@ -102,15 +102,16 @@ public:
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
     [[nodiscard]] std::vector<double> compute_constraints() const;
+    [[nodiscard]] std::vector<double> set_and_compute_constraints(const std::vector<double> &chromosome);
 
     // Get state derivative
     [[nodiscard]] std::array<double, 7> get_state_derivative(const std::array<double, 7> &state,
                                                              const std::array<double, 3> &throttles) const;
 
-    // Compute all gradients
-    [[nodiscard]] std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
-                             std::vector<std::array<double, 7u>>>
-    compute_all_gradients() const;
+    // Compute all gradients w.r.t. all legs
+    [[nodiscard]]
+    std::tuple<std::vector<std::array<double, 49u>>, std::vector<std::array<double, 21u>>,
+               std::vector<std::array<double, 7u>>> compute_all_gradients() const;
 
     // Process all gradients to retrieve relevant gradients (w.r.t. initial and final rvm state as well as w.r.t.
     // throttles and tof)
@@ -128,7 +129,7 @@ public:
     [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
     // Retrieve the state history of the sims flanagan leg
-    [[nodiscard]] std::vector<std::vector<double>> get_state_history(unsigned grid_points_per_segment) const;
+    [[nodiscard]] std::vector<std::vector<double>> get_state_history(const unsigned grid_points_per_segment) const;
 
 private:
     friend class boost::serialization::access;
@@ -138,6 +139,7 @@ private:
         ar & m_rvms;
         ar & m_vars;
         ar & m_throttles;
+        ar & m_thrusts;
         ar & m_tof;
         ar & m_rvmf;
         ar & m_max_thrust;
@@ -157,6 +159,8 @@ private:
     std::array<double, 70> m_vars{};
     // Sequence of throttles.
     std::vector<double> m_throttles{0., 0., 0., 0., 0., 0.};
+    // Sequence of thrusts.
+    std::vector<double> m_thrusts{0., 0., 0., 0., 0., 0.};
     // Final rvm state
     std::array<double, 7> m_rvmf{0., 1., 0., -1., 0., 0., 1.};
     // Time of flight (defaults to 1/4 of the period)
