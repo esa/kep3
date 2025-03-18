@@ -34,7 +34,7 @@ void _check_throttles(const std::vector<double> &throttles)
 void _check_talphas(const std::vector<double> &talphas, double tof, unsigned nseg )
 {
     if (talphas.size() != nseg) {
-        throw std::logic_error("The talphas of a sims_flanagan leg are detected to be of length nseg "
+        throw std::logic_error("The talphas of a sims_flanagan leg are detected not to be of length nseg "
                                "[ta1, ta2, ta3, ..., tanseg].");
     }
     if (talphas.empty()) {
