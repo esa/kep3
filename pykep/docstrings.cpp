@@ -2366,6 +2366,53 @@ std::string leg_sf_hf_docstring()
         >>> sf_hf = pk.leg.sims_flanagan_hf()
 )";
 }
+std::string leg_sf_hf_alpha_docstring()
+{
+    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], , talphas = [0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5, tol=1e-16)
+
+      This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
+      The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment.
+      These segments are not necessarily equally spaced, but their time-intervals are given by talphas).
+      
+      Lantoine, Gregory & Russell, Ryan. (2009). The Stark Model: an exact, closed-form approach to low-thrust trajectory optimization. 
+
+      The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
+
+      Args:
+          *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
+
+          *ms* (:class:`float`): initial mass. Defaults to 1.
+
+          *throttles* (1D array-like): the Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....]. Defaults to a ballistic, two segments profile [0,0,0,0,0,0].
+
+          *talphas* (1D array-like): the time-intervals where the impulses are centred [ta1, ta2, ..., tnseg]. Defaults to two equally spaced impulses  [tof/2, tof/2].
+
+          *rvf* (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].
+
+          *mf* (:class:`float`): final mass. Defaults to 1.
+
+          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+
+          *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
+
+          *isp* (:class:`float`): specific impulse of the propulasion system. Defaults to 1.
+
+          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+
+          *cut* (:class:`float`): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.
+
+          *tol* (:class:`float`): the leg tolerance, in [0,1]. It determines the tolerance allowed by the heyoka Taylor integrator. Defaults to 1e-16.
+
+      .. note::
+
+        Units need to be consistent. 
+
+      Examples:
+        >>> import pykep as pk
+        >>> import numpy as np
+        >>> sf_hf = pk.leg.sims_flanagan_hf()
+)";
+}
 std::string leg_sf_hf_rvs_docstring()
 {
     return "The initial position vector and velocity: [[xs, ys, zs], [vxs, vys, vzs]].";
@@ -2381,6 +2428,10 @@ std::string leg_sf_hf_rvms_docstring()
 std::string leg_sf_hf_throttles_docstring()
 {
     return "The Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....].";
+};
+std::string leg_sf_hf_talphas_docstring()
+{
+    return "The time interval of each segment [ta1, ta2, ..., tanseg]. Sums to time-of-flight.";
 };
 std::string leg_sf_hf_rvf_docstring()
 {

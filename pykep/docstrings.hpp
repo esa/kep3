@@ -176,6 +176,9 @@ std::string leg_sf_hf_nseg_fwd_docstring();
 std::string leg_sf_hf_nseg_bck_docstring();
 std::string leg_sf_hf_tas_docstring();
 std::string leg_sf_hf_tas_var_docstring();
+// Alpha
+std::string leg_sf_hf_alpha_docstring();
+std::string leg_sf_hf_talphas_docstring();
 
 
 } // namespace pykep
