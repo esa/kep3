@@ -149,7 +149,7 @@ std::array<double, 7> normalize_con(std::array<double, 7> con)
     return con;
 }
 
-TEST_CASE("compute_mismatch_constraints_test")
+TEST_CASE("compute_mismatch_constraints_test_SLSQP")
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
     // We use (for no reason) the ephs of the Earth and Jupiter
@@ -207,6 +207,7 @@ TEST_CASE("compute_mismatch_constraints_test")
             if (found) {
                 fmt::print("{}\n", champ);
                 found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
+                break;
             }
             trial++;
         }
@@ -236,6 +237,7 @@ TEST_CASE("compute_mismatch_constraints_test")
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
+                break;
             }
             trial++;
         }
@@ -244,7 +246,7 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
-TEST_CASE("mismatch_constraints_test2")
+TEST_CASE("mismatch_constraints_MatchHardCodedGroundTruth")
 {
     // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
     double AU_OLD = 149597870700.0;

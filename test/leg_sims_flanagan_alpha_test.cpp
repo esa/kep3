@@ -25,7 +25,9 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
+#include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
+#include "test_helpers.hpp"
 #include <kep3/planet.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
@@ -163,7 +165,7 @@ std::array<double, 7> normalize_con(std::array<double, 7> con)
     return con;
 }
 
-TEST_CASE("compute_mismatch_constraints_test")
+TEST_CASE("compute_mismatch_constraints_test_SLSQP")
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
     // We use (for no reason) the ephs of the Earth and Jupiter
@@ -261,7 +263,46 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
-TEST_CASE("mismatch_constraints_test2")
+// Compare low-fidelity and high-fidelity methods with zero thrust (ought to be the same)
+TEST_CASE("compare_withandwithout_alpha")
+{
+    // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
+    double AU_OLD = 149597870700.0;
+    double EV_OLD = 29784.691831696804;
+    double MU_OLD = 1.32712440018e20;
+    // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with a
+    // different program)
+    std::array<std::array<double, 3>, 2> rvs{
+        {{1 * AU_OLD, 0.1 * AU_OLD, -0.1 * AU_OLD}, {0.2 * EV_OLD, 1 * EV_OLD, -0.2 * EV_OLD}}};
+
+    std::array<std::array<double, 3>, 2> rvf{
+        {{1.2 * AU_OLD, -0.1 * AU_OLD, 0.1 * AU_OLD}, {-0.2 * EV_OLD, 1.023 * EV_OLD, -0.44 * EV_OLD}}};
+
+    double ms = 1500.;
+    double mf = 1300.;
+    double tof = 324.0 * kep3::DAY2SEC;
+
+    std::vector<double> throttles
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
+    std::vector<double> talphas(5, tof/5);
+
+    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+    kep3::leg::sims_flanagan_alpha sf_alpha(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+
+    auto retval = sf.compute_mismatch_constraints();
+    auto retval_alpha = sf_alpha.compute_mismatch_constraints();
+
+    std::array<double, 3> r1 = {retval[0], retval[1], retval[2]};
+    std::array<double, 3> r2 = {retval_alpha[0], retval_alpha[1], retval_alpha[2]};
+    std::array<double, 3> v1 = {retval[3], retval[4], retval[5]};
+    std::array<double, 3> v2 = {retval_alpha[3], retval_alpha[4], retval_alpha[5]};
+
+    REQUIRE(kep3_tests::floating_point_error_vector(r1, r2) < 1e-14);
+    REQUIRE(kep3_tests::floating_point_error_vector(v1, v2) < 1e-14);
+    REQUIRE(std::abs((retval[6] - retval_alpha[6]) / retval[6]) < 1e-14);
+}
+
+TEST_CASE("mismatch_constraints_MatchHardCodedGroundTruth")
 {
     // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
     double AU_OLD = 149597870700.0;
