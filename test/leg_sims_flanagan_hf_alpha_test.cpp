@@ -26,6 +26,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sf_checks.hpp>
+#include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
@@ -33,7 +34,6 @@
 #include <kep3/udpla/vsop2013.hpp>
 
 #include "catch.hpp"
-#include "kep3/leg/sims_flanagan_hf.hpp"
 #include "leg_sims_flanagan_hf_alpha_helpers.hpp"
 #include "test_helpers.hpp"
 #include <pagmo/utils/gradients_and_hessians.hpp>
@@ -47,6 +47,9 @@
 #include <heyoka/math/sqrt.hpp>
 #include <heyoka/math/sum.hpp>
 #include <heyoka/taylor.hpp>
+
+#include "leg_sims_flanagan_hf_alpha_udp.hpp"
+
 
 TEST_CASE("constructor")
 {
@@ -272,17 +275,24 @@ TEST_CASE("compute_mismatch_constraints_test")
 // {
 //     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
 //     // We use (for no reason) the ephs of the Earth and Jupiter
-//     kep3::udpla::vsop2013 udpla_earth("earth_moon", 1e-2);
-//     kep3::udpla::vsop2013 udpla_jupiter("jupiter", 1e-2);
-//     kep3::planet earth{udpla_earth};
-//     kep3::planet jupiter{udpla_jupiter};
+//     // Define the vectors
+//     std::array<std::array<double, 3>, 2> rv0 = {{
+//         {-125036811000.422, -83670919168.87277, 2610252.8064399767},
+//         {16081.829029183446, -24868.923007449284, 0.7758272135425942}
+//     }};
+
+//     std::array<std::array<double, 3>, 2> rv1 = {{
+//         {-169327023332.1986, -161931354587.78766, 763967345.9733696},
+//         {17656.297796509956, -15438.116653052988, -756.9165272457421}
+//     }};
 //     // And some epochs / tofs.
-//     double dt_days = 1000.;
+//     double dt_days = 550.;
 //     double dt = dt_days * kep3::DAY2SEC;
 //     double t0 = 1233.3;
-//     double mass = 1000;
-//     auto rv0 = earth.eph(t0);
-//     auto rv1 = jupiter.eph(t0 + dt_days);
+//     double mass = 1500;
+//     double max_thrust = 0.6;
+//     double Isp = 3000.0;
+//     // auto rv1 = mars.eph(t0 + dt_days);
 //     // We create a ballistic arc matching the two.
 //     kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
 //     rv0[1][0] = lp.get_v0()[0][0];
@@ -291,6 +301,7 @@ TEST_CASE("compute_mismatch_constraints_test")
 //     rv1[1][0] = lp.get_v1()[0][0];
 //     rv1[1][1] = lp.get_v1()[0][1];
 //     rv1[1][2] = lp.get_v1()[0][2];
+
 //     // We test for 1 to 33 segments and cuts in [0,0.1,0.2, ..., 1]
 //     std::vector<double> cut_values{0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
 
@@ -298,7 +309,7 @@ TEST_CASE("compute_mismatch_constraints_test")
 //         for (auto cut : cut_values) {
 //             std::vector<double> throttles(N * 3, 0.);
 //             std::vector<double> talphas(N , dt/N);
-//             kep3::leg::sims_flanagan_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
+//             kep3::leg::sims_flanagan_hf_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
 //             auto mc = sf.compute_mismatch_constraints();
 //             mc = normalize_con(mc);
 //             REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
@@ -308,13 +319,14 @@ TEST_CASE("compute_mismatch_constraints_test")
 //     {
 //         // Here we reuse the ballitic arc as a ground truth for an optimization.
 //         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-//         pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
+//         // pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, 2000, 10u}};
+//         pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};    
 //         prob.set_c_tol(1e-8);
 //         bool found = false;
 //         unsigned trial = 0u;
 //         pagmo::nlopt uda{"slsqp"};
-//         uda.set_xtol_abs(1e-10);
-//         uda.set_xtol_rel(1e-10);
+//         uda.set_xtol_abs(1e-8);
+//         uda.set_xtol_rel(1e-8);
 //         uda.set_ftol_abs(0);
 //         uda.set_maxeval(1000);
 //         pagmo::algorithm algo{uda};
@@ -333,36 +345,6 @@ TEST_CASE("compute_mismatch_constraints_test")
 //         }
 //         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
 //                                // theres a problem somewhere.
-//     }
-//     {
-//         // Here we create an ALMOST ballistic arc as a ground truth for an optimization.
-//         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-//         auto rv1_modified = rv1;
-//         rv1_modified[1][0] += 1000; // Adding 1km/s along x
-//         pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
-//         prob.set_c_tol(1e-8);
-//         bool found = false;
-//         unsigned trial = 0u;
-//         pagmo::nlopt uda{"slsqp"};
-//         uda.set_xtol_abs(1e-10);
-//         uda.set_xtol_rel(1e-10);
-//         uda.set_ftol_abs(0);
-//         uda.set_maxeval(1000);
-//         pagmo::algorithm algo{uda};
-//         while ((!found) && (trial < 20u)) {
-//             pagmo::population pop{prob, 1u};
-//             algo.set_verbosity(10u);
-//             pop = algo.evolve(pop);
-//             auto champ = pop.champion_f();
-//             found = prob.feasibility_f(champ);
-//             if (found) {
-//                 fmt::print("{}\n", champ);
-//                 break;
-//             }
-//             trial++;
-//         }
-//         // If this does not pass, then the optimization above never converged to a feasible solution.
-//         REQUIRE_FALSE(!found);
 //     }
 // }
 
