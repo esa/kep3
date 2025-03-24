@@ -7,6 +7,7 @@
 
 import numpy as _np
 import pykep as _pk
+import pygmo as _pg
 
 
 class direct_pl2pl_alpha:
@@ -195,6 +196,12 @@ class direct_pl2pl_alpha:
 
     def get_nic(self):
         return self.nseg + 2
+    
+    # def has_gradient(self):
+    #     return self.with_gradient
+    
+    # def gradient(self, x):
+    #     return _pg.estimate_gradient(callable = self.fitness,x=x, dx=1e-8)
 
     def pretty(self, x):
         """
