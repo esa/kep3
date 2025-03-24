@@ -37,7 +37,7 @@ struct sf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        kep3::leg::sims_flanagan_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, 0.), m_rvf, mf, tof, m_max_thrust,
+        kep3::leg::sims_flanagan_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
                                      m_isp, kep3::MU_SUN);
 
         // We set the throttles
@@ -64,6 +64,12 @@ struct sf_test_udp {
     [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
     {
         return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+    }
+
+    [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const
+    {
+        // Currently numerical, in the future we can add analytical
+        return gradient_numerical(x);
     }
 
     [[nodiscard]] std::pair<std::vector<double>, std::vector<double>> get_bounds() const
