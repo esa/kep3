@@ -164,7 +164,6 @@ std::array<double, 7> normalize_con(std::array<double, 7> con)
 }
 
 TEST_CASE("compute_mismatch_constraints_test")
-// MISSING BECAUSE REQUIRES GRADIENTS TO USE SLSQP. Not implemented yet
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
     // We use (for no reason) the ephs of the Earth and Jupiter
@@ -260,6 +259,40 @@ TEST_CASE("compute_mismatch_constraints_test")
         // If this does not pass, then the optimization above never converged to a feasible solution.
         REQUIRE_FALSE(!found);
     }
+}
+
+TEST_CASE("mismatch_constraints_test2")
+{
+    // The ground truth were computed with these values of the astro constants, hence we cannot use here the pykep ones.
+    double AU_OLD = 149597870700.0;
+    double EV_OLD = 29784.691831696804;
+    double MU_OLD = 1.32712440018e20;
+    // We test the correctness of the compute_mismatch_constraints computations against a ground truth (computed with a
+    // different program)
+    std::array<std::array<double, 3>, 2> rvs{
+        {{1 * AU_OLD, 0.1 * AU_OLD, -0.1 * AU_OLD}, {0.2 * EV_OLD, 1 * EV_OLD, -0.2 * EV_OLD}}};
+
+    std::array<std::array<double, 3>, 2> rvf{
+        {{1.2 * AU_OLD, -0.1 * AU_OLD, 0.1 * AU_OLD}, {-0.2 * EV_OLD, 1.023 * EV_OLD, -0.44 * EV_OLD}}};
+
+    double ms = 1500.;
+    double mf = 1300.;
+    double tof = 324.0 * kep3::DAY2SEC;
+
+    std::vector<double> throttles
+        = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
+    std::vector<double> talphas(5, tof/5);
+    kep3::leg::sims_flanagan_alpha sf(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+    auto retval = sf.compute_mismatch_constraints();
+    std::vector<double> ground_truth
+        = {-1.9701274809621304e+11, 4.6965044246848071e+11, -1.5007523306033661e+11, -2.9975151466948650e+04,
+           -2.8264916164742666e+04, 1.0264806797549732e+04, -8.2807673427721159e+02};
+    REQUIRE(std::abs((retval[0] - ground_truth[0]) / retval[0]) < 1e-13);
+    REQUIRE(std::abs((retval[1] - ground_truth[1]) / retval[1]) < 1e-13);
+    REQUIRE(std::abs((retval[2] - ground_truth[2]) / retval[2]) < 1e-13);
+    REQUIRE(std::abs((retval[3] - ground_truth[3]) / retval[3]) < 1e-13);
+    REQUIRE(std::abs((retval[4] - ground_truth[4]) / retval[4]) < 1e-13);
+    REQUIRE(std::abs((retval[5] - ground_truth[5]) / retval[5]) < 1e-13);
 }
 
 TEST_CASE("serialization_test")
