@@ -73,6 +73,7 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha()
 }
 
 sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<std::array<double, 3>, 2> &rvs, double ms,
+                                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    const std::vector<double> &throttles, const std::vector<double> &talphas,
                                    const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
                                    double max_thrust, double isp, double mu, double cut, double tol)
@@ -194,7 +195,7 @@ void sims_flanagan_hf_alpha::set_throttles(const std::vector<double>::const_iter
 {
     if (((std::distance(it1, it2) % 3) != 0) || std::distance(it1, it2) <= 0) {
         throw std::logic_error(
-            "The throttles of a high-fidelity sims-flanagan leg leg are being set with invalid iterators.");
+            "The throttles of a high-fidelity sims-flanagan leg are being set with invalid iterators.");
     }
     m_throttles.resize(static_cast<size_t>(std::distance(it1, it2)));
     std::copy(it1, it2, m_throttles.begin());
@@ -457,6 +458,8 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
 {
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
+    const double mass_thresh = 1e-12 * (*(m_rvmf.begin()+6l));
+
 
     // Forward pass
     // Initial state
@@ -474,12 +477,27 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
 
         // ... and integrate
         prop_seg_temp += (*(m_talphas.begin() + i*1l));
-        auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
 
-        if (m_tas.get_state()[6] < 0.1*(*(m_rvmf.begin()+6l)) ) {
-            break;
+        // ... and integrate
+        double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
+        // double mass_est = std::exp( -norm_thrusts * (*(m_talphas.begin() + i*1l)) / (m_isp * kep3::G0)) * m_tas.get_state()[6];
+        // double isp_est = norm_thrusts * (*(m_talphas.begin() + i*1l)) / (-kep3::G0 *std::log( mass_est / m_tas.get_state()[6]));
+        double mass_est = m_tas.get_state()[6] - norm_thrusts * (*(m_talphas.begin() + i*1l)) / (m_isp * kep3::G0);
+        double isp_est = norm_thrusts * (*(m_talphas.begin() + i*1l)) / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
+        if (mass_est < mass_thresh) { // Set Isp to zero
+            // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
+            *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
+        } else {
+            auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
+            if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+                fmt::print("mismatch fwd: {}\n", status);
+                break;
+            } // LCOV_EXCL_STOP
         }
     }
+
+    // Reset ISP
+    *(m_tas.get_pars_data()+1l) = get_isp() * kep3::G0;
 
     // Set fwd final state
     std::vector<double> rvm_fwd_final = m_tas.get_state();
@@ -498,10 +516,12 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
                   m_tas.get_pars_data() + 2l);
         // ... and integrate
-        
         prop_seg_temp -= (*(m_talphas.end() - (i+1)*1l) );
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
-
+        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+            // fmt::print("mismatch bck: {}\n", status);
+            break;
+        } // LCOV_EXCL_STOP
     }
 
     return {rvm_fwd_final[0] - m_tas.get_state()[0], rvm_fwd_final[1] - m_tas.get_state()[1],
@@ -602,7 +622,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
-            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print(": {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
@@ -638,7 +658,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
-            fmt::print("taylor_outcome: {}\n", status);
+            fmt::print(": {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
