@@ -1,14 +1,13 @@
-// Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-// (bluescarni@gmail.com)
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
 //
-// This Source Code Form is subject to the terms of the Mozilla
-// Public License v. 2.0. If a copy of the MPL was not distributed
-// with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Mozilla Public License, version 2.0.
+// You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
-#ifndef kep3_TEST_LEG_SIMS_FLANAGAN_ALPHA_UDP_H
-#define kep3_TEST_LEG_SIMS_FLANAGAN_ALPHA_UDP_H
+#ifndef kep3_TEST_LEG_SIMS_FLANAGAN_HF_ALPHA_UDP_H
+#define kep3_TEST_LEG_SIMS_FLANAGAN_HF_ALPHA_UDP_H
 
 #include <array>
 #include <vector>
@@ -20,13 +19,13 @@
 #include <pagmo/utils/gradients_and_hessians.hpp>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/leg/sims_flanagan_alpha.hpp>
+#include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 
 #include <kep3/core_astro/encodings.hpp>
 
-struct sf_test_udp {
-    sf_test_udp() = default;
-    sf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
+struct sf_hf_alpha_test_udp {
+    sf_hf_alpha_test_udp() = default;
+    sf_hf_alpha_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                 double max_thrust, double isp, unsigned nseg)
         : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg)
@@ -39,7 +38,7 @@ struct sf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 4] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 4 + 1];              // in kg
-        kep3::leg::sims_flanagan_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
+        kep3::leg::sims_flanagan_hf_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
                                      m_isp, kep3::MU_SUN);
 
         // We set the throttles
@@ -71,7 +70,7 @@ struct sf_test_udp {
 
     [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
     {
-        return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x);
+        return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x, 1e-4);
     }
 
     [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const

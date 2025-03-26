@@ -282,7 +282,6 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;
-    // auto rv1 = mars.eph(t0 + dt_days);
     // We create a ballistic arc matching the two.
     kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
     rv0[1][0] = lp.get_v0()[0][0];

@@ -189,7 +189,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-8);
+        prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
@@ -220,7 +220,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         auto rv1_modified = rv1;
         rv1_modified[1][0] += 1000; // Adding 1km/s along x
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-8);
+        prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};

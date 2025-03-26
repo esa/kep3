@@ -292,7 +292,6 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;
-    // auto rv1 = mars.eph(t0 + dt_days);
     // We create a ballistic arc matching the two.
     kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
     rv0[1][0] = lp.get_v0()[0][0];
@@ -320,7 +319,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         // pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, 2000, 10u}};
-        pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 4u}};    
+        pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};    
         prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
