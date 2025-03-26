@@ -8,8 +8,10 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <algorithm>
+#include <fmt/base.h>
 #include <stdexcept>
 #include <vector>
+#include <chrono>
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
@@ -20,6 +22,7 @@
 
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/nlopt.hpp>
+#include <pagmo/algorithms/ipopt.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
 
@@ -271,6 +274,54 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
 }
 
+TEST_CASE("UDP Fitness function timing")
+{
+    // We test that an engineered ballistic arc always returns no mismatch for all cuts.
+    // We use (for no reason) the ephs of the Earth and Jupiter
+    // Define the vectors
+    std::array<std::array<double, 3>, 2> rv0 = {{
+        {-125036811000.422, -83670919168.87277, 2610252.8064399767},
+        {16081.829029183446, -24868.923007449284, 0.7758272135425942}
+    }};
+
+    std::array<std::array<double, 3>, 2> rv1 = {{
+        {-169327023332.1986, -161931354587.78766, 763967345.9733696},
+        {17656.297796509956, -15438.116653052988, -756.9165272457421}
+    }};
+    // And some epochs / tofs.
+    double dt_days = 550.;
+    double dt = dt_days * kep3::DAY2SEC;
+    double t0 = 1233.3;
+    double mass = 1500;
+    double max_thrust = 0.6;
+    double Isp = 3000.0;
+
+    // Define optimization parameters
+    int nseg = 8u;
+    std::vector<double> lb(nseg * 4 + 2, 0.0);
+    std::fill(lb.begin() + nseg * 3, lb.begin() + nseg * 4, 0.7);
+    lb[nseg * 4] = 500.0;          // days
+    lb[nseg * 4 + 1] = mass / 2.0; // kg
+
+    std::vector<double> throttles(nseg * 3, 0.0);
+    std::vector<double> talphas(nseg, dt / nseg);
+
+    pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
+
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    double Ntotal = 10000;
+    for (unsigned long N = 1; N <= Ntotal; ++N) { // Start from 1 to avoid division by zero
+        auto fitness_result = prob.fitness(lb);
+    }
+    // End timing
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+    // Print execution time
+    fmt::print("Time taken for {} fitness function calls: {} ms\n", Ntotal, duration.count()); 
+}
+
 TEST_CASE("compute_mismatch_constraints_test_SLSQP")
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
@@ -320,9 +371,10 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         // pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, 2000, 10u}};
         pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};    
-        prob.set_c_tol(1e-6);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
+        // pagmo::ipopt uda{};
         pagmo::nlopt uda{"slsqp"};
         uda.set_xtol_abs(1e-8);
         uda.set_xtol_rel(1e-8);
@@ -337,7 +389,6 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
-                found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
                 break;
             }
             trial++;

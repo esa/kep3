@@ -24,13 +24,18 @@
 #include <kep3/core_astro/encodings.hpp>
 
 struct sf_hf_alpha_test_udp {
+
+    mutable kep3::leg::sims_flanagan_hf_alpha leg; // Declare leg as a member variable
+
     sf_hf_alpha_test_udp() = default;
     sf_hf_alpha_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                 double max_thrust, double isp, unsigned nseg)
-        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg)
-    {
-    }
+        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg),
+        leg(rvs, ms, std::vector<double>(nseg * 3, 0.0),
+            std::vector<double>(nseg, 1.0 / nseg), m_rvf, 1, 1, 
+            max_thrust, isp, kep3::MU_SUN) // Initialize leg here!
+    {}
 
     [[nodiscard]] std::vector<double> fitness(const std::vector<double> &x) const
     {
@@ -38,15 +43,24 @@ struct sf_hf_alpha_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 4] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 4 + 1];              // in kg
-        kep3::leg::sims_flanagan_hf_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+        // kep3::leg::sims_flanagan_hf_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
+        //                              m_isp, kep3::MU_SUN);
+
+        // Set leg constants
+        leg.set_rvs(m_rvs);
+        leg.set_ms(m_ms);
+        leg.set_rvf(m_rvf);
+        leg.set_max_thrust(m_max_thrust);
+        leg.set_isp(m_isp);
+
+        leg.set_mf(mf);
+        leg.set_tof(tof);
 
         // We set the throttles
-        int nseg = static_cast<int>(m_nseg);  // Convert safely
-        leg.set_throttles(x.begin(), x.end() - 2 - nseg);
+        leg.set_throttles(x.begin(), x.end() - 2 - m_nseg);
 
         // Transform alphas using alpha2direct
-        const std::vector<double> alphas(x.begin() + 3 * nseg, x.end() - 2);
+        const std::vector<double> alphas(x.begin() + 3 * m_nseg, x.end() - 2);
         std::vector<double> transformed_alphas = kep3::alpha2direct(alphas, tof);
         leg.set_talphas(transformed_alphas);
 
@@ -70,7 +84,8 @@ struct sf_hf_alpha_test_udp {
 
     [[nodiscard]] std::vector<double> gradient_numerical(const std::vector<double> &x) const
     {
-        return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x, 1e-4);
+        return pagmo::estimate_gradient([this](const std::vector<double> &x) { return this->fitness(x); }, x, 1e-4);
+        // return pagmo::estimate_gradient_h([this](const std::vector<double> &x) { return this->fitness(x); }, x, 1e-4);
     }
 
     [[nodiscard]] std::vector<double> gradient(const std::vector<double> &x) const

@@ -611,7 +611,7 @@ sims_flanagan_hf::compute_all_gradients() const
         } else {
             auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
             if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                fmt::print("gradient fwd: {} {} {}\n", status, (i + 1) * prop_seg_duration, m_tas_var.get_state());
+                // fmt::print("gradient fwd: {} {} {}\n", status, (i + 1) * prop_seg_duration, m_tas_var.get_state());
                 break;
                 // throw std::domain_error(
                 //     "stark_problem: failure to reach the final time requested during a propagation."); 
@@ -647,7 +647,7 @@ sims_flanagan_hf::compute_all_gradients() const
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("gradient bck: {} {}\n", status, m_tof - (i + 1) * prop_seg_duration);
+            // fmt::print("gradient bck: {} {}\n", status, m_tof - (i + 1) * prop_seg_duration);
             break;
             // throw std::domain_error(
             //     "stark_problem: failure to reach the final time requested during a propagation."); 
