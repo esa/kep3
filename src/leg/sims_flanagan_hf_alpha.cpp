@@ -457,7 +457,6 @@ const std::array<double, 7> &sims_flanagan_hf_alpha::get_rvmf() const
 std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() const
 {
     // General settings
-    const double prop_seg_duration = (m_tof / m_nseg);
     const double mass_thresh = 1e-12 * (*(m_rvmf.begin()+6l));
 
 
