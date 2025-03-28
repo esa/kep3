@@ -20,7 +20,7 @@ affiliations:
    ror: 00hx57361
  - name: European Space Agency's Advanced Concepts Team, The Netherlands
    index: 2
-date: 28 March 20172025
+date: 28 March 2025
 bibliography: paper.bib
 ---
 
