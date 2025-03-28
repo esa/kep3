@@ -1,5 +1,5 @@
 ---
-title: 'PyKEP: A Python library for preliminary interplanetary trajectories design'
+title: 'PyKEP 3: A coolbox for interplanetary trajectory design'
 tags:
   - Python
   - astrodynamics
@@ -17,7 +17,6 @@ authors:
 affiliations:
  - name: European Space Agency's Advanced Concepts Team, The Netherlands
    index: 1
-   ror: 00hx57361
  - name: European Space Agency's Advanced Concepts Team, The Netherlands
    index: 2
 date: 28 March 2025
@@ -26,16 +25,17 @@ bibliography: paper.bib
 
 # Summary
 
-YAY!
+`PyKEP 3` is a Python toolbox developed at the [European Space Agency](https://www.esa.int) by the 
+[Advanced Concpets Team](https://www.esa.int/act) to perform
+quick analysis of interplanetary trajectory design problems. It is designed to be used by researchers
+and engineers to prototype and test new ideas in the field of astrodynamics. The library provides
+efficient implementations of algorithms for solving the multiple revolutions Lambert's problem, low-thrust
+problems, multiple asteroid rendezvous problems, and more. It also provides support for [JPL SPICE](https://naif.jpl.nasa.gov/naif/toolkit.html),
+SGP4 propagation, and the [Heyoka](https://bluescarni.github.io/heyoka.py/index.html) Taylor integration suite.
 
 # Statement of need
 
-`PyKEP` is .... `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
-
-`Gala` was designed to be used by both astronomical researchers and by
+`PyKEP 3` was designed to be used by both astronomical researchers and by
 students in courses on gravitational dynamics or astronomy. It has already been
 used in a number of scientific publications [@Pearson:2017] and has also been
 used in graduate courses on Galactic dynamics to, e.g., provide interactive
