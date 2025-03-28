@@ -33,16 +33,25 @@ efficient implementations of algorithms for solving the multiple revolutions Lam
 problems, multiple asteroid rendezvous problems, and more. It also provides support for [JPL SPICE](https://naif.jpl.nasa.gov/naif/toolkit.html),
 SGP4 propagation, and the [Heyoka](https://bluescarni.github.io/heyoka.py/index.html) Taylor integration suite.
 
-# Statement of need
+# Introduction
 
-`PyKEP 3` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+`PyKEP 3` is the third iteration of the PyKEP library, which has been used by the [Advanced Concepts Team](https://www.esa.int/act)
+at the European Space Agency for over a decade. The library was originally developed to support the participation
+of non astrodynamics experts in the [Global Trajectory Optimization Competition](http://www.esa.int/gtoc) and has since
+grown into a generic tool for the preliminary analysis of interplanetary trajectory design problems. 
+Previous versions of the code were used internally to perform some preliminary analysis for the design of the 
+[Hera mission](https://www.heramission.space), the M-ARGO interplanetary cubesat concept,
+the preliminary analysis of the the initial concepts for the Titan and Enceladus Mission (TandEM) as well as the Laplace mission.
+At the core of the library are the necesarry building blocks to perform preliminary analysis of interplanetary trajectory design problems,
+with the aim to provide the general scientific community with a tool to prototype and test new ideas in the field of
+astrodynamics focussing on novel ideas rather than on on the implementation of the basic algorithms. Most
+techniques implemented in the library are largely based on original research performed at the ACT, as well as on the state-of-the art
+algorithms available from the literature. A Lambert solver as well as low-thrust optimization algorithms (both based on direct and indirect methods)
+are available together with a number of approximate methods to estimate transfer costs. 
+The library interfaces to JPL SPICE (via [spicepy](https://spiceypy.readthedocs.io/en/stable/), [SGP4](https://pypi.org/project/sgp4/) propagation, 
+the [Heyoka](https://bluescarni.github.io/heyoka.py/) Taylor integration suite and the [pygmo](https://esa.github.io/pygmo2/) optimization library.
+
+
 
 # Mathematics
 
