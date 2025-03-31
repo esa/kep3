@@ -11,6 +11,7 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_ALPHA_HELPERS_H
 
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
@@ -69,7 +70,7 @@ struct sf_hf_test_alpha_object {
         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)                       
         std::array<std::array<double, 3>, 2> rvf, double mf, double tof, double max_thrust,
                                double isp, double mu, double cut, double tol)
-        : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_talphas(talphas), m_rvf(rvf), m_mf(mf), m_tof(tof), m_max_thrust(max_thrust),
+        : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof), m_talphas(std::move(talphas)), m_max_thrust(max_thrust),
           m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
     {
         for (double m_throttle : m_throttles) {
@@ -81,7 +82,6 @@ struct sf_hf_test_alpha_object {
     {
         m_cut = cut;
     }
-
 
     // Member attributes
     std::vector<double> m_num_grad;

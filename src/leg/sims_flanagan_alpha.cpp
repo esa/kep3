@@ -34,7 +34,6 @@
 namespace kep3::leg
 {
 
-using kep3::linalg::_dot;
 using kep3::linalg::mat13;
 using kep3::linalg::mat61;
 using kep3::linalg::mat63;
@@ -42,6 +41,7 @@ using kep3::linalg::mat66;
 
 // Constructors
 sims_flanagan_alpha::sims_flanagan_alpha(const std::array<std::array<double, 3>, 2> &rvs, double ms,
+                             // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::vector<double> &throttles, const std::vector<double> &talphas,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
@@ -222,7 +222,7 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
     // We introduce some convenience variables
     std::array<double, 3> dv{};
     const double veff = m_isp * kep3::G0;
-    const double dtorig = m_tof / static_cast<double>(m_nseg);
+    // const double dtorig = m_tof / static_cast<double>(m_nseg);
     // const double c = m_max_thrust * dt;
 
     // Find initial and final legs
@@ -247,8 +247,8 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg_fwd; ++i) {
 
         // Compute time interval and c
-        dti = (*(m_talphas.begin() + i*1l));
-        dti1 = (i == m_nseg_fwd - 1) ? 0 : (*(m_talphas.begin() + (i+1)*1l));
+        dti = m_talphas[i];
+        dti1 = (i == m_nseg_fwd - 1) ? 0 : m_talphas[i+1];
         c = m_max_thrust * dti;
 
         // We compute the the dv
@@ -281,9 +281,12 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
     // where we propagate for -dt/2).
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg_bck; ++i) {
         
-        // Compute time interval and c
-        dti = (*(m_talphas.end() - (i+1)*1l) );
-        dti1 = (i == m_nseg_bck - 1) ? 0 : (*(m_talphas.end() - (i+1+1)*1l) );
+        // // Compute time interval and c
+        // dti = (*(m_talphas.end() - (i+1)*1l) );
+        // dti1 = (i == m_nseg_bck - 1) ? 0 : (*(m_talphas.end() - (i+1+1)*1l) );
+
+        dti = m_talphas[-(i+1)];
+        dti1 = (i == m_nseg_fwd - 1) ? 0 : m_talphas[-(i+1+1)];
         c = m_max_thrust * dti;
         
         // We compute the the dv

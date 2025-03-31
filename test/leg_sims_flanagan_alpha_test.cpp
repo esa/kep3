@@ -194,7 +194,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     for (unsigned long N = 1u; N < 34; ++N) {
         for (auto cut : cut_values) {
             std::vector<double> throttles(N * 3, 0.);
-            std::vector<double> talphas(N , dt/N);
+            std::vector<double> talphas(N , dt/static_cast<double>(N));
             kep3::leg::sims_flanagan_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
             auto mc = sf.compute_mismatch_constraints();
             mc = normalize_con(mc);

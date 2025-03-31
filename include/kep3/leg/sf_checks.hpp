@@ -10,8 +10,8 @@
 #ifndef kep3_SF_CHECKS_H
 #define kep3_SF_CHECKS_H
 
-#include <vector>
 #include <kep3/detail/visibility.hpp>
+#include <vector>
 
 // These checks are used for the low- and high-fidelity legs (in sims_flanagan.cpp and sims_flanagan_hf.cpp)
 namespace kep3::leg {

@@ -75,7 +75,9 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha()
 sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<std::array<double, 3>, 2> &rvs, double ms,
                                     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    const std::vector<double> &throttles, const std::vector<double> &talphas,
+                                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
+                                   
                                    double max_thrust, double isp, double mu, double cut, double tol)
     : m_throttles(throttles), m_talphas(talphas), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol),
       m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
@@ -118,8 +120,11 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<std::array<doubl
     set_mf(mf);
 }
 
-sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
-                                   const std::vector<double> &talphas, const std::array<double, 7> &rvmf, 
+sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<double, 7> &rvms, 
+                                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                   const std::vector<double> &throttles, const std::vector<double> &talphas, 
+                                   const std::array<double, 7> &rvmf, 
+                                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                    double tof, double max_thrust, double isp, double mu, double cut, double tol)
     : m_rvms(rvms), m_throttles(throttles), m_talphas(talphas), m_rvmf(rvmf), m_tof(tof), m_max_thrust(max_thrust), 
       m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
@@ -270,15 +275,15 @@ void sims_flanagan_hf_alpha::set_talphas(const std::vector<double> &talphas)
 {
     m_talphas = talphas;
 }
-void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterator &it1,
-    const std::vector<double>::const_iterator &it2)
-{
-    if ( std::distance(it1, it2) <= 0) {
-        throw std::logic_error("The talphas of a sims_flanagan_hf_alpha leg are being set with invalid iterators.");
-    }
-    m_talphas.resize(static_cast<size_t>(std::distance(it1, it2)));
-    std::copy(it1, it2, m_talphas.begin());
-}
+// void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterator &it1,
+//     const std::vector<double>::const_iterator &it2)
+// {
+//     if ( std::distance(it1, it2) <= 0) {
+//         throw std::logic_error("The talphas of a sims_flanagan_hf_alpha leg are being set with invalid iterators.");
+//     }
+//     m_talphas.resize(static_cast<size_t>(std::distance(it1, it2)));
+//     std::copy(it1, it2, m_talphas.begin());
+// }
 
 // void sims_flanagan_hf_alpha::set_tas(const heyoka::taylor_adaptive<double> &tas)
 // {
@@ -292,6 +297,7 @@ void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterat
 
 void sims_flanagan_hf_alpha::set(const std::array<std::array<double, 3>, 2> &rvs, double ms,
     const std::vector<double> &throttles, const std::vector<double> &talphas,
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
     double isp, double mu, double cut, double tol)
 {
@@ -363,7 +369,6 @@ void sims_flanagan_hf_alpha::set(const std::array<double, 7> &rvms, const std::v
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
-
 
 
 // Getters

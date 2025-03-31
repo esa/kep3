@@ -10,6 +10,7 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_ALPHA_UDP_H
 
 #include <array>
+#include <cstddef>
 #include <vector>
 
 #include <xtensor/xadapt.hpp>
@@ -31,10 +32,10 @@ struct sf_hf_alpha_test_udp {
     sf_hf_alpha_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                 double max_thrust, double isp, unsigned nseg)
-        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg),
-        leg(rvs, ms, std::vector<double>(nseg * 3, 0.0),
+        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0),
             std::vector<double>(nseg, 1.0 / nseg), m_rvf, 1, 1, 
-            max_thrust, isp, kep3::MU_SUN) // Initialize leg here!
+            max_thrust, isp, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp),
+        m_nseg(nseg) // Initialize leg here!
     {}
 
     [[nodiscard]] std::vector<double> fitness(const std::vector<double> &x) const
@@ -57,10 +58,10 @@ struct sf_hf_alpha_test_udp {
         leg.set_tof(tof);
 
         // We set the throttles
-        leg.set_throttles(x.begin(), x.end() - 2 - m_nseg);
+        leg.set_throttles(x.begin(), x.end() - 2 - static_cast<long>(m_nseg));
 
         // Transform alphas using alpha2direct
-        const std::vector<double> alphas(x.begin() + 3 * m_nseg, x.end() - 2);
+        const std::vector<double> alphas(x.begin() + 3 * static_cast<long>(m_nseg), x.end() - 2);
         std::vector<double> transformed_alphas = kep3::alpha2direct(alphas, tof);
         leg.set_talphas(transformed_alphas);
 
@@ -97,12 +98,12 @@ struct sf_hf_alpha_test_udp {
     [[nodiscard]] std::pair<std::vector<double>, std::vector<double>> get_bounds() const
     {
         // x = [throttles, alphas, tof (in days), mf (in kg)]
-        int nseg = static_cast<int>(m_nseg);  // Convert safely
+        auto nseg = static_cast<size_t>(m_nseg);  // Convert safely
         std::vector<double> lb(nseg * 4 + 2, -1.);
         std::vector<double> ub(nseg * 4 + 2, +1.);
         // Set specific values for the range [m_nseg*3, m_nseg*4)
-        std::fill(lb.begin() + nseg * 3, lb.begin() + nseg * 4, 0.7);
-        std::fill(ub.begin() + nseg * 3, ub.begin() + nseg * 4, 0.9);
+        std::fill(lb.begin() + static_cast<long>(m_nseg) * 3, lb.begin() + static_cast<long>(m_nseg) * 4, 0.7);
+        std::fill(ub.begin() + static_cast<long>(m_nseg) * 3, ub.begin() + static_cast<long>(m_nseg) * 4, 0.9);
         lb[nseg * 4] = 1.;            // days
         ub[nseg * 4] = 2500.;         // days
         lb[nseg * 4 + 1] = m_ms / 2.; // kg

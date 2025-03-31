@@ -39,7 +39,7 @@ struct sf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 4] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 4 + 1];              // in kg
-        kep3::leg::sims_flanagan_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/m_nseg), m_rvf, mf, tof, m_max_thrust,
+        kep3::leg::sims_flanagan_alpha leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), std::vector<double>(m_nseg, tof/static_cast<double>(m_nseg)), m_rvf, mf, tof, m_max_thrust,
                                      m_isp, kep3::MU_SUN);
 
         // We set the throttles
@@ -83,12 +83,12 @@ struct sf_test_udp {
     [[nodiscard]] std::pair<std::vector<double>, std::vector<double>> get_bounds() const
     {
         // x = [throttles, alphas, tof (in days), mf (in kg)]
-        int nseg = static_cast<int>(m_nseg);  // Convert safely
+        auto nseg = static_cast<size_t>(m_nseg);  // Use size_t instead of int
         std::vector<double> lb(nseg * 4 + 2, -1.);
         std::vector<double> ub(nseg * 4 + 2, +1.);
         // Set specific values for the range [m_nseg*3, m_nseg*4)
-        std::fill(lb.begin() + nseg * 3, lb.begin() + nseg * 4, 0.7);
-        std::fill(ub.begin() + nseg * 3, ub.begin() + nseg * 4, 0.9);
+        std::fill(lb.begin() + static_cast<long>(m_nseg) * 3, lb.begin() + static_cast<long>(m_nseg) * 4, 0.7);
+        std::fill(ub.begin() + static_cast<long>(m_nseg) * 3, ub.begin() + static_cast<long>(m_nseg) * 4, 0.9);
         lb[nseg * 4] = 1.;            // days
         ub[nseg * 4] = 2500.;         // days
         lb[nseg * 4 + 1] = m_ms / 2.; // kg

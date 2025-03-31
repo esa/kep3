@@ -8,9 +8,9 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <algorithm>
+#include <chrono>
 #include <stdexcept>
 #include <vector>
-#include <chrono>
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
@@ -280,25 +280,24 @@ TEST_CASE("UDP Fitness function timing")
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
-    double t0 = 1233.3;
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;
 
     // Define optimization parameters
-    int nseg = 8u;
+    size_t nseg = 8u;
     std::vector<double> lb(nseg * 3 + 2, 0.0);
     lb[nseg * 3] = 500.0;          // days
     lb[nseg * 3 + 1] = mass / 2.0; // kg
 
     std::vector<double> throttles(nseg * 3, 0.0);
-    std::vector<double> talphas(nseg, dt / nseg);
+    std::vector<double> talphas(nseg, dt / static_cast<double>(nseg));
 
     pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
 
     // Start timing
     auto start_time = std::chrono::high_resolution_clock::now();
-    double Ntotal = 10000;
+    unsigned long Ntotal = 10000;
     for (unsigned long N = 1; N <= Ntotal; ++N) { // Start from 1 to avoid division by zero
         auto fitness_result = prob.fitness(lb);
     }
@@ -329,7 +328,6 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
-    double t0 = 1233.3;
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;

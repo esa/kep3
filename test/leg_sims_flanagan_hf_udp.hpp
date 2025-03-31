@@ -10,6 +10,7 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_UDP_H
 
 #include <array>
+#include <cstddef>
 #include <vector>
 
 #include <xtensor/xadapt.hpp>
@@ -29,9 +30,9 @@ struct sf_hf_test_udp {
     sf_hf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                 double max_thrust, double isp, unsigned nseg)
-        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg),
-        leg(rvs, ms, std::vector<double>(nseg * 3, 0.0),m_rvf, 1, 1, 
-            max_thrust, isp, kep3::MU_SUN) // Initialize leg here!
+        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0),m_rvf, 1, 1, 
+            max_thrust, isp, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp),
+        m_nseg(nseg) // Initialize leg here!
     {
     }
 

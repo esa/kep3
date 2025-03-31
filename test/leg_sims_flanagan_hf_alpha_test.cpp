@@ -8,10 +8,10 @@
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <algorithm>
+#include <chrono>
 #include <fmt/base.h>
 #include <stdexcept>
 #include <vector>
-#include <chrono>
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
@@ -21,16 +21,16 @@
 #include <fmt/ranges.h>
 
 #include <pagmo/algorithm.hpp>
-#include <pagmo/algorithms/nlopt.hpp>
 #include <pagmo/algorithms/ipopt.hpp>
+#include <pagmo/algorithms/nlopt.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sf_checks.hpp>
-#include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
+#include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/ta/stark.hpp>
@@ -246,7 +246,7 @@ TEST_CASE("compute_mismatch_constraints_test")
         for (unsigned long N = 1u; N < 34; ++N) {
             for (auto cut : cut_values) {
                 std::vector<double> throttles(N * 3, 0.);
-                std::vector<double> talphas(N , dt/N);
+                std::vector<double> talphas(N , dt/static_cast<double>(N));
                 kep3::leg::sims_flanagan_hf_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
                 auto mc = sf.compute_mismatch_constraints();
                 mc = normalize_con(mc);
@@ -291,26 +291,25 @@ TEST_CASE("UDP Fitness function timing")
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
-    double t0 = 1233.3;
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;
 
     // Define optimization parameters
-    int nseg = 8u;
+    size_t nseg = 8u;
     std::vector<double> lb(nseg * 4 + 2, 0.0);
-    std::fill(lb.begin() + nseg * 3, lb.begin() + nseg * 4, 0.7);
+    std::fill(lb.begin() + static_cast<long>(nseg) * 3, lb.begin() + static_cast<long>(nseg) * 4, 0.7);
     lb[nseg * 4] = 500.0;          // days
     lb[nseg * 4 + 1] = mass / 2.0; // kg
 
     std::vector<double> throttles(nseg * 3, 0.0);
-    std::vector<double> talphas(nseg, dt / nseg);
+    std::vector<double> talphas(nseg, dt / static_cast<double>(nseg));
 
     pagmo::problem prob{sf_hf_alpha_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
 
     // Start timing
     auto start_time = std::chrono::high_resolution_clock::now();
-    double Ntotal = 10000;
+    unsigned long Ntotal = 10000;
     for (unsigned long N = 1; N <= Ntotal; ++N) { // Start from 1 to avoid division by zero
         auto fitness_result = prob.fitness(lb);
     }
@@ -339,7 +338,6 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
-    double t0 = 1233.3;
     double mass = 1500;
     double max_thrust = 0.6;
     double Isp = 3000.0;
@@ -358,7 +356,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     for (unsigned long N = 1u; N < 34; ++N) {
         for (auto cut : cut_values) {
             std::vector<double> throttles(N * 3, 0.);
-            std::vector<double> talphas(N , dt/N);
+            std::vector<double> talphas(N , dt/static_cast<double>(N));
             kep3::leg::sims_flanagan_hf_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
             auto mc = sf.compute_mismatch_constraints();
             mc = normalize_con(mc);
