@@ -562,25 +562,25 @@ std::vector<double> sims_flanagan_hf_alpha::compute_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf_alpha::set_and_compute_constraints(const std::vector<double> &chromosome)
-{
-    std::array<double, 7> rvms{};
-    std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
+// std::vector<double> sims_flanagan_hf_alpha::set_and_compute_constraints(const std::vector<double> &chromosome)
+// {
+//     std::array<double, 7> rvms{};
+//     std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
 
-    std::vector<double> talphas(m_nseg);
-    std::copy(chromosome.begin() + 7, chromosome.begin() + 7 + m_nseg, talphas.begin());
+//     std::vector<double> talphas(m_nseg);
+//     std::copy(chromosome.begin() + 7, chromosome.begin() + 7 + m_nseg, talphas.begin());
 
 
-    std::vector<double> throttles(m_nseg * 3l);
-    std::copy(chromosome.begin() + 7 + m_nseg, chromosome.begin() + 7 + m_nseg + m_nseg * 3l, throttles.begin());
-    std::array<double, 7> rvmf{};
-    std::copy(chromosome.begin() + 7 + m_nseg + m_nseg * 3l, chromosome.begin() + 7 + m_nseg + m_nseg * 3l + 7, rvmf.begin());
-    double time_of_flight = chromosome[(7 + m_nseg + m_nseg * 3 + 7 + 1) - 1];
-    // Set relevant quantities before evaluating constraints
-    set(rvms, throttles, talphas, rvmf, time_of_flight);
-    // Evaluate and return constraints
-    return compute_constraints();
-}
+//     std::vector<double> throttles(m_nseg * 3l);
+//     std::copy(chromosome.begin() + 7 + m_nseg, chromosome.begin() + 7 + m_nseg + m_nseg * 3l, throttles.begin());
+//     std::array<double, 7> rvmf{};
+//     std::copy(chromosome.begin() + 7 + m_nseg + m_nseg * 3l, chromosome.begin() + 7 + m_nseg + m_nseg * 3l + 7, rvmf.begin());
+//     double time_of_flight = chromosome[(7 + m_nseg + m_nseg * 3 + 7 + 1) - 1];
+//     // Set relevant quantities before evaluating constraints
+//     set(rvms, throttles, talphas, rvmf, time_of_flight);
+//     // Evaluate and return constraints
+//     return compute_constraints();
+// }
 
 std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsigned grid_points_per_segment) const
 {

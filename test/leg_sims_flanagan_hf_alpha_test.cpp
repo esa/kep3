@@ -82,6 +82,9 @@ TEST_CASE("constructor")
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_hf_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
+        REQUIRE_THROWS_AS(
+            kep3::leg::sims_flanagan_hf_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+            std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_hf_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0., 0.}, rvf, mf, -0.42, 1., 1., 1., 0.5),
                           std::domain_error);
         REQUIRE_THROWS_AS(

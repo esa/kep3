@@ -55,9 +55,12 @@ TEST_CASE("constructor")
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
-            REQUIRE_THROWS_AS(
-                kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-                std::logic_error);
+        REQUIRE_THROWS_AS(
+            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+            std::logic_error);
+        REQUIRE_THROWS_AS(
+            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+            std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
                           std::domain_error);
         REQUIRE_THROWS_AS(
@@ -206,7 +209,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-6);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
@@ -223,7 +226,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
-                found = *std::min_element(champ.begin() + 7, champ.end()) < -0.9999;
+                found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
                 break;
             }
             trial++;
@@ -237,7 +240,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         auto rv1_modified = rv1;
         rv1_modified[1][0] += 1000; // Adding 1km/s along x
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-6);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
