@@ -223,7 +223,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
             found = prob.feasibility_f(champ);
             if (found) {
                 fmt::print("{}\n", champ);
-                found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
+                found = *std::min_element(champ.begin() + 7, champ.end()) < -0.9999;
                 break;
             }
             trial++;

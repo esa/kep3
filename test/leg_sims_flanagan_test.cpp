@@ -10,9 +10,9 @@
 #include <stdexcept>
 #include <vector>
 
+#include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xio.hpp>
-#include <xtensor-blas/xlinalg.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -189,7 +189,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
-        prob.set_c_tol(1e-6);
+        prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
