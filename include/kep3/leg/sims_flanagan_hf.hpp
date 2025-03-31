@@ -102,7 +102,7 @@ public:
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
     [[nodiscard]] std::vector<double> compute_constraints() const;
-    [[nodiscard]] std::vector<double> set_and_compute_constraints(const std::vector<double> &chromosome);
+    // [[nodiscard]] std::vector<double> set_and_compute_constraints(const std::vector<double> &chromosome);
 
     // Get state derivative
     [[nodiscard]] std::array<double, 7> get_state_derivative(const std::array<double, 7> &state,

@@ -482,19 +482,24 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         // ... and integrate
         prop_seg_temp += m_talphas[i];
 
-        // ... and integrate
-        double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-        double mass_est = m_tas.get_state()[6] - norm_thrusts * m_talphas[i] / (m_isp * kep3::G0);
-        double isp_est = norm_thrusts * m_talphas[i] / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
-        if (mass_est < mass_thresh) { // Set Isp to zero
-            // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
-            *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
+        if (!std::isfinite(prop_seg_temp)){
+            // fmt::print("Non-finitite propagation duration requested in forwards step\n");
+            break;
         } else {
-            auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
-            if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                fmt::print("mismatch fwd: {}\n", status);
-                break;
-            } // LCOV_EXCL_STOP
+            // ... and integrate
+            double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
+            double mass_est = m_tas.get_state()[6] - norm_thrusts * m_talphas[i] / (m_isp * kep3::G0);
+            double isp_est = norm_thrusts * m_talphas[i] / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
+            if (mass_est < mass_thresh) { // Set Isp to zero
+                // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_temp);
+                *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
+            } else {
+                auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
+                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+                    fmt::print("mismatch fwd: {}\n", status);
+                    break;
+                } // LCOV_EXCL_STOP
+            }
         }
     }
 
@@ -519,11 +524,16 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
                   m_tas.get_pars_data() + 2l);
         // ... and integrate
         prop_seg_temp -= m_talphas[m_talphas.size() - (i+1)];
-        auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
-        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            // fmt::print("mismatch bck: {}\n", status);
+        if (!std::isfinite(prop_seg_temp)){
+            // fmt::print("Non-finitite propagation duration requested in backwards step\n");
             break;
-        } // LCOV_EXCL_STOP
+        } else {
+            auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
+            if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+                // fmt::print("mismatch bck: {}\n", status);
+                break;
+            } // LCOV_EXCL_STOP
+        }
     }
 
     return {rvm_fwd_final[0] - m_tas.get_state()[0], rvm_fwd_final[1] - m_tas.get_state()[1],

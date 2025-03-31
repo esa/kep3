@@ -11,9 +11,9 @@
 #include <stdexcept>
 #include <vector>
 
+#include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xio.hpp>
-#include <xtensor-blas/xlinalg.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -23,11 +23,11 @@
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
 
+#include "test_helpers.hpp"
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
-#include "test_helpers.hpp"
 #include <kep3/planet.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
@@ -58,9 +58,6 @@ TEST_CASE("constructor")
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
-        REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-            std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
                           std::domain_error);
         REQUIRE_THROWS_AS(
@@ -79,7 +76,7 @@ TEST_CASE("constructor")
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
                           std::logic_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
                           std::logic_error);
     }
 }
