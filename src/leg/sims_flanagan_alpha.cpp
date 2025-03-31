@@ -9,6 +9,7 @@
 
 #include <array>
 #include <cstddef>
+#include <fmt/base.h>
 #include <iterator>
 #include <vector>
 
@@ -245,6 +246,7 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
     // We now loop through the forward segments and 1) add a dv + 2) propagate for dt (except on the last segment, where
     // we propagate for dt/2).
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg_fwd; ++i) {
+    // for (auto i = 0u; i < m_nseg_fwd; ++i) {
 
         // Compute time interval and c
         dti = m_talphas[i];
@@ -280,13 +282,11 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
     // We now loop through the backward segments and 1) add a dv + 2) propagate for -dt (except on the last segment,
     // where we propagate for -dt/2).
     for (decltype(m_throttles.size()) i = 0u; i < m_nseg_bck; ++i) {
+    // for (auto i = 0u; i < m_nseg_bck; ++i) {
         
-        // // Compute time interval and c
-        // dti = (*(m_talphas.end() - (i+1)*1l) );
-        // dti1 = (i == m_nseg_bck - 1) ? 0 : (*(m_talphas.end() - (i+1+1)*1l) );
-
-        dti = m_talphas[-(i+1)];
-        dti1 = (i == m_nseg_fwd - 1) ? 0 : m_talphas[-(i+1+1)];
+        // Compute time interval and c
+        dti = m_talphas[m_talphas.size()-(i+1)];
+        dti1 = (i == m_nseg_bck - 1) ? 0 : m_talphas[m_talphas.size()-(i+2)];
         c = m_max_thrust * dti;
         
         // We compute the the dv

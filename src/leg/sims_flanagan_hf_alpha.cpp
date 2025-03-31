@@ -480,14 +480,12 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
 
         // ... and integrate
-        prop_seg_temp += (*(m_talphas.begin() + i*1l));
+        prop_seg_temp += m_talphas[i];
 
         // ... and integrate
         double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-        // double mass_est = std::exp( -norm_thrusts * (*(m_talphas.begin() + i*1l)) / (m_isp * kep3::G0)) * m_tas.get_state()[6];
-        // double isp_est = norm_thrusts * (*(m_talphas.begin() + i*1l)) / (-kep3::G0 *std::log( mass_est / m_tas.get_state()[6]));
-        double mass_est = m_tas.get_state()[6] - norm_thrusts * (*(m_talphas.begin() + i*1l)) / (m_isp * kep3::G0);
-        double isp_est = norm_thrusts * (*(m_talphas.begin() + i*1l)) / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
+        double mass_est = m_tas.get_state()[6] - norm_thrusts * m_talphas[i] / (m_isp * kep3::G0);
+        double isp_est = norm_thrusts * m_talphas[i] / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
         if (mass_est < mass_thresh) { // Set Isp to zero
             // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
             *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
@@ -520,7 +518,7 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
                   m_tas.get_pars_data() + 2l);
         // ... and integrate
-        prop_seg_temp -= (*(m_talphas.end() - (i+1)*1l) );
+        prop_seg_temp -= m_talphas[m_talphas.size() - (i+1)];
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             // fmt::print("mismatch bck: {}\n", status);

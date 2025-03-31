@@ -435,8 +435,6 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
 
         // ... and integrate
         double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-        // double mass_est = std::exp( -norm_thrusts * prop_seg_duration / (m_isp * kep3::G0)) * m_tas.get_state()[6];
-        // double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 *std::log( mass_est / m_tas.get_state()[6]));
         double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
         double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
         // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas.get_state()[6], mass_est);

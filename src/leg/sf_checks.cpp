@@ -114,7 +114,7 @@ void _sanity_checks_alpha(// NOLINTNEXTLINE(bugprone-easily-swappable-parameters
 {
     _check_throttles(throttles);
     _check_tof(tof);
-    _check_talphas(talphas, tof, nseg);
+    _check_talphas(talphas, nseg);
     _check_max_thrust(max_thrust);
     _check_isp(isp);
     _check_mu(mu);
@@ -127,7 +127,7 @@ void _sanity_checks_alpha(// NOLINTNEXTLINE(bugprone-easily-swappable-parameters
 {
     _check_throttles(throttles);
     _check_tof(tof);
-    _check_talphas(talphas, tof, nseg);
+    _check_talphas(talphas, nseg);
     _check_max_thrust(max_thrust);
     _check_isp(isp);
     _check_mu(mu);
