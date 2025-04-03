@@ -26,7 +26,7 @@ bibliography: paper.bib
 # Summary
 
 `PyKEP 3` is a Python toolbox developed at the [European Space Agency](https://www.esa.int) by the 
-[Advanced Concpets Team](https://www.esa.int/act) to perform
+[Advanced Concepts Team](https://www.esa.int/act) to perform
 quick analysis of interplanetary trajectory design problems. It is designed to be used by researchers
 and engineers to prototype and test new ideas in the field of astrodynamics. The library provides
 efficient implementations of algorithms for solving the multiple revolutions Lambert's problem, low-thrust
@@ -48,10 +48,9 @@ astrodynamics focussing on novel ideas rather than on on the implementation of t
 techniques implemented in the library are largely based on original research performed at the ACT, as well as on the state-of-the art
 algorithms available from the literature. A Lambert solver as well as low-thrust optimization algorithms (both based on direct and indirect methods)
 are available together with a number of approximate methods to estimate transfer costs. 
-The library interfaces to JPL SPICE (via [spicepy](https://spiceypy.readthedocs.io/en/stable/), [SGP4](https://pypi.org/project/sgp4/) propagation, 
-the [Heyoka](https://bluescarni.github.io/heyoka.py/) Taylor integration suite and the [pygmo](https://esa.github.io/pygmo2/) optimization library.
-
-
+The library interfaces to a number of open source projects providing relevant functionalities including [spicepy](https://spiceypy.readthedocs.io/en/stable/) for interfacing to JPL SPICE,
+[SGP4](https://pypi.org/project/sgp4/) to get standard Low Earth Orbit orbits, 
+[Heyoka](https://bluescarni.github.io/heyoka.py/) to perform efficient Taylor integration and [pygmo](https://esa.github.io/pygmo2/) to interface to state-of-the art optimization routines.
 
 # Mathematics
 
