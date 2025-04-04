@@ -7,10 +7,11 @@ def add_sf_leg(
     ax,
     sf: _pk.leg.sims_flanagan,
     units=_pk.AU,
-    N=10,
+    N=30,
     show_midpoints=False,
     show_gridpoints=False,
     show_throttles=False,
+    use_alpha=False,
     length=0.1,
     arrow_length_ratio=0.05,
     **kwargs
@@ -33,6 +34,8 @@ def add_sf_leg(
 
         *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
 
+        *use_alpha* (:class:`bool`, optional): If True, Alpha encoding was used for leg segments (changes propagation times to sf.talphas). Default is False.
+
         *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
 
         *arrow_length_ratio* (:class:`float`, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.
@@ -51,8 +54,9 @@ def add_sf_leg(
     nseg_fwd = sf.nseg_fwd
     nseg_bck = sf.nseg_bck
     
-    dt = sf.tof / nseg
-    c = sf.max_thrust * dt
+    if not use_alpha:
+        dt = sf.tof / nseg
+        c = sf.max_thrust * dt
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     pos_fwd = []
@@ -64,6 +68,10 @@ def add_sf_leg(
     pos_fwd.append(rv[0])
 
     for i in range(nseg_fwd):
+        if use_alpha:
+            dt = sf.talphas[i]
+            c = sf.max_thrust * dt
+
         # compute the dv
         throttles = sf.throttles[3 * i : 3 * i + 3]
         throttles_fwd.append(throttles)
@@ -130,6 +138,9 @@ def add_sf_leg(
     pos_bck.append(rv[0])
 
     for i in range(nseg_bck):
+        if use_alpha:
+            dt = sf.talphas[nseg-i-1]
+            c = sf.max_thrust * dt
         # compute the dv (first non dimensional)
         throttles = sf.throttles[nseg * 3 - 3 - 3 * i : nseg * 3 - 3 * i]
         throttles_bck.append(throttles)
@@ -193,7 +204,7 @@ def add_sf_hf_leg(
     ax,
     sf: _pk.leg.sims_flanagan_hf,
     units=_pk.AU,
-    N=10,
+    N=30,
     show_gridpoints=False,
     show_throttles=False,
     show_throttles_tips = False,
@@ -261,6 +272,22 @@ def add_sf_hf_leg(
         c="k",
     )
 
+    if show_gridpoints:
+
+        # Plot the 3D trajectory
+        for i in range(1,nseg_fwd):
+            current_states = state_history_fwd[
+                i * N, 0:3
+            ]
+            ax.scatter(
+                current_states[0] / units,
+                current_states[1] / units,
+                current_states[2] / units,
+                marker = 'x',
+                c="C0",
+                s=50
+            )
+
     if show_throttles:
         for i in range(nseg_fwd):
             current_states = state_history_fwd[
@@ -288,19 +315,11 @@ def add_sf_hf_leg(
                     color="indianred",
                 )
 
-    if show_gridpoints:
-        ax.scatter(
-            state_history_fwd[:, 0] / units,
-            state_history_fwd[:, 1] / units,
-            state_history_fwd[:, 2] / units,
-            c="indianred",
-            s=5,
-        )
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     state_history_bck = _np.zeros((nseg_bck * N, 7))
     it = 0
-    for i in range(nseg_bck):
+    for i in range(0, nseg_bck):
         for j in range(N):
             state_history_bck[it, :] = state_history_raw[nseg - i - 1][
                 7 * j : 7 * (j + 1)
@@ -313,6 +332,27 @@ def add_sf_hf_leg(
         state_history_bck[:, 2] / units,
         c="k",
     )
+
+    if show_gridpoints:
+
+        # Plot the 3D trajectory
+        for i in range(1, nseg_bck+1):
+            if i < nseg_bck:
+                current_states = state_history_bck[
+                    i * N, 0:3
+                ]
+            else:
+                current_states = state_history_bck[
+                    -1, 0:3
+                ]
+            ax.scatter(
+                current_states[0] / units,
+                current_states[1] / units,
+                current_states[2] / units,
+                marker = 'x',
+                c="C0",
+                s=50
+            )    
 
     if show_throttles:
         for i in range(nseg_bck):
@@ -341,13 +381,5 @@ def add_sf_hf_leg(
                     color="indianred",
                 )
 
-    if show_gridpoints:
-        ax.scatter(
-            state_history_bck[:, 0] / units,
-            state_history_bck[:, 1] / units,
-            state_history_bck[:, 2] / units,
-            c="indianred",
-            s=5,
-        )
 
     return ax
