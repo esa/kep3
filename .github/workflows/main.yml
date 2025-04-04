@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   linux_asan_debug:
     runs-on: ubuntu-latest
