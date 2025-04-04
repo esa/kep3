@@ -275,15 +275,15 @@ void sims_flanagan_hf_alpha::set_talphas(const std::vector<double> &talphas)
 {
     m_talphas = talphas;
 }
-// void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterator &it1,
-//     const std::vector<double>::const_iterator &it2)
-// {
-//     if ( std::distance(it1, it2) <= 0) {
-//         throw std::logic_error("The talphas of a sims_flanagan_hf_alpha leg are being set with invalid iterators.");
-//     }
-//     m_talphas.resize(static_cast<size_t>(std::distance(it1, it2)));
-//     std::copy(it1, it2, m_talphas.begin());
-// }
+void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterator &it1,
+    const std::vector<double>::const_iterator &it2)
+{
+    if ( std::distance(it1, it2) <= 0) {
+        throw std::logic_error("The talphas of a sims_flanagan_hf_alpha leg are being set with invalid iterators.");
+    }
+    m_talphas.resize(static_cast<size_t>(std::distance(it1, it2)));
+    std::copy(it1, it2, m_talphas.begin());
+}
 
 // void sims_flanagan_hf_alpha::set_tas(const heyoka::taylor_adaptive<double> &tas)
 // {
@@ -552,26 +552,28 @@ std::vector<double> sims_flanagan_hf_alpha::compute_throttle_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf_alpha::compute_constraints() const
-{
-    std::vector<double> retval(7 + m_nseg, 0.);
-    // Fitness
-    // Equality Constraints
-    auto eq_con = compute_mismatch_constraints();
-    retval[0] = eq_con[0];
-    retval[1] = eq_con[1];
-    retval[2] = eq_con[2];
-    retval[3] = eq_con[3];
-    retval[4] = eq_con[4];
-    retval[5] = eq_con[5];
-    retval[6] = eq_con[6];
-    // Inequality Constraints
-    auto ineq_con = compute_throttle_constraints();
-    std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 7);
-    // talphas
-    return retval;
-}
+// // This function is useful for computing analytical gradients ... which is not yet implemented
+// std::vector<double> sims_flanagan_hf_alpha::compute_constraints() const
+// {
+//     std::vector<double> retval(7 + m_nseg, 0.);
+//     // Fitness
+//     // Equality Constraints
+//     auto eq_con = compute_mismatch_constraints();
+//     retval[0] = eq_con[0];
+//     retval[1] = eq_con[1];
+//     retval[2] = eq_con[2];
+//     retval[3] = eq_con[3];
+//     retval[4] = eq_con[4];
+//     retval[5] = eq_con[5];
+//     retval[6] = eq_con[6];
+//     // Inequality Constraints
+//     auto ineq_con = compute_throttle_constraints();
+//     std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 7);
+//     // talphas
+//     return retval;
+// }
 
+// // This function is useful for computing analytical gradients ... which is not yet implemented
 // std::vector<double> sims_flanagan_hf_alpha::set_and_compute_constraints(const std::vector<double> &chromosome)
 // {
 //     std::array<double, 7> rvms{};

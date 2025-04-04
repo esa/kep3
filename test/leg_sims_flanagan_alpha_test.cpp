@@ -59,7 +59,7 @@ TEST_CASE("constructor")
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
             std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
-                          std::domain_error);
+            std::domain_error);
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, -0.3, 1., 1., 0.5),
             std::domain_error);
@@ -70,14 +70,14 @@ TEST_CASE("constructor")
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., -0.32, 0.5),
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 32),
-                          std::domain_error);
+            std::domain_error);
         REQUIRE_THROWS_AS(
             kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., -0.1),
             std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-                          std::logic_error);
+            std::logic_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-                          std::logic_error);
+            std::logic_error);
     }
 }
 

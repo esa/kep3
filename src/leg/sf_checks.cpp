@@ -33,13 +33,13 @@ void _check_throttles(const std::vector<double> &throttles)
 }
 void _check_talphas(const std::vector<double> &talphas, unsigned nseg )
 {
-    if (talphas.size() != nseg) {
-        throw std::logic_error("The talphas of a sims_flanagan leg are detected not to be of length nseg "
-                               "[ta1, ta2, ta3, ..., tanseg].");
-    }
     if (talphas.empty()) {
         throw std::logic_error(
             "The talphas of a sims_flanagan leg are detected to be empty! At least one segment is necessary.");
+    }
+    if (talphas.size() != nseg) {
+        throw std::logic_error("The talphas of a sims_flanagan leg are detected not to be of length nseg "
+                               "[ta1, ta2, ta3, ..., tanseg].");
     }
 }
 void _check_max_thrust(double max_thrust)

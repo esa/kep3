@@ -102,9 +102,8 @@ public:
 
     // Compute constraints
     [[nodiscard]] std::array<double, 7> compute_mismatch_constraints() const;
-    // [[nodiscard]] std::array<double, 8> compute_mismatch_constraints() const;
     [[nodiscard]] std::vector<double> compute_throttle_constraints() const;
-    [[nodiscard]] std::vector<double> compute_constraints() const;
+    // [[nodiscard]] std::vector<double> compute_constraints() const;
     // [[nodiscard]] std::vector<double> set_and_compute_constraints(const std::vector<double> &chromosome);
 
     // Retrieve the state history of the sims flanagan leg

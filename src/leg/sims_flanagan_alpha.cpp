@@ -322,19 +322,6 @@ std::vector<double> sims_flanagan_alpha::compute_throttle_constraints() const
     return retval;
 }
 
-mat61 _dynAlpha(std::array<std::array<double, 3>, 2> rv, double mu)
-{
-    mat61 retval;
-    auto R3 = std::pow(rv[0][0] * rv[0][0] + rv[0][1] * rv[0][1] + rv[0][2] * rv[0][2], 1.5);
-    retval(0, 0) = rv[1][0];
-    retval(1, 0) = rv[1][1];
-    retval(2, 0) = rv[1][2];
-    retval(3, 0) = -mu / R3 * rv[0][0];
-    retval(4, 0) = -mu / R3 * rv[0][1];
-    retval(5, 0) = -mu / R3 * rv[0][2];
-    return retval;
-}
-
 std::ostream &operator<<(std::ostream &s, const sims_flanagan_alpha &sf)
 {
     s << fmt::format("Number of segments: {}\n", sf.get_nseg());

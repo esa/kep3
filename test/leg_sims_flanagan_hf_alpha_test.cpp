@@ -137,6 +137,15 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_tas().get_pars()[3] == throttles2[1]*sf.get_max_thrust());
         REQUIRE(sf.get_tas().get_pars()[4] == throttles2[2]*sf.get_max_thrust());
         REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
+
+        std::vector<double> talphas{1., 2., 3.};
+        std::vector<double> talphas2{1.1, 2.1, 3.1};
+        sf.set_talphas(talphas);
+        REQUIRE(sf.get_talphas() == talphas);
+        sf.set_talphas(talphas2.begin(), talphas2.end());
+        REQUIRE(sf.get_talphas() == talphas2);
+        REQUIRE_THROWS_AS(sf.set_throttles(talphas2.begin(), talphas2.end() - 1), std::logic_error);
+
         sf.set_cut(0.333);
         REQUIRE(sf.get_cut() == 0.333);
         sf.set_max_thrust(0.333);
