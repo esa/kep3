@@ -22,6 +22,12 @@ namespace kep3::ta
 // Returns the low-thrust dynamics (heyoka API) of the cr3bp. 6 states, 1 parameter: mu.
 kep3_DLL_PUBLIC std::vector<std::pair<heyoka::expression, heyoka::expression>> cr3bp_dyn();
 
+// Returns the jacobi constant of the cr3bp (heyoka expression). 6 states, 1 parameter: mu.
+kep3_DLL_PUBLIC heyoka::expression cr3bp_jacobi_C();
+
+// Returns the effective potential of the cr3bp (heyoka expression). 6 states, 1 parameter: mu.
+kep3_DLL_PUBLIC heyoka::expression cr3bp_effective_potential_U();
+
 // These return const references to function level static variables of type heyoka::taylor_adaptive<double>.
 // NOTE: The object retruned are expected to be copied to then be modified.
 kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_cr3bp(double tol);

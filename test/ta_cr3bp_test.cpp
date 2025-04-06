@@ -26,8 +26,6 @@ using kep3::ta::get_ta_cr3bp_cache_dim;
 using kep3::ta::get_ta_cr3bp_var;
 using kep3::ta::get_ta_cr3bp_var_cache_dim;
 
-using kep3_tests::L_infinity_norm_rel;
-
 // This needs to be the first test as cache dimension will be assumed to be zero here.
 TEST_CASE("caches")
 {
@@ -50,7 +48,7 @@ TEST_CASE("caches")
     REQUIRE(get_ta_cr3bp_var_cache_dim() == 2u);
 }
 
-TEST_CASE("dynamics")
+TEST_CASE("propagation")
 {
     auto ta_cached = get_ta_cr3bp(1e-16);
     REQUIRE(ta_cached.is_variational() == false);
@@ -74,7 +72,7 @@ TEST_CASE("dynamics")
     }
 }
 
-TEST_CASE("variational_dynamics")
+TEST_CASE("variational_propagation")
 {
     auto ta_cached = get_ta_cr3bp_var(1e-16);
     REQUIRE(ta_cached.is_variational() == true);
@@ -101,3 +99,11 @@ TEST_CASE("variational_dynamics")
                 <= 1e-13);
     }
 }
+
+TEST_CASE("expression_factory") {
+    auto dyn = kep3::ta::cr3bp_dyn()
+    auto C = kep3::ta::cr3bp_jacobi_C();
+    auto U = kep3::ta::cr3bp_effective_potential_U();
+    
+}
+

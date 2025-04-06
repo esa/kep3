@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -34,7 +34,7 @@ using heyoka::var_ode_sys;
 
 namespace kep3::ta
 {
-std::vector<std::pair<expression, expression>> cr3bp_dyn()
+std::tuple<std::vector<std::pair<expression, expression>>, expression, expression> expression_factory()
 {
     // The symbolic variables
     auto [x, y, z, vx, vy, vz] = make_vars("x", "y", "z", "vx", "vy", "vz");
@@ -55,9 +55,32 @@ std::vector<std::pair<expression, expression>> cr3bp_dyn()
     const auto vydot = -2. * vx + y - (1. - par[0]) * y / pow(r_1, 3.) - par[0] * y / pow(r_2, 3.);
     const auto vzdot = -(1. - par[0]) * z / pow(r_1, 3.) - par[0] * z / pow(r_2, 3.);
 
-    return {prime(x) = xdot,   prime(y) = ydot,   prime(z) = zdot, prime(vx) = vxdot,
-            prime(vy) = vydot, prime(vz) = vzdot};
+    // The effective potential
+    const auto U = 1. / 2. * (pow(x, 2.) + pow(y, 2.)) + (1. - par[0]) / r_1 + par[0] / r_2;
+    // The velocity squared (in rotating)
+    const auto v2 = (pow(vx, 2.) + pow(vy, 2.) + pow(vz, 2.));
+    // The Jacobi constant
+    const auto C = 2. * U - v2;
+
+    return {
+        {prime(x) = xdot, prime(y) = ydot, prime(z) = zdot, prime(vx) = vxdot, prime(vy) = vydot, prime(vz) = vzdot},
+        U, C};
 };
+
+std::vector<std::pair<expression, expression>> cr3bp_dyn()
+{
+    return std::get<0>(expression_factory());
+}
+
+heyoka::expression cr3bp_effective_potential_U()
+{
+    return std::get<1>(expression_factory());
+}
+
+heyoka::expression cr3bp_jacobi_C()
+{
+    return std::get<2>(expression_factory());
+}
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ta_cr3bp_mutex;
