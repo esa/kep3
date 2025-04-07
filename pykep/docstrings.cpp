@@ -1750,6 +1750,41 @@ Returns:
 )";
 }
 
+std::string cr3bp_jacobi_C_docstring() 
+{
+    return R"(cr3bp_jacobi_C()
+Jacobi constant of the CR3BP as a `heyoka` expression.
+
+The Jacobi constant is a conserved quantity of the CR3BP. It is defined as:
+
+.. math::
+
+   C = x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2} - v_x^2 - v_y^2 - v_z^2 = 2 U - v^2
+
+where :math:`\mu` is the mass ratio of the primaries, :math:`r_1` and :math:`r_2` are the distances to the primaries.
+
+Returns:
+    :class:`hy::expression`: the Jacobi constant of the CR3BP as a function of :math:`x,y,z,v_x,v_y,v_z,\mu`.
+)";
+}
+
+std::string cr3bp_effective_potential_U_docstring()
+{
+    return R"(cr3bp_effective_potential_U()
+Effective potential of the CR3BP as a `heyoka` expression.
+The effective potential is defined as:
+
+.. math::
+
+   U = \frac{1}{2} \left(x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2}\right)
+
+where :math:`\mu` is the mass ratio of the primaries, :math:`r_1` and :math:`r_2` are the distances to the primaries.
+
+Returns:
+    :class:`hy::expression`: the effective potential of the CR3BP as a function of :math:`x,y,z,v_x,v_y,v_z,\mu`.
+)";
+}
+
 std::string get_pc_docstring()
 {
     return R"(ta.get_pc(tol, optimality)
@@ -1881,7 +1916,7 @@ by taking the derivatives:
 and then made independent of the controls applying Pontryagin minimum principle:
 
 .. math::
-   \mathbf u^* = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
+   \mathbf u^* = \textbf{argmin}_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
 
 and substituting in the equations the optimal controls found as function of the augmented system state.
 

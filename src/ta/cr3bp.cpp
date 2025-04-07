@@ -36,17 +36,17 @@ namespace kep3::ta
 {
 std::tuple<std::vector<std::pair<expression, expression>>, expression, expression> expression_factory()
 {
-    // The symbolic variables
+    // The symbolic variables.
     auto [x, y, z, vx, vy, vz] = make_vars("x", "y", "z", "vx", "vy", "vz");
 
-    // Renaming parameters
+    // Renaming parameters.
     const auto &mu = par[0];
 
-    // Distances to the bodies
+    // Distances to the bodies.
     auto r_1 = sqrt(sum({pow(x + par[0], 2.), pow(y, 2.), pow(z, 2.)}));
     auto r_2 = sqrt(sum({pow(x - (1. - par[0]), 2.), pow(y, 2.), pow(z, 2.)}));
 
-    // The Equations of Motion
+    // The Equations of Motion.
     const auto xdot = vx;
     const auto ydot = vy;
     const auto zdot = vz;
@@ -55,11 +55,11 @@ std::tuple<std::vector<std::pair<expression, expression>>, expression, expressio
     const auto vydot = -2. * vx + y - (1. - par[0]) * y / pow(r_1, 3.) - par[0] * y / pow(r_2, 3.);
     const auto vzdot = -(1. - par[0]) * z / pow(r_1, 3.) - par[0] * z / pow(r_2, 3.);
 
-    // The effective potential
+    // The effective potential. (note the sign convention here)
     const auto U = 1. / 2. * (pow(x, 2.) + pow(y, 2.)) + (1. - par[0]) / r_1 + par[0] / r_2;
-    // The velocity squared (in rotating)
+    // The velocity squared (in rotating).
     const auto v2 = (pow(vx, 2.) + pow(vy, 2.) + pow(vz, 2.));
-    // The Jacobi constant
+    // The Jacobi constant.
     const auto C = 2. * U - v2;
 
     return {

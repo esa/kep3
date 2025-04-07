@@ -64,7 +64,6 @@ Stark
 
 Circular Restricted Three Body Problem
 ######################################## 
-.. currentmodule:: pykep.ta
 
 .. autofunction:: get_cr3bp
 
@@ -72,14 +71,18 @@ Circular Restricted Three Body Problem
 
 .. autofunction:: cr3bp_dyn 
 
+.. autofunction:: cr3bp_jacobi_C 
+
+.. autofunction:: cr3bp_effective_potential_U 
+
+
 Low-thrust Pontryagin Cartesian TPBVP
 ########################################
  
-.. currentmodule:: pykep.ta
-
 .. autofunction:: get_pc
 
 .. autofunction:: get_pc_var
 
 .. autofunction:: pc_dyn
+
 
