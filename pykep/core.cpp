@@ -70,7 +70,11 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("YEAR2DAY") = py::float_(kep3::YEAR2DAY);
     m.attr("DAY2YEAR") = py::float_(kep3::DAY2YEAR);
     m.attr("G0") = py::float_(kep3::G0);
-    m.attr("CR3BP_EARTH_MOON") = py::float_(kep3::CR3BP_EARTH_MOON);
+    m.attr("CR3BP_MU") = py::float_(kep3::CR3BP_MU);
+    m.attr("BCP_MU_S") = py::float_(kep3::BCP_MU_S);
+    m.attr("BCP_RHO_S") = py::float_(kep3::BCP_RHO_S);
+    m.attr("BCP_OMEGA_S") = py::float_(kep3::BCP_MU_S);
+
 
     // We expose here global enums:
     py::enum_<kep3::elements_type>(m, "el_type", "")
