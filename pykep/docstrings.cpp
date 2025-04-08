@@ -1732,7 +1732,8 @@ The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:
 secondary body (i.e. placed on the positive x axis). 
 
 The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
-:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (period of rotation of the primaries).
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (so that the angular velocity of the primaries is :math:`\omega = 1` 
+and the period of rotation between the primaries is :math:`2\pi`).
 
 .. math::
    \left\{

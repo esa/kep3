@@ -6,7 +6,6 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
-#include <array>
 #include <mutex>
 #include <tuple>
 #include <unordered_map>
@@ -64,7 +63,8 @@ std::tuple<std::vector<std::pair<expression, expression>>, expression, expressio
 
     return {
         {prime(x) = xdot, prime(y) = ydot, prime(z) = zdot, prime(vx) = vxdot, prime(vy) = vydot, prime(vz) = vzdot},
-        U, C};
+        U,
+        C};
 };
 
 std::vector<std::pair<expression, expression>> cr3bp_dyn()

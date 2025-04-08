@@ -9,7 +9,6 @@
 #ifndef kep3_TA_CR3BP_H
 #define kep3_TA_CR3BP_H
 
-#include <tuple>
 #include <vector>
 
 #include <kep3/detail/visibility.hpp>
@@ -31,7 +30,7 @@ kep3_DLL_PUBLIC heyoka::expression cr3bp_effective_potential_U();
 // These return const references to function level static variables of type heyoka::taylor_adaptive<double>.
 // NOTE: The object retruned are expected to be copied to then be modified.
 kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_cr3bp(double tol);
-kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_cr3bp_var(double tol); // variational (x,y,z,vx,vy,vz,ux,uy,uz) first order
+kep3_DLL_PUBLIC const heyoka::taylor_adaptive<double> &get_ta_cr3bp_var(double tol); // variational (x,y,z,vx,vy,vz) first order
 
 // Methods to access the cache dimensions.
 kep3_DLL_PUBLIC size_t get_ta_cr3bp_cache_dim();
