@@ -1676,13 +1676,13 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_cbp(tol = 1e-16)
+  >>> ta = pk.ta.get_bcp(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
   >>> mu = pk.CR3BP_MU
   >>> mu_s = pk.BCP_MU_S
   >>> rho_s = pk.BCP_RHO_S
-  >>> rho_p = pk.BCP_RHO_P
+  >>> rho_p = pk.BCP_RHO_S
   >>> tof = 5.7856656782589234
   >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
   >>> ta.propagate_until(tof)
@@ -1713,13 +1713,13 @@ std::string get_bcp_var_docstring()
 
     Examples:
       >>> import pykep as pk
-      >>> ta = pk.ta.get_cbp_var(tol = 1e-16)
+      >>> ta = pk.ta.get_bcp_var(tol = 1e-16)
       >>> ta.time = 0.
-      >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+      >>> ta.state[:6] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
       >>> mu = pk.CR3BP_MU
       >>> mu_s = pk.BCP_MU_S
       >>> rho_s = pk.BCP_RHO_S
-      >>> rho_p = pk.BCP_RHO_P
+      >>> rho_p = pk.BCP_RHO_S
       >>> tof = 5.7856656782589234
       >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
       >>> ta.propagate_until(tof)
