@@ -1,7 +1,8 @@
 .. _propagation:
 
 Numerical Propagation
-#####################
+========================
+
 
 
 The backbone of numerical propagation in `pykep` is based on Lagrangian coefficients for 
@@ -13,7 +14,7 @@ seamlessly via variational equations.
 The main routines are listed here:
  
 Keplerian 
-******************
+---------------
  
 .. currentmodule:: pykep
 
@@ -24,7 +25,7 @@ Keplerian
 ---------------------------------------------------------
 
 Non-Keplerian 
-************************
+---------------
 
 .. currentmodule:: pykep
 
@@ -34,7 +35,8 @@ Non-Keplerian
 ---------------------------------------------------------
 
 Taylor adaptive propagators
-*****************************
+-----------------------------
+
 
 In addition to the above mentioned propagators,
 Taylor adaptive integrators are offered in `pykep` wrapping some of the functionalities of
@@ -52,7 +54,7 @@ the control, the Hamiltonian, the switching function, etc., are also provided.
 --------------------------------------------------------
 
 Stark
-######## 
+~~~~~~~~~~~~ 
 .. currentmodule:: pykep.ta
 
 .. autofunction:: get_stark
@@ -63,7 +65,7 @@ Stark
 
 
 Circular Restricted Three Body Problem
-######################################## 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: get_cr3bp
 
@@ -73,12 +75,22 @@ Circular Restricted Three Body Problem
 
 .. autofunction:: cr3bp_jacobi_C 
 
-.. autofunction:: cr3bp_effective_potential_U 
+.. autofunction:: cr3bp_effective_potential_U
 
+Bicircular Problem 
+~~~~~~~~~~~~~~~~~~~~~
+
+Introduced by Simo' et al. in his '97 paper :cite:p:`simo1995bicircular`.
+
+.. autofunction:: get_bcp
+
+.. autofunction:: get_bcp_var
+
+.. autofunction:: bcp_dyn 
 
 Low-thrust Pontryagin Cartesian TPBVP
-########################################
- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
 .. autofunction:: get_pc
 
 .. autofunction:: get_pc_var

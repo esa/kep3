@@ -100,7 +100,9 @@ std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
 std::string cr3bp_jacobi_C_docstring();
 std::string cr3bp_effective_potential_U_docstring();
-
+std::string get_bcp_docstring();
+std::string get_bcp_var_docstring();
+std::string bcp_dyn_docstring();
 
 std::string get_pc_docstring();
 std::string get_pc_var_docstring();

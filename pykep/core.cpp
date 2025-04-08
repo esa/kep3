@@ -28,6 +28,7 @@
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
+#include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/stark.hpp>
@@ -74,7 +75,6 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("BCP_MU_S") = py::float_(kep3::BCP_MU_S);
     m.attr("BCP_RHO_S") = py::float_(kep3::BCP_RHO_S);
     m.attr("BCP_OMEGA_S") = py::float_(kep3::BCP_MU_S);
-
 
     // We expose here global enums:
     py::enum_<kep3::elements_type>(m, "el_type", "")
@@ -373,7 +373,8 @@ PYBIND11_MODULE(core, m) // NOLINT
     // CR3BP
     // Add function to submodule
     ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());
-    ta.def("cr3bp_effective_potential_U", &kep3::ta::cr3bp_effective_potential_U, pykep::cr3bp_effective_potential_U_docstring().c_str());
+    ta.def("cr3bp_effective_potential_U", &kep3::ta::cr3bp_effective_potential_U,
+           pykep::cr3bp_effective_potential_U_docstring().c_str());
 
     ta.def(
         "get_cr3bp",
@@ -391,7 +392,25 @@ PYBIND11_MODULE(core, m) // NOLINT
             return ta;
         },
         py::arg("tol"), pykep::get_cr3bp_var_docstring().c_str());
-    ta.def("cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str()).attr("__module__") = "pykep.ta";
+    ta.def("cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
+    // BCP
+    ta.def(
+        "get_bcp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_docstring().c_str());
+    ta.def(
+        "get_bcp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_var_docstring().c_str());
+    ta.def("bcp_dyn", &kep3::ta::bcp_dyn, pykep::bcp_dyn_docstring().c_str());
     // Pontryagin Cartesian
     ta.def(
         "get_pc",
