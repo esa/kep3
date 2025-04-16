@@ -1655,6 +1655,111 @@ Returns:
 )";
 }
 
+std::string get_bcp_docstring()
+{
+    return R"(ta.get_cbp(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
+
+In `pykep`, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+is on the :math:`x` axis at time zero.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.cbp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_bcp(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = pk.CR3BP_MU
+  >>> mu_s = pk.BCP_MU_S
+  >>> rho_s = pk.BCP_RHO_S
+  >>> rho_p = pk.BCP_RHO_S
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_bcp_var_docstring()
+{
+    return R"(ta.get_cbp_var(tol)
+    
+    Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
+    If the requested propagator was never created, a call to this function will trigger its creation, else it will
+    return the one from a global cache, thus avoiding jitting.
+    
+    .. note:
+       Variations are only considered with respect to initial conditions.
+       
+    In `pykep`, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+    is on the :math:`x` axis at time zero.
+
+    The specific dynamics used is that returned by :func:`~pykep.ta.cbp_dyn`.
+
+    Args:
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
+
+    Returns:
+        :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+    Examples:
+      >>> import pykep as pk
+      >>> ta = pk.ta.get_bcp_var(tol = 1e-16)
+      >>> ta.time = 0.
+      >>> ta.state[:6] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+      >>> mu = pk.CR3BP_MU
+      >>> mu_s = pk.BCP_MU_S
+      >>> rho_s = pk.BCP_RHO_S
+      >>> rho_p = pk.BCP_RHO_S
+      >>> tof = 5.7856656782589234
+      >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
+      >>> ta.propagate_until(tof)
+    )";
+}
+std::string bcp_dyn_docstring()
+{
+    return R"(cbp_dyn()
+
+The dynamics of the Bicircular Problem (BCP).
+
+In `pykep`, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+is on the :math:`x` axis at time zero.
+
+The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (so that the angular velocity of the primaries is :math:`\omega = 1`
+and the period of rotation between the primaries is :math:`2\pi`).
+The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:`m_2` is the mass of the
+secondary body (i.e. placed on the positive x axis).
+
+The equations of motion are:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} - \frac{\mu_s}{r_s^3} (x- \rho \cos(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \cos(\omega_s t)\\
+       \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} - \frac{\mu_s}{r_s^3} (y - \rho \sin(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \sin(\omega_s t)\\
+       \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} - \mu_s \frac{z}{r_s^3} 
+   \end{array}\right.
+
+where :math:`\mu, \mu_s, \rho_s` and $\omega_s$ are the system parameters. The spacecarft distance from the primaries
+is :math:`r_1, r_2` and its distance from the Sun is :math:`r_s`. The Sun orbits at a distance :math:`\rho` with
+angular velocity :math:`\omega_s`:.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
 std::string get_cr3bp_docstring()
 {
     return R"(ta.get_cr3bp(tol)
@@ -1732,7 +1837,8 @@ The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:
 secondary body (i.e. placed on the positive x axis). 
 
 The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
-:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (period of rotation of the primaries).
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (so that the angular velocity of the primaries is :math:`\omega = 1` 
+and the period of rotation between the primaries is :math:`2\pi`).
 
 .. math::
    \left\{
@@ -1747,6 +1853,41 @@ where :math:`\mu` is the only parameter.
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string cr3bp_jacobi_C_docstring()
+{
+    return R"(cr3bp_jacobi_C()
+Jacobi constant of the CR3BP as a `heyoka` expression.
+
+The Jacobi constant is a conserved quantity of the CR3BP. It is defined as:
+
+.. math::
+
+   C = x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2} - v_x^2 - v_y^2 - v_z^2 = 2 U - v^2
+
+where :math:`\mu` is the mass ratio of the primaries, :math:`r_1` and :math:`r_2` are the distances to the primaries.
+
+Returns:
+    :class:`hy::expression`: the Jacobi constant of the CR3BP as a function of :math:`x,y,z,v_x,v_y,v_z,\mu`.
+)";
+}
+
+std::string cr3bp_effective_potential_U_docstring()
+{
+    return R"(cr3bp_effective_potential_U()
+Effective potential of the CR3BP as a `heyoka` expression.
+The effective potential is defined as:
+
+.. math::
+
+   U = \frac{1}{2} \left(x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2}\right)
+
+where :math:`\mu` is the mass ratio of the primaries, :math:`r_1` and :math:`r_2` are the distances to the primaries.
+
+Returns:
+    :class:`hy::expression`: the effective potential of the CR3BP as a function of :math:`x,y,z,v_x,v_y,v_z,\mu`.
 )";
 }
 
@@ -1881,7 +2022,7 @@ by taking the derivatives:
 and then made independent of the controls applying Pontryagin minimum principle:
 
 .. math::
-   \mathbf u^* = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
+   \mathbf u^* = \textbf{argmin}_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
 
 and substituting in the equations the optimal controls found as function of the augmented system state.
 

@@ -51,6 +51,22 @@ the various `pykep` objects and functionalities.
      - pykep.CR3BP_EARTH_MOON
      - --
      - 0.01215058439470971
+   * - BCP: Moon-Earth parameter (same as for the CR3BP)
+     - pykep.BCP_EARTH_MOON
+     - --
+     - 0.01215058439470971
+   * - BCP :cite:p:`simo1995bicircular`: Scaled mass of the Sun
+     - pykep.BCP_MU_S
+     - --
+     - 328900.55970856483
+   * - BCP :cite:p:`simo1995bicircular`: Scaled Sun–(Earth + Moon) distance
+     - pykep.CR3BP_RHO_S
+     - --
+     - 3.88811143E2
+   * - BCP :cite:p:`simo1995bicircular`: Scaled angular velocity of the Sun
+     - pykep.CR3BP_OMEGA_S
+     - --
+     - -9.25195985E-01
    * - Seconds in one day
      - pykep.DAY2SEC
      - --
