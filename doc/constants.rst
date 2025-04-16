@@ -48,7 +48,11 @@ the various `pykep` objects and functionalities.
      - --
      - 0.00108262668
    * - CR3BP: Moon-Earth parameter
-     - pykep.CR3BP_MU
+     - pykep.CR3BP_EARTH_MOON
+     - --
+     - 0.01215058439470971
+   * - BCP: Moon-Earth parameter (same as for the CR3BP)
+     - pykep.BCP_EARTH_MOON
      - --
      - 0.01215058439470971
    * - BCP :cite:p:`simo1995bicircular`: Scaled mass of the Sun

@@ -120,14 +120,14 @@ TEST_CASE("expression_factory")
                            -0.1232623614,    0.123462698209365, 0.123667064622};
     std::copy(ic.begin(), ic.end(), ta.get_state_data());
     // Assign value for cis-lunar case.
-    *ta.get_pars_data() = kep3::CR3BP_MU;
+    *ta.get_pars_data() = kep3::CR3BP_MU_EARTH_MOON;
     // Propagate to some future time.
     auto out = ta.propagate_until(2.45);
     // Test Jacobi constant being constant along a trajectory
     std::array<double, 1> C0 = {0.}, Cf = {0.}, U0 = {0.};
-    C_cfunc(C0, ic, heyoka::kw::pars = {kep3::CR3BP_MU});
-    U_cfunc(U0, ic, heyoka::kw::pars = {kep3::CR3BP_MU});
-    C_cfunc(Cf, ic, heyoka::kw::pars = {kep3::CR3BP_MU});
+    C_cfunc(C0, ic, heyoka::kw::pars = {kep3::CR3BP_MU_EARTH_MOON});
+    U_cfunc(U0, ic, heyoka::kw::pars = {kep3::CR3BP_MU_EARTH_MOON});
+    C_cfunc(Cf, ic, heyoka::kw::pars = {kep3::CR3BP_MU_EARTH_MOON});
     REQUIRE(C0[0] == Approx(Cf[0]).epsilon(1e-14));
     // Test Jacobi constant being defined as C = 2*U - v^2
     REQUIRE(2. * U0[0] - ic[3] * ic[3] - ic[4] * ic[4] - ic[5] * ic[5] == Approx(C0[0]).epsilon(1e-14));
