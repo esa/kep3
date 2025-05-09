@@ -28,6 +28,7 @@
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/stark_problem.hpp>
+#include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/stark.hpp>
@@ -60,6 +61,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("CAVENDISH") = py::float_(kep3::CAVENDISH);
     m.attr("MU_SUN") = py::float_(kep3::MU_SUN);
     m.attr("MU_EARTH") = py::float_(kep3::MU_EARTH);
+    m.attr("MU_MOON") = py::float_(kep3::MU_MOON);
     m.attr("EARTH_VELOCITY") = py::float_(kep3::EARTH_VELOCITY);
     m.attr("EARTH_J2") = py::float_(kep3::EARTH_J2);
     m.attr("EARTH_RADIUS") = py::float_(kep3::EARTH_RADIUS);
@@ -70,7 +72,11 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.attr("YEAR2DAY") = py::float_(kep3::YEAR2DAY);
     m.attr("DAY2YEAR") = py::float_(kep3::DAY2YEAR);
     m.attr("G0") = py::float_(kep3::G0);
-    m.attr("CR3BP_EARTH_MOON") = py::float_(kep3::CR3BP_EARTH_MOON);
+    m.attr("CR3BP_MU_EARTH_MOON") = py::float_(kep3::CR3BP_MU_EARTH_MOON);
+    m.attr("BCP_MU_EARTH_MOON") = py::float_(kep3::BCP_MU_EARTH_MOON);
+    m.attr("BCP_MU_S") = py::float_(kep3::BCP_MU_S);
+    m.attr("BCP_RHO_S") = py::float_(kep3::BCP_RHO_S);
+    m.attr("BCP_OMEGA_S") = py::float_(kep3::BCP_OMEGA_S);
 
     // We expose here global enums:
     py::enum_<kep3::elements_type>(m, "el_type", "")
@@ -135,8 +141,8 @@ PYBIND11_MODULE(core, m) // NOLINT
           py::arg("Tmax"), py::arg("veff"), pk::mima_from_hop_doc().c_str());
     m.def("mima2", &kep3::mima2, py::arg("posvel1"), py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"),
           py::arg("veff"), py::arg("mu"), pk::mima2_doc().c_str());
-    m.def("mima2_from_hop", &kep3::mima2_from_hop, py::arg("pl_s"), py::arg("pl_f"), py::arg("when_s"), py::arg("when_f"),
-          py::arg("Tmax"), py::arg("veff"), pk::mima2_from_hop_doc().c_str());
+    m.def("mima2_from_hop", &kep3::mima2_from_hop, py::arg("pl_s"), py::arg("pl_f"), py::arg("when_s"),
+          py::arg("when_f"), py::arg("Tmax"), py::arg("veff"), pk::mima2_from_hop_doc().c_str());
     m.def("hohmann", &kep3::hohmann, py::arg("r1"), py::arg("r2"), py::arg("mu"), pk::hohmann_doc().c_str());
     m.def("bielliptic", &kep3::bielliptic, py::arg("r1"), py::arg("r2"), py::arg("rb"), py::arg("mu"),
           pk::bielliptic_doc().c_str());
@@ -342,66 +348,94 @@ PYBIND11_MODULE(core, m) // NOLINT
         .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
-    // Exposing taylor adaptive propagators
+    // Exposing Taylor adaptive propagators
+    // Create submodule "ta"
+    py::module_ ta = m.def_submodule("ta", "Submodule for heyoka Taylor integrator related stuff");
+    // Register the submodule so Python sees it as real (note we use the final pythin visible name for this)
+    py::module_ sys = py::module_::import("sys");
+    sys.attr("modules")["pykep.ta"] = ta;
     // Stark
-    m.def(
-        "_get_stark",
+    ta.def(
+        "get_stark",
         [](double tol) {
             auto ta_cache = kep3::ta::get_ta_stark(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), pykep::get_stark_docstring().c_str());
-    m.def(
-        "_get_stark_var",
+    ta.def(
+        "get_stark_var",
         [](double tol) {
             auto ta_cache = kep3::ta::get_ta_stark_var(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), pykep::get_stark_var_docstring().c_str());
-    m.def("_stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
+    ta.def("stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
     // CR3BP
-    m.def(
-        "_get_cr3bp",
+    // Add function to submodule
+    ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());
+    ta.def("cr3bp_effective_potential_U", &kep3::ta::cr3bp_effective_potential_U,
+           pykep::cr3bp_effective_potential_U_docstring().c_str());
+
+    ta.def(
+        "get_cr3bp",
         [](double tol) {
             auto ta_cache = kep3::ta::get_ta_cr3bp(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), pykep::get_cr3bp_docstring().c_str());
-    m.def(
-        "_get_cr3bp_var",
+    ta.def(
+        "get_cr3bp_var",
         [](double tol) {
             auto ta_cache = kep3::ta::get_ta_cr3bp_var(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), pykep::get_cr3bp_var_docstring().c_str());
-    m.def("_cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
+    ta.def("cr3bp_dyn", &kep3::ta::cr3bp_dyn, pykep::cr3bp_dyn_docstring().c_str());
+    // BCP
+    ta.def(
+        "get_bcp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_docstring().c_str());
+    ta.def(
+        "get_bcp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_var_docstring().c_str());
+    ta.def("bcp_dyn", &kep3::ta::bcp_dyn, pykep::bcp_dyn_docstring().c_str());
     // Pontryagin Cartesian
-    m.def(
-        "_get_pc",
+    ta.def(
+        "get_pc",
         [](double tol, kep3::optimality_type optimality) {
             auto ta_cache = kep3::ta::get_ta_pc(tol, optimality);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), py::arg("optimality"), pykep::get_pc_docstring().c_str());
-    m.def(
-        "_get_pc_var",
+    ta.def(
+        "get_pc_var",
         [](double tol, kep3::optimality_type optimality) {
             auto ta_cache = kep3::ta::get_ta_pc_var(tol, optimality);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
         py::arg("tol"), py::arg("optimality"), pykep::get_pc_var_docstring().c_str());
-    m.def("_pc_dyn", &kep3::ta::pc_dyn, pykep::pc_dyn_docstring().c_str());
-    m.def("_get_pc_H_cfunc", &kep3::ta::get_pc_H_cfunc, pykep::get_pc_H_cfunc_docstring().c_str());
-    m.def("_get_pc_SF_cfunc", &kep3::ta::get_pc_SF_cfunc, pykep::get_pc_SF_cfunc_docstring().c_str());
-    m.def("_get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
-    m.def("_get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
-    m.def("_get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
+    ta.def("pc_dyn", &kep3::ta::pc_dyn, pykep::pc_dyn_docstring().c_str());
+    ta.def("get_pc_H_cfunc", &kep3::ta::get_pc_H_cfunc, pykep::get_pc_H_cfunc_docstring().c_str());
+    ta.def("get_pc_SF_cfunc", &kep3::ta::get_pc_SF_cfunc, pykep::get_pc_SF_cfunc_docstring().c_str());
+    ta.def("get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
+    ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
+    ta.def("get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(
@@ -683,13 +717,13 @@ PYBIND11_MODULE(core, m) // NOLINT
                                         pykep::leg_sf_nseg_bck_docstring().c_str());
 
     // Exposing the sims_flanagan_alpha leg
-    py::class_<kep3::leg::sims_flanagan_alpha> sims_flanagan_alpha(m, "_sims_flanagan_alpha", pykep::leg_sf_alpha_docstring().c_str());
+    py::class_<kep3::leg::sims_flanagan_alpha> sims_flanagan_alpha(m, "_sims_flanagan_alpha",
+                                                                   pykep::leg_sf_alpha_docstring().c_str());
     sims_flanagan_alpha.def(
         py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>, std::vector<double>,
                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
-        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-        py::arg("talphas") = std::vector<double>{0, 0},
+        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
         py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5);
@@ -700,11 +734,13 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_alpha.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan_alpha>);
     // Pickle support.
     sims_flanagan_alpha.def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan_alpha>,
-                                 &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_alpha>));
+                                       &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_alpha>));
     // The rest
     sims_flanagan_alpha.def_property(
         "throttles", &kep3::leg::sims_flanagan_alpha::get_throttles,
-        [](kep3::leg::sims_flanagan_alpha &sf, const std::vector<double> &throttles) { return sf.set_throttles(throttles); },
+        [](kep3::leg::sims_flanagan_alpha &sf, const std::vector<double> &throttles) {
+            return sf.set_throttles(throttles);
+        },
         pykep::leg_sf_throttles_docstring().c_str());
 
     // The rest
@@ -714,8 +750,9 @@ PYBIND11_MODULE(core, m) // NOLINT
         pykep::leg_sf_talphas_docstring().c_str());
 
 #define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
-    sims_flanagan_alpha.def_property(#name, &kep3::leg::sims_flanagan_alpha::get_##name, &kep3::leg::sims_flanagan_alpha::set_##name,    \
-                               pykep::leg_sf_##name##_docstring().c_str());
+    sims_flanagan_alpha.def_property(#name, &kep3::leg::sims_flanagan_alpha::get_##name,                               \
+                                     &kep3::leg::sims_flanagan_alpha::set_##name,                                      \
+                                     pykep::leg_sf_##name##_docstring().c_str());
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvs);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(ms);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvf);
@@ -728,17 +765,18 @@ PYBIND11_MODULE(core, m) // NOLINT
 
 #undef PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES
 
-    sims_flanagan_alpha.def("compute_mismatch_constraints", &kep3::leg::sims_flanagan_alpha::compute_mismatch_constraints,
-                      pykep::leg_sf_mc_docstring().c_str());
-    sims_flanagan_alpha.def("compute_throttle_constraints", &kep3::leg::sims_flanagan_alpha::compute_throttle_constraints,
-                      pykep::leg_sf_tc_docstring().c_str());
+    sims_flanagan_alpha.def("compute_mismatch_constraints",
+                            &kep3::leg::sims_flanagan_alpha::compute_mismatch_constraints,
+                            pykep::leg_sf_mc_docstring().c_str());
+    sims_flanagan_alpha.def("compute_throttle_constraints",
+                            &kep3::leg::sims_flanagan_alpha::compute_throttle_constraints,
+                            pykep::leg_sf_tc_docstring().c_str());
     sims_flanagan_alpha.def_property_readonly("nseg", &kep3::leg::sims_flanagan_alpha::get_nseg,
-                                        pykep::leg_sf_nseg_docstring().c_str());
+                                              pykep::leg_sf_nseg_docstring().c_str());
     sims_flanagan_alpha.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_alpha::get_nseg_fwd,
-                                        pykep::leg_sf_nseg_fwd_docstring().c_str());
+                                              pykep::leg_sf_nseg_fwd_docstring().c_str());
     sims_flanagan_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_alpha::get_nseg_bck,
-                                        pykep::leg_sf_nseg_bck_docstring().c_str());
-
+                                              pykep::leg_sf_nseg_bck_docstring().c_str());
 
     // Exposing the sims_flanagan_hf leg
     py::class_<kep3::leg::sims_flanagan_hf> sims_flanagan_hf(m, "_sims_flanagan_hf",
@@ -869,13 +907,12 @@ PYBIND11_MODULE(core, m) // NOLINT
 
     // Exposing the sims_flanagan_hf_alpha leg
     py::class_<kep3::leg::sims_flanagan_hf_alpha> sims_flanagan_hf_alpha(m, "_sims_flanagan_hf_alpha",
-                                                             pykep::leg_sf_hf_alpha_docstring().c_str());
+                                                                         pykep::leg_sf_hf_alpha_docstring().c_str());
     sims_flanagan_hf_alpha.def(
         py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>, std::vector<double>,
                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
-        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-        py::arg("talphas") = std::vector<double>{0, 0},
+        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
         py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5);
@@ -886,7 +923,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf_alpha.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan_hf_alpha>);
     // Pickle support.
     sims_flanagan_hf_alpha.def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan_hf_alpha>,
-                                    &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_hf_alpha>));
+                                          &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_hf_alpha>));
     // The rest
     sims_flanagan_hf_alpha.def_property(
         "throttles", &kep3::leg::sims_flanagan_hf_alpha::get_throttles,
@@ -897,17 +934,16 @@ PYBIND11_MODULE(core, m) // NOLINT
 
     // Add talphas
     sims_flanagan_hf_alpha.def_property(
-        "talphas", &kep3::leg::sims_flanagan_hf_alpha::get_talphas,  // Getter function
+        "talphas", &kep3::leg::sims_flanagan_hf_alpha::get_talphas, // Getter function
         [](kep3::leg::sims_flanagan_hf_alpha &sf, const std::vector<double> &talphas) {
-            return sf.set_talphas(talphas);  // Setter function
+            return sf.set_talphas(talphas); // Setter function
         },
         pykep::leg_sf_hf_talphas_docstring().c_str());
 
-
 #define PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(name)                                                                       \
-    sims_flanagan_hf_alpha.def_property(#name, &kep3::leg::sims_flanagan_hf_alpha::get_##name,                                     \
-                                  &kep3::leg::sims_flanagan_hf_alpha::set_##name,                                            \
-                                  pykep::leg_sf_hf_##name##_docstring().c_str());
+    sims_flanagan_hf_alpha.def_property(#name, &kep3::leg::sims_flanagan_hf_alpha::get_##name,                         \
+                                        &kep3::leg::sims_flanagan_hf_alpha::set_##name,                                \
+                                        pykep::leg_sf_hf_##name##_docstring().c_str());
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
     PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
@@ -925,17 +961,18 @@ PYBIND11_MODULE(core, m) // NOLINT
 
 #undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
 
-    sims_flanagan_hf_alpha.def("compute_mismatch_constraints", &kep3::leg::sims_flanagan_hf_alpha::compute_mismatch_constraints,
-                         pykep::leg_sf_hf_mc_docstring().c_str());
-    sims_flanagan_hf_alpha.def("compute_throttle_constraints", &kep3::leg::sims_flanagan_hf_alpha::compute_throttle_constraints,
-                         pykep::leg_sf_hf_tc_docstring().c_str());
+    sims_flanagan_hf_alpha.def("compute_mismatch_constraints",
+                               &kep3::leg::sims_flanagan_hf_alpha::compute_mismatch_constraints,
+                               pykep::leg_sf_hf_mc_docstring().c_str());
+    sims_flanagan_hf_alpha.def("compute_throttle_constraints",
+                               &kep3::leg::sims_flanagan_hf_alpha::compute_throttle_constraints,
+                               pykep::leg_sf_hf_tc_docstring().c_str());
     sims_flanagan_hf_alpha.def("get_state_history", &kep3::leg::sims_flanagan_hf_alpha::get_state_history,
-                         pykep::leg_sf_hf_get_state_history_docstring().c_str());
+                               pykep::leg_sf_hf_get_state_history_docstring().c_str());
     sims_flanagan_hf_alpha.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf_alpha::get_nseg,
-                                           pykep::leg_sf_hf_nseg_docstring().c_str());
+                                                 pykep::leg_sf_hf_nseg_docstring().c_str());
     sims_flanagan_hf_alpha.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_fwd,
-                                           pykep::leg_sf_hf_nseg_fwd_docstring().c_str());
+                                                 pykep::leg_sf_hf_nseg_fwd_docstring().c_str());
     sims_flanagan_hf_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_bck,
-                                           pykep::leg_sf_hf_nseg_bck_docstring().c_str());
-
+                                                 pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 }

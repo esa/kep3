@@ -47,7 +47,7 @@ struct sf_test_udp {
         leg.set_throttles(x.begin(), x.end() - 2 - nseg);
 
         // Transform alphas using alpha2direct
-        const std::vector<double> alphas(x.begin() + 3 * nseg, x.end() - 2);
+        const std::vector<double> alphas(x.begin() + 3l * nseg, x.end() - 2l);
         std::vector<double> transformed_alphas = kep3::alpha2direct(alphas, tof);
         leg.set_talphas(transformed_alphas);
 

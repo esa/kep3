@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -6,7 +6,6 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
-#include <array>
 #include <mutex>
 #include <tuple>
 #include <unordered_map>
@@ -34,19 +33,19 @@ using heyoka::var_ode_sys;
 
 namespace kep3::ta
 {
-std::vector<std::pair<expression, expression>> cr3bp_dyn()
+std::tuple<std::vector<std::pair<expression, expression>>, expression, expression> expression_factory()
 {
-    // The symbolic variables
+    // The symbolic variables.
     auto [x, y, z, vx, vy, vz] = make_vars("x", "y", "z", "vx", "vy", "vz");
 
-    // Renaming parameters
+    // Renaming parameters.
     const auto &mu = par[0];
 
-    // Distances to the bodies
+    // Distances to the bodies.
     auto r_1 = sqrt(sum({pow(x + par[0], 2.), pow(y, 2.), pow(z, 2.)}));
     auto r_2 = sqrt(sum({pow(x - (1. - par[0]), 2.), pow(y, 2.), pow(z, 2.)}));
 
-    // The Equations of Motion
+    // The Equations of Motion.
     const auto xdot = vx;
     const auto ydot = vy;
     const auto zdot = vz;
@@ -55,9 +54,33 @@ std::vector<std::pair<expression, expression>> cr3bp_dyn()
     const auto vydot = -2. * vx + y - (1. - par[0]) * y / pow(r_1, 3.) - par[0] * y / pow(r_2, 3.);
     const auto vzdot = -(1. - par[0]) * z / pow(r_1, 3.) - par[0] * z / pow(r_2, 3.);
 
-    return {prime(x) = xdot,   prime(y) = ydot,   prime(z) = zdot, prime(vx) = vxdot,
-            prime(vy) = vydot, prime(vz) = vzdot};
+    // The effective potential. (note the sign convention here)
+    const auto U = 1. / 2. * (pow(x, 2.) + pow(y, 2.)) + (1. - par[0]) / r_1 + par[0] / r_2;
+    // The velocity squared (in rotating).
+    const auto v2 = (pow(vx, 2.) + pow(vy, 2.) + pow(vz, 2.));
+    // The Jacobi constant.
+    const auto C = 2. * U - v2;
+
+    return {
+        {prime(x) = xdot, prime(y) = ydot, prime(z) = zdot, prime(vx) = vxdot, prime(vy) = vydot, prime(vz) = vzdot},
+        U,
+        C};
 };
+
+std::vector<std::pair<expression, expression>> cr3bp_dyn()
+{
+    return std::get<0>(expression_factory());
+}
+
+heyoka::expression cr3bp_effective_potential_U()
+{
+    return std::get<1>(expression_factory());
+}
+
+heyoka::expression cr3bp_jacobi_C()
+{
+    return std::get<2>(expression_factory());
+}
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ta_cr3bp_mutex;
