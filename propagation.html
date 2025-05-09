@@ -171,9 +171,6 @@
 <li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Numerical Propagation</a></li>
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
@@ -197,6 +194,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -409,7 +407,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian">Keplerian</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_grid"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_grid()</span></code></a></li>
@@ -426,29 +423,36 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_jacobi_C"><code class="docutils literal notranslate"><span class="pre">cr3bp_jacobi_C()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_effective_potential_U"><code class="docutils literal notranslate"><span class="pre">cr3bp_effective_potential_U()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bicircular-problem">Bicircular Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_bcp"><code class="docutils literal notranslate"><span class="pre">get_bcp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_bcp_var"><code class="docutils literal notranslate"><span class="pre">get_bcp_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.bcp_dyn"><code class="docutils literal notranslate"><span class="pre">bcp_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc"><code class="docutils literal notranslate"><span class="pre">get_pc()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc_var"><code class="docutils literal notranslate"><span class="pre">get_pc_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.pc_dyn"><code class="docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc"><code class="docutils literal notranslate"><span class="pre">get_pc()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc_var"><code class="docutils literal notranslate"><span class="pre">get_pc_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.pc_dyn"><code class="docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a></li>
 </ul>
 </li>
 </ul>
-
+</li>
+</ul>
             </nav>
         </div>
     </div>
@@ -682,11 +686,9 @@ relevance to interplanetary flight. In particular they are born when applying Po
 principle to dynamics of interests and result in two point boundary value problems (TPBVP).
 In these cases, a number of auxiliary functiond describing
 the control, the Hamiltonian, the switching function, etc., are also provided.</p>
-</section>
-</section>
 <hr class="docutils" />
 <section id="stark">
-<h1>Stark<a class="headerlink" href="#stark" title="Permalink to this heading">#</a></h1>
+<h3>Stark<a class="headerlink" href="#stark" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_stark">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_stark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_stark" title="Permalink to this definition">#</a></dt>
@@ -767,7 +769,7 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
 
 </section>
 <section id="circular-restricted-three-body-problem">
-<h1>Circular Restricted Three Body Problem<a class="headerlink" href="#circular-restricted-three-body-problem" title="Permalink to this heading">#</a></h1>
+<h3>Circular Restricted Three Body Problem<a class="headerlink" href="#circular-restricted-three-body-problem" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_cr3bp">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_cr3bp" title="Permalink to this definition">#</a></dt>
@@ -830,7 +832,8 @@ return the one from a global cache, thus avoiding jitting.</p>
 <p>The parameter <span class="math notranslate nohighlight">\(\mu\)</span> is defined as <span class="math notranslate nohighlight">\(\frac{m_2}{m_1+m_2}\)</span> where <span class="math notranslate nohighlight">\(m_2\)</span> is the mass of the
 secondary body (i.e. placed on the positive x axis).</p>
 <p>The equations are non-dimensional with units <span class="math notranslate nohighlight">\(L = r_{12}\)</span> (distance between the primaries), <span class="math notranslate nohighlight">\(M = m_1 + m_2\)</span> (total system mass) and
-<span class="math notranslate nohighlight">\(T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}\)</span> (period of rotation of the primaries).</p>
+<span class="math notranslate nohighlight">\(T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}\)</span> (so that the angular velocity of the primaries is <span class="math notranslate nohighlight">\(\omega = 1\)</span> 
+and the period of rotation between the primaries is <span class="math notranslate nohighlight">\(2\pi\)</span>).</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
 \begin{array}{l}
@@ -846,9 +849,135 @@ secondary body (i.e. placed on the positive x axis).</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.cr3bp_jacobi_C">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">cr3bp_jacobi_C</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.cr3bp_jacobi_C" title="Permalink to this definition">#</a></dt>
+<dd><p>Jacobi constant of the CR3BP as a <cite>heyoka</cite> expression.</p>
+<p>The Jacobi constant is a conserved quantity of the CR3BP. It is defined as:</p>
+<div class="math notranslate nohighlight">
+\[C = x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2} - v_x^2 - v_y^2 - v_z^2 = 2 U - v^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the mass ratio of the primaries, <span class="math notranslate nohighlight">\(r_1\)</span> and <span class="math notranslate nohighlight">\(r_2\)</span> are the distances to the primaries.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>: the Jacobi constant of the CR3BP as a function of <span class="math notranslate nohighlight">\(x,y,z,v_x,v_y,v_z,\mu\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.cr3bp_effective_potential_U">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">cr3bp_effective_potential_U</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.cr3bp_effective_potential_U" title="Permalink to this definition">#</a></dt>
+<dd><p>Effective potential of the CR3BP as a <cite>heyoka</cite> expression.
+The effective potential is defined as:</p>
+<div class="math notranslate nohighlight">
+\[U = \frac{1}{2} \left(x^2 + y^2 + 2(1 - \mu) \frac{1}{r_1} + 2\mu \frac{1}{r_2}\right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the mass ratio of the primaries, <span class="math notranslate nohighlight">\(r_1\)</span> and <span class="math notranslate nohighlight">\(r_2\)</span> are the distances to the primaries.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>: the effective potential of the CR3BP as a function of <span class="math notranslate nohighlight">\(x,y,z,v_x,v_y,v_z,\mu\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="bicircular-problem">
+<h3>Bicircular Problem<a class="headerlink" href="#bicircular-problem" title="Permalink to this heading">#</a></h3>
+<p>Introduced by Simo’ et al. in his ‘97 paper <span id="id6">[<a class="reference internal" href="bibliography.html#id19" title="Carles Simó, Gerard Gómez, Àngel Jorba, and Josep Masdemont. The bicircular model near the triangular libration points of the rtbp. In From Newton to Chaos: modern techniques for understanding and coping with chaos in n-body dynamical systems, pages 343–370. Springer, 1995.">SimoGomezJM95</a>]</span>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.get_bcp">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp" title="Permalink to this definition">#</a></dt>
+<dd><p>ta.get_cbp(tol)</p>
+<p>Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.</p>
+<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
+<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.get_bcp_var">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp_var</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp_var" title="Permalink to this definition">#</a></dt>
+<dd><p>ta.get_cbp_var(tol)</p>
+<p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.</p>
+<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
+<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.bcp_dyn">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">bcp_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.bcp_dyn" title="Permalink to this definition">#</a></dt>
+<dd><p>cbp_dyn()</p>
+<p>The dynamics of the Bicircular Problem (BCP).</p>
+<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
+is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
+<p>The equations are non-dimensional with units <span class="math notranslate nohighlight">\(L = r_{12}\)</span> (distance between the primaries), <span class="math notranslate nohighlight">\(M = m_1 + m_2\)</span> (total system mass) and
+<span class="math notranslate nohighlight">\(T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}\)</span> (so that the angular velocity of the primaries is <span class="math notranslate nohighlight">\(\omega = 1\)</span>
+and the period of rotation between the primaries is <span class="math notranslate nohighlight">\(2\pi\)</span>).
+The parameter <span class="math notranslate nohighlight">\(\mu\)</span> is defined as <span class="math notranslate nohighlight">\(\frac{m_2}{m_1+m_2}\)</span> where <span class="math notranslate nohighlight">\(m_2\)</span> is the mass of the
+secondary body (i.e. placed on the positive x axis).</p>
+<p>The equations of motion are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\{
+\begin{array}{l}
+    \dot{\mathbf r} = \mathbf v \\
+    \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} - \frac{\mu_s}{r_s^3} (x- \rho \cos(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \cos(\omega_s t)\\
+    \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} - \frac{\mu_s}{r_s^3} (y - \rho \sin(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \sin(\omega_s t)\\
+    \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} - \mu_s \frac{z}{r_s^3} 
+\end{array}\right.\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu, \mu_s, \rho_s\)</span> and $omega_s$ are the system parameters. The spacecarft distance from the primaries
+is <span class="math notranslate nohighlight">\(r_1, r_2\)</span> and its distance from the Sun is <span class="math notranslate nohighlight">\(r_s\)</span>. The Sun orbits at a distance <span class="math notranslate nohighlight">\(\rho\)</span> with
+angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="low-thrust-pontryagin-cartesian-tpbvp">
-<h1>Low-thrust Pontryagin Cartesian TPBVP<a class="headerlink" href="#low-thrust-pontryagin-cartesian-tpbvp" title="Permalink to this heading">#</a></h1>
+<h3>Low-thrust Pontryagin Cartesian TPBVP<a class="headerlink" href="#low-thrust-pontryagin-cartesian-tpbvp" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_pc">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_pc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimality</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_pc" title="Permalink to this definition">#</a></dt>
@@ -945,7 +1074,7 @@ the solution of the problem will not change)</p>
 \end{array}\right.\end{split}\]</div>
 <p>and then made independent of the controls applying Pontryagin minimum principle:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf u^* = \argmin_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)\]</div>
+\[\mathbf u^* = \textbf{argmin}_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)\]</div>
 <p>and substituting in the equations the optimal controls found as function of the augmented system state.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
@@ -953,6 +1082,8 @@ the solution of the problem will not change)</p>
 </dl>
 </dd></dl>
 
+</section>
+</section>
 </section>
 
 
@@ -1000,7 +1131,6 @@ the solution of the problem will not change)</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Numerical Propagation</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keplerian">Keplerian</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_grid"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_grid()</span></code></a></li>
@@ -1017,29 +1147,36 @@ the solution of the problem will not change)</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#stark">Stark</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark"><code class="docutils literal notranslate"><span class="pre">get_stark()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_stark_var"><code class="docutils literal notranslate"><span class="pre">get_stark_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.stark_dyn"><code class="docutils literal notranslate"><span class="pre">stark_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_jacobi_C"><code class="docutils literal notranslate"><span class="pre">cr3bp_jacobi_C()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_effective_potential_U"><code class="docutils literal notranslate"><span class="pre">cr3bp_effective_potential_U()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-restricted-three-body-problem">Circular Restricted Three Body Problem</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_cr3bp()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_cr3bp_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bicircular-problem">Bicircular Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_bcp"><code class="docutils literal notranslate"><span class="pre">get_bcp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_bcp_var"><code class="docutils literal notranslate"><span class="pre">get_bcp_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.bcp_dyn"><code class="docutils literal notranslate"><span class="pre">bcp_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc"><code class="docutils literal notranslate"><span class="pre">get_pc()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc_var"><code class="docutils literal notranslate"><span class="pre">get_pc_var()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.pc_dyn"><code class="docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc"><code class="docutils literal notranslate"><span class="pre">get_pc()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_pc_var"><code class="docutils literal notranslate"><span class="pre">get_pc_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.pc_dyn"><code class="docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a></li>
 </ul>
 </li>
 </ul>
-
+</li>
+</ul>
   </nav></div>
 
 </div></div>

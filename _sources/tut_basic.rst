@@ -36,5 +36,6 @@ astrodynamical notation and computations.
   notebooks/approximations
   notebooks/sims_flanagan_leg
   notebooks/sims_flanagan_hf_leg
+  notebooks/cr3bp_bcp
   notebooks/plotting
 

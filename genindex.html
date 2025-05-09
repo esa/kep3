@@ -168,9 +168,6 @@
 <li class="toctree-l2"><a class="reference internal" href="flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagation.html">Numerical Propagation</a></li>
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gym.html">Trajectory Optimization Gym</a></li>
@@ -194,6 +191,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -434,10 +432,12 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="approximations.html#pykep.bielliptic">bielliptic() (in module pykep)</a>
+      <li><a href="propagation.html#pykep.ta.bcp_dyn">bcp_dyn() (in module pykep.ta)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="approximations.html#pykep.bielliptic">bielliptic() (in module pykep)</a>
+</li>
       <li><a href="udpla.html#pykep.udpla.de440s.body_list">body_list() (pykep.udpla.de440s method)</a>
 </li>
   </ul></td>
@@ -483,6 +483,10 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="propagation.html#pykep.ta.cr3bp_dyn">cr3bp_dyn() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.cr3bp_effective_potential_U">cr3bp_effective_potential_U() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.cr3bp_jacobi_C">cr3bp_jacobi_C() (in module pykep.ta)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.cut">cut (pykep.leg.sims_flanagan property)</a>
 
@@ -614,6 +618,10 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="propagation.html#pykep.ta.get_bcp">get_bcp() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_bcp_var">get_bcp_var() (in module pykep.ta)</a>
+</li>
       <li><a href="propagation.html#pykep.ta.get_cr3bp">get_cr3bp() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_cr3bp_var">get_cr3bp_var() (in module pykep.ta)</a>

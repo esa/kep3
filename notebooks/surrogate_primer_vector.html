@@ -170,9 +170,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
@@ -196,6 +193,7 @@
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -460,7 +458,7 @@ to a trajectory where we can control one single existing impulse (as opposed to 
 <p>While the developments are similar, please note that the index <span class="math notranslate nohighlight">\(k\)</span> was before reserved to indicate the only node (of three, ijk) where no finite impulse was given. In this developments it indicates, instead, the only node (of three, ijk) where a finite impulse is given.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The developments as well as the test case used are taken from the work from Bauregard, Acciarini and Izzo <span id="id1">[<a class="reference internal" href="../bibliography.html#id14" title="Laurent Beauregard, Dario Izzo, and Giacomo Acciarini. Breaking traditions: introducing a surrogate primer vector in non keplerian dynamics. arXiv preprint arXiv:2405.18903, 2024.">BIA24</a>]</span>.
+<p>The developments as well as the test case used are taken from the work from Bauregard, Acciarini and Izzo <span id="id1">[<a class="reference internal" href="../bibliography.html#id14" title="Laurent Beauregard, Dario Izzo, and Giacomo Acciarini. Breaking traditions: introducing a surrogate Primer Vector in non Keplerian dynamics. arXiv preprint arXiv:2405.18903, 2024.">BIA24</a>]</span>.
 The developments are shown in details as they can be extended to more generic cases that use different dynamics and number of impulses. The user must in that case provide the state ransition matrices and DVs on a time grid as constructed below.</p>
 <h2 class="rubric" id="theory-and-notation">Theory and notation</h2>
 <p>a) Consider the following definition of the State Transition Matrix, <span class="math notranslate nohighlight">\(\mathbf M_{fs}\)</span>:</p>
@@ -673,7 +671,7 @@ Larger then one! -&gt; Trajectory can be improved
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f77317faba0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f8049427a10&gt;
 </pre></div>
 </div>
 <img alt="../_images/f414eae4fc006d239d24bf8706d1748474b850b4b94ed438593823d4d8c1cbd9.png" src="../_images/f414eae4fc006d239d24bf8706d1748474b850b4b94ed438593823d4d8c1cbd9.png" />
@@ -768,8 +766,8 @@ Larger then one! -&gt; Trajectory can be improved
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.31053881789603627
-The best solution found has a DV of 3.10539e-01
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.6241265610579666
+The best solution found has a DV of 6.24127e-01
 </pre></div>
 </div>
 </div>
@@ -798,7 +796,7 @@ The best solution found has a DV of 3.10539e-01
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f641c11ed327a815c9d4963b273ea72e61a98249b652963e54cb3a3cbb3f596b.png" src="../_images/f641c11ed327a815c9d4963b273ea72e61a98249b652963e54cb3a3cbb3f596b.png" />
+<img alt="../_images/4777e28dc0e5a19fb14a559030b846f16c79204ef3b876680517848a523f3f9c.png" src="../_images/4777e28dc0e5a19fb14a559030b846f16c79204ef3b876680517848a523f3f9c.png" />
 </div>
 </div>
 <p>The <strong>surrogate primer vector</strong> correctly had us try to add impulses and, in this case, halved the needed <span class="math notranslate nohighlight">\(\Delta V\)</span>!</p>

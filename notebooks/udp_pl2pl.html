@@ -171,9 +171,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../flyby.html">Fly-by routines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../approximations.html">Various approximations for orbital transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../propagation.html">Numerical Propagation</a></li>
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="../leg.html">Interplanetary transfer legs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajopt.html">Trajectory Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gym.html">Trajectory Optimization Gym</a></li>
@@ -197,6 +194,7 @@
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -466,8 +464,8 @@ document.write(`
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This notebook makes use of the commercial solver SNOPT 7 and to run needs a valid <code class="docutils literal notranslate"><span class="pre">snopt_7_c</span></code> library installed in the system. In case SNOPT7 is not available, you can still run the notebook using, for example <code class="docutils literal notranslate"><span class="pre">uda</span> <span class="pre">=</span> <span class="pre">pg.algorithm.nlopt(&quot;slsqp&quot;)</span></code> with minor modifications.</p>
-<p>Basic imports:</p>
 </div>
+<p>Basic imports:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
