@@ -100,7 +100,7 @@ During handling of the above exception, another exception occurred:
 [32m    407[39m     [38;5;28;01mreturn[39;00m [38;5;28mself[39m.resolve_backend(gui_or_backend)
 [32m    408[39m [38;5;28;01mexcept[39;00m [38;5;167;01mException[39;00m:  [38;5;66;03m# KeyError ?[39;00m
 [32m--> [39m[32m409[39m     [38;5;28;01mraise[39;00m [38;5;167;01mRuntimeError[39;00m(
-[32m    410[39m         [33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mgui_or_backend[38;5;132;01m}[39;00m[33m is not a recognised GUI loop or backend name[39m[33m"[39m)
+[32m    410[39m         [33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mgui_or_backend[38;5;132;01m}[39;00m[33m'[39m[33m is not a recognised GUI loop or backend name[39m[33m"[39m)
 
-[31mRuntimeError[39m: 'ipympl is not a recognised GUI loop or backend name
+[31mRuntimeError[39m: 'ipympl' is not a recognised GUI loop or backend name
 
