@@ -46,7 +46,7 @@ inline constexpr double DAY2YEAR = (1. / YEAR2DAY);
 inline constexpr double G0 = 9.80665; // Acceleration at Earth's surface (m/s^2)
 inline constexpr double CR3BP_MU_EARTH_MOON = MU_MOON / (MU_MOON + MU_EARTH); // M_moon / (M_moon + M_Earth) 
 inline constexpr double BCP_MU_EARTH_MOON = MU_MOON / (MU_MOON + MU_EARTH); // M_moon / (M_moon + M_Earth) 
-inline constexpr double BCP_MU_S = MU_SUN / MU_EARTH; // M_Sun / M_Earth
+inline constexpr double BCP_MU_S = MU_SUN / (MU_MOON + MU_EARTH); // M_Sun / (M_Earth + M_Moon)
 inline constexpr double BCP_RHO_S = 3.88811143E2; // Scaled Sun–(Earth + Moon) distance (from Simo' BCP paper)
 inline constexpr double BCP_OMEGA_S = -9.25195985E-01; // Scaled angular velocity of the Sun (from Simo' BCP paper)
 } // namespace kep3
