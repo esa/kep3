@@ -37,9 +37,11 @@ class pontryagin_cartesian_mass:
         Isp=3000,
         m0=1500,
         L=_pk.AU,
-        TIME=_pk.YEAR2DAY * _pk.DAY2SEC,
+        MU=_pk.MU_SUN / 40.,
         MASS=1500,
         with_gradient=False,
+        taylor_tolerance=1e-16,
+        taylor_tolerance_var=1e-8
     ):
         r"""pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
@@ -60,20 +62,25 @@ class pontryagin_cartesian_mass:
 
             *m0* (:class:`float`): the initial mass of the spacecraft.
 
-            *L* (:class:`float`): units for length. All inputs will be scaled to these units and must be of the same order as to obtain a well scaled problem.
+            *L* (:class:`float`): units for length. Default is the astronomical unit (AU).
 
-            *TIME* (:class:`float`): units for time. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.
-
-            *MASS* (:class:`float`): units for mass. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.
+            *MU* (:class:`float`): units for the gravitational parameter of the central body. Default is the gravitational parameter of the Sun.
+            
+            *MASS* (:class:`float`): units for mass. Default is 1500 kg.
 
             *with_gradient* (:class:`bool`): whether to use the gradient of the constraints or not.
+            
+            *taylor_tolerance* (:class:`float`): the tolerance for the Taylor integrator.
+            
+            *taylor_tolerance_var* (:class:`float`): the tolerance for the variational Taylor integrator.
         """
         # Non-dimensional units
-        VEL = L / TIME  # Unit for velocity 
-        ACC = VEL / TIME  # Unit for acceleration 
+        TIME = _np.sqrt(L**3 / MU)  # Units for time
+        VEL = L / TIME  # Units for velocity 
+        ACC = VEL / TIME  # Units for acceleration 
 
         # We redefine the user inputs in non dimensional units
-        self.mu = mu / (L**3 / TIME**2)
+        self.mu = mu / MU
         self.eps = eps
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
@@ -84,8 +91,8 @@ class pontryagin_cartesian_mass:
         self.m0 = m0 / MASS
         self.tof = tof * _pk.DAY2SEC / TIME
 
-        self.ta = _pk.ta.get_pc(1e-16, _pk.optimality_type.MASS)
-        self.ta_var = _pk.ta.get_pc_var(1e-8, _pk.optimality_type.MASS)
+        self.ta = _pk.ta.get_pc(taylor_tolerance, _pk.optimality_type.MASS)
+        self.ta_var = _pk.ta.get_pc_var(taylor_tolerance_var, _pk.optimality_type.MASS)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
 
         self.MASS = MASS
@@ -95,7 +102,7 @@ class pontryagin_cartesian_mass:
         self.with_gradient = with_gradient
 
     def get_bounds(self):
-        lb = [-1.0] * 7 + [0.0]
+        lb = [-1.0] * 6 + [0.0] * 2
         ub = [1.0] * 8
         return [lb, ub]
 
@@ -348,9 +355,11 @@ class pontryagin_cartesian_time:
         Isp=3000,
         m0=1500,
         L=_pk.AU,
-        TIME=_pk.YEAR2DAY * _pk.DAY2SEC,
+        MU= _pk.MU_SUN / 40.,
         MASS=1500,
         with_gradient=False,
+        taylor_tolerance=1e-16,
+        taylor_tolerance_var=1e-8
     ):
         r"""pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
@@ -369,15 +378,20 @@ class pontryagin_cartesian_time:
 
             *m0* (:class:`float`): the initial mass of the spacecraft.
 
-            *L* (:class:`float`): units for length. All inputs will be scaled to these units and must be of the same order as to obtain a well scaled problem.
+            *L* (:class:`float`): units for length. Default is the astronomical unit (AU).
 
-            *TIME* (:class:`float`): units for time. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.
-
-            *MASS* (:class:`float`): units for mass. All inputs will be scaled to these units and should be of the same order as to obtain a well scaled problem.
+            *MU* (:class:`float`): units for the gravitational parameter of the central body. Default is the gravitational parameter of the Sun.
+            
+            *MASS* (:class:`float`): units for mass. Default is 1500 kg.
 
             *with_gradient* (:class:`bool`): whether to use the gradient of the constraints or not.
+            
+            *taylor_tolerance* (:class:`float`): the tolerance for the Taylor integrator.
+            
+            *taylor_tolerance_var* (:class:`float`): the tolerance for the variational Taylor integrator.
         """
         # Non-dimensional units
+        TIME = _np.sqrt(L**3 / MU)  # Unit for time (1 year)
         VEL = L / TIME  # Unit for velocity (1 AU/year)
         ACC = VEL / TIME  # Unit for acceleration (1 AU/year^2)
         
@@ -386,7 +400,7 @@ class pontryagin_cartesian_time:
         self.t0 = t0
 
         # We redefine the user inputs in non dimensional units.
-        self.mu = source.get_mu_central_body() / (L**3 / TIME**2)
+        self.mu = source.get_mu_central_body() / MU
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
         self.m0 = m0 / MASS
@@ -403,8 +417,8 @@ class pontryagin_cartesian_time:
         self.target = target
 
         # And the Taylor integrators
-        self.ta = _pk.ta.get_pc(1e-16, _pk.optimality_type.TIME)
-        self.ta_var = _pk.ta.get_pc_var(1e-8, _pk.optimality_type.TIME)
+        self.ta = _pk.ta.get_pc(taylor_tolerance, _pk.optimality_type.TIME)
+        self.ta_var = _pk.ta.get_pc_var(taylor_tolerance_var, _pk.optimality_type.TIME)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
 
         # Compiled functions
