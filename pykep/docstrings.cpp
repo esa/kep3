@@ -1921,7 +1921,7 @@ Examples:
   >>> ta.time = 0.
   >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.]
+  >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
   >>> tof = 1.2345
   >>> ta.propagate_until(tof)
 )";
@@ -1958,10 +1958,10 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta_var = pk.ta.get_pc_var(tol = 1e-16)
+  >>> ta_var = pk.ta.get_pc_var(tol = 1e-16, optimality = pk.optimality_type.TIME))
   >>> ta_var.time = 0.
   >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta_var.pars[:] = [1., 0.01, 1., 0.5, 1.]
+  >>> ta_var.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
   >>> tof = 1.2345
   >>> ta_var.propagate_until(tof)
 )";
@@ -1969,7 +1969,7 @@ Examples:
 
 std::string pc_dyn_docstring()
 {
-    return R"(ta.pc_dyn()
+    return R"(ta.pc_dyn(optimality)
 
 The augmented dynamics of the TPBVP originating when applying an indirect method
 to the low-thrust transfer problem in Cartesian coordinates.
@@ -2005,10 +2005,15 @@ The controls, representing magnitude and direction of the spacecraft thrust are:
 .. math::
    \mathbf u = [u, \hat{\mathbf i}]
 
-The final equations of motion to be possibly used in a shooting method, are derived from the Hamiltonian:
+The final equations of motion (in the case of mass optimality), are derived from the Hamiltonian:
 
 .. math::
-   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \left(u + \epsilon\log(u(1-u))\right)
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \frac{c_1}{c_2} \left(u + \epsilon\log(u(1-u))\right)
+
+or, in the case of time optimality:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \frac{c_1}{c_2}
 
 by taking the derivatives:
 
@@ -2019,12 +2024,17 @@ by taking the derivatives:
    \dot{\mathbf \lambda} = - \frac{\partial \mathcal H}{\partial \mathbf x} \\
    \end{array}\right.
 
-and then made independent of the controls applying Pontryagin minimum principle:
+The equation are then made independent of the controls applying Pontryagin minimum principle which takes the general form:
 
 .. math::
    \mathbf u^* = \textbf{argmin}_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)
 
+where :math:`\mathcal U` is the set of admissible controls, i.e. the set of thrust directions and magnitudes.
+
 and substituting in the equations the optimal controls found as function of the augmented system state.
+
+Args:
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
