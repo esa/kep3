@@ -440,7 +440,10 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-construction-of-the-tpbvp">Manual construction of the TPBVP</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-the-tpbvp-using-pykep">Constructing the TPBVP using <code class="docutils literal notranslate"><span class="pre">pykep</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-in-single-shooting">Solving in single shooting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-in-single-shooting">Solving in single shooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternative-using-scipy-root-finding-methods">Alternative using scipy root finding methods</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homotopy">Homotopy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-homotopy-on-t-max">Exponential homotopy on <span class="math notranslate nohighlight">\(T_{max}\)</span></a></li>
 </ul>
@@ -467,6 +470,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">heyoka</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pygmo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pygmo_plugins_nonfree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppnf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
@@ -522,10 +526,10 @@ document.write(`
 <p>For consistency to the mass optimal case we keep the space for an <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter (index 3) but we will not use it here since the optimality principle is, in our case, simply:</p>
 <div class="math notranslate nohighlight">
 \[
-J = \lambda_J \int_0^T dt
+J = \lambda_J \frac{c_1}{c_2}\int_0^T dt
 \]</div>
 <p>and results already in a smooth trajectory (no need to introduce a continuation parameter). <span class="math notranslate nohighlight">\(\lambda_J\)</span> is a positive number which can be set to any value without changing the nature of our optimality principle (e.g. minimzing time or three times the time must result in the same solution). We use it here explicilty as it adds one degree of freedom which can be used in the numerical implementation to normalize the problem.</p>
-<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
+<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = I_{sp}g_0\)</span></p>
 <p>The dynamics can then be written as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -537,15 +541,15 @@ J = \lambda_J \int_0^T dt
 </div>
 </div>
 </div>
-<p>We introduce the Hamiltonian (<span class="math notranslate nohighlight">\(\mathbf x\)</span> is the whole state, <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> is the whole co-state, and <span class="math notranslate nohighlight">\(\mathbf u\)</span> represent are all the controls),</p>
+<p>We introduce the Hamiltonian (<span class="math notranslate nohighlight">\(\mathbf x\)</span> is the whole state, <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> is the whole co-state, and <span class="math notranslate nohighlight">\(\mathbf u\)</span> represents all the controls),</p>
 <div class="math notranslate nohighlight">
 \[
-\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_J
+\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_J \frac{c_1}{c_2}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hamiltonian</span>
-<span class="n">H_full</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">@</span> <span class="n">fr</span> <span class="o">+</span> <span class="n">lv</span> <span class="o">@</span> <span class="n">fv</span> <span class="o">+</span> <span class="n">lm</span> <span class="o">*</span> <span class="n">fm</span> <span class="o">+</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">H_full</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">@</span> <span class="n">fr</span> <span class="o">+</span> <span class="n">lv</span> <span class="o">@</span> <span class="n">fv</span> <span class="o">+</span> <span class="n">lm</span> <span class="o">*</span> <span class="n">fm</span> <span class="o">+</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -680,9 +684,11 @@ for analysis of specific cases, but in general they are used internally by the v
         <span class="n">Isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
         <span class="n">m0</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
         <span class="n">L</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
-        <span class="n">TIME</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">YEAR2DAY</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span><span class="p">,</span>
+        <span class="n">MU</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
         <span class="n">MASS</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
         <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="c1"># lowr tolerance for the Taylor integrator since the problem is easy</span>
+        <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-4</span>
     <span class="p">)</span>
     <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
     <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -730,9 +736,13 @@ for analysis of specific cases, but in general they are used internally by the v
 <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">prob_factory</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
 <span class="n">udp</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_cartesian_time</span><span class="p">)</span>
+<span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+    <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">total_time</span> <span class="o">+=</span> <span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span>
     <span class="k">if</span> <span class="n">prob</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;. Success!!&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
@@ -742,14 +752,68 @@ for analysis of specific cases, but in general they are used internally by the v
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Final mass is: </span><span class="si">{</span><span class="n">masses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">MASS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final time is: </span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">TIME</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">SEC2DAY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final tof is: </span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">TIME</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">SEC2DAY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time to success: </span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1049.4338611857243
-Final time is: 255.70280238443416
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit https://github.com/coin-or/Ipopt
+******************************************************************************
+
+. Success!!
+Final mass is: 1049.4338724956165
+Final tof is: 255.7027959659063
+Total time to success: 0.104 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<section id="alternative-using-scipy-root-finding-methods">
+<h3>Alternative using scipy root finding methods<a class="headerlink" href="#alternative-using-scipy-root-finding-methods" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">opt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">root</span>
+
+<span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>  <span class="c1"># / 20</span>
+    <span class="n">x0</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># / 10</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">x0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="p">)</span>  <span class="c1"># Normalize to ensure the last constraint is satisfied</span>
+    <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>  <span class="c1"># note how we pass an extra 0. here to square the system size.</span>
+    <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">total_time</span> <span class="o">+=</span> <span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span>
+    <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;. Success!!&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
+        <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+        <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Final mass is: </span><span class="si">{</span><span class="n">masses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">MASS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian at the final point is: </span><span class="si">{</span><span class="n">H_func</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">pars</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="n">xs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">]])</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time to success: </span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>xx. Success!!
+Final mass is: 1049.4338725443981
+Hamiltonian at the final point is: [-0.98063552] 
+
+Total time to success: 0.017 seconds
 </pre></div>
 </div>
 </div>
@@ -763,7 +827,7 @@ Final time is: 255.70280238443416
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/519a1f3c2ecb6ec8ccc2e21b6dab4304a81c6b6513825de919258fe83db27e3b.png" src="../_images/519a1f3c2ecb6ec8ccc2e21b6dab4304a81c6b6513825de919258fe83db27e3b.png" />
+<img alt="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" src="../_images/aaffb488f57b5871361f1c20c3c346a29decdb2e6ef5419dc601fa536fd50f6b.png" />
 </div>
 </div>
 <p>The throttle is always on as dictated by the PMP as the trajectory is time optimal.</p>
@@ -774,9 +838,10 @@ Final time is: 255.70280238443416
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f9382fb6125a4a74a949a8fd2f79f11a7329cee275ac43ff178ff0a192a03969.png" src="../_images/f9382fb6125a4a74a949a8fd2f79f11a7329cee275ac43ff178ff0a192a03969.png" />
+<img alt="../_images/a96d920cd4ed4f65317deab9994d1ffc9521f64f10161233ff8cf394acd62753.png" src="../_images/a96d920cd4ed4f65317deab9994d1ffc9521f64f10161233ff8cf394acd62753.png" />
 </div>
 </div>
+</section>
 </section>
 <section id="homotopy">
 <h2>Homotopy<a class="headerlink" href="#homotopy" title="Permalink to this heading">#</a></h2>
@@ -880,10 +945,10 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.57e-11 | CPU time: 1.08e-01 | T_max = 1.9182e-01 | Tof = 9.375351e+02 | mass = 944.1+033
-Total CPU time: 3.78e+00
-mass 944.0585504569914
-time 937.5351323586224
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 8.49e-10 | CPU time: 6.43e-02 | T_max = 1.9182e-01 | Tof = 9.375352e+02 | mass = 944.1+033
+Total CPU time: 3.40e+00
+mass 944.0585186578486
+time 937.5351859844391
 </pre></div>
 </div>
 </div>
@@ -899,7 +964,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/07ec9f7f48a79357f223034701b549f19590c2ce55bf6dd370b0931a0fea0fec.png" src="../_images/07ec9f7f48a79357f223034701b549f19590c2ce55bf6dd370b0931a0fea0fec.png" />
+<img alt="../_images/b7deff9acfa2b1ad77e5415c4f095584cb4dc8e1763d79739cacc34de5d89fa6.png" src="../_images/b7deff9acfa2b1ad77e5415c4f095584cb4dc8e1763d79739cacc34de5d89fa6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -909,7 +974,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d21222de27b639e01a26aac42e29be4a00d217d2da8ace3cd0967e94f6adb5ce.png" src="../_images/d21222de27b639e01a26aac42e29be4a00d217d2da8ace3cd0967e94f6adb5ce.png" />
+<img alt="../_images/a1a07ef29bb722c5516e43c2fd7afe1d749ad69e5f4cb5f1706cc55b90dd91e1.png" src="../_images/a1a07ef29bb722c5516e43c2fd7afe1d749ad69e5f4cb5f1706cc55b90dd91e1.png" />
 </div>
 </div>
 </section>
@@ -962,7 +1027,10 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-construction-of-the-tpbvp">Manual construction of the TPBVP</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-the-tpbvp-using-pykep">Constructing the TPBVP using <code class="docutils literal notranslate"><span class="pre">pykep</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-in-single-shooting">Solving in single shooting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-in-single-shooting">Solving in single shooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternative-using-scipy-root-finding-methods">Alternative using scipy root finding methods</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homotopy">Homotopy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-homotopy-on-t-max">Exponential homotopy on <span class="math notranslate nohighlight">\(T_{max}\)</span></a></li>
 </ul>

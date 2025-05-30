@@ -998,7 +998,7 @@ angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># We set the initial conditions with some arbitrary values (all costates to 1.)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span> <span class="c1"># in case of TIME epsilon is irrelevant, but we set it for consistency</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.2345</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
@@ -1023,10 +1023,10 @@ angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">,</span> <span class="n">optimality</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span> <span class="c1"># in case of TIME epsilon is irrelevant, but we set it for consistency</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.2345</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ta_var</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
@@ -1037,7 +1037,7 @@ angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.pc_dyn">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">pc_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.pc_dyn" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">pc_dyn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimality</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.pc_dyn" title="Permalink to this definition">#</a></dt>
 <dd><p>The augmented dynamics of the TPBVP originating when applying an indirect method
 to the low-thrust transfer problem in Cartesian coordinates.</p>
 <p>The (non-augmented) dynamics is,</p>
@@ -1062,9 +1062,12 @@ the solution of the problem will not change)</p>
 <p>The controls, representing magnitude and direction of the spacecraft thrust are:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf u = [u, \hat{\mathbf i}]\]</div>
-<p>The final equations of motion to be possibly used in a shooting method, are derived from the Hamiltonian:</p>
+<p>The final equations of motion (in the case of mass optimality), are derived from the Hamiltonian:</p>
 <div class="math notranslate nohighlight">
-\[\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \left(u + \epsilon\log(u(1-u))\right)\]</div>
+\[\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \frac{c_1}{c_2} \left(u + \epsilon\log(u(1-u))\right)\]</div>
+<p>or, in the case of time optimality:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_r \cdot \mathbf f_r + \mathbf \lambda_v \cdot \mathbf f_v + \lambda_m  f_m + \lambda_0 \frac{c_1}{c_2}\]</div>
 <p>by taking the derivatives:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
@@ -1072,11 +1075,14 @@ the solution of the problem will not change)</p>
 \dot{\mathbf x} = \frac{\partial \mathcal H}{\partial \mathbf \lambda} \\
 \dot{\mathbf \lambda} = - \frac{\partial \mathcal H}{\partial \mathbf x} \\
 \end{array}\right.\end{split}\]</div>
-<p>and then made independent of the controls applying Pontryagin minimum principle:</p>
+<p>The equation are then made independent of the controls applying Pontryagin minimum principle which takes the general form:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf u^* = \textbf{argmin}_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal U\)</span> is the set of admissible controls, i.e. the set of thrust directions and magnitudes.</p>
 <p>and substituting in the equations the optimal controls found as function of the augmented system state.</p>
 <dl class="simple">
+<dt>Args:</dt><dd><p><em>optimality</em> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.optimality_type</span></code>): the optimality principle to be used.</p>
+</dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
 </dd>
 </dl>
