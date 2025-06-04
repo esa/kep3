@@ -58,21 +58,25 @@ std::array<double, 6> ic2par(const std::array<std::array<double, 3>, 2> &pos_vel
 
     // Argument of pericenter ω
     double cos_w = _dot(n, e_vec) / e;
-    retval[4] = safe_acos(cos_w);
-    if (e_vec[2] < 0.0)
-        retval[4] = 2.0 * pi - retval[4];
+    double sin_w = e_vec[2] / e / std::sin(retval[2]);
+    retval[4] = std::atan2(sin_w, cos_w);
+    if (retval[4] < 0.0) {
+        retval[4] += 2.0 * pi;
+    }
 
     // Longitude of ascending node Ω
-    retval[3] = safe_acos(n[0]);
-    if (n[1] < 0.0)
-        retval[3] = 2.0 * pi - retval[3];
+    retval[3] = std::atan2(n[1], n[0]);
+    if (retval[3] < 0.0) {
+        retval[3] += 2.0 * pi;
+    }
 
     // True anomaly f
     double cosf = _dot(e_vec, r) / (e * _norm(r));
     double sinf = _dot(r, v) * h_norm / (e * _norm(r) * mu);
     double f = std::atan2(sinf, cosf);
-    if (f < 0.0)
+    if (f < 0.0) {
         f += 2.0 * pi;
+    }
     retval[5] = f;
 
     return retval;
