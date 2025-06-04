@@ -77,11 +77,11 @@ std::array<double, 6> ic2par(const std::array<std::array<double, 3>, 2> &pos_vel
     }
 
     // 4 - We compute ni: the true anomaly in [0, 2pi]
-    temp = dot(evett, r0);
-    auto f = std::acos(temp(0) / retval[1] / R0);
+    temp = dot(evett, r0) / retval[1];
+    auto sigma = dot(r0, v0) / retval[1];
+    auto f = std::atan2(sigma(0), temp(0));
 
-    temp = dot(r0, v0);
-    if (temp(0) < 0.0) {
+    if (f < 0.0) {
         f = 2 * pi - f;
     }
     retval[5] = f;
