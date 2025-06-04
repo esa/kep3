@@ -19,6 +19,7 @@
 namespace kep3
 {
 
+using namespace kep3::linalg;
 using xt::linalg::dot;
 
 inline double safe_acos(double x)
@@ -26,80 +27,37 @@ inline double safe_acos(double x)
     return std::acos(std::clamp(x, -1.0, 1.0));
 }
 
-// Type alias for clarity
-using vec3 = std::array<double, 3>;
-
-inline vec3 operator+(const vec3 &a, const vec3 &b)
-{
-    return {a[0] + b[0], a[1] + b[1], a[2] + b[2]};
-}
-
-inline vec3 operator-(const vec3 &a, const vec3 &b)
-{
-    return {a[0] - b[0], a[1] - b[1], a[2] - b[2]};
-}
-
-inline vec3 operator*(const vec3 &a, double s)
-{
-    return {a[0] * s, a[1] * s, a[2] * s};
-}
-
-inline vec3 operator*(double s, const vec3 &a)
-{
-    return a * s;
-}
-
-inline vec3 operator/(const vec3 &a, double s)
-{
-    return {a[0] / s, a[1] / s, a[2] / s};
-}
-
-inline double dot(const vec3 &a, const vec3 &b)
-{
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-
-inline double norm(const vec3 &a)
-{
-    return std::sqrt(dot(a, a));
-}
-
-inline vec3 cross(const vec3 &a, const vec3 &b)
-{
-    return {a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]};
-}
-
 // r,v,mu -> keplerian osculating elements [a,e,i,W,w,f]. The last
 // is the true anomaly. The semi-major axis a is positive for ellipses, negative
 // for hyperbolae. The anomalies W, w, f are in [0, 2pi]. Inclination is in [0,
 // pi].
 
-std::array<double, 6> ic2par(const std::array<vec3, 2> &pos_vel, double mu)
+std::array<double, 6> ic2par(const std::array<std::array<double, 3>, 2> &pos_vel, double mu)
 {
     std::array<double, 6> retval{};
-    const vec3 &r = pos_vel[0];
-    const vec3 &v = pos_vel[1];
+    const std::array<double, 3> &r = pos_vel[0];
+    const std::array<double, 3> &v = pos_vel[1];
 
-    vec3 h = cross(r, v);
-    double h_norm = norm(h);
-    double p = dot(h, h) / mu;
+    std::array<double, 3> h = _cross(r, v);
+    double h_norm = _norm(h);
+    double p = _dot(h, h) / mu;
 
     // Node vector n = k × h
-    vec3 k = {0.0, 0.0, 1.0};
-    vec3 n = cross(k, h);
-    double n_norm = norm(n);
+    std::array<double, 3> k = {0.0, 0.0, 1.0};
+    std::array<double, 3> n = _cross(k, h);
+    double n_norm = _norm(n);
     n = n / n_norm;
 
     // Eccentricity vector
-    vec3 e_vec = cross(v, h) / mu - r / norm(r);
-    double e = norm(e_vec);
+    std::array<double, 3> e_vec = _cross(v, h) / mu - r / _norm(r);
+    double e = _norm(e_vec);
 
     retval[0] = p / (1.0 - e * e);        // semi-major axis
     retval[1] = e;                        // eccentricity
     retval[2] = safe_acos(h[2] / h_norm); // inclination
 
     // Argument of pericenter ω
-    double cos_w = dot(n, e_vec) / e;
+    double cos_w = _dot(n, e_vec) / e;
     retval[4] = safe_acos(cos_w);
     if (e_vec[2] < 0.0)
         retval[4] = 2.0 * pi - retval[4];
@@ -110,8 +68,8 @@ std::array<double, 6> ic2par(const std::array<vec3, 2> &pos_vel, double mu)
         retval[3] = 2.0 * pi - retval[3];
 
     // True anomaly f
-    double cosf = dot(e_vec, r) / (e * norm(r));
-    double sinf = dot(r, v) * h_norm / (e * norm(r) * mu);
+    double cosf = _dot(e_vec, r) / (e * _norm(r));
+    double sinf = _dot(r, v) * h_norm / (e * _norm(r) * mu);
     double f = std::atan2(sinf, cosf);
     if (f < 0.0)
         f += 2.0 * pi;
