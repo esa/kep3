@@ -57,15 +57,10 @@ void test_propagate_keplerian(
             double tof = time_d(rng_engine);
             auto res0 = propagate(pos_vel0, tof, 1.1, false);
             auto res1 = propagate(res0.first, -tof, 1.1, false);
-            if (kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) > 1e-8) {
-                fmt::print("{:.14f} a, {:.14f} e, {:.14f} i, {:.14f} Om, {:.14f} om, {:.14f} f \n", sma, ecc, incl,
-                           Omega, omega, f);
-                fmt::print("{}\n", kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]));
-            }
             // precision loss around incl = pi and generic .. not sure why. Worstened after change of par2ic to differentiable version
             // using atan2 and arrays (corelated?)
-            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-8);
-            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-8);
+            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-11);
+            REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-11);
         }
     }
 
@@ -91,8 +86,8 @@ void test_propagate_keplerian(
                 double tof = time_d(rng_engine);
                 auto res0 = propagate(pos_vel0, tof, 1., false);
                 auto res1 = propagate(res0.first, -tof, 1., false);
-                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-8);
-                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-8);
+                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[0], pos_vel0[0]) < 1e-11);
+                REQUIRE(kep3_tests::floating_point_error_vector(res1.first[1], pos_vel0[1]) < 1e-11);
             }
         }
     }
