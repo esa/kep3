@@ -20,7 +20,6 @@ namespace kep3
 {
 
 using namespace kep3::linalg;
-using xt::linalg::dot;
 
 inline double safe_acos(double x)
 {
@@ -117,7 +116,7 @@ std::array<std::array<double, 3>, 2> par2ic(const std::array<double, 6> &par, do
     // 1 - We start by evaluating position and velocity in the perifocal reference
     // system
     double p = sma * (1.0 - ecc * ecc);
-    double r = p / (1.0 + ecc * std::cos(f));
+    double r = p / (1.0 + ecc * cosf);
     double h = std::sqrt(p * mu);
     double sinf = std::sin(f);
     double x_per = r * cosf;
