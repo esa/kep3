@@ -6,7 +6,11 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/containers/xadapt.hpp>
+
 #include <kep3/linalg.hpp>
+
 
 namespace kep3::linalg
 {

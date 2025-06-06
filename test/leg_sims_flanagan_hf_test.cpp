@@ -13,7 +13,7 @@
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 #include <xtensor/xio.hpp>
 
 #include <fmt/core.h>

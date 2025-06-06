@@ -9,8 +9,9 @@
 #ifndef kep3_DETAIL_XTENSOR_HELPERS_HPP
 #define kep3_DETAIL_XTENSOR_HELPERS_HPP
 
+#include <xtensor/containers/xarray.hpp>
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 namespace kep3::linalg
 {

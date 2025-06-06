@@ -13,7 +13,7 @@
 #include <array>
 #include <vector>
 
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xview.hpp>
 

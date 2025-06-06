@@ -12,7 +12,7 @@ dependencies:
   - heyoka >= 7*
   - heyoka.py >= 7*
   - spdlog
-  - xtensor = 0.25
+  - xtensor
   - xtensor-blas 
   - pagmo-devel
   - pybind11

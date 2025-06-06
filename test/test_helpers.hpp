@@ -14,7 +14,7 @@
 #include <cmath>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 namespace kep3_tests
 {

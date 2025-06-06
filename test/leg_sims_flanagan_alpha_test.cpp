@@ -12,8 +12,8 @@
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
-#include <xtensor/xio.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/io/xio.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -23,7 +23,6 @@
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
 
-#include "test_helpers.hpp"
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
@@ -33,6 +32,7 @@
 
 #include "catch.hpp"
 #include "leg_sims_flanagan_alpha_udp.hpp"
+#include "test_helpers.hpp"
 
 TEST_CASE("constructor")
 {
@@ -50,34 +50,37 @@ TEST_CASE("constructor")
         std::array<std::array<double, 3>, 2> rvf{{{0, 1, 0}, {-1, 0, 0}}};
         double ms = 1.;
         double mf = 1.;
-        REQUIRE_NOTHROW(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5));
+        REQUIRE_NOTHROW(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf,
+                                                       kep3::pi / 2, 1., 1., 1., 0.5));
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf, kep3::pi / 2,
+                                                         1., 1., 1., 0.5),
+                          std::logic_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2,
+                                                         1., 1., 1., 0.5),
+                          std::logic_error);
         REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-            std::logic_error);
+            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
+            std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2,
+                                                         -0.3, 1., 1., 0.5),
+                          std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1.,
+                                                         -2., 1., 0.5),
+                          std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1.,
+                                                         1., -0.32, 0.5),
+                          std::domain_error);
         REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0.}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-            std::logic_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, -0.42, 1., 1., 1., 0.5),
+            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 32),
             std::domain_error);
-        REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, -0.3, 1., 1., 0.5),
-            std::domain_error);
-        REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., -2., 1., 0.5),
-            std::domain_error);
-        REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., -0.32, 0.5),
-            std::domain_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., 32),
-            std::domain_error);
-        REQUIRE_THROWS_AS(
-            kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1., 1., 1., -0.1),
-            std::domain_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0, 0, 0, 0, 0, 0}, {0, 0}, rvf, mf, kep3::pi / 2, 1.,
+                                                         1., 1., -0.1),
+                          std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-            std::logic_error);
-        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2, 1., 1., 1., 0.5),
-            std::logic_error);
+                          std::logic_error);
+        REQUIRE_THROWS_AS(kep3::leg::sims_flanagan_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {}, rvf, mf, kep3::pi / 2,
+                                                         1., 1., 1., 0.5),
+                          std::logic_error);
     }
 }
 
@@ -102,7 +105,7 @@ TEST_CASE("getters_and_setters")
         sf.set_throttles(throttles2.begin(), throttles2.end());
         REQUIRE(sf.get_throttles() == throttles2);
         REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
-        
+
         std::vector<double> talphas{1., 2., 3.};
         std::vector<double> talphas2{1.1, 2.1, 3.1};
         sf.set_talphas(talphas);
@@ -194,7 +197,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     for (unsigned long N = 1u; N < 34; ++N) {
         for (auto cut : cut_values) {
             std::vector<double> throttles(N * 3, 0.);
-            std::vector<double> talphas(N , dt/static_cast<double>(N));
+            std::vector<double> talphas(N, dt / static_cast<double>(N));
             kep3::leg::sims_flanagan_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
             auto mc = sf.compute_mismatch_constraints();
             mc = normalize_con(mc);
@@ -285,7 +288,7 @@ TEST_CASE("compare_withandwithout_alpha")
 
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    std::vector<double> talphas(5, tof/5);
+    std::vector<double> talphas(5, tof / 5);
 
     kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
     kep3::leg::sims_flanagan_alpha sf_alpha(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
@@ -323,7 +326,7 @@ TEST_CASE("mismatch_constraints_MatchHardCodedGroundTruth")
 
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    std::vector<double> talphas(5, tof/5);
+    std::vector<double> talphas(5, tof / 5);
     kep3::leg::sims_flanagan_alpha sf(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
     auto retval = sf.compute_mismatch_constraints();
     std::vector<double> ground_truth
