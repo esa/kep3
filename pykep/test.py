@@ -489,6 +489,12 @@ class sims_flanagan_hf_test(_ut.TestCase):
         a_grad[0:state_length, state_length*2+throttle_length] = grad_final[:, throttle_length:throttle_length + 1].reshape(7,)
         a_grad[state_length:, state_length:state_length+throttle_length] = a_tc_grad
         self.assertTrue(np.allclose(num_grad, a_grad, atol=1e-8))
+        
+class propagators_test(_ut.TestCase):
+    def test_intermodule(self):
+        import pykep as pk
+        ta = pk.ta.get_bcp(tol=1e-16)
+
 
 
 def run_test_suite():
@@ -508,6 +514,7 @@ def run_test_suite():
     suite.addTest(tl.loadTestsFromTestCase(gym_tests))
     suite.addTest(tl.loadTestsFromTestCase(encoding_tests))
     suite.addTest(tl.loadTestsFromTestCase(mit_tests))
+    suite.addTest(tl.loadTestsFromTestCase(propagators_test))
 
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
