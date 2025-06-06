@@ -216,7 +216,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
-            pagmo::population pop{prob, 1u};
+            pagmo::population pop{prob, 1u, 32u};
             algo.set_verbosity(10u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
@@ -248,7 +248,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
         while ((!found) && (trial < 20u)) {
-            pagmo::population pop{prob, 1u};
+            pagmo::population pop{prob, 1u, 32u};
             algo.set_verbosity(10u);
             pop = algo.evolve(pop);
             auto champ = pop.champion_f();
