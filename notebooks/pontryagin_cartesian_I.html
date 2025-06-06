@@ -523,7 +523,6 @@ document.write(`
 </div>
 </div>
 </div>
-<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
 <p>The dynamics can then be written as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -550,7 +549,8 @@ document.write(`
 </div>
 </div>
 </div>
-<p>And write the resulting Hamiltonian system:</p>
+<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = \frac{T_{max}}{I_{sp}g_0}\)</span></p>
+<p>We write the resulting Hamiltonian system:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \left\{
@@ -638,7 +638,7 @@ for analysis of specific cases, but in general they are used internally by the v
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The Taylor integrator</span>
 <span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
 <span class="c1"># The Variational Taylor integrator</span>
-<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_var</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_var</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
 <span class="c1"># The Hamiltonian</span>
 <span class="n">H_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_H_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
 <span class="c1"># The switching function</span>
@@ -649,6 +649,19 @@ for analysis of specific cases, but in general they are used internally by the v
 <span class="n">i_vers_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_i_vers_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
 <span class="c1"># The dynamics cfunc</span>
 <span class="n">dyn_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_dyn_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># The Taylor integrator</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># The Variational Taylor integrator</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc_var</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;pk&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -748,11 +761,17 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.900918582157
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit https://github.com/coin-or/Ipopt
+******************************************************************************
+
+. Success!!
+Final mass is: 1259.9009181452786
 Hamiltonian at the final point is: [-0.05597388] 
 
-Total time to success: 0.080 seconds
+Total time to success: 0.184 seconds
 </pre></div>
 </div>
 </div>
@@ -774,10 +793,10 @@ Total time to success: 0.080 seconds
     <span class="n">x0</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># / 10</span>
     <span class="n">x0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">+</span> <span class="mf">2.</span>
     <span class="n">x0</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">x0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span><span class="n">S</span>
+        <span class="n">x0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
     <span class="p">)</span>  <span class="c1"># Normalize to ensure the last constraint is satisfied</span>
     <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>  <span class="c1"># or &#39;hybr&#39;, &#39;lm&#39;, etc.</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">})</span>  <span class="c1"># factor=1 is very important for convergence</span>
     <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">total_time</span> <span class="o">+=</span> <span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span>
     <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]:</span>
@@ -796,10 +815,10 @@ Total time to success: 0.080 seconds
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.9009186375579
+Final mass is: 1259.9009185496152
 Hamiltonian at the final point is: [-0.05597388] 
 
-Total time to success: 0.015 seconds
+Total time to success: 0.006 seconds
 </pre></div>
 </div>
 </div>
