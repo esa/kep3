@@ -49,8 +49,48 @@ mat31 _cross(const mat31 &v1, const mat31 &v2);
 // ---------------------------------------------------------------------------------------
 
 // Linear algebra helpers for std::array<double, 3> types.
-std::array<double, 3> _cross(const std::array<double, 3> &v1, const std::array<double, 3> &v2);
 void _normalize(std::array<double, 3> &v1);
+
+inline std::array<double, 3> operator+(const std::array<double, 3> &a, const std::array<double, 3> &b)
+{
+    return {a[0] + b[0], a[1] + b[1], a[2] + b[2]};
+}
+
+inline std::array<double, 3> operator-(const std::array<double, 3> &a, const std::array<double, 3> &b)
+{
+    return {a[0] - b[0], a[1] - b[1], a[2] - b[2]};
+}
+
+inline std::array<double, 3> operator*(const std::array<double, 3> &a, double s)
+{
+    return {a[0] * s, a[1] * s, a[2] * s};
+}
+
+inline std::array<double, 3> operator*(double s, const std::array<double, 3> &a)
+{
+    return a * s;
+}
+
+inline std::array<double, 3> operator/(const std::array<double, 3> &a, double s)
+{
+    return {a[0] / s, a[1] / s, a[2] / s};
+}
+
+inline double _dot(const std::array<double, 3> &a, const std::array<double, 3> &b)
+{
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+inline double _norm(const std::array<double, 3> &a)
+{
+    return std::sqrt(_dot(a, a));
+}
+
+inline std::array<double, 3> _cross(const std::array<double, 3> &a, const std::array<double, 3> &b)
+{
+    return {a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]};
+}
+
 
 } // namespace kep3::linalg
 
