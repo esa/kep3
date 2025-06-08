@@ -19,6 +19,10 @@ function(ADD_kep3_TESTCASE arg1)
     "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
   )
 
+  # Adding this to shut down xtensor warnings (as of v0.26 still there)
+  target_compile_options(${arg1} PRIVATE -Wno-array-bounds)
+  target_compile_options(${arg1} PRIVATE -Wno-stringop-overflow)
+
   # Setup the C++ standard.
   target_compile_features(${arg1} PRIVATE cxx_std_20)
   set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)

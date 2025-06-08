@@ -171,6 +171,11 @@ set_property(TARGET kep3 PROPERTY SOVERSION 1)
 set_target_properties(kep3 PROPERTIES CXX_VISIBILITY_PRESET hidden)
 set_target_properties(kep3 PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
 
+# Adding this to shut down xtensor warnings (as of v0.26 still there)
+target_compile_options(kep3 PRIVATE -Wno-array-bounds)
+target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+
+
 target_compile_options(kep3 PRIVATE
     "$<$<CONFIG:Debug>:${kep3_CXX_FLAGS_DEBUG}>"
     "$<$<CONFIG:Release>:${kep3_CXX_FLAGS_RELEASE}>"

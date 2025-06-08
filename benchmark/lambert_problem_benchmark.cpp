@@ -25,8 +25,6 @@
 
 #include <array>
 #include <chrono>
-#include <iomanip>
-#include <iostream>
 #include <random>
 
 #include <fmt/core.h>
@@ -35,7 +33,6 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/lambert_problem.hpp>
-#include <stdexcept>
 
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
