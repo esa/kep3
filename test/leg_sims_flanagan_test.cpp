@@ -12,7 +12,8 @@
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/containers/xarray.hpp>
-#include <xtensor/xio.hpp>
+#include <xtensor/io/xio.hpp>
+
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>

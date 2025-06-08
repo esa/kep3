@@ -15,7 +15,8 @@
 
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/containers/xarray.hpp>
-#include <xtensor/xio.hpp>
+#include <xtensor/io/xio.hpp>
+
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -40,7 +41,7 @@
 #include "leg_sims_flanagan_hf_alpha_helpers.hpp"
 #include "test_helpers.hpp"
 #include <pagmo/utils/gradients_and_hessians.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <heyoka/config.hpp>
 #include <heyoka/expression.hpp>

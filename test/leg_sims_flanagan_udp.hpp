@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -10,11 +10,11 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_UDP_H
 
 #include <array>
-#include <vector>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
-#include <xtensor/xio.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/io/xio.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <pagmo/utils/gradients_and_hessians.hpp>
 

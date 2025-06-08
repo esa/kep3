@@ -14,8 +14,8 @@
 #include <vector>
 
 #include <xtensor/containers/xarray.hpp>
-#include <xtensor/xio.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/io/xio.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <pagmo/utils/gradients_and_hessians.hpp>
 
