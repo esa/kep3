@@ -8,25 +8,29 @@
 
 #include <array> // For std::array
 #include <cmath>
-#include <utility> // For std::pair
+#include <tuple> // For std::tuple
 
 #include <kep3/core_astro/basic_transfers.hpp>
+#include <kep3/core_astro/constants.hpp>
 
 namespace kep3
 {
-std::pair<double, std::array<double, 2>> hohmann(double r1, double r2, double mu)
+std::tuple<double, double, std::array<double, 2>> hohmann(double r1, double r2, double mu)
 {
     double v1 = std::sqrt(mu / r1);
     double v2 = std::sqrt(mu / r2);
     double vt1 = std::sqrt(mu / r1 * (2 * r2 / (r1 + r2)));
     double vt2 = std::sqrt(mu / r2 * (2 * r1 / (r1 + r2)));
-    double dv1 = vt1 - v1;
-    double dv2 = v2 - vt2;
+    double dv1 = std::abs(vt1 - v1);
+    double dv2 = std::abs(v2 - vt2);
     double dv_total = dv1 + dv2;
-    return {dv_total, {dv1, dv2}};
+
+    double transfer_time = pi * std::sqrt(std::pow(r1 + r2, 3) / (8. * mu));
+
+    return {dv_total, transfer_time, {dv1, dv2}};
 }
 
-std::pair<double, std::array<double, 3>> bielliptic(double r1, double r2, double rb, double mu)
+std::tuple<double, double, std::array<double, 3>> bielliptic(double r1, double r2, double rb, double mu)
 {
     double v1 = std::sqrt(mu / r1);
     double v2 = std::sqrt(mu / r2);
@@ -37,11 +41,15 @@ std::pair<double, std::array<double, 3>> bielliptic(double r1, double r2, double
     double vt2 = std::sqrt(mu / rb * (2 * r2 / (rb + r2)));
     double vt2a = std::sqrt(mu / r2 * (2 * rb / (rb + r2)));
 
-    double dv1 = vt1 - v1;
-    double dv2 = vt2 - vt1a;
-    double dv3 = v2 - vt2a;
+    double dv1 = std::abs(vt1 - v1);
+    double dv2 = std::abs(vt2 - vt1a);
+    double dv3 = std::abs(v2 - vt2a);
     double dv_total = dv1 + dv2 + dv3;
 
-    return {dv_total, {dv1, dv2, dv3}};
+    double t1 = pi * std::sqrt(std::pow(r1 + rb, 3) / (8. * mu));
+    double t2 = pi * std::sqrt(std::pow(rb + r2, 3) / (8. * mu));
+    double transfer_time = t1 + t2;
+
+    return {dv_total, transfer_time, {dv1, dv2, dv3}};
 }
 } // namespace kep3

@@ -702,7 +702,7 @@ std::string hohmann_doc()
 {
     return R"(hohmann(r1, r2, mu)
 
-    Computes the delta v required for a Hohmann transfer between two circular orbits.
+    Computes the delta v and transfer time required for a Hohmann transfer between two circular orbits.
 
     Args:
         *r1* (:class:`float`): radius of the first orbit
@@ -712,15 +712,17 @@ std::string hohmann_doc()
         *mu* (:class:`float`): gravitational parameter of the central body
 
     Returns:
-        [:class:`float`, [:class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v]]
+        [:class:`float`, :class:`float`, [:class:`float`, :class:`float`]]:
+            [total delta v, transfer time, [first delta v, second delta v]]
 
     Examples:
       >>> import pykep as pk
       >>> r1 = 7000000
       >>> r2 = 9000000
       >>> mu = pk.MU_EARTH
-      >>> dv_total, [dv1, dv2] = pk.hohmann(r1, r2, mu)
+      >>> dv_total, t_transfer, [dv1, dv2] = pk.hohmann(r1, r2, mu)
       >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("Transfer time:", t_transfer, "s")
       >>> print("First delta v:", dv1, "m/s")
       >>> print("Second delta v:", dv2, "m/s")
 )";
@@ -730,7 +732,7 @@ std::string bielliptic_doc()
 {
     return R"(bielliptic(r1, r2, rb, mu)
 
-    Computes the delta v required for a bielliptic transfer between two circular orbits.
+    Computes the delta v and transfer time required for a bielliptic transfer between two circular orbits.
 
     Args:
         *r1* (:class:`float`): radius of the first orbit
@@ -742,17 +744,18 @@ std::string bielliptic_doc()
         *mu* (:class:`float`): gravitational parameter of the central body
 
     Returns:
-        [:class:`float`, [:
-            :class:`float`, :class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v, third delta v]]
-            
+        [:class:`float`, :class:`float`, [:class:`float`, :class:`float`, :class:`float`]]:
+            [total delta v, transfer time, [first delta v, second delta v, third delta v]]
+
     Examples:
       >>> import pykep as pk
       >>> r1 = 7000000
       >>> r2 = 9000000
       >>> rb = 11000000
       >>> mu = pk.MU_EARTH
-      >>> dv_total, [dv1, dv2, dv3] = pk.bielliptic(r1, r2, rb, mu)
+      >>> dv_total, t_transfer, [dv1, dv2, dv3] = pk.bielliptic(r1, r2, rb, mu)
       >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("Transfer time:", t_transfer, "s")
       >>> print("First delta v:", dv1, "m/s")
       >>> print("Second delta v:", dv2, "m/s")
       >>> print("Third delta v:", dv3, "m/s")

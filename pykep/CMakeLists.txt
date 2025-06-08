@@ -14,7 +14,7 @@ Python3_add_library(core MODULE WITH_SOABI
     expose_udplas.cpp
 )
 
-# This is to silence an aggressive compiler setting createing false positives in pybind11 stuff.
+# This is to silence an aggressive compiler setting creatccming false positives in pybind11 stuff.
 set_source_files_properties(core.cpp PROPERTIES COMPILE_FLAGS "-Wno-null-dereference")
 
 
