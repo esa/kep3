@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <stdexcept>
 #include <vector>
 
 #include <kep3/core_astro/encodings.hpp>
@@ -36,6 +37,10 @@ std::pair<std::vector<double>, double> direct2alpha(const std::vector<double> &t
 
 std::vector<double> eta2direct(const std::vector<double> &etas, double max_tof)
 {
+    if (etas.empty()) {
+        throw std::invalid_argument("etas must be non-empty");
+    }
+
     std::vector<double> tofs(etas.size(), 0.);
     tofs[0] = max_tof * etas[0];
     double cumulative_T = tofs[0];
@@ -48,6 +53,9 @@ std::vector<double> eta2direct(const std::vector<double> &etas, double max_tof)
 
 std::vector<double> direct2eta(const std::vector<double> &tofs, double max_tof)
 {
+    if (tofs.empty()) {
+        throw std::invalid_argument("tofs must be non-empty");
+    }
     auto retval = tofs;
     retval[0] = tofs[0] / max_tof;
     double cumulative_tofs = tofs[0];
