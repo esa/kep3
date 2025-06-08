@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -12,9 +12,9 @@
 #include <array>
 #include <vector>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
 #include <xtensor/io/xio.hpp>
-
 #include <xtensor/views/xview.hpp>
 
 #include <pagmo/utils/gradients_and_hessians.hpp>
@@ -33,10 +33,9 @@ struct sf_hf_bench_udp {
                                             m_max_thrust, m_isp, 1.0, 0.5, 1e-16))
     {
     }
-    void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
-                                  std::array<std::array<double, 3>, 2> rvf,
-                                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                                  double max_thrust, double isp, unsigned nseg, bool analytical)
+    void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
+                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                    double max_thrust, double isp, unsigned nseg, bool analytical)
     {
         m_rvs = rvs;
         m_rvf = rvf;
@@ -49,10 +48,9 @@ struct sf_hf_bench_udp {
                                             m_max_thrust, m_isp, 1.0, 0.5, 1e-16);
     }
 
-    void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms,
-                               std::array<std::array<double, 3>, 2> rvf,
-                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                               double max_thrust, double isp, unsigned nseg, bool analytical)
+    void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
+                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                 double max_thrust, double isp, unsigned nseg, bool analytical)
     {
         m_rvs = rvs;
         m_rvf = rvf;
@@ -166,10 +164,10 @@ struct sf_hf_bench_udp {
         // x = [throttles, tof (in days), mf (in kg)]
         std::vector<double> lb(m_nseg * 3 + 2, -1.);
         std::vector<double> ub(m_nseg * 3 + 2, +1.);
-        lb[m_nseg * 3] = kep3::pi / 12;     // days
-        ub[m_nseg * 3] = 2 * kep3::pi;     // days
-        lb[m_nseg * 3 + 1] = 0.5; // kg
-        ub[m_nseg * 3 + 1] = 1;   // kg
+        lb[m_nseg * 3] = kep3::pi / 12; // days
+        ub[m_nseg * 3] = 2 * kep3::pi;  // days
+        lb[m_nseg * 3 + 1] = 0.5;       // kg
+        ub[m_nseg * 3 + 1] = 1;         // kg
         return {lb, ub};
     }
 
