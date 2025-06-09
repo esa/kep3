@@ -728,6 +728,245 @@ std::string hohmann_doc()
 )";
 }
 
+std::string ic2par_doc()
+{
+    return R"(ic2par(posvel, mu)
+
+    Converts Cartesian state vectors (position and velocity) to Keplerian osculating orbital elements.
+
+    Args:
+        *posvel* (:class:`list` [:class:`list`, :class:`list`]): A list containing two 3D vectors: the position vector [x, y, z] in units L and the velocity vector [vx, vy, vz] in units L/T.
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+    Returns:
+        [:class:`float`, :class:`float`, :class:`float`, :class:`float`, :class:`float`, :class:`float`]:
+            A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: RAAN (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+    Examples:
+      >>> import pykep as pk
+      >>> r = [7000e3, 0, 0]
+      >>> v = [0, 7.5e3, 0]
+      >>> mu = pk.MU_EARTH
+      >>> elements = pk.ic2par([r, v], mu)
+      >>> a, e, i, Omega, omega, f = elements
+      >>> print(f"Semi-major axis: {a} m, Eccentricity: {e}")
+)";
+}
+
+std::string par2ic_doc()
+{
+    return R"(par2ic(par, mu)
+
+    Converts Keplerian osculating orbital elements to Cartesian state vectors (position and velocity).
+
+    Args:
+        *par* (:class:`list` of :class:`float`): A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+        *mu* (:class:`float`): 
+            Gravitational parameter of the central body (in units L^3/T^2)
+
+    Returns:
+        [list of :class:`float`, list of :class:`float`]:
+            A list containing two 3D vectors:
+
+            - *position*: Cartesian position vector [x, y, z] in L  
+            - *velocity*: Cartesian velocity vector [vx, vy, vz] in L/T
+
+    Raises:
+        :class:`ValueError`: If the semi-major axis and eccentricity are incompatible  
+        :class:`ValueError`: If the true anomaly is beyond the asymptotes for a hyperbolic trajectory
+
+    Examples:
+      >>> import pykep as pk
+      >>> a = 10000e3
+      >>> e = 0.1
+      >>> i = 0.1
+      >>> Omega = 0.5
+      >>> omega = 1.0
+      >>> f = 2.0
+      >>> mu = pk.MU_EARTH
+      >>> r, v = pk.par2ic([a, e, i, Omega, omega, f], mu)
+      >>> print("Position vector:", r)
+      >>> print("Velocity vector:", v)
+)";
+}
+
+std::string ic2eq_doc()
+{
+    return R"(ic2eq(posvel, mu, retrogade)
+
+    Converts Cartesian state vectors (position and velocity) to equinoctial orbital elements.
+
+    Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
+    near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
+    retrograde equinoctial elements. These last are not singular for inclinations of π.
+
+    Args:
+        *posvel* (:class:`list` [:class:`list`, :class:`list`]): A list containing two 3D vectors: the position vector [x, y, z] in units L and the velocity vector [vx, vy, vz] in units L/T.
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        list of :class:`float`:
+            A list of six equinoctial orbital elements:
+
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+    Examples:
+      >>> import pykep as pk
+      >>> r = [7000e3, 0.0, 0.0]
+      >>> v = [0.0, 7.5e3, 1.0e3]
+      >>> mu = pk.MU_EARTH
+      >>> retro = False
+      >>> eq = pk.ic2eq([r, v], mu, retro)
+      >>> print("Equinoctial elements:", eq)
+)";
+}
+
+std::string eq2ic_doc()
+{
+    return R"(eq2ic(eq_elem, mu, retrogade)
+
+    Converts equinoctial orbital elements to Cartesian state vectors (position and velocity).
+
+    Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
+    near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
+    retrograde equinoctial frames. These last are not singular for inclinations of \pi.
+
+    Args:
+        *eq_elem* (:class:`list` [:class:`float`]): A list of six equinoctial elements:
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        list of :class:`list`:
+            A list containing two 3D vectors:
+
+            - *position* vector [x, y, z] in units L
+            - *velocity* vector [vx, vy, vz] in units L/T
+
+    Examples:
+      >>> import pykep as pk
+      >>> eq = [7000e3, 0.01, 0.01, 0.01, 0.01, 0.0]
+      >>> mu = pk.MU_EARTH
+      >>> retro = False
+      >>> r, v = pk.eq2ic(eq, mu, retro)
+      >>> print("Position:", r)
+      >>> print("Velocity:", v)
+)";
+}
+
+std::string eq2par_doc()
+{
+    return R"(eq2par(eq_elem, retrogade)
+
+    Converts equinoctial orbital elements to classical Keplerian elements.
+
+    This function transforms the non-singular equinoctial elements into classical orbital elements, which are 
+    more intuitive but can be singular for certain inclinations or eccentricities. The retrograde flag selects
+    the appropriate transformation for orbits with inclination near \pi.
+
+    Args:
+        *eq_elem* (:class:`list` [:class:`float`]): A list of six equinoctial elements:
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        list of :class:`float`:
+            A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+    Examples:
+      >>> eq = [7000e3, 0.01, 0.02, 0.001, 0.002, 0.5]
+      >>> retro = False
+      >>> par = eq2par(eq, retro)
+      >>> print("Keplerian elements:", par)
+)";
+}
+
+std::string par2eq_doc()
+{
+    return R"(par2eq(par, retrogade)
+
+    Converts classical Keplerian orbital elements to equinoctial elements.
+
+    This function provides a non-singular representation of orbits by transforming Keplerian elements into 
+    equinoctial elements. The retrograde flag allows conversion to a frame that remains non-singular for 
+    inclinations near \pi.
+
+    Args:
+        *par* (:class:`list` [:class:`float`]): A list of six Keplerian elements:
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        list of :class:`float`:
+            A list of six equinoctial orbital elements:
+
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+    Examples:
+      >>> par = [7000e3, 0.01, 0.1, 1.0, 0.5, 0.3]
+      >>> retro = False
+      >>> eq = par2eq(par, retro)
+      >>> print("Equinoctial elements:", eq)
+)";
+}
+
+
 std::string bielliptic_doc()
 {
     return R"(bielliptic(r1, r2, rb, mu)

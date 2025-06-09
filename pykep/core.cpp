@@ -127,12 +127,12 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
 
     // Exposing element conversions
-    m.def("ic2par", &kep3::ic2par);
-    m.def("par2ic", &kep3::par2ic);
-    m.def("ic2eq", &kep3::ic2eq);
-    m.def("eq2ic", &kep3::eq2ic);
-    m.def("par2eq", &kep3::par2eq);
-    m.def("eq2par", &kep3::eq2par);
+    m.def("ic2par", &kep3::ic2par, py::arg("posvel"), py::arg("mu"), pk::ic2par_doc().c_str());
+    m.def("par2ic", &kep3::par2ic, py::arg("elem"), py::arg("mu"), pk::par2ic_doc().c_str());
+    m.def("ic2eq", &kep3::ic2eq, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false, pk::ic2eq_doc().c_str());
+    m.def("eq2ic", &kep3::eq2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false, pk::eq2ic_doc().c_str());
+    m.def("par2eq", &kep3::par2eq, py::arg("elem"), py::arg("retrogde") = false, pk::par2eq_doc().c_str());
+    m.def("eq2par", &kep3::eq2par, py::arg("eq_elem"), py::arg("retrogde") = false, pk::eq2par_doc().c_str());
 
     // Exposing mima functions and basic transfer functionalities
     m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),
