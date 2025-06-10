@@ -162,6 +162,7 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/cr3bp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/bcp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/pontryagin_cartesian.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/pontryagin_equinoctial.cpp"
 )
 
 # Setup of the kep3 shared library.
