@@ -231,3 +231,17 @@ TEST_CASE("variational_dynamics_time")
         REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-12);
     }
 }
+
+TEST_CASE("various_cfunc")
+{
+    REQUIRE_NOTHROW(kep3::ta::get_pc_dyn_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_dyn_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_i_vers_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_i_vers_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_u_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_u_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_SF_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_SF_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_H_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_H_cfunc(kep3::optimality_type::MASS));
+}
