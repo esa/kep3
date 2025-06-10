@@ -16,8 +16,10 @@ function(ADD_kep3_BENCHMARK arg1)
   )
 
   # Adding this to shut down xtensor warnings (as of v0.26 still there)
-  target_compile_options(${arg1} PRIVATE -Wno-array-bounds)
-  target_compile_options(${arg1} PRIVATE -Wno-stringop-overflow)
+  if (YACMA_COMPILER_IS_GNUCXX)
+      target_compile_options(kep3 PRIVATE -Wno-array-bounds)
+      target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+  endif()
   
   # Setup the C++ standard.
   target_compile_features(${arg1} PRIVATE cxx_std_20)

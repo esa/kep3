@@ -12,7 +12,7 @@ dependencies:
   - heyoka >= 7*
   - heyoka.py >= 7*
   - spdlog
-  - xtensor
+  - xtensor >= 0.26 # else will not compile (the project performed a header restructuring)
   - xtensor-blas 
   - pagmo-devel
   - pybind11

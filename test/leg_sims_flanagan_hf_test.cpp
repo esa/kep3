@@ -16,7 +16,6 @@
 #include <xtensor/containers/xarray.hpp>
 #include <xtensor/io/xio.hpp>
 
-
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
@@ -125,9 +124,9 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_throttles() == throttles);
         sf.set_throttles(throttles2.begin(), throttles2.end());
         REQUIRE(sf.get_throttles() == throttles2);
-        REQUIRE(sf.get_tas().get_pars()[2] == throttles2[0]*sf.get_max_thrust());
-        REQUIRE(sf.get_tas().get_pars()[3] == throttles2[1]*sf.get_max_thrust());
-        REQUIRE(sf.get_tas().get_pars()[4] == throttles2[2]*sf.get_max_thrust());
+        REQUIRE(sf.get_tas().get_pars()[2] == throttles2[0] * sf.get_max_thrust());
+        REQUIRE(sf.get_tas().get_pars()[3] == throttles2[1] * sf.get_max_thrust());
+        REQUIRE(sf.get_tas().get_pars()[4] == throttles2[2] * sf.get_max_thrust());
         REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
         sf.set_cut(0.333);
         REQUIRE(sf.get_cut() == 0.333);
@@ -139,8 +138,8 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_tas_var().get_pars()[1] == 0.333 * kep3::G0);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
-        REQUIRE(sf.get_tas().get_pars()[0] == 0.333 );
-        REQUIRE(sf.get_tas_var().get_pars()[0] == 0.333 );
+        REQUIRE(sf.get_tas().get_pars()[0] == 0.333);
+        REQUIRE(sf.get_tas_var().get_pars()[0] == 0.333);
         sf.set_tof(0.333);
         REQUIRE(sf.get_tof() == 0.333);
         sf.set_tol(1e-4);
@@ -246,10 +245,12 @@ TEST_CASE("compute_mismatch_constraints_test")
     }
     {
         // We test that some random thrusted arc computes correctly the mismatches
-        std::array<std::array<double, 3>, 2> rv0{{{-25216645728.283768, 144924279081.32498, -38276.915766745136}, {-29833.034155296387, -5217.946770284042, 0.0013781466450451985}}};
-        std::array<std::array<double, 3>, 2> rv1{{{207987766344.9237, -3139291734.542421, -5177822135.395065}, {1296.9096025329445, 26295.415668645317, 518.960634127031}}};
-        std::vector<double> throttles{0.1,-0.2,0.3,-0.4,0.1,0.2,-0.3,0.2,0.2,-0.1,-0.3,0.1};
-        //std::vector<double> throttles{0,0,0,0,0,0,0,0,0,0,0,0};
+        std::array<std::array<double, 3>, 2> rv0{{{-25216645728.283768, 144924279081.32498, -38276.915766745136},
+                                                  {-29833.034155296387, -5217.946770284042, 0.0013781466450451985}}};
+        std::array<std::array<double, 3>, 2> rv1{{{207987766344.9237, -3139291734.542421, -5177822135.395065},
+                                                  {1296.9096025329445, 26295.415668645317, 518.960634127031}}};
+        std::vector<double> throttles{0.1, -0.2, 0.3, -0.4, 0.1, 0.2, -0.3, 0.2, 0.2, -0.1, -0.3, 0.1};
+        // std::vector<double> throttles{0,0,0,0,0,0,0,0,0,0,0,0};
         double m0 = 4500.;
         double m1 = 4500.;
         double tof = 340. * kep3::DAY2SEC;
@@ -258,26 +259,23 @@ TEST_CASE("compute_mismatch_constraints_test")
         kep3::leg::sims_flanagan_hf sf(rv0, m0, throttles, rv1, m1, tof, max_thrust, isp, 1.32712440018e+20, 0.5);
         auto mc = sf.compute_mismatch_constraints();
         // This was computed using directly an independent method (manually via Taylor integration)
-        std::array<double, 7> ground_truth = {49962343234.42602, 63860682492.61005, 3188074669.721971, 4846.696643712443, 2752.267007482824, 696.3982365414013, -23.610620941327397};
+        std::array<double, 7> ground_truth
+            = {49962343234.42602, 63860682492.61005, 3188074669.721971,  4846.696643712443,
+               2752.267007482824, 696.3982365414013, -23.610620941327397};
         REQUIRE(kep3_tests::L_infinity_norm_rel(mc, ground_truth) < 1e-13);
     }
 }
-
 
 TEST_CASE("UDP Fitness function timing")
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
     // We use (for no reason) the ephs of the Earth and Jupiter
     // Define the vectors
-    std::array<std::array<double, 3>, 2> rv0 = {{
-        {-125036811000.422, -83670919168.87277, 2610252.8064399767},
-        {16081.829029183446, -24868.923007449284, 0.7758272135425942}
-    }};
+    std::array<std::array<double, 3>, 2> rv0 = {{{-125036811000.422, -83670919168.87277, 2610252.8064399767},
+                                                 {16081.829029183446, -24868.923007449284, 0.7758272135425942}}};
 
-    std::array<std::array<double, 3>, 2> rv1 = {{
-        {-169327023332.1986, -161931354587.78766, 763967345.9733696},
-        {17656.297796509956, -15438.116653052988, -756.9165272457421}
-    }};
+    std::array<std::array<double, 3>, 2> rv1 = {{{-169327023332.1986, -161931354587.78766, 763967345.9733696},
+                                                 {17656.297796509956, -15438.116653052988, -756.9165272457421}}};
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
@@ -307,25 +305,19 @@ TEST_CASE("UDP Fitness function timing")
     auto duration = duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
     // Print execution time
-    fmt::print("Time taken for {} fitness function calls: {} ms\n", Ntotal, duration.count()); 
-
+    fmt::print("Time taken for {} fitness function calls: {} ms\n", Ntotal, duration.count());
 }
-
 
 TEST_CASE("compute_mismatch_constraints_test_SLSQP")
 {
     // We test that an engineered ballistic arc always returns no mismatch for all cuts.
     // We use (for no reason) the ephs of the Earth and Jupiter
     // Define the vectors
-    std::array<std::array<double, 3>, 2> rv0 = {{
-        {-125036811000.422, -83670919168.87277, 2610252.8064399767},
-        {16081.829029183446, -24868.923007449284, 0.7758272135425942}
-    }};
+    std::array<std::array<double, 3>, 2> rv0 = {{{-125036811000.422, -83670919168.87277, 2610252.8064399767},
+                                                 {16081.829029183446, -24868.923007449284, 0.7758272135425942}}};
 
-    std::array<std::array<double, 3>, 2> rv1 = {{
-        {-169327023332.1986, -161931354587.78766, 763967345.9733696},
-        {17656.297796509956, -15438.116653052988, -756.9165272457421}
-    }};
+    std::array<std::array<double, 3>, 2> rv1 = {{{-169327023332.1986, -161931354587.78766, 763967345.9733696},
+                                                 {17656.297796509956, -15438.116653052988, -756.9165272457421}}};
     // And some epochs / tofs.
     double dt_days = 550.;
     double dt = dt_days * kep3::DAY2SEC;
@@ -357,28 +349,37 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};    
+        pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
         prob.set_c_tol(1e-6);
         bool found = false;
-        unsigned trial = 0u;
         pagmo::nlopt uda{"slsqp"};
         uda.set_xtol_abs(1e-8);
         uda.set_xtol_rel(1e-8);
         uda.set_ftol_abs(0);
         uda.set_maxeval(1000);
         pagmo::algorithm algo{uda};
-        while ((!found) && (trial < 20u)) {
-            pagmo::population pop{prob, 1u};
-            algo.set_verbosity(10u);
-            pop = algo.evolve(pop);
-            auto champ = pop.champion_f();
-            found = prob.feasibility_f(champ);
-            if (found) {
-                fmt::print("{}\n", champ);
-                break;
-            }
-            trial++;
-        }
+
+        std::vector<double> x0 = {2.981309716881921e-05,   4.386247528314636e-06,
+                                  -8.386247528314636e-06,  -1.0489297915311248e-05,
+                                  -2.75863662269476e-06,   -2.0057791800205834e-05,
+                                  -2.0168670164500432e-05, -1.0168670164500432e-05,
+                                  2.6796831660229594e-05,  -1.981309716881921e-05,
+                                  1.3984567008747744e-06,  4.485693307454289e-06,
+                                  1.323815701173753e-05,   1.7142463462947175e-06,
+                                  3.70831124044131e-08,    -3.6176089862227655e-06,
+                                  5.9303303176247626e-06,  -1.0678752064652906e-05,
+                                  1.5370329134036994e-05,  1.7881716332279772e-06,
+                                  1.183633361556691e-05,   -9.323815701173753e-07,
+                                  -5.046909298335364e-06,  -1.3506155624149922e-05,
+                                  649.9992117409238,       1230};
+        pagmo::population pop{prob};
+        pop.push_back(x0);
+        algo.set_verbosity(10u);
+        pop = algo.evolve(pop);
+        auto champ = pop.champion_f();
+        found = prob.feasibility_f(champ);
+        fmt::print("{}\n", champ);
+        fmt::print("{}\n", pop.champion_x());
         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
                                // theres a problem somewhere.
     }
