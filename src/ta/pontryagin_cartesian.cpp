@@ -261,8 +261,10 @@ const heyoka::cfunc<double> &get_pc_H_cfunc(kep3::optimality_type optimality)
             static const auto pc_H_cfunc_TIME = pc_H_cfunc_factory(kep3::optimality_type::TIME);
             return pc_H_cfunc_TIME;
         }
+        // LCOV_EXCL_START
         default:
             throw std::invalid_argument("Unhandled optimality type in get_pc_H_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 
@@ -277,8 +279,10 @@ const heyoka::cfunc<double> &get_pc_SF_cfunc(kep3::optimality_type optimality)
             static const auto pc_SF_cfunc_TIME = pc_SF_cfunc_factory(kep3::optimality_type::TIME);
             return pc_SF_cfunc_TIME;
         }
+        // LCOV_EXCL_START
         default:
             throw std::invalid_argument("Unhandled optimality type in get_pc_SF_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 
@@ -293,8 +297,10 @@ const heyoka::cfunc<double> &get_pc_u_cfunc(kep3::optimality_type optimality)
             static const auto pc_u_cfunc_TIME = pc_u_cfunc_factory(kep3::optimality_type::TIME);
             return pc_u_cfunc_TIME;
         }
+        // LCOV_EXCL_START
         default:
             throw std::invalid_argument("Unhandled optimality type in get_pc_u_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 const heyoka::cfunc<double> &get_pc_i_vers_cfunc(kep3::optimality_type optimality)
@@ -308,8 +314,10 @@ const heyoka::cfunc<double> &get_pc_i_vers_cfunc(kep3::optimality_type optimalit
             static const auto pc_i_vers_cfunc_TIME = pc_i_vers_cfunc_factory(kep3::optimality_type::TIME);
             return pc_i_vers_cfunc_TIME;
         }
+        // LCOV_EXCL_START
         default:
             throw std::invalid_argument("Unhandled optimality type in get_pc_i_vers_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 const heyoka::cfunc<double> &get_pc_dyn_cfunc(kep3::optimality_type optimality)
@@ -323,8 +331,10 @@ const heyoka::cfunc<double> &get_pc_dyn_cfunc(kep3::optimality_type optimality)
             static const auto pc_dyn_cfunc_TIME = pc_dyn_cfunc_factory(kep3::optimality_type::TIME);
             return pc_dyn_cfunc_TIME;
         }
+        // LCOV_EXCL_START
         default:
             throw std::invalid_argument("Unhandled optimality type in get_pc_dyn_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 
