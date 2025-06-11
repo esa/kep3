@@ -105,9 +105,9 @@ peq_expression_factory(kep3::optimality_type optimality)
     // BTlam = B.T@lx
     std::array<expression, 6> lx = {lp, lf, lg, lh, lk, lL};
     std::array<expression, 3> BTlam;
-    for (size_t i = 0; i < 3u; ++i) {
+    for (auto i = 0u; i < 3u; ++i) {
         BTlam[i] = expression(0.);
-        for (auto j = 0; j < 6u; ++j) {
+        for (auto j = 0u; j < 6u; ++j) {
             BTlam[i] += B[j][i] * lx[j];
         }
     }
