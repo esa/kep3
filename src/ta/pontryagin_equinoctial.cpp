@@ -70,7 +70,7 @@ peq_expression_factory(kep3::optimality_type optimality)
     auto s2 = 1. + h * h + k * k;
 
     // B, matrix vector 6, 3
-    std::array<std::array<heyoka::expression, 3>, 6> B
+    std::array<std::array<expression, 3>, 6> B
         = {{{expression(0.), 2. * p / w, expression(0.)},
 
             {sin(L), ((1. + w) * cos(L) + f) / w, -g / w * (h * sin(L) - k * cos(L))},
@@ -95,19 +95,19 @@ peq_expression_factory(kep3::optimality_type optimality)
     // B * i_vers * u * hy.par[1] / m
     std::array<expression, 6> fx;
     for (size_t i = 0; i < 6u; ++i) {
-        fx[i] = (B[i][0] * i_vers[0][0] + B[i][1] * i_vers[1][0] + B[i][2] * i_vers[2][0]) * u * heyoka::par[1] / m;
+        fx[i] = (B[i][0] * i_vers[0][0] + B[i][1] * i_vers[1][0] + B[i][2] * i_vers[2][0]) * u * par[1] / m;
     }
 
     // fx + D, fm
-    fx[5] = fx[5] + heyoka::sqrt(heyoka::par[0] / p / p / p) * w * w;
-    auto fm = -heyoka::par[1] / heyoka::par[2] * u;
+    fx[5] = fx[5] + sqrt(par[0] / p / p / p) * w * w;
+    auto fm = -par[1] / par[2] * u;
 
     // BTlam = B.T@lx
     std::array<expression, 6> lx = {lp, lf, lg, lh, lk, lL};
     std::array<expression, 3> BTlam;
     for (size_t i = 0; i < 3u; ++i) {
         BTlam[i] = expression(0.);
-        for (size_t j = 0; j < 6u; ++j) {
+        for (auto j = 0; j < 6u; ++j) {
             BTlam[i] += B[j][i] * lx[j];
         }
     }
@@ -136,8 +136,8 @@ peq_expression_factory(kep3::optimality_type optimality)
     } else if (optimality == kep3::optimality_type::TIME) {
         // Hamiltonian (time optimal)
         // Hamiltonian (mass optimal with log barrier)
-        H_full
-            = lx[0] * fx[0] + lx[1] * fx[1] + lx[2] * fx[2] + lx[3] * fx[3] + lx[4] * fx[4] + lx[5] * fx[5] + lm * fm;
+        H_full = lx[0] * fx[0] + lx[1] * fx[1] + lx[2] * fx[2] + lx[3] * fx[3] + lx[4] * fx[4] + lx[5] * fx[5] + lm * fm
+                 + par[4] * par[1] / par[2];
         // Switching function (mass optimal with log barrier)
         rho = -par[2] * BTlam_norm / m / par[4] - lm / par[4];
 
@@ -286,7 +286,8 @@ auto peq_i_vers_cfunc_factory(kep3::optimality_type optimality)
 {
     auto [p, f, g, h, k, L, m, lp, lf, lg, lh, lk, lL, lm]
         = make_vars("p", "f", "g", "h", "k", "L", "m", "lp", "lf", "lg", "lh", "lk", "lL", "lm");
-    return heyoka::cfunc<double>({std::get<4>(peq_expression_factory(optimality))}, {p, f, g, h, k, L, m, lp, lf, lg, lh, lk, lL, lm});
+    return heyoka::cfunc<double>({std::get<4>(peq_expression_factory(optimality))},
+                                 {p, f, g, h, k, L, m, lp, lf, lg, lh, lk, lL, lm});
 }
 auto peq_dyn_cfunc_factory(kep3::optimality_type optimality)
 {

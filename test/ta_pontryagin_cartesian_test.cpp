@@ -153,7 +153,7 @@ TEST_CASE("dynamics_time")
     auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
     REQUIRE(ta_cached.is_variational() == false);
     REQUIRE(ta_cached.get_dim() == 14);
-    REQUIRE(ta_cached.get_pars().size() == 3); // [mu, c1, c2, eps, l0]
+    REQUIRE(ta_cached.get_pars().size() == 3); // [mu, c1, c2]
 
     {
         // We test a meaningless case.
