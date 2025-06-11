@@ -15,7 +15,7 @@ export deps_dir=$HOME/local
 export PATH="$HOME/miniforge3/bin:$PATH"
 bash miniforge3.sh -b -p $HOME/miniforge3
 conda env create --file=kep3_devel.yml -q -p $deps_dir
-conda activate $deps_dir
+source activate $deps_dir
 conda list
 
 # Install additional packages for Python compiling and docs building (19/11/2023 sphinx 7 not working)

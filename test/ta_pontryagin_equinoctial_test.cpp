@@ -304,6 +304,8 @@ TEST_CASE("variational_dynamics_time")
                2.0657458995708366e-05,  -4.9839125053452309e-07, -1.3157556034061730e-06, -5.7764361958391889e-03,
                1.0000000000000000e+00,  0.0000000000000000e+00};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
+        // This test is for highly unphysical conditions and the numerics of high derivatives becomes unstable
+        // to the point of losing 8 digits of precision on different machines. So we ask 1e-8
         REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-8);
     }
 }
