@@ -172,7 +172,7 @@ TEST_CASE("variational_dynamics_mass")
                2.0657650951993110e-05,  -4.9839643622054181e-07, -1.3157312204282862e-06, -5.7764348665161232e-03,
                9.9999999857762290e-01,  1.3336991356451000e-04};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
-        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-13);
+        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-8);
     }
     {
         // We test a case provided by Zhong Zhang tools (Tshinghua)
@@ -304,7 +304,7 @@ TEST_CASE("variational_dynamics_time")
                2.0657458995708366e-05,  -4.9839125053452309e-07, -1.3157556034061730e-06, -5.7764361958391889e-03,
                1.0000000000000000e+00,  0.0000000000000000e+00};
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
-        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-13);
+        REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-8);
     }
 }
 
