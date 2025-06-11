@@ -132,7 +132,7 @@ TEST_CASE("variational_dynamics_mass")
         // We test a meaningless case.
         taylor_adaptive<double> ta(ta_cached); // making a copy as to be able to modify the object.
         std::vector<double> ic = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-        std::vector<double> pars = {1, 1e-4, 1, 1, 1e-4};
+        std::vector<double> pars = {1., 1e-4, 1., 1., 1e-4};
         ta.set_time(0.);
         std::copy(ic.begin(), ic.end(), ta.get_state_data());
         std::copy(pars.begin(), pars.end(), ta.get_pars_data());
