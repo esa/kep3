@@ -121,6 +121,15 @@ inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
 inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
 inline std::string get_pc_dyn_cfunc_docstring(){return "The augmented dynamics.";};
 
+std::string get_peq_docstring();
+std::string get_peq_var_docstring();
+std::string peq_dyn_docstring();
+inline std::string get_peq_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+inline std::string get_peq_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
+inline std::string get_peq_u_cfunc_docstring(){return "The optimal throttle.";};
+inline std::string get_peq_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
+inline std::string get_peq_dyn_cfunc_docstring(){return "The augmented dynamics.";};
+
 
 // Lambert Problem
 std::string lambert_problem_docstring();

@@ -31,6 +31,7 @@
 #include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
+#include <kep3/ta/pontryagin_equinoctial.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
@@ -436,6 +437,30 @@ PYBIND11_MODULE(core, m) // NOLINT
     ta.def("get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
     ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
     ta.def("get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
+
+   // Pontryagin Equinoctial (TPBVP)
+    ta.def(
+        "get_peq",
+        [](double tol, kep3::optimality_type optimality) {
+            auto ta_cache = kep3::ta::get_ta_peq(tol, optimality);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), py::arg("optimality"), pykep::get_peq_docstring().c_str());
+    ta.def(
+        "get_peq_var",
+        [](double tol, kep3::optimality_type optimality) {
+            auto ta_cache = kep3::ta::get_ta_peq_var(tol, optimality);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), py::arg("optimality"), pykep::get_peq_var_docstring().c_str());
+    ta.def("pc_dyn", &kep3::ta::peq_dyn, pykep::peq_dyn_docstring().c_str());
+    ta.def("get_pc_H_cfunc", &kep3::ta::get_peq_H_cfunc, pykep::get_peq_H_cfunc_docstring().c_str());
+    ta.def("get_pc_SF_cfunc", &kep3::ta::get_peq_SF_cfunc, pykep::get_peq_SF_cfunc_docstring().c_str());
+    ta.def("get_pc_u_cfunc", &kep3::ta::get_peq_u_cfunc, pykep::get_peq_u_cfunc_docstring().c_str());
+    ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_peq_i_vers_cfunc, pykep::get_peq_i_vers_cfunc_docstring().c_str());
+    ta.def("get_pc_dyn_cfunc", &kep3::ta::get_peq_dyn_cfunc, pykep::get_peq_dyn_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(

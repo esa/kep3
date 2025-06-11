@@ -2163,7 +2163,7 @@ Examples:
   >>> ta.time = 0.
   >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
+  >>> ta.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
   >>> tof = 1.2345
   >>> ta.propagate_until(tof)
 )";
@@ -2203,7 +2203,7 @@ Examples:
   >>> ta_var = pk.ta.get_pc_var(tol = 1e-16, optimality = pk.optimality_type.TIME))
   >>> ta_var.time = 0.
   >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta_var.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
+  >>> ta_var.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
   >>> tof = 1.2345
   >>> ta_var.propagate_until(tof)
 )";
@@ -2280,6 +2280,82 @@ Args:
 
 Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string get_peq_docstring()
+{
+    return R"(ta.get_peq(tol, optimality)
+
+Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
+
+Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
+
+Modified Equinoctial elements. If the requested propagator was never created, a call to this function will
+
+trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.peq_dyn`.
+
+Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_peq(tol = 1e-16, optimality = pk.optimality_type.TIME)
+  >>> ta.time = 0.
+  >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
+  >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
+  >>> tof = 1.2345
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_peq_var_docstring()
+{
+    return R"(ta.get_peq_var_docstring(tol, optimality)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
+
+from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
+
+(constant maximal thrust) in Modified Equinoctial Elements. If the requested propagator was never created, 
+
+a call to this function will trigger its compilation. Otherwise, it will return the one from
+
+a global cache, thus avoiding jitting.
+
+.. note:
+   Variations are considered with respect to the initial conditions on the costates and to the
+   parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
+   is still considered a parameter (for consistency) but it is not used.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta_var = pk.ta.get_peq_var(tol = 1e-16, optimality = pk.optimality_type.TIME))
+  >>> ta_var.time = 0.
+  >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta_var.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
+  >>> tof = 1.2345
+  >>> ta_var.propagate_until(tof)
 )";
 }
 
