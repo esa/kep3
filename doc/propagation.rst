@@ -97,4 +97,13 @@ Low-thrust Pontryagin Cartesian TPBVP
 
 .. autofunction:: pc_dyn
 
+Low-thrust Pontryagin Equinoctial TPBVP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+.. autofunction:: get_peq
+
+.. autofunction:: get_peq_var
+
+.. autofunction:: peq_dyn
+
 

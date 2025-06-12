@@ -352,7 +352,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing Taylor adaptive propagators
     // Create submodule "ta"
     py::module_ ta = m.def_submodule("ta", "Submodule for heyoka Taylor integrator related stuff");
-    // Register the submodule so Python sees it as real (note we use the final pythin visible name for this)
+    // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
     sys.attr("modules")["pykep.ta"] = ta;
     // Stark
@@ -442,8 +442,11 @@ PYBIND11_MODULE(core, m) // NOLINT
     ta.def(
         "get_peq",
         [](double tol, kep3::optimality_type optimality) {
+            // retreive from cache
             auto ta_cache = kep3::ta::get_ta_peq(tol, optimality);
+            // copy
             heyoka::taylor_adaptive<double> ta(ta_cache);
+            // return a copy
             return ta;
         },
         py::arg("tol"), py::arg("optimality"), pykep::get_peq_docstring().c_str());
@@ -455,12 +458,12 @@ PYBIND11_MODULE(core, m) // NOLINT
             return ta;
         },
         py::arg("tol"), py::arg("optimality"), pykep::get_peq_var_docstring().c_str());
-    ta.def("pc_dyn", &kep3::ta::peq_dyn, pykep::peq_dyn_docstring().c_str());
-    ta.def("get_pc_H_cfunc", &kep3::ta::get_peq_H_cfunc, pykep::get_peq_H_cfunc_docstring().c_str());
-    ta.def("get_pc_SF_cfunc", &kep3::ta::get_peq_SF_cfunc, pykep::get_peq_SF_cfunc_docstring().c_str());
-    ta.def("get_pc_u_cfunc", &kep3::ta::get_peq_u_cfunc, pykep::get_peq_u_cfunc_docstring().c_str());
-    ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_peq_i_vers_cfunc, pykep::get_peq_i_vers_cfunc_docstring().c_str());
-    ta.def("get_pc_dyn_cfunc", &kep3::ta::get_peq_dyn_cfunc, pykep::get_peq_dyn_cfunc_docstring().c_str());
+    ta.def("peq_dyn", &kep3::ta::peq_dyn, pykep::peq_dyn_docstring().c_str());
+    ta.def("get_peq_H_cfunc", &kep3::ta::get_peq_H_cfunc, pykep::get_peq_H_cfunc_docstring().c_str());
+    ta.def("get_peq_SF_cfunc", &kep3::ta::get_peq_SF_cfunc, pykep::get_peq_SF_cfunc_docstring().c_str());
+    ta.def("get_peq_u_cfunc", &kep3::ta::get_peq_u_cfunc, pykep::get_peq_u_cfunc_docstring().c_str());
+    ta.def("get_peq_i_vers_cfunc", &kep3::ta::get_peq_i_vers_cfunc, pykep::get_peq_i_vers_cfunc_docstring().c_str());
+    ta.def("get_peq_dyn_cfunc", &kep3::ta::get_peq_dyn_cfunc, pykep::get_peq_dyn_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(

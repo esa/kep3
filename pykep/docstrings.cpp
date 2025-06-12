@@ -781,7 +781,7 @@ std::string par2ic_doc()
             Gravitational parameter of the central body (in units L^3/T^2)
 
     Returns:
-        [list of :class:`float`, list of :class:`float`]:
+        [:class:`list` of :class:`float`, :class:`list` of :class:`float`]:
             A list containing two 3D vectors:
 
             - *position*: Cartesian position vector [x, y, z] in L  
@@ -824,7 +824,7 @@ std::string ic2eq_doc()
         *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
 
     Returns:
-        list of :class:`float`:
+        :class:`list` of :class:`float`:
             A list of six equinoctial orbital elements:
 
             - *p*: semi-latus rectum (in units L)  
@@ -869,7 +869,7 @@ std::string eq2ic_doc()
         *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
 
     Returns:
-        list of :class:`list`:
+        :class:`list` of :class:`list`:
             A list containing two 3D vectors:
 
             - *position* vector [x, y, z] in units L
@@ -908,7 +908,7 @@ std::string eq2par_doc()
         *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
 
     Returns:
-        list of :class:`float`:
+        :class:`list` of :class:`float`:
             A list of six Keplerian orbital elements:
 
             - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
@@ -948,7 +948,7 @@ std::string par2eq_doc()
         *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
 
     Returns:
-        list of :class:`float`:
+        :class:`list` of :class:`float`:
             A list of six equinoctial orbital elements:
 
             - *p*: semi-latus rectum (in units L)  
@@ -2138,15 +2138,10 @@ std::string get_pc_docstring()
     return R"(ta.get_pc(tol, optimality)
 
 Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
-
 Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
-
 Cartesian coordinates. If the requested propagator was never created, a call to this function will
-
 trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
-
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
-
 Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
 
 Args:
@@ -2174,13 +2169,9 @@ std::string get_pc_var_docstring()
     return R"(ta.get_pc_var(tol, optimality)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
-
 from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
-
 (constant maximal thrust) in Cartesian coordinates. If the requested propagator was never created, 
-
 a call to this function will trigger its compilation. Otherwise, it will return the one from
-
 a global cache, thus avoiding jitting.
 
 .. note:
@@ -2288,15 +2279,10 @@ std::string get_peq_docstring()
     return R"(ta.get_peq(tol, optimality)
 
 Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
-
 Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
-
 Modified Equinoctial elements. If the requested propagator was never created, a call to this function will
-
 trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
-
 The specific dynamics used is that returned by :func:`~pykep.ta.peq_dyn`.
-
 Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
 
 Args:
@@ -2321,16 +2307,12 @@ Examples:
 
 std::string get_peq_var_docstring()
 {
-    return R"(ta.get_peq_var_docstring(tol, optimality)
+    return R"(ta.get_peq_var(tol, optimality)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
-
 from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
-
 (constant maximal thrust) in Modified Equinoctial Elements. If the requested propagator was never created, 
-
 a call to this function will trigger its compilation. Otherwise, it will return the one from
-
 a global cache, thus avoiding jitting.
 
 .. note:
@@ -2358,6 +2340,122 @@ Examples:
   >>> ta_var.propagate_until(tof)
 )";
 }
+
+std::string peq_dyn_docstring()
+{
+    return R"(ta.peq_dyn(optimality)
+
+The augmented dynamics of the TPBVP originating when applying an indirect method
+to the low-thrust transfer problem in **Modified Equinoctial Elements (MEE)**.
+
+The (non-augmented) dynamics is:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot p = \sqrt{\frac{p}{\mu}} \frac{2p}{w} i_t \cdot \frac{u}{m} \\
+   \dot f = \frac{1}{m} \sqrt{\frac{p}{\mu}} \left[ i_r \sin L + \left( (1+w)\cos L + f \right)\frac{i_t}{w} - (h\sin L - k\cos L)\frac{g i_n}{w} \right] \cdot \frac{u}{m} \\
+   \dot g = \frac{1}{m} \sqrt{\frac{p}{\mu}} \left[ -i_r \cos L + \left( (1+w)\sin L + g \right)\frac{i_t}{w} + (h\sin L - k\cos L)\frac{f i_n}{w} \right] \cdot \frac{u}{m} \\
+   \dot h = \sqrt{\frac{p}{\mu}} \frac{s^2 i_n}{2w} \cos L \cdot \frac{u}{m} \\
+   \dot k = \sqrt{\frac{p}{\mu}} \frac{s^2 i_n}{2w} \sin L \cdot \frac{u}{m} \\
+   \dot L = \sqrt{\frac{p}{\mu}} \left[ \mu\left(\frac{w}{p}\right)^2 + \frac{1}{w}(h\sin L - k\cos L) \frac{i_n}{m} \cdot \frac{u}{m} \right] \\
+   \dot m = -\frac{c_1}{c_2} \cdot \frac{u}{m}
+   \end{array}
+   \right.
+
+The auxiliary functions and variables used above are:
+
+.. math::
+   w = 1 + f \cos L + g \sin L,\quad s^2 = 1 + h^2 + k^2
+
+Introducing the state, containing both the physical state and the co-states, as:
+
+.. math::
+   \mathbf x = [p, f, g, h, k, L, m, \lambda_p, \lambda_f, \lambda_g, \lambda_h, \lambda_k, \lambda_L, \lambda_m]
+
+the parameter vector, containing the gravitational parameter, maximum thrust, effective exhaust velocity, a homotopy continuation parameter, 
+and a normalizing Lagrange multiplier (see later), as:
+
+.. math::
+   \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
+
+and the control vector as:
+
+.. math::
+   \mathbf u = [u, \hat{\mathbf i}_\tau]
+
+the dynamics can be rewritten in compact form as:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot{\mathbf x} = \frac{c_1 u(t)}{m} \mathbf B(\mathbf x) \hat{\mathbf i}_\tau + \mathbf D(\mathbf x) \\
+   \dot m = -c_2 u(t)
+   \end{array}
+   \right.
+
+Where:
+
+.. math::
+   \sqrt{\frac{\mu}{p}} \mathbf B(\mathbf x) = 
+   \begin{bmatrix}
+   0 & \frac{2p}{w} & 0 \\
+   \sin L & \frac{(1+w)\cos L + f}{w} & -\frac{g}{w}(h \sin L - k \cos L) \\
+   -\cos L & \frac{(1+w)\sin L + g}{w} & \frac{f}{w}(h \sin L - k \cos L) \\
+   0 & 0 & \frac{1}{w} \frac{s^2}{2} \cos L \\
+   0 & 0 & \frac{1}{w} \frac{s^2}{2} \sin L \\
+   0 & 0 & \frac{1}{w} (h \sin L - k \cos L)
+   \end{bmatrix}
+
+.. math::
+   \mathbf D(\mathbf x) = 
+   \begin{bmatrix}
+   0 \\
+   0 \\
+   0 \\
+   0 \\
+   0 \\
+   \sqrt{\frac{\mu}{p^3}} w^2
+   \end{bmatrix}
+
+As in the Cartesian case, the equations of motion for the TPBVP
+are derived from the Hamiltonian, which depends on the chosen optimality:
+
+- **Mass Optimality**:
+
+.. math::
+   \mathcal H = \boldsymbol \lambda^\top \dot{\mathbf x} + \lambda_m \dot{m} + \lambda_0 \frac{c_1}{c_2} \left( u + \epsilon \log(u(1 - u)) \right)
+
+- **Time Optimality**:
+
+.. math::
+   \mathcal H = \boldsymbol \lambda^\top \dot{\mathbf x} + \lambda_m \dot{m} + \lambda_0 \frac{c_1}{c_2}
+
+The full augmented dynamics is thus obtained by:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot{\mathbf x} = \frac{\partial \mathcal H}{\partial \boldsymbol \lambda} \\
+   \dot{\boldsymbol \lambda} = - \frac{\partial \mathcal H}{\partial \mathbf x}
+   \end{array}
+   \right.
+
+And by applying Pontryagin’s Minimum Principle:
+
+.. math::
+   \mathbf u^* = \arg\min_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \boldsymbol \lambda, \mathbf u)
+
+where :math:`\mathcal U` is the admissible set of control inputs (direction and throttle).
+
+Args:
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
 
 std::string propagate_lagrangian_docstring()
 {
