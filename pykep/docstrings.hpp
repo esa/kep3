@@ -115,7 +115,7 @@ std::string bcp_dyn_docstring();
 std::string get_pc_docstring();
 std::string get_pc_var_docstring();
 std::string pc_dyn_docstring();
-inline std::string get_pc_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+std::string get_pc_H_cfunc_docstring();
 inline std::string get_pc_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
 inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
 inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};

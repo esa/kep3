@@ -3,8 +3,6 @@
 Numerical Propagation
 ========================
 
-
-
 The backbone of numerical propagation in `pykep` is based on Lagrangian coefficients for 
 Kepler's  dynamics and Taylor numerical integration, as implemented in the 
 `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` python package, for all

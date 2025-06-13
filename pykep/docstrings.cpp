@@ -2274,6 +2274,66 @@ Returns:
 )";
 }
 
+std::string get_pc_H_cfunc_docstring()
+{
+    return R"(ta.get_pc_H(optimality)
+
+The Hamiltonian function associated with the two-point boundary value problem (TPBVP)
+arising from the application of an indirect method to the low-thrust transfer problem
+in Cartesian coordinates.
+
+This returns the compiled function of the Hamiltonian as a sole function of the augmented system state, under the 
+assumption of mass-optimality or time-optimality, depending on the provided setting.
+
+The state is composed of both the physical state of the spacecraft and the corresponding costates:
+
+.. math::
+   \mathbf x = [\mathbf r, \mathbf v, m] = [x,y,z,v_x,v_y,v_z,m]
+
+.. math::
+   \mathbf \lambda = [\lambda_r, \lambda_v, \lambda_m] = [l_x,l_y,l_z,l_{vx},l_{vy},l_{vz},l_m]
+
+The system parameters are:
+
+.. math::
+   \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
+
+In the case of **mass optimality**, the Hamiltonian is given by:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) =
+   \lambda_r \cdot \mathbf v +
+   \lambda_v \cdot \left(-\frac{\mu}{r^3}\mathbf r + \frac{c_1 u}{m} \hat{\mathbf i} \right) +
+   \lambda_m \left(-\frac{c_1}{c_2} u\right) +
+   \lambda_0 \frac{c_1}{c_2} \left(u + \epsilon \log(u(1-u))\right)
+
+In the case of **time optimality**, the Hamiltonian becomes:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) =
+   \lambda_r \cdot \mathbf v +
+   \lambda_v \cdot \left(-\frac{\mu}{r^3}\mathbf r + \frac{c_1 u}{m} \hat{\mathbf i} \right) +
+   \lambda_m \left(-\frac{c_1}{c_2} u\right) +
+   \lambda_0 \frac{c_1}{c_2}
+
+In both cases the control :math:`u` is assumed to be optimal and is thus a function of the states/co-states. 
+Along an optimal trajectory this Hamiltonian must be constant.
+
+Args:
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::c_func`: The Hamiltonian :math:`\mathcal H(\mathbf x, \mathbf \lambda)` as a numeric function.
+
+Examples:
+    >>> import pykep as pk
+    >>> mu = ..
+    ...
+    >>> H_func([x,y,z,vx,vy,vz,m,lx,ly,lz,lvx,lvy,lvz,lm], pars = [mu, c1, c2, eps, l0])
+    )";
+}
+
+
 std::string get_peq_docstring()
 {
     return R"(ta.get_peq(tol, optimality)
