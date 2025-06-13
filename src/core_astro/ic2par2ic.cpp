@@ -10,7 +10,7 @@
 #include <cmath>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>

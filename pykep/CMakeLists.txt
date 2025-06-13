@@ -4,6 +4,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOU
 # The list of pykep's Python files.
 set(PYKEP_PYTHON_FILES __init__.py _patch_planet.py _version.py test.py test_trajopt.py test_utils.py)
 
+
 # Core module.
 Python3_add_library(core MODULE WITH_SOABI 
     core.cpp
@@ -12,6 +13,11 @@ Python3_add_library(core MODULE WITH_SOABI
     python_udpla.cpp
     expose_udplas.cpp
 )
+
+# This is to silence an aggressive compiler setting creating false positives in pybind11 stuff.
+if (YACMA_COMPILER_IS_GNUCXX)
+    set_source_files_properties(core.cpp PROPERTIES COMPILE_FLAGS "-Wno-null-dereference")
+endif()
 
 target_link_libraries(core PRIVATE kep3)
 target_link_libraries(core PRIVATE "${pybind11_LIBRARIES}")

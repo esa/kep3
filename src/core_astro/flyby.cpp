@@ -11,7 +11,7 @@
 #include <utility>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 #include <kep3/core_astro/flyby.hpp>
 #include <kep3/linalg.hpp>

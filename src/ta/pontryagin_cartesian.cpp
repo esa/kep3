@@ -35,20 +35,22 @@ using heyoka::var_ode_sys;
 
 namespace kep3::ta::detail
 {
-    // Custom hash function for std::pair<double, kep3::optimality_type>
+// Custom hash function for std::pair<double, kep3::optimality_type>
 struct pair_hash {
-    std::size_t operator()(const std::pair<double, kep3::optimality_type>& p) const {
-        std::size_t h1 = std::hash<double>{}(p.first);  // Hash the double
+    std::size_t operator()(const std::pair<double, kep3::optimality_type> &p) const
+    {
+        std::size_t h1 = std::hash<double>{}(p.first);                 // Hash the double
         std::size_t h2 = std::hash<int>{}(static_cast<int>(p.second)); // Hash the enum
-        return h1 ^ (h2 << 1);  // Combine hashes (XOR and shift)
+        return h1 ^ (h2 << 1);                                         // Combine hashes (XOR and shift)
     }
 };
-}  // namespace kep3::ta::detail
+} // namespace kep3::ta::detail
 
 namespace kep3::ta
 {
 // All the relevant expression in the TPBVP of the Cartesian Low-Thrust indirect OCP are created here.
-std::tuple<std::vector<std::pair<expression, expression>>, expression, expression, expression, std::vector<expression>, std::vector<expression>>
+std::tuple<std::vector<std::pair<expression, expression>>, expression, expression, expression, std::vector<expression>,
+           std::vector<expression>>
 pc_expression_factory(kep3::optimality_type optimality)
 {
     // The state
@@ -89,7 +91,7 @@ pc_expression_factory(kep3::optimality_type optimality)
                  + lvy * (par[1] * u / m * iy - (par[0] / r3) * y) + lvz * (par[1] * u / m * iz - (par[0] / r3) * z)
                  - lm * par[1] / par[2] * u + par[4] * par[1] / par[2];
         // Switching function (time optimal)
-        rho = - par[2] * lv_norm / m / par[4] - lm / par[4];
+        rho = -par[2] * lv_norm / m / par[4] - lm / par[4];
 
         // We apply Pontryagin minimum principle (primer vector and u ^ * = 1)
         argmin_H_full = {
@@ -132,12 +134,15 @@ std::vector<std::pair<expression, expression>> pc_dyn(kep3::optimality_type opti
     return std::get<0>(pc_expression_factory(optimality));
 }
 
-
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ta_pc_mutex;
 // Use a Function-Local static Variable (Lazy Initialization)
-std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash>& get_ta_pc_cache() {
-    static std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash> ta_pc_cache;
+std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash> &
+get_ta_pc_cache()
+{
+    static std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>,
+                              kep3::ta::detail::pair_hash>
+        ta_pc_cache;
     return ta_pc_cache;
 }
 
@@ -150,7 +155,9 @@ const taylor_adaptive<double> &get_ta_pc(double tol, kep3::optimality_type optim
     if (auto it = get_ta_pc_cache().find({tol, optimality}); it == get_ta_pc_cache().end()) {
         // Cache miss, create new one.
         auto new_ta = taylor_adaptive<double>{std::get<0>(pc_expression_factory(optimality)), heyoka::kw::tol = tol};
-        return get_ta_pc_cache().insert(std::make_pair(std::make_pair(tol, optimality), std::move(new_ta))).first->second;
+        return get_ta_pc_cache()
+            .insert(std::make_pair(std::make_pair(tol, optimality), std::move(new_ta)))
+            .first->second;
     } else {
         // Cache hit, return existing.
         return it->second;
@@ -160,8 +167,12 @@ const taylor_adaptive<double> &get_ta_pc(double tol, kep3::optimality_type optim
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ta_pc_var_mutex;
 // Use a Function-Local static Variable (Lazy Initialization)
-std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash>& get_ta_pc_var_cache() {
-    static std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash> ta_pc_cache;
+std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>, kep3::ta::detail::pair_hash> &
+get_ta_pc_var_cache()
+{
+    static std::unordered_map<std::pair<double, kep3::optimality_type>, taylor_adaptive<double>,
+                              kep3::ta::detail::pair_hash>
+        ta_pc_cache;
     return ta_pc_cache;
 }
 
@@ -173,10 +184,13 @@ const taylor_adaptive<double> &get_ta_pc_var(double tol, kep3::optimality_type o
     // Lookup.
     if (auto it = get_ta_pc_var_cache().find({tol, optimality}); it == get_ta_pc_var_cache().end()) {
         auto [lx, ly, lz, lvx, lvy, lvz, lm] = make_vars("lx", "ly", "lz", "lvx", "lvy", "lvz", "lm");
-        auto vsys = var_ode_sys(std::get<0>(pc_expression_factory(optimality)), {lx, ly, lz, lvx, lvy, lvz, lm, par[4]}, 1);
+        auto vsys
+            = var_ode_sys(std::get<0>(pc_expression_factory(optimality)), {lx, ly, lz, lvx, lvy, lvz, lm, par[4]}, 1);
         // Cache miss, create new one.
         auto new_ta = taylor_adaptive<double>{vsys, heyoka::kw::tol = tol, heyoka::kw::compact_mode = true};
-        return get_ta_pc_var_cache().insert(std::make_pair(std::make_pair(tol, optimality), std::move(new_ta))).first->second;
+        return get_ta_pc_var_cache()
+            .insert(std::make_pair(std::make_pair(tol, optimality), std::move(new_ta)))
+            .first->second;
     } else {
         // Cache hit, return existing.
         return it->second;
@@ -229,7 +243,7 @@ auto pc_dyn_cfunc_factory(kep3::optimality_type optimality)
     auto [x, y, z, vx, vy, vz, m, lx, ly, lz, lvx, lvy, lvz, lm]
         = make_vars("x", "y", "z", "vx", "vy", "vz", "m", "lx", "ly", "lz", "lvx", "lvy", "lvz", "lm");
     auto rhs = std::get<5>(pc_expression_factory(optimality));
-    return heyoka::cfunc<double>({rhs[0], rhs[1],rhs[2],rhs[3],rhs[4],rhs[5],rhs[13]},
+    return heyoka::cfunc<double>({rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5], rhs[13]},
                                  {x, y, z, vx, vy, vz, m, lx, ly, lz, lvx, lvy, lvz, lm});
 }
 
@@ -247,6 +261,10 @@ const heyoka::cfunc<double> &get_pc_H_cfunc(kep3::optimality_type optimality)
             static const auto pc_H_cfunc_TIME = pc_H_cfunc_factory(kep3::optimality_type::TIME);
             return pc_H_cfunc_TIME;
         }
+        // LCOV_EXCL_START
+        default:
+            throw std::invalid_argument("Unhandled optimality type in get_pc_H_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 
@@ -261,6 +279,10 @@ const heyoka::cfunc<double> &get_pc_SF_cfunc(kep3::optimality_type optimality)
             static const auto pc_SF_cfunc_TIME = pc_SF_cfunc_factory(kep3::optimality_type::TIME);
             return pc_SF_cfunc_TIME;
         }
+        // LCOV_EXCL_START
+        default:
+            throw std::invalid_argument("Unhandled optimality type in get_pc_SF_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 
@@ -275,6 +297,10 @@ const heyoka::cfunc<double> &get_pc_u_cfunc(kep3::optimality_type optimality)
             static const auto pc_u_cfunc_TIME = pc_u_cfunc_factory(kep3::optimality_type::TIME);
             return pc_u_cfunc_TIME;
         }
+        // LCOV_EXCL_START
+        default:
+            throw std::invalid_argument("Unhandled optimality type in get_pc_u_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 const heyoka::cfunc<double> &get_pc_i_vers_cfunc(kep3::optimality_type optimality)
@@ -288,6 +314,10 @@ const heyoka::cfunc<double> &get_pc_i_vers_cfunc(kep3::optimality_type optimalit
             static const auto pc_i_vers_cfunc_TIME = pc_i_vers_cfunc_factory(kep3::optimality_type::TIME);
             return pc_i_vers_cfunc_TIME;
         }
+        // LCOV_EXCL_START
+        default:
+            throw std::invalid_argument("Unhandled optimality type in get_pc_i_vers_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 const heyoka::cfunc<double> &get_pc_dyn_cfunc(kep3::optimality_type optimality)
@@ -301,6 +331,10 @@ const heyoka::cfunc<double> &get_pc_dyn_cfunc(kep3::optimality_type optimality)
             static const auto pc_dyn_cfunc_TIME = pc_dyn_cfunc_factory(kep3::optimality_type::TIME);
             return pc_dyn_cfunc_TIME;
         }
+        // LCOV_EXCL_START
+        default:
+            throw std::invalid_argument("Unhandled optimality type in get_pc_dyn_cfunc()");
+            // LCOV_EXCL_STOP
     }
 }
 

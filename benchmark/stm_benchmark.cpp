@@ -7,7 +7,6 @@
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #include <chrono>
-#include <iostream>
 #include <random>
 
 #include <fmt/core.h>
@@ -17,8 +16,6 @@
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/core_astro/stm.hpp>
-
-#include <xtensor/xtensor.hpp>
 
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;

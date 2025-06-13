@@ -10,14 +10,14 @@
 #define kep3_IMPULSIVE_TRANSFERS_H
 
 #include <array>   // For std::array
-#include <utility> // For std::pair
+#include <tuple> // For std::tuple
 
 #include <kep3/detail/visibility.hpp>
 
 namespace kep3
 {
-kep3_DLL_PUBLIC std::pair<double, std::array<double, 2>> hohmann(double r1, double r2, double mu);
+kep3_DLL_PUBLIC std::tuple<double, double, std::array<double, 2>> hohmann(double r1, double r2, double mu);
 
-kep3_DLL_PUBLIC std::pair<double, std::array<double, 3>> bielliptic(double r1, double r2, double rb, double mu);
+kep3_DLL_PUBLIC std::tuple<double, double, std::array<double, 3>> bielliptic(double r1, double r2, double rb, double mu);
 } // namespace kep3
 #endif // kep3_IMPULSIVE_TRANSFERS_H

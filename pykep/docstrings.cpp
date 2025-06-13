@@ -702,7 +702,7 @@ std::string hohmann_doc()
 {
     return R"(hohmann(r1, r2, mu)
 
-    Computes the delta v required for a Hohmann transfer between two circular orbits.
+    Computes the delta v and transfer time required for a Hohmann transfer between two circular orbits.
 
     Args:
         *r1* (:class:`float`): radius of the first orbit
@@ -712,25 +712,266 @@ std::string hohmann_doc()
         *mu* (:class:`float`): gravitational parameter of the central body
 
     Returns:
-        [:class:`float`, [:class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v]]
+        [:class:`float`, :class:`float`, [:class:`float`, :class:`float`]]:
+            [total delta v, transfer time, [first delta v, second delta v]]
 
     Examples:
       >>> import pykep as pk
       >>> r1 = 7000000
       >>> r2 = 9000000
       >>> mu = pk.MU_EARTH
-      >>> dv_total, [dv1, dv2] = pk.hohmann(r1, r2, mu)
+      >>> dv_total, t_transfer, [dv1, dv2] = pk.hohmann(r1, r2, mu)
       >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("Transfer time:", t_transfer, "s")
       >>> print("First delta v:", dv1, "m/s")
       >>> print("Second delta v:", dv2, "m/s")
 )";
 }
 
+std::string ic2par_doc()
+{
+    return R"(ic2par(posvel, mu)
+
+    Converts Cartesian state vectors (position and velocity) to Keplerian osculating orbital elements.
+
+    Args:
+        *posvel* (:class:`list` [:class:`list`, :class:`list`]): A list containing two 3D vectors: the position vector [x, y, z] in units L and the velocity vector [vx, vy, vz] in units L/T.
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+    Returns:
+        [:class:`float`, :class:`float`, :class:`float`, :class:`float`, :class:`float`, :class:`float`]:
+            A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: RAAN (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+    Examples:
+      >>> import pykep as pk
+      >>> r = [7000e3, 0, 0]
+      >>> v = [0, 7.5e3, 0]
+      >>> mu = pk.MU_EARTH
+      >>> elements = pk.ic2par([r, v], mu)
+      >>> a, e, i, Omega, omega, f = elements
+      >>> print(f"Semi-major axis: {a} m, Eccentricity: {e}")
+)";
+}
+
+std::string par2ic_doc()
+{
+    return R"(par2ic(par, mu)
+
+    Converts Keplerian osculating orbital elements to Cartesian state vectors (position and velocity).
+
+    Args:
+        *par* (:class:`list` of :class:`float`): A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+        *mu* (:class:`float`): 
+            Gravitational parameter of the central body (in units L^3/T^2)
+
+    Returns:
+        [:class:`list` of :class:`float`, :class:`list` of :class:`float`]:
+            A list containing two 3D vectors:
+
+            - *position*: Cartesian position vector [x, y, z] in L  
+            - *velocity*: Cartesian velocity vector [vx, vy, vz] in L/T
+
+    Raises:
+        :class:`ValueError`: If the semi-major axis and eccentricity are incompatible  
+        :class:`ValueError`: If the true anomaly is beyond the asymptotes for a hyperbolic trajectory
+
+    Examples:
+      >>> import pykep as pk
+      >>> a = 10000e3
+      >>> e = 0.1
+      >>> i = 0.1
+      >>> Omega = 0.5
+      >>> omega = 1.0
+      >>> f = 2.0
+      >>> mu = pk.MU_EARTH
+      >>> r, v = pk.par2ic([a, e, i, Omega, omega, f], mu)
+      >>> print("Position vector:", r)
+      >>> print("Velocity vector:", v)
+)";
+}
+
+std::string ic2eq_doc()
+{
+    return R"(ic2eq(posvel, mu, retrogade)
+
+    Converts Cartesian state vectors (position and velocity) to equinoctial orbital elements.
+
+    Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
+    near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
+    retrograde equinoctial elements. These last are not singular for inclinations of π.
+
+    Args:
+        *posvel* (:class:`list` [:class:`list`, :class:`list`]): A list containing two 3D vectors: the position vector [x, y, z] in units L and the velocity vector [vx, vy, vz] in units L/T.
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        :class:`list` of :class:`float`:
+            A list of six equinoctial orbital elements:
+
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+    Examples:
+      >>> import pykep as pk
+      >>> r = [7000e3, 0.0, 0.0]
+      >>> v = [0.0, 7.5e3, 1.0e3]
+      >>> mu = pk.MU_EARTH
+      >>> retro = False
+      >>> eq = pk.ic2eq([r, v], mu, retro)
+      >>> print("Equinoctial elements:", eq)
+)";
+}
+
+std::string eq2ic_doc()
+{
+    return R"(eq2ic(eq_elem, mu, retrogade)
+
+    Converts equinoctial orbital elements to Cartesian state vectors (position and velocity).
+
+    Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
+    near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
+    retrograde equinoctial frames. These last are not singular for inclinations of \pi.
+
+    Args:
+        *eq_elem* (:class:`list` [:class:`float`]): A list of six equinoctial elements:
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+        *mu* (:class:`float`): Gravitational parameter of the central body (in units L^3/T^2).
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        :class:`list` of :class:`list`:
+            A list containing two 3D vectors:
+
+            - *position* vector [x, y, z] in units L
+            - *velocity* vector [vx, vy, vz] in units L/T
+
+    Examples:
+      >>> import pykep as pk
+      >>> eq = [7000e3, 0.01, 0.01, 0.01, 0.01, 0.0]
+      >>> mu = pk.MU_EARTH
+      >>> retro = False
+      >>> r, v = pk.eq2ic(eq, mu, retro)
+      >>> print("Position:", r)
+      >>> print("Velocity:", v)
+)";
+}
+
+std::string eq2par_doc()
+{
+    return R"(eq2par(eq_elem, retrogade)
+
+    Converts equinoctial orbital elements to classical Keplerian elements.
+
+    This function transforms the non-singular equinoctial elements into classical orbital elements, which are 
+    more intuitive but can be singular for certain inclinations or eccentricities. The retrograde flag selects
+    the appropriate transformation for orbits with inclination near \pi.
+
+    Args:
+        *eq_elem* (:class:`list` [:class:`float`]): A list of six equinoctial elements:
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        :class:`list` of :class:`float`:
+            A list of six Keplerian orbital elements:
+
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+    Examples:
+      >>> eq = [7000e3, 0.01, 0.02, 0.001, 0.002, 0.5]
+      >>> retro = False
+      >>> par = eq2par(eq, retro)
+      >>> print("Keplerian elements:", par)
+)";
+}
+
+std::string par2eq_doc()
+{
+    return R"(par2eq(par, retrogade)
+
+    Converts classical Keplerian orbital elements to equinoctial elements.
+
+    This function provides a non-singular representation of orbits by transforming Keplerian elements into 
+    equinoctial elements. The retrograde flag allows conversion to a frame that remains non-singular for 
+    inclinations near \pi.
+
+    Args:
+        *par* (:class:`list` [:class:`float`]): A list of six Keplerian elements:
+            - *a*: semi-major axis (in units L, positive for ellipses, negative for hyperbolae)
+            - *e*: eccentricity (unitless)
+            - *i*: inclination (radians, in [0, π])
+            - *Ω*: longitude of ascending node (radians, in [0, 2π])
+            - *ω*: argument of periapsis (radians, in [0, 2π])
+            - *f*: true anomaly (radians, in [0, 2π])
+
+        *retrogade* (:class:`bool`): Whether to use the retrograde equinoctial frame.
+
+    Returns:
+        :class:`list` of :class:`float`:
+            A list of six equinoctial orbital elements:
+
+            - *p*: semi-latus rectum (in units L)  
+            - *f*: eccentricity vector times cos(Ω+ω)
+            - *g*: eccentricity vector times sin(Ω+ω)
+            - *h*: tan(i/2) cos Ω
+            - *k*: tan(i/2) sin Ω
+            - *L*: true longitude (radians, in [0, 2π])
+
+    Examples:
+      >>> par = [7000e3, 0.01, 0.1, 1.0, 0.5, 0.3]
+      >>> retro = False
+      >>> eq = par2eq(par, retro)
+      >>> print("Equinoctial elements:", eq)
+)";
+}
+
+
 std::string bielliptic_doc()
 {
     return R"(bielliptic(r1, r2, rb, mu)
 
-    Computes the delta v required for a bielliptic transfer between two circular orbits.
+    Computes the delta v and transfer time required for a bielliptic transfer between two circular orbits.
 
     Args:
         *r1* (:class:`float`): radius of the first orbit
@@ -742,17 +983,18 @@ std::string bielliptic_doc()
         *mu* (:class:`float`): gravitational parameter of the central body
 
     Returns:
-        [:class:`float`, [:
-            :class:`float`, :class:`float`, :class:`float`]]: [total delta v, [first delta v, second delta v, third delta v]]
-            
+        [:class:`float`, :class:`float`, [:class:`float`, :class:`float`, :class:`float`]]:
+            [total delta v, transfer time, [first delta v, second delta v, third delta v]]
+
     Examples:
       >>> import pykep as pk
       >>> r1 = 7000000
       >>> r2 = 9000000
       >>> rb = 11000000
       >>> mu = pk.MU_EARTH
-      >>> dv_total, [dv1, dv2, dv3] = pk.bielliptic(r1, r2, rb, mu)
+      >>> dv_total, t_transfer, [dv1, dv2, dv3] = pk.bielliptic(r1, r2, rb, mu)
       >>> print("Total delta v:", dv_total, "m/s")
+      >>> print("Transfer time:", t_transfer, "s")
       >>> print("First delta v:", dv1, "m/s")
       >>> print("Second delta v:", dv2, "m/s")
       >>> print("Third delta v:", dv3, "m/s")
@@ -1896,15 +2138,10 @@ std::string get_pc_docstring()
     return R"(ta.get_pc(tol, optimality)
 
 Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
-
 Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
-
 Cartesian coordinates. If the requested propagator was never created, a call to this function will
-
 trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
-
 The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
-
 Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
 
 Args:
@@ -1921,7 +2158,7 @@ Examples:
   >>> ta.time = 0.
   >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
   >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
+  >>> ta.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
   >>> tof = 1.2345
   >>> ta.propagate_until(tof)
 )";
@@ -1932,13 +2169,9 @@ std::string get_pc_var_docstring()
     return R"(ta.get_pc_var(tol, optimality)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
-
 from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
-
 (constant maximal thrust) in Cartesian coordinates. If the requested propagator was never created, 
-
 a call to this function will trigger its compilation. Otherwise, it will return the one from
-
 a global cache, thus avoiding jitting.
 
 .. note:
@@ -1961,7 +2194,7 @@ Examples:
   >>> ta_var = pk.ta.get_pc_var(tol = 1e-16, optimality = pk.optimality_type.TIME))
   >>> ta_var.time = 0.
   >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
-  >>> ta_var.pars[:] = [1., 0.01, 1., 0.5, 1.] # in case of TIME epsilon is irrelevant, but we set it for consistency
+  >>> ta_var.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
   >>> tof = 1.2345
   >>> ta_var.propagate_until(tof)
 )";
@@ -2040,6 +2273,249 @@ Returns:
     :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
 )";
 }
+
+std::string get_pc_H_cfunc_docstring()
+{
+    return R"(ta.get_pc_H(optimality)
+
+The Hamiltonian function associated with the two-point boundary value problem (TPBVP)
+arising from the application of an indirect method to the low-thrust transfer problem
+in Cartesian coordinates.
+
+This returns the compiled function of the Hamiltonian as a sole function of the augmented system state, under the 
+assumption of mass-optimality or time-optimality, depending on the provided setting.
+
+The state is composed of both the physical state of the spacecraft and the corresponding costates:
+
+.. math::
+   \mathbf x = [\mathbf r, \mathbf v, m] = [x,y,z,v_x,v_y,v_z,m]
+
+.. math::
+   \mathbf \lambda = [\lambda_r, \lambda_v, \lambda_m] = [l_x,l_y,l_z,l_{vx},l_{vy},l_{vz},l_m]
+
+The system parameters are:
+
+.. math::
+   \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
+
+In the case of **mass optimality**, the Hamiltonian is given by:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) =
+   \lambda_r \cdot \mathbf v +
+   \lambda_v \cdot \left(-\frac{\mu}{r^3}\mathbf r + \frac{c_1 u}{m} \hat{\mathbf i} \right) +
+   \lambda_m \left(-\frac{c_1}{c_2} u\right) +
+   \lambda_0 \frac{c_1}{c_2} \left(u + \epsilon \log(u(1-u))\right)
+
+In the case of **time optimality**, the Hamiltonian becomes:
+
+.. math::
+   \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) =
+   \lambda_r \cdot \mathbf v +
+   \lambda_v \cdot \left(-\frac{\mu}{r^3}\mathbf r + \frac{c_1 u}{m} \hat{\mathbf i} \right) +
+   \lambda_m \left(-\frac{c_1}{c_2} u\right) +
+   \lambda_0 \frac{c_1}{c_2}
+
+In both cases the control :math:`u` is assumed to be optimal and is thus a function of the states/co-states. 
+Along an optimal trajectory this Hamiltonian must be constant.
+
+Args:
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::c_func`: The Hamiltonian :math:`\mathcal H(\mathbf x, \mathbf \lambda)` as a numeric function.
+
+Examples:
+    >>> import pykep as pk
+    >>> mu = ..
+    ...
+    >>> H_func([x,y,z,vx,vy,vz,m,lx,ly,lz,lvx,lvy,lvz,lm], pars = [mu, c1, c2, eps, l0])
+    )";
+}
+
+
+std::string get_peq_docstring()
+{
+    return R"(ta.get_peq(tol, optimality)
+
+Returns a Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting from the application of 
+Pontryagin Maximum Principle (PMC) to the low-trhust problem (constant maximal thrust) in 
+Modified Equinoctial elements. If the requested propagator was never created, a call to this function will
+trigger its compilation. Otherwise, it will return the one from a global cache, thus avoiding jitting.
+The specific dynamics used is that returned by :func:`~pykep.ta.peq_dyn`.
+Both time optimal and mass optimal systems can be returned by setting the *optimality* parameter.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_peq(tol = 1e-16, optimality = pk.optimality_type.TIME)
+  >>> ta.time = 0.
+  >>> # We set the initial conditions with some arbitrary values (all costates to 1.)
+  >>> ta.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
+  >>> tof = 1.2345
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_peq_var_docstring()
+{
+    return R"(ta.get_peq_var(tol, optimality)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the TPBVP problem resulting
+from the application of Pontryagin Maximum Principle (PMP) to the low-thrust problem
+(constant maximal thrust) in Modified Equinoctial Elements. If the requested propagator was never created, 
+a call to this function will trigger its compilation. Otherwise, it will return the one from
+a global cache, thus avoiding jitting.
+
+.. note:
+   Variations are considered with respect to the initial conditions on the costates and to the
+   parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
+   is still considered a parameter (for consistency) but it is not used.
+
+The specific dynamics used is that returned by :func:`~pykep.ta.pc_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta_var = pk.ta.get_peq_var(tol = 1e-16, optimality = pk.optimality_type.TIME))
+  >>> ta_var.time = 0.
+  >>> ta_var.state[:14] = [1., 0., 0., 0., 1., 0., 10., 1., 1., 1., 1., 1., 1., 1.]
+  >>> ta_var.pars[:] = [1., 0.01, 1.] # in case of TIME parameters are [mu, Tmax, Isp g0]
+  >>> tof = 1.2345
+  >>> ta_var.propagate_until(tof)
+)";
+}
+
+std::string peq_dyn_docstring()
+{
+    return R"(ta.peq_dyn(optimality)
+
+The augmented dynamics of the TPBVP originating when applying an indirect method
+to the low-thrust transfer problem in **Modified Equinoctial Elements (MEE)**.
+
+The (non-augmented) dynamics is:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot p = \sqrt{\frac{p}{\mu}} \frac{2p}{w} i_t \cdot \frac{u}{m} \\
+   \dot f = \frac{1}{m} \sqrt{\frac{p}{\mu}} \left[ i_r \sin L + \left( (1+w)\cos L + f \right)\frac{i_t}{w} - (h\sin L - k\cos L)\frac{g i_n}{w} \right] \cdot \frac{u}{m} \\
+   \dot g = \frac{1}{m} \sqrt{\frac{p}{\mu}} \left[ -i_r \cos L + \left( (1+w)\sin L + g \right)\frac{i_t}{w} + (h\sin L - k\cos L)\frac{f i_n}{w} \right] \cdot \frac{u}{m} \\
+   \dot h = \sqrt{\frac{p}{\mu}} \frac{s^2 i_n}{2w} \cos L \cdot \frac{u}{m} \\
+   \dot k = \sqrt{\frac{p}{\mu}} \frac{s^2 i_n}{2w} \sin L \cdot \frac{u}{m} \\
+   \dot L = \sqrt{\frac{p}{\mu}} \left[ \mu\left(\frac{w}{p}\right)^2 + \frac{1}{w}(h\sin L - k\cos L) \frac{i_n}{m} \cdot \frac{u}{m} \right] \\
+   \dot m = -\frac{c_1}{c_2} \cdot \frac{u}{m}
+   \end{array}
+   \right.
+
+The auxiliary functions and variables used above are:
+
+.. math::
+   w = 1 + f \cos L + g \sin L,\quad s^2 = 1 + h^2 + k^2
+
+Introducing the state, containing both the physical state and the co-states, as:
+
+.. math::
+   \mathbf x = [p, f, g, h, k, L, m, \lambda_p, \lambda_f, \lambda_g, \lambda_h, \lambda_k, \lambda_L, \lambda_m]
+
+the parameter vector, containing the gravitational parameter, maximum thrust, effective exhaust velocity, a homotopy continuation parameter, 
+and a normalizing Lagrange multiplier (see later), as:
+
+.. math::
+   \mathbf p = [\mu, c_1, c_2, \epsilon, \lambda_0]
+
+and the control vector as:
+
+.. math::
+   \mathbf u = [u, \hat{\mathbf i}_\tau]
+
+the dynamics can be rewritten in compact form as:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot{\mathbf x} = \frac{c_1 u(t)}{m} \mathbf B(\mathbf x) \hat{\mathbf i}_\tau + \mathbf D(\mathbf x) \\
+   \dot m = -c_2 u(t)
+   \end{array}
+   \right.
+
+Where:
+
+.. math::
+   \sqrt{\frac{\mu}{p}} \mathbf B(\mathbf x) = 
+   \begin{bmatrix}
+   0 & \frac{2p}{w} & 0 \\
+   \sin L & \frac{(1+w)\cos L + f}{w} & -\frac{g}{w}(h \sin L - k \cos L) \\
+   -\cos L & \frac{(1+w)\sin L + g}{w} & \frac{f}{w}(h \sin L - k \cos L) \\
+   0 & 0 & \frac{1}{w} \frac{s^2}{2} \cos L \\
+   0 & 0 & \frac{1}{w} \frac{s^2}{2} \sin L \\
+   0 & 0 & \frac{1}{w} (h \sin L - k \cos L)
+   \end{bmatrix}
+
+.. math::
+   \mathbf D(\mathbf x) = 
+   \begin{bmatrix}
+   0 \\
+   0 \\
+   0 \\
+   0 \\
+   0 \\
+   \sqrt{\frac{\mu}{p^3}} w^2
+   \end{bmatrix}
+
+As in the Cartesian case, the equations of motion for the TPBVP
+are derived from the Hamiltonian, which depends on the chosen optimality:
+
+- **Mass Optimality**:
+
+.. math::
+   \mathcal H = \boldsymbol \lambda^\top \dot{\mathbf x} + \lambda_m \dot{m} + \lambda_0 \frac{c_1}{c_2} \left( u + \epsilon \log(u(1 - u)) \right)
+
+- **Time Optimality**:
+
+.. math::
+   \mathcal H = \boldsymbol \lambda^\top \dot{\mathbf x} + \lambda_m \dot{m} + \lambda_0 \frac{c_1}{c_2}
+
+The full augmented dynamics is thus obtained by:
+
+.. math::
+   \left\{
+   \begin{array}{l}
+   \dot{\mathbf x} = \frac{\partial \mathcal H}{\partial \boldsymbol \lambda} \\
+   \dot{\boldsymbol \lambda} = - \frac{\partial \mathcal H}{\partial \mathbf x}
+   \end{array}
+   \right.
+
+And by applying Pontryagin’s Minimum Principle:
+
+.. math::
+   \mathbf u^* = \arg\min_{\mathbf u \in \mathcal U} \mathcal H(\mathbf x, \boldsymbol \lambda, \mathbf u)
+
+where :math:`\mathcal U` is the admissible set of control inputs (direction and throttle).
+
+Args:
+    *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
 
 std::string propagate_lagrangian_docstring()
 {

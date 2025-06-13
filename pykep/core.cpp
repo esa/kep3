@@ -31,6 +31,7 @@
 #include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
+#include <kep3/ta/pontryagin_equinoctial.hpp>
 #include <kep3/ta/stark.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
@@ -127,12 +128,12 @@ PYBIND11_MODULE(core, m) // NOLINT
     m.def("f2zeta_v", py::vectorize(kep3::f2zeta), pk::f2zeta_v_doc().c_str());
 
     // Exposing element conversions
-    m.def("ic2par", &kep3::ic2par);
-    m.def("par2ic", &kep3::par2ic);
-    m.def("ic2eq", &kep3::ic2eq);
-    m.def("eq2ic", &kep3::eq2ic);
-    m.def("par2eq", &kep3::par2eq);
-    m.def("eq2par", &kep3::eq2par);
+    m.def("ic2par", &kep3::ic2par, py::arg("posvel"), py::arg("mu"), pk::ic2par_doc().c_str());
+    m.def("par2ic", &kep3::par2ic, py::arg("elem"), py::arg("mu"), pk::par2ic_doc().c_str());
+    m.def("ic2eq", &kep3::ic2eq, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false, pk::ic2eq_doc().c_str());
+    m.def("eq2ic", &kep3::eq2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false, pk::eq2ic_doc().c_str());
+    m.def("par2eq", &kep3::par2eq, py::arg("elem"), py::arg("retrogde") = false, pk::par2eq_doc().c_str());
+    m.def("eq2par", &kep3::eq2par, py::arg("eq_elem"), py::arg("retrogde") = false, pk::eq2par_doc().c_str());
 
     // Exposing mima functions and basic transfer functionalities
     m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),
@@ -351,7 +352,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing Taylor adaptive propagators
     // Create submodule "ta"
     py::module_ ta = m.def_submodule("ta", "Submodule for heyoka Taylor integrator related stuff");
-    // Register the submodule so Python sees it as real (note we use the final pythin visible name for this)
+    // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
     sys.attr("modules")["pykep.ta"] = ta;
     // Stark
@@ -436,6 +437,33 @@ PYBIND11_MODULE(core, m) // NOLINT
     ta.def("get_pc_u_cfunc", &kep3::ta::get_pc_u_cfunc, pykep::get_pc_u_cfunc_docstring().c_str());
     ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
     ta.def("get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
+
+   // Pontryagin Equinoctial (TPBVP)
+    ta.def(
+        "get_peq",
+        [](double tol, kep3::optimality_type optimality) {
+            // retreive from cache
+            auto ta_cache = kep3::ta::get_ta_peq(tol, optimality);
+            // copy
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            // return a copy
+            return ta;
+        },
+        py::arg("tol"), py::arg("optimality"), pykep::get_peq_docstring().c_str());
+    ta.def(
+        "get_peq_var",
+        [](double tol, kep3::optimality_type optimality) {
+            auto ta_cache = kep3::ta::get_ta_peq_var(tol, optimality);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), py::arg("optimality"), pykep::get_peq_var_docstring().c_str());
+    ta.def("peq_dyn", &kep3::ta::peq_dyn, pykep::peq_dyn_docstring().c_str());
+    ta.def("get_peq_H_cfunc", &kep3::ta::get_peq_H_cfunc, pykep::get_peq_H_cfunc_docstring().c_str());
+    ta.def("get_peq_SF_cfunc", &kep3::ta::get_peq_SF_cfunc, pykep::get_peq_SF_cfunc_docstring().c_str());
+    ta.def("get_peq_u_cfunc", &kep3::ta::get_peq_u_cfunc, pykep::get_peq_u_cfunc_docstring().c_str());
+    ta.def("get_peq_i_vers_cfunc", &kep3::ta::get_peq_i_vers_cfunc, pykep::get_peq_i_vers_cfunc_docstring().c_str());
+    ta.def("get_peq_dyn_cfunc", &kep3::ta::get_peq_dyn_cfunc, pykep::get_peq_dyn_cfunc_docstring().c_str());
 
     // Exposing propagators
     m.def(

@@ -153,7 +153,7 @@ TEST_CASE("dynamics_time")
     auto ta_cached = get_ta_pc(1e-16, kep3::optimality_type::TIME);
     REQUIRE(ta_cached.is_variational() == false);
     REQUIRE(ta_cached.get_dim() == 14);
-    REQUIRE(ta_cached.get_pars().size() == 3); // [mu, c1, c2, eps, l0]
+    REQUIRE(ta_cached.get_pars().size() == 3); // [mu, c1, c2]
 
     {
         // We test a meaningless case.
@@ -230,4 +230,18 @@ TEST_CASE("variational_dynamics_time")
         REQUIRE(std::get<0>(out) == taylor_outcome::time_limit);
         REQUIRE(kep3_tests::L_infinity_norm_rel(ta.get_state(), ground_truth) <= 1e-12);
     }
+}
+
+TEST_CASE("various_cfunc")
+{
+    REQUIRE_NOTHROW(kep3::ta::get_pc_dyn_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_dyn_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_i_vers_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_i_vers_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_u_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_u_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_SF_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_SF_cfunc(kep3::optimality_type::MASS));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_H_cfunc(kep3::optimality_type::TIME));
+    REQUIRE_NOTHROW(kep3::ta::get_pc_H_cfunc(kep3::optimality_type::MASS));
 }

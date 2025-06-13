@@ -56,6 +56,10 @@ else:
 
 del _os
 
+import numpy as _np
+_np.set_printoptions(legacy='1.13')
+del _np
+
 # Importing user defined planets
 from . import udpla
 

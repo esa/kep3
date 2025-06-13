@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -15,7 +15,9 @@
 #include <fmt/ranges.h>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/kepler_equations.hpp>
@@ -26,19 +28,19 @@
 namespace kep3
 {
 
-using xt::linalg::inv;
-using kep3::linalg::mat36;
+using kep3::linalg::_cross;
+using kep3::linalg::_dot;
+using kep3::linalg::_skew;
+using kep3::linalg::mat13;
 using kep3::linalg::mat16;
 using kep3::linalg::mat31;
-using kep3::linalg::mat66;
-using kep3::linalg::mat63;
 using kep3::linalg::mat32;
-using kep3::linalg::mat62;
+using kep3::linalg::mat36;
 using kep3::linalg::mat61;
-using kep3::linalg::mat13;
-using kep3::linalg::_dot;
-using kep3::linalg::_cross;
-using kep3::linalg::_skew;
+using kep3::linalg::mat62;
+using kep3::linalg::mat63;
+using kep3::linalg::mat66;
+using xt::linalg::inv;
 
 // Here we take the lagrangian coefficient expressions for rf and vf as function of r0 and v0, and manually,
 // differentiate it to obtain the state transition matrix.
@@ -127,8 +129,14 @@ std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2>
     mat36 Mr = F * dr0 + _dot(r0T, dF) + G * dv0 + _dot(v0T, dG);
     mat36 Mv = Ft * dr0 + _dot(r0T, dFt) + Gt * dv0 + _dot(v0T, dGt);
     mat66 M{};
-    xt::view(M, xt::range(0, 3), xt::all()) = Mr;
-    xt::view(M, xt::range(3, 6), xt::all()) = Mv;
+
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 6; ++j)
+            M(i, j) = Mr(i, j);
+
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 6; ++j)
+            M(i + 3, j) = Mv(i, j);
     // ... and flatten it
     std::array<double, 36> retval{};
     std::copy(M.begin(), M.end(), retval.begin());
@@ -139,29 +147,74 @@ std::array<double, 36> stm_lagrangian(const std::array<std::array<double, 3>, 2>
 mat66 _compute_Y(const mat31 &r0, const mat31 &v0, const mat31 &r, const mat31 &v, double tof, double mu)
 {
     mat31 h = _cross(r, v);
-    double r0_mod = std::sqrt(r0(0, 0) * r0(0, 0) + r0(1, 0) * r0(1, 0) + r0(2, 0) * r0(2, 0));
-    double r_mod = std::sqrt(r(0, 0) * r(0, 0) + r(1, 0) * r(1, 0) + r(2, 0) * r(2, 0));
+
+    double r0_mod = std::sqrt(r0(0, 0)*r0(0, 0) + r0(1, 0)*r0(1, 0) + r0(2, 0)*r0(2, 0));
+    double r_mod = std::sqrt(r(0, 0)*r(0, 0) + r(1, 0)*r(1, 0) + r(2, 0)*r(2, 0));
     double r3 = r_mod * r_mod * r_mod;
+
     mat32 B{};
-    xt::view(B, xt::all(), 0) = xt::view(r0 / std::sqrt(mu * r0_mod), xt::all(), 0);
-    xt::view(B, xt::all(), 1) = xt::view(v0 * r0_mod / mu, xt::all(), 0);
+    // Assign B(:,0) = r0 / sqrt(mu * r0_mod)
+    for (std::size_t i = 0; i < 3; ++i)
+        B(i, 0) = r0(i, 0) / std::sqrt(mu * r0_mod);
+
+    // Assign B(:,1) = v0 * r0_mod / mu
+    for (std::size_t i = 0; i < 3; ++i)
+        B(i, 1) = v0(i, 0) * r0_mod / mu;
+
     mat63 fc{};
-    xt::view(fc, xt::range(0, 3), xt::all()) = _skew(r);
-    xt::view(fc, xt::range(3, 6), xt::all()) = _skew(v);
-    auto sct = -_dot(xt::eval(_dot(_skew(r), _skew(v)) + _skew(h)), B);
-    auto scb = _dot(xt::eval(mu / r3 * _dot(_skew(r), _skew(r)) - _dot(_skew(v), _skew(v))), B);
+    // fc(0..2, :) = _skew(r)
+    auto skew_r = _skew(r);
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 3; ++j)
+            fc(i, j) = skew_r(i, j);
+
+    // fc(3..5, :) = _skew(v)
+    auto skew_v = _skew(v);
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 3; ++j)
+            fc(i + 3, j) = skew_v(i, j);
+
+    auto sct = -_dot(xt::eval(_dot(skew_r, skew_v) + _skew(h)), B);
+    auto scb = _dot(xt::eval(mu / r3 * _dot(skew_r, skew_r) - _dot(skew_v, skew_v)), B);
+
     mat62 sc{};
-    xt::view(sc, xt::range(0, 3), xt::all()) = sct;
-    xt::view(sc, xt::range(3, 6), xt::all()) = scb;
+    // sc(0..2, :) = sct
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 2; ++j)
+            sc(i, j) = sct(i, j);
+
+    // sc(3..5, :) = scb
+    for (std::size_t i = 0; i < 3; ++i)
+        for (std::size_t j = 0; j < 2; ++j)
+            sc(i + 3, j) = scb(i, j);
+
     auto tct = (-r + 1.5 * v * tof);
     auto tcb = (v / 2. - 1.5 * mu / r3 * r * tof);
+
     mat61 tc{};
-    xt::view(tc, xt::range(0, 3), xt::all()) = tct;
-    xt::view(tc, xt::range(3, 6), xt::all()) = tcb;
+    // tc(0..2, 0) = tct
+    for (std::size_t i = 0; i < 3; ++i)
+        tc(i, 0) = tct(i, 0);
+
+    // tc(3..5, 0) = tcb
+    for (std::size_t i = 0; i < 3; ++i)
+        tc(i + 3, 0) = tcb(i, 0);
+
     mat66 Y{};
-    xt::view(Y, xt::all(), xt::range(0, 3)) = fc;
-    xt::view(Y, xt::all(), xt::range(3, 5)) = sc;
-    xt::view(Y, xt::all(), xt::range(5, 6)) = tc;
+    // Y(:, 0..2) = fc
+    for (std::size_t i = 0; i < 6; ++i)
+        for (std::size_t j = 0; j < 3; ++j)
+            Y(i, j) = fc(i, j);
+
+    // Y(:, 3..4) = sc (note: range(3,5) means columns 3 and 4)
+    for (std::size_t i = 0; i < 6; ++i)
+        for (std::size_t j = 0; j < 2; ++j)
+            Y(i, j + 3) = sc(i, j);
+
+    // Y(:, 5) = tc
+    for (std::size_t i = 0; i < 6; ++i)
+        Y(i, 5) = tc(i, 0);
+
     return Y;
 }
 
@@ -183,7 +236,7 @@ std::array<double, 36> stm_reynolds(const std::array<std::array<double, 3>, 2> &
     mat66 Y = _compute_Y(r0, v0, rf, vf, tof, mu);
     mat66 Y0 = _compute_Y(r0, v0, r0, v0, 0., mu);
     mat66 Y0inv = inv(Y0);
-     
+
     retval = _dot(Y, Y0inv);
     // return retval;
     std::array<double, 36> ret{};

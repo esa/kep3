@@ -9,6 +9,7 @@ set(PYKEP_TRAJOPT_PYTHON_FILES
     _mim.py
     _pl2pl_N_impulses.py
     _pontryagin_cartesian.py
+    _pontryagin_equinoctial.py
     _primer_vector.py)
     
 install(FILES ${PYKEP_TRAJOPT_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR}/trajopt)

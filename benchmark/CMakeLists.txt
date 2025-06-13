@@ -14,6 +14,13 @@ function(ADD_kep3_BENCHMARK arg1)
     "$<$<CONFIG:RelWithDebInfo>:${kep3_CXX_FLAGS_RELEASE}>"
     "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
   )
+
+  # Adding this to shut down xtensor warnings (as of v0.26 still there)
+  if (YACMA_COMPILER_IS_GNUCXX)
+      target_compile_options(kep3 PRIVATE -Wno-array-bounds)
+      target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+  endif()
+  
   # Setup the C++ standard.
   target_compile_features(${arg1} PRIVATE cxx_std_20)
   set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)

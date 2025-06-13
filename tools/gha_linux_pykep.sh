@@ -14,11 +14,12 @@ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge
 export deps_dir=$HOME/local
 export PATH="$HOME/miniforge3/bin:$PATH"
 bash miniforge3.sh -b -p $HOME/miniforge3
-mamba env create --file=kep3_devel.yml -q -p $deps_dir
+conda env create --file=kep3_devel.yml -q -p $deps_dir
 source activate $deps_dir
+conda list
 
 # Install additional packages for Python compiling and docs building (19/11/2023 sphinx 7 not working)
-mamba install numpy "sphinx<7" sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
+conda install numpy "sphinx<7" sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
 
 # We build and install pykep (and the kep3 library)
 mkdir build

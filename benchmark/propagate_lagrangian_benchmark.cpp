@@ -7,14 +7,12 @@
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
 #include <chrono>
-#include <iostream>
+#include <functional>
 
 #include <random>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-
-#include <xtensor/xtensor.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>

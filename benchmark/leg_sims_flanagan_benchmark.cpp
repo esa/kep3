@@ -13,6 +13,8 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
+#include <xtensor/containers/xadapt.hpp>
+
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/nlopt.hpp>
 #include <pagmo/population.hpp>
