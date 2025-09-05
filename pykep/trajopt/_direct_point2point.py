@@ -131,7 +131,7 @@ class direct_point2point:
 
     def has_gradient(self):
         return self.with_gradient
-
+    
     def gradient(self, x):
         self._set_leg_from_x(x)
         _, mcg_xf, mcg_th_tof = self.leg.compute_mc_grad()
@@ -181,6 +181,35 @@ class direct_point2point:
             retval.append([8 + i, 3 * i + 2])
             retval.append([8 + i, 3 * i + 3])
         # We return the sparsity pattern
+        return retval
+    
+    # NOTE: We fake hessians of the objective (fitness[0])
+    def has_hessians(self):
+        return self.with_gradient
+    
+    def hessians(self, x):
+        n = 2 + 3 * self.nseg
+        obj_H = _np.zeros((n,n))
+        obj_H = obj_H[_np.tril_indices(n)]
+        retval = [obj_H]
+        # We fake the rest (with minimal sparsity)
+        for i in range(self.get_nec() + self.get_nic()):
+            retval.append([0.0])
+        return retval
+    
+    def hessians_sparsity(self):
+        n = 2 + 3 * self.nseg
+        # obj is full
+        sparsity = []
+        retval = []
+        for row in range(n):
+            for col in range(row + 1):
+                sparsity.append((row, col))
+        retval.append(sparsity)
+        
+        # Constraints are fake
+        for i in range(self.get_nec()+self.get_nic()):
+            retval.append([(0, 0)])
         return retval
 
     def get_nec(self):
