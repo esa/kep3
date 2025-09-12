@@ -15,8 +15,9 @@
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
-#include <xtensor/xio.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/io/xio.hpp>
+
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -30,11 +31,11 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
 #include <pagmo/utils/gradients_and_hessians.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <heyoka/config.hpp>
 #include <heyoka/expression.hpp>

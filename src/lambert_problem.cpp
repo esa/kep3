@@ -12,7 +12,7 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
 
 #include <kep3/exceptions.hpp>
 #include <kep3/lambert_problem.hpp>

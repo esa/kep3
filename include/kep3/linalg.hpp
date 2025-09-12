@@ -9,8 +9,9 @@
 #ifndef kep3_DETAIL_XTENSOR_HELPERS_HPP
 #define kep3_DETAIL_XTENSOR_HELPERS_HPP
 
+#include <xtensor/containers/xarray.hpp>
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 namespace kep3::linalg
 {
@@ -49,7 +50,13 @@ mat31 _cross(const mat31 &v1, const mat31 &v2);
 // ---------------------------------------------------------------------------------------
 
 // Linear algebra helpers for std::array<double, 3> types.
-void _normalize(std::array<double, 3> &v1);
+inline void _normalize(std::array<double, 3> &v1)
+{
+    const double norm = std::sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]);
+    v1[0] /= norm;
+    v1[1] /= norm;
+    v1[2] /= norm;
+}
 
 inline std::array<double, 3> operator+(const std::array<double, 3> &a, const std::array<double, 3> &b)
 {

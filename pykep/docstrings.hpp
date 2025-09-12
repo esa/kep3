@@ -53,6 +53,14 @@ std::string f2h_v_doc();
 std::string zeta2f_v_doc();
 std::string f2zeta_v_doc();
 
+// Elements conversions
+std::string ic2par_doc();
+std::string par2ic_doc();
+std::string ic2eq_doc();
+std::string eq2ic_doc();
+std::string par2eq_doc();
+std::string eq2par_doc();
+
 // MIMA
 std::string mima_doc();
 std::string mima_from_hop_doc();
@@ -92,9 +100,9 @@ std::string udpla_jpl_lp_docstring();
 std::string udpla_vsop2013_docstring();
 
 // Taylor Adaptive propagators
-std::string get_stark_docstring();
-std::string get_stark_var_docstring();
-std::string stark_dyn_docstring();
+std::string get_zero_hold_kep_docstring();
+std::string get_zero_hold_kep_var_docstring();
+std::string zero_hold_kep_dyn_docstring();
 std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
@@ -107,11 +115,20 @@ std::string bcp_dyn_docstring();
 std::string get_pc_docstring();
 std::string get_pc_var_docstring();
 std::string pc_dyn_docstring();
-inline std::string get_pc_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+std::string get_pc_H_cfunc_docstring();
 inline std::string get_pc_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
 inline std::string get_pc_u_cfunc_docstring(){return "The optimal throttle.";};
 inline std::string get_pc_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
 inline std::string get_pc_dyn_cfunc_docstring(){return "The augmented dynamics.";};
+
+std::string get_peq_docstring();
+std::string get_peq_var_docstring();
+std::string peq_dyn_docstring();
+inline std::string get_peq_H_cfunc_docstring(){return "The Hamiltonian along an optimal trajectory.";};
+inline std::string get_peq_SF_cfunc_docstring(){return "The Switching Function along an optimal trajectory.";};
+inline std::string get_peq_u_cfunc_docstring(){return "The optimal throttle.";};
+inline std::string get_peq_i_vers_cfunc_docstring(){return "The optimal thrust direction.";};
+inline std::string get_peq_dyn_cfunc_docstring(){return "The augmented dynamics.";};
 
 
 // Lambert Problem
@@ -122,10 +139,10 @@ std::string fb_con_docstring();
 std::string fb_dv_docstring();
 std::string fb_vout_docstring();
 
-// Stark problem
-std::string stark_problem_docstring();
-std::string stark_problem_propagate_docstring();
-std::string stark_problem_propagate_var_docstring();
+// zero_hold_kep problem
+std::string zero_hold_kep_problem_docstring();
+std::string zero_hold_kep_problem_propagate_docstring();
+std::string zero_hold_kep_problem_propagate_var_docstring();
 
 // Propagators
 std::string propagate_lagrangian_docstring();

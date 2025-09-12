@@ -12,7 +12,7 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <kep3/stark_problem.hpp>
+#include <kep3/zero_hold_kep_problem.hpp>
 
 #include "catch.hpp"
 #include "kep3/core_astro/constants.hpp"
@@ -23,8 +23,8 @@ using kep3_tests::L_infinity_norm_rel;
 TEST_CASE("construct")
 {
     // Here we test construction for a simple geometry
-    REQUIRE_NOTHROW(kep3::stark_problem(1., 10., 1e-12));
-    auto s = kep3::stark_problem(1.23, 10.12, 1e-12);
+    REQUIRE_NOTHROW(kep3::zero_hold_kep_problem(1., 10., 1e-12));
+    auto s = kep3::zero_hold_kep_problem(1.23, 10.12, 1e-12);
     REQUIRE(s.get_ta().get_pars()[0] == 1.23);
     REQUIRE(s.get_ta().get_pars()[1] == 10.12);
     REQUIRE(s.get_ta_var().get_pars()[0] == 1.23);
@@ -38,7 +38,7 @@ TEST_CASE("propagate")
     double EV_OLD = 29784.691831696804;
     double MU_OLD = 1.32712440018e20;
 
-    auto s = kep3::stark_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
+    auto s = kep3::zero_hold_kep_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
     // Mass is zero
     REQUIRE_THROWS_AS(s.propagate({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
     // Radius is zero
@@ -57,7 +57,7 @@ TEST_CASE("propagate_var")
     double EV_OLD = 29784.691831696804;
     double MU_OLD = 1.32712440018e20;
 
-    auto s = kep3::stark_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
+    auto s = kep3::zero_hold_kep_problem(MU_OLD, 3000 * kep3::G0, 1e-16);
     // Mass is zero
     REQUIRE_THROWS_AS(s.propagate_var({AU_OLD, 1000, 01000, 0.123, EV_OLD, 10.1234, 0.}, {0.05, 0.01, 0.01}, 300. * kep3::DAY2SEC), std::domain_error);
     // Radius is zero
@@ -71,7 +71,7 @@ TEST_CASE("propagate_var")
 }
 TEST_CASE("getters_setters")
 {
-    auto s = kep3::stark_problem(kep3::MU_SUN, 3000 * kep3::G0, 1e-16);
+    auto s = kep3::zero_hold_kep_problem(kep3::MU_SUN, 3000 * kep3::G0, 1e-16);
     REQUIRE(s.get_mu() == kep3::MU_SUN);
     REQUIRE(s.get_veff() == 3000 * kep3::G0);
     REQUIRE(s.get_tol() == 1e-16);
@@ -88,7 +88,7 @@ TEST_CASE("getters_setters")
 TEST_CASE("serialization_test")
 {
     // Instantiate a planet
-    kep3::stark_problem s1{kep3::MU_SUN, 3000 * kep3::G0, 1e-16};
+    kep3::zero_hold_kep_problem s1{kep3::MU_SUN, 3000 * kep3::G0, 1e-16};
 
     // Store the string representation.
     std::stringstream ss;
@@ -99,7 +99,7 @@ TEST_CASE("serialization_test")
         oarchive << s1;
     }
     // Create a new planet object
-    auto s2 = kep3::stark_problem{};
+    auto s2 = kep3::zero_hold_kep_problem{};
     boost::lexical_cast<std::string>(s2); // triggers the streaming operator
     {
         boost::archive::binary_iarchive iarchive(ss);

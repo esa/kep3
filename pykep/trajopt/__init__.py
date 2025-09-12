@@ -21,6 +21,7 @@ from ._pl2pl_N_impulses import pl2pl_N_impulses
 
 # Indirect methods for low-thrust problems
 from ._pontryagin_cartesian import pontryagin_cartesian_mass, pontryagin_cartesian_time
+from ._pontryagin_equinoctial import pontryagin_equinoctial_mass
 from ._mim import mim_from_hop
 
 # MIT (multiple Impulse Trajectories)

@@ -6,7 +6,6 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
-#include "kep3/core_astro/constants.hpp"
 #include <cmath>
 
 #include <boost/math/tools/roots.hpp>
@@ -15,13 +14,16 @@
 #include <fmt/ranges.h>
 
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/generators/xbuilder.hpp>
 
 #include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/lambert_problem.hpp>
 #include <kep3/linalg.hpp>
-#include <xtensor/xbuilder.hpp>
+
+#include "kep3/core_astro/constants.hpp"
 
 namespace kep3
 {
@@ -56,8 +58,8 @@ std::pair<double, double> mima_from_hop(const kep3::planet &pl_s, const kep3::pl
 }
 
 std::pair<double, double> _mima_compute_transfer(double x, const std::array<std::array<double, 3>, 2> &posvel1,
-                                                         double tof, const std::array<double, 3> &dv1_flat,
-                                                         const std::array<double, 3> &dv2_flat, double mu)
+                                                 double tof, const std::array<double, 3> &dv1_flat,
+                                                 const std::array<double, 3> &dv2_flat, double mu)
 {
     // Some shortcuts for xtensor functions
     using kep3::linalg::_dot;
@@ -139,8 +141,8 @@ kep3_DLL_PUBLIC std::pair<double, double> mima2(const std::array<std::array<doub
     boost::math::tools::eps_tolerance<double> tol(digits); // Set the tolerance.
     double guess = _mima_compute_transfer(0., posvel1, tof, dv1, dv2, mu).first > 0 ? -0.5 : 0.5;
     auto r = boost::math::tools::bracket_and_solve_root(
-        [&](double x) { return _mima_compute_transfer(x, posvel1, tof, dv1, dv2, mu).first; }, guess, 2., true,
-        tol, it);
+        [&](double x) { return _mima_compute_transfer(x, posvel1, tof, dv1, dv2, mu).first; }, guess, 2., true, tol,
+        it);
 
     if (it >= maxit) { //
         throw std::domain_error("Maximum number of iterations exceeded when computing mima2");
@@ -160,12 +162,10 @@ std::pair<double, double> mima2_from_hop(const kep3::planet &pl_s, const kep3::p
     double mu = pl_s.get_mu_central_body();
     const auto &[r_s, v_s] = pl_s.eph(when_s);
     const auto &[r_f, v_f] = pl_f.eph(when_f);
-    auto l = kep3::lambert_problem(r_s, r_f, tof,  mu, false, 0u);
+    auto l = kep3::lambert_problem(r_s, r_f, tof, mu, false, 0u);
     std::array<double, 3> dv1 = {l.get_v0()[0][0] - v_s[0], l.get_v0()[0][1] - v_s[1], l.get_v0()[0][2] - v_s[2]};
     std::array<double, 3> dv2 = {-l.get_v1()[0][0] + v_f[0], -l.get_v1()[0][1] + v_f[1], -l.get_v1()[0][2] + v_f[2]};
     return mima2({r_s, l.get_v0()[0]}, dv1, dv2, tof, Tmax, veff, mu);
 }
-
-
 
 } // namespace kep3

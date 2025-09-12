@@ -10,10 +10,12 @@
 #include <cmath>
 
 #include <fmt/core.h>
+
 #include <fmt/ranges.h>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor-blas/xlinalg.hpp>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/ic2eq2ic.hpp>

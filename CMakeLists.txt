@@ -139,7 +139,7 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/epoch.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/planet.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/lambert_problem.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/stark_problem.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/zero_hold_kep_problem.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/keplerian.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/udpla/jpl_lp.cpp"
@@ -158,10 +158,11 @@ set(kep3_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/propagate_lagrangian.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/encodings.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/core_astro/basic_transfers.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/stark.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/zero_hold_kep.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/cr3bp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/bcp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/pontryagin_cartesian.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ta/pontryagin_equinoctial.cpp"
 )
 
 # Setup of the kep3 shared library.
@@ -170,6 +171,13 @@ set_property(TARGET kep3 PROPERTY VERSION "1.0")
 set_property(TARGET kep3 PROPERTY SOVERSION 1)
 set_target_properties(kep3 PROPERTIES CXX_VISIBILITY_PRESET hidden)
 set_target_properties(kep3 PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
+
+# Adding this to shut down xtensor warnings (as of v0.26 still there)
+if (YACMA_COMPILER_IS_GNUCXX)
+    target_compile_options(kep3 PRIVATE -Wno-array-bounds)
+    target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+endif()
+
 
 target_compile_options(kep3 PRIVATE
     "$<$<CONFIG:Debug>:${kep3_CXX_FLAGS_DEBUG}>"

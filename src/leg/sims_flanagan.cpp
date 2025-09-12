@@ -16,12 +16,12 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <xtensor/xadapt.hpp>
-#include <xtensor/xarray.hpp>
-#include <xtensor/xbuilder.hpp>
-#include <xtensor/xio.hpp>
-#include <xtensor/xmath.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/containers/xadapt.hpp>
+#include <xtensor/generators/xbuilder.hpp>
+#include <xtensor/io/xio.hpp>
+#include <xtensor/core/xmath.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
