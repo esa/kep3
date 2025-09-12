@@ -13,7 +13,7 @@
 #include <fmt/ranges.h>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 
 #include "catch.hpp"
 #include "test_helpers.hpp"
@@ -21,10 +21,10 @@
 using heyoka::taylor_adaptive;
 using heyoka::taylor_outcome;
 
-using kep3::ta::get_ta_stark;
-using kep3::ta::get_ta_stark_cache_dim;
-using kep3::ta::get_ta_stark_var;
-using kep3::ta::get_ta_stark_var_cache_dim;
+using kep3::ta::get_ta_zero_hold_kep;
+using kep3::ta::get_ta_zero_hold_kep_cache_dim;
+using kep3::ta::get_ta_zero_hold_kep_var;
+using kep3::ta::get_ta_zero_hold_kep_var_cache_dim;
 
 using kep3_tests::L_infinity_norm_rel;
 
@@ -32,27 +32,27 @@ using kep3_tests::L_infinity_norm_rel;
 TEST_CASE("caches")
 {
     // The non variational one.
-    REQUIRE(get_ta_stark_cache_dim() == 0u);
-    auto ta_cached = get_ta_stark(1e-16);
-    REQUIRE(get_ta_stark_cache_dim() == 1u);
-    ta_cached = get_ta_stark(1e-16);
-    REQUIRE(get_ta_stark_cache_dim() == 1u);
-    ta_cached = get_ta_stark(1e-8);
-    REQUIRE(get_ta_stark_cache_dim() == 2u);
+    REQUIRE(get_ta_zero_hold_kep_cache_dim() == 0u);
+    auto ta_cached = get_ta_zero_hold_kep(1e-16);
+    REQUIRE(get_ta_zero_hold_kep_cache_dim() == 1u);
+    ta_cached = get_ta_zero_hold_kep(1e-16);
+    REQUIRE(get_ta_zero_hold_kep_cache_dim() == 1u);
+    ta_cached = get_ta_zero_hold_kep(1e-8);
+    REQUIRE(get_ta_zero_hold_kep_cache_dim() == 2u);
 
     // The variational integrator.
-    REQUIRE(get_ta_stark_var_cache_dim() == 0u);
-    ta_cached = get_ta_stark_var(1e-16);
-    REQUIRE(get_ta_stark_var_cache_dim() == 1u);
-    ta_cached = get_ta_stark_var(1e-16);
-    REQUIRE(get_ta_stark_var_cache_dim() == 1u);
-    ta_cached = get_ta_stark_var(1e-8);
-    REQUIRE(get_ta_stark_var_cache_dim() == 2u);
+    REQUIRE(get_ta_zero_hold_kep_var_cache_dim() == 0u);
+    ta_cached = get_ta_zero_hold_kep_var(1e-16);
+    REQUIRE(get_ta_zero_hold_kep_var_cache_dim() == 1u);
+    ta_cached = get_ta_zero_hold_kep_var(1e-16);
+    REQUIRE(get_ta_zero_hold_kep_var_cache_dim() == 1u);
+    ta_cached = get_ta_zero_hold_kep_var(1e-8);
+    REQUIRE(get_ta_zero_hold_kep_var_cache_dim() == 2u);
 }
 
 TEST_CASE("dynamics")
 {
-    auto ta_cached = get_ta_stark(1e-16);
+    auto ta_cached = get_ta_zero_hold_kep(1e-16);
     REQUIRE(ta_cached.is_variational() == false);
     REQUIRE(ta_cached.get_dim() == 7);
     REQUIRE(ta_cached.get_pars().size() == 5);
@@ -92,7 +92,7 @@ TEST_CASE("dynamics")
 
 TEST_CASE("variational_dynamics")
 {
-    auto ta_cached = get_ta_stark_var(1e-16);
+    auto ta_cached = get_ta_zero_hold_kep_var(1e-16);
     REQUIRE(ta_cached.is_variational() == true);
     REQUIRE(ta_cached.get_dim() == 77);
     REQUIRE(ta_cached.get_pars().size() == 5);

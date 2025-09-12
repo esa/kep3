@@ -27,7 +27,7 @@ Non-Keplerian
 
 .. currentmodule:: pykep
 
-.. autoclass:: stark_problem
+.. autoclass:: zero_hold_kep_problem
     :members:  propagate, propagate_var, mu, veff, tol
 
 ---------------------------------------------------------
@@ -51,15 +51,15 @@ the control, the Hamiltonian, the switching function, etc., are also provided.
 
 --------------------------------------------------------
 
-Stark
-~~~~~~~~~~~~ 
+zero_hold_kep
+~~~~~~~~~~~~~
 .. currentmodule:: pykep.ta
 
-.. autofunction:: get_stark
+.. autofunction:: get_zero_hold_kep
 
-.. autofunction:: get_stark_var
+.. autofunction:: get_zero_hold_kep_var
 
-.. autofunction:: stark_dyn 
+.. autofunction:: zero_hold_kep_dyn 
 
 
 Circular Restricted Three Body Problem

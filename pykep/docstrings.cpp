@@ -1679,11 +1679,11 @@ std::string lambert_problem_docstring()
 )";
 }
 
-std::string stark_problem_docstring()
+std::string zero_hold_kep_problem_docstring()
 {
     return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
 
-Class representing the Stark problem. In `pykep`, abusing a term well established in electrodynamics, 
+Class representing the zero_hold_kep problem. In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body and
 described by the equations:
 
@@ -1697,8 +1697,8 @@ described by the equations:
 
 .. note::
 
-  Similar and connected functionality is provided by the functions :func:`~pykep.ta.stark`,
-  :func:`~pykep.ta.stark_var`: and :func:`~pykep.ta.stark_dyn`:.
+  Similar and connected functionality is provided by the functions :func:`~pykep.ta.zero_hold_kep`,
+  :func:`~pykep.ta.zero_hold_kep_var`: and :func:`~pykep.ta.zero_hold_kep_dyn`:.
 
 Args:
     *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
@@ -1717,17 +1717,17 @@ Examples:
   >>> mu = pk.MU_SUN
   >>> veff = 3000. * pk.G0
   >>> tol = 1e-14
-  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp = pk.zero_hold_kep_problem(mu, veff, tol)
   >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
   [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
 )";
 }
 
-std::string stark_problem_propagate_docstring()
+std::string zero_hold_kep_problem_propagate_docstring()
 {
     return R"(propagate(rvm_state, thrust, tof)
 
-Stark problem numerical propagation. In `pykep`, abusing a term well established in electrodynamics, 
+zero_hold_kep problem numerical propagation. In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
 The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
@@ -1752,17 +1752,17 @@ Examples:
   >>> mu = pk.MU_SUN
   >>> veff = 3000. * pk.G0
   >>> tol = 1e-14
-  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp = pk.zero_hold_kep_problem(mu, veff, tol)
   >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
   [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
 )";
 }
 
-std::string stark_problem_propagate_var_docstring()
+std::string zero_hold_kep_problem_propagate_var_docstring()
 {
     return R"(propagate_var(rvm_state, thrust, tof)
 
-Stark problem numerical propagation via variational equations. 
+zero_hold_kep problem numerical propagation via variational equations. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -1800,16 +1800,16 @@ Examples:
   >>> mu = pk.MU_SUN
   >>> veff = 3000. * pk.G0
   >>> tol = 1e-14
-  >>> sp = pk.stark_problem(mu, veff, tol)
+  >>> sp = pk.zero_hold_kep_problem(mu, veff, tol)
   >>> sp.propagate(state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
 )";
 }
 
-std::string get_stark_docstring()
+std::string get_zero_hold_kep_docstring()
 {
-    return R"(ta.get_stark(tol)
+    return R"(ta.get_zero_hold_kep(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep problem retreiving one from a global cache and making a copy. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -1817,7 +1817,7 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
 If the requested propagator was never created this will create it, else it will
 return the one from the global cache, thus avoiding jitting.
 
-The dynamics is that returned by :func:`~pykep.ta.stark_dyn`.
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_kep_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1827,7 +1827,7 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_stark(tol = 1e-16)
+  >>> ta = pk.ta.get_zero_hold_kep(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
   >>> mu = 1.
@@ -1839,11 +1839,11 @@ Examples:
 )";
 }
 
-std::string get_stark_var_docstring()
+std::string get_zero_hold_kep_var_docstring()
 {
-    return R"(ta.get_stark_var(tol)
+    return R"(ta.get_zero_hold_kep_var(tol)
 
-Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem retreiving one from a global cache and making a copy. 
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_kep problem retreiving one from a global cache and making a copy. 
 
 .. note:
    Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
@@ -1851,7 +1851,7 @@ Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Star
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
-The dynamics is that returned by :func:`~pykep.ta.stark_dyn`: and also used in :func:`~pykep.ta.get_stark`
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_kep_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_kep`
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1861,7 +1861,7 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_stark_var(tol = 1e-16)
+  >>> ta = pk.ta.get_zero_hold_kep_var(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
   >>> mu = 1.
@@ -1873,11 +1873,11 @@ Examples:
 )";
 }
 
-std::string stark_dyn_docstring()
+std::string zero_hold_kep_dyn_docstring()
 {
-    return R"(stark_dyn()
+    return R"(zero_hold_kep_dyn()
 
-The dynamics of the Stark problem. 
+The dynamics of the zero_hold_kep problem. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
@@ -2956,7 +2956,7 @@ std::string leg_sf_hf_docstring()
       This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
       The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment:
 
-      Lantoine, Gregory & Russell, Ryan. (2009). The Stark Model: an exact, closed-form approach to low-thrust trajectory optimization. 
+      Lantoine, Gregory & Russell, Ryan. (2009). The zero_hold_kep Model: an exact, closed-form approach to low-thrust trajectory optimization. 
 
       The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
 
@@ -3001,7 +3001,7 @@ std::string leg_sf_hf_alpha_docstring()
       The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment.
       These segments are not necessarily equally spaced, but their time-intervals are given by talphas).
       
-      Lantoine, Gregory & Russell, Ryan. (2009). The Stark Model: an exact, closed-form approach to low-thrust trajectory optimization. 
+      Lantoine, Gregory & Russell, Ryan. (2009). The zero_hold_kep Model: an exact, closed-form approach to low-thrust trajectory optimization. 
 
       The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
 

@@ -22,7 +22,7 @@
 #include <heyoka/taylor.hpp>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 
 using heyoka::eq;
 using heyoka::expression;
@@ -38,7 +38,7 @@ using heyoka::var_ode_sys;
 
 namespace kep3::ta
 {
-std::vector<std::pair<expression, expression>> stark_dyn()
+std::vector<std::pair<expression, expression>> zero_hold_kep_dyn()
 {
     // The symbolic variables
     auto [x, y, z, vx, vy, vz, m] = make_vars("x", "y", "z", "vx", "vy", "vz", "m");
@@ -69,22 +69,22 @@ std::vector<std::pair<expression, expression>> stark_dyn()
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::mutex ta_stark_mutex;
+std::mutex ta_zero_hold_kep_mutex;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::unordered_map<double, taylor_adaptive<double>> ta_stark_cache;
+std::unordered_map<double, taylor_adaptive<double>> ta_zero_hold_kep_cache;
 
-const heyoka::taylor_adaptive<double> &get_ta_stark(double tol)
+const heyoka::taylor_adaptive<double> &get_ta_zero_hold_kep(double tol)
 {
     // Lock down for access to cache.
-    std::lock_guard const lock(ta_stark_mutex);
+    std::lock_guard const lock(ta_zero_hold_kep_mutex);
 
     // Lookup.
-    if (auto it = ta_stark_cache.find(tol); it == ta_stark_cache.end()) {
+    if (auto it = ta_zero_hold_kep_cache.find(tol); it == ta_zero_hold_kep_cache.end()) {
         // Cache miss, create new one.
         const std::vector init_state = {1., 1., 1., 1., 1., 1., 1.};
-        auto new_ta = taylor_adaptive<double>{stark_dyn(), init_state, heyoka::kw::tol = tol,
+        auto new_ta = taylor_adaptive<double>{zero_hold_kep_dyn(), init_state, heyoka::kw::tol = tol,
                                               heyoka::kw::pars = {1., 1., 0., 0., 0.}};
-        return ta_stark_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
+        return ta_zero_hold_kep_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
     } else {
         // Cache hit, return existing.
         return it->second;
@@ -92,42 +92,42 @@ const heyoka::taylor_adaptive<double> &get_ta_stark(double tol)
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::mutex ta_stark_var_mutex;
+std::mutex ta_zero_hold_kep_var_mutex;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::unordered_map<double, taylor_adaptive<double>> ta_stark_var_cache;
+std::unordered_map<double, taylor_adaptive<double>> ta_zero_hold_kep_var_cache;
 
-const heyoka::taylor_adaptive<double> &get_ta_stark_var(double tol)
+const heyoka::taylor_adaptive<double> &get_ta_zero_hold_kep_var(double tol)
 {
     // Lock down for access to cache.
-    std::lock_guard const lock(ta_stark_var_mutex);
+    std::lock_guard const lock(ta_zero_hold_kep_var_mutex);
 
     // Lookup.
-    if (auto it = ta_stark_var_cache.find(tol); it == ta_stark_var_cache.end()) {
+    if (auto it = ta_zero_hold_kep_var_cache.find(tol); it == ta_zero_hold_kep_var_cache.end()) {
         auto [x, y, z, vx, vy, vz, m] = make_vars("x", "y", "z", "vx", "vy", "vz", "m");
-        auto vsys = var_ode_sys(stark_dyn(), {x, y, z, vx, vy, vz, m, par[2], par[3], par[4]}, 1);
+        auto vsys = var_ode_sys(zero_hold_kep_dyn(), {x, y, z, vx, vy, vz, m, par[2], par[3], par[4]}, 1);
         // Cache miss, create new one.
         const std::vector init_state = {1., 1., 1., 1., 1., 1., 1.};
         auto new_ta = taylor_adaptive<double>{vsys, init_state, heyoka::kw::tol = tol, heyoka::kw::compact_mode = true,
                                               heyoka::kw::pars = {1., 1., 0., 0., 1e-32}};
-        return ta_stark_var_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
+        return ta_zero_hold_kep_var_cache.insert(std::make_pair(tol, std::move(new_ta))).first->second;
     } else {
         // Cache hit, return existing.
         return it->second;
     }
 }
 
-size_t get_ta_stark_cache_dim()
+size_t get_ta_zero_hold_kep_cache_dim()
 {
     // Lock down for access to cache.
-    std::lock_guard const lock(ta_stark_mutex);
-    return ta_stark_cache.size();
+    std::lock_guard const lock(ta_zero_hold_kep_mutex);
+    return ta_zero_hold_kep_cache.size();
 }
 
-size_t get_ta_stark_var_cache_dim()
+size_t get_ta_zero_hold_kep_var_cache_dim()
 {
     // Lock down for access to cache.
-    std::lock_guard const lock(ta_stark_mutex);
-    return ta_stark_var_cache.size();
+    std::lock_guard const lock(ta_zero_hold_kep_mutex);
+    return ta_zero_hold_kep_var_cache.size();
 }
 
 } // namespace kep3::ta

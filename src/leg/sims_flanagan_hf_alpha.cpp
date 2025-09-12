@@ -30,7 +30,7 @@
 #include <kep3/leg/sf_checks.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/linalg.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 
 #include <heyoka/taylor.hpp>
 
@@ -46,9 +46,9 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha()
                               m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
     m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
     m_tas_var = ta_var_cache;
 
     // We set mu and veff for the non-variational
@@ -84,9 +84,9 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<std::array<doubl
                               m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
     m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
     m_tas_var = ta_var_cache;
 
     // We set mu and veff for the non-variational
@@ -131,9 +131,9 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<double, 7> &rvms
                               m_nseg_bck);
 
     // Initialize m_tas and m_tas_var
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
     m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
     m_tas_var = ta_var_cache;
 
     // We set mu and veff for the non-variational
@@ -637,7 +637,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
         } // LCOV_EXCL_STOP
         output_per_seg[i] = output_states;
     }
@@ -673,7 +673,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
         } // LCOV_EXCL_STOP
         output_per_seg[m_nseg - 1 - i] = output_states;
     }

@@ -19,7 +19,7 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 
 namespace kep3::leg
 {

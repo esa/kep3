@@ -27,12 +27,12 @@
 #include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/stark_problem.hpp>
+#include <kep3/zero_hold_kep_problem.hpp>
 #include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/pontryagin_equinoctial.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -355,24 +355,24 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
     sys.attr("modules")["pykep.ta"] = ta;
-    // Stark
+    // zero_hold_kep
     ta.def(
-        "get_stark",
+        "get_zero_hold_kep",
         [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_stark(tol);
+            auto ta_cache = kep3::ta::get_ta_zero_hold_kep(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol"), pykep::get_stark_docstring().c_str());
+        py::arg("tol"), pykep::get_zero_hold_kep_docstring().c_str());
     ta.def(
-        "get_stark_var",
+        "get_zero_hold_kep_var",
         [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_stark_var(tol);
+            auto ta_cache = kep3::ta::get_ta_zero_hold_kep_var(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol"), pykep::get_stark_var_docstring().c_str());
-    ta.def("stark_dyn", &kep3::ta::stark_dyn, pykep::stark_dyn_docstring().c_str());
+        py::arg("tol"), pykep::get_zero_hold_kep_var_docstring().c_str());
+    ta.def("zero_hold_kep_dyn", &kep3::ta::zero_hold_kep_dyn, pykep::zero_hold_kep_dyn_docstring().c_str());
     // CR3BP
     // Add function to submodule
     ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());
@@ -536,28 +536,28 @@ PYBIND11_MODULE(core, m) // NOLINT
         , py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tofs") = std::vector<double>{kep3::pi / 2,},
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_grid_docstring().c_str());
 
-    // Exposing the Stark problem class
-    py::class_<kep3::stark_problem> stark_problem(m, "stark_problem", pykep::stark_problem_docstring().c_str());
-    stark_problem
+    // Exposing the zero_hold_kep problem class
+    py::class_<kep3::zero_hold_kep_problem> zero_hold_kep_problem(m, "zero_hold_kep_problem", pykep::zero_hold_kep_problem_docstring().c_str());
+    zero_hold_kep_problem
         .def(py::init<double, double, double>(), py::arg("mu") = 1., py::arg("veff") = 1., py::arg("tol") = 1e-16)
         // repr().
-        .def("__repr__", &pykep::ostream_repr<kep3::stark_problem>)
+        .def("__repr__", &pykep::ostream_repr<kep3::zero_hold_kep_problem>)
         // Copy and deepcopy.
-        .def("__copy__", &pykep::generic_copy_wrapper<kep3::stark_problem>)
-        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::stark_problem>)
+        .def("__copy__", &pykep::generic_copy_wrapper<kep3::zero_hold_kep_problem>)
+        .def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::zero_hold_kep_problem>)
         // Pickle support.
-        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::stark_problem>,
-                        &pykep::pickle_setstate_wrapper<kep3::stark_problem>))
-        .def_property_readonly("mu", &kep3::stark_problem::get_mu, "The central body gravity parameter.")
-        .def_property_readonly("veff", &kep3::stark_problem::get_veff, "The effective velocity (Isp g0)")
-        .def_property_readonly("tol", &kep3::stark_problem::get_tol, "The Taylor integrator tolerance.")
+        .def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::zero_hold_kep_problem>,
+                        &pykep::pickle_setstate_wrapper<kep3::zero_hold_kep_problem>))
+        .def_property_readonly("mu", &kep3::zero_hold_kep_problem::get_mu, "The central body gravity parameter.")
+        .def_property_readonly("veff", &kep3::zero_hold_kep_problem::get_veff, "The effective velocity (Isp g0)")
+        .def_property_readonly("tol", &kep3::zero_hold_kep_problem::get_tol, "The Taylor integrator tolerance.")
         // The actual call to propagators. (we do not here care about copies and allocations as this is 20 times slower
         // than propagate lagrangian already on c++ side).
-        .def("propagate", &kep3::stark_problem::propagate, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
-             pykep::stark_problem_propagate_docstring().c_str())
+        .def("propagate", &kep3::zero_hold_kep_problem::propagate, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
+             pykep::zero_hold_kep_problem_propagate_docstring().c_str())
         .def(
             "propagate_var",
-            [](kep3::stark_problem &sp, const std::array<double, 7> &rvm_state, std::array<double, 3> thrust,
+            [](kep3::zero_hold_kep_problem &sp, const std::array<double, 7> &rvm_state, std::array<double, 3> thrust,
                double tof) {
                 auto sp_retval = sp.propagate_var(rvm_state, thrust, tof);
                 // Lets transfer ownership of dxdx to python (not sure this is actually needed to
@@ -606,7 +606,7 @@ PYBIND11_MODULE(core, m) // NOLINT
                 return py::make_tuple(std::get<0>(sp_retval), computed_dxdx, computed_dxdu);
             },
             py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
-            pykep::stark_problem_propagate_var_docstring().c_str());
+            pykep::zero_hold_kep_problem_propagate_var_docstring().c_str());
 
     // Exposing fly-by routines
     m.def("fb_con",

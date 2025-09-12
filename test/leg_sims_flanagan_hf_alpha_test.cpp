@@ -33,7 +33,7 @@
 #include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/ta/stark.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/vsop2013.hpp>
 
 #include "catch.hpp"
@@ -199,8 +199,8 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
         REQUIRE(sf.get_tol() == 2e-5);
-        REQUIRE(typeid(sf.get_tas()) == typeid(kep3::ta::get_ta_stark(sf.get_tol())));
-        REQUIRE(typeid(sf.get_tas_var()) == typeid(kep3::ta::get_ta_stark_var(sf.get_tol())));
+        REQUIRE(typeid(sf.get_tas()) == typeid(kep3::ta::get_ta_zero_hold_kep(sf.get_tol())));
+        REQUIRE(typeid(sf.get_tas_var()) == typeid(kep3::ta::get_ta_zero_hold_kep_var(sf.get_tol())));
     }
 }
 

@@ -100,9 +100,9 @@ std::string udpla_jpl_lp_docstring();
 std::string udpla_vsop2013_docstring();
 
 // Taylor Adaptive propagators
-std::string get_stark_docstring();
-std::string get_stark_var_docstring();
-std::string stark_dyn_docstring();
+std::string get_zero_hold_kep_docstring();
+std::string get_zero_hold_kep_var_docstring();
+std::string zero_hold_kep_dyn_docstring();
 std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
@@ -139,10 +139,10 @@ std::string fb_con_docstring();
 std::string fb_dv_docstring();
 std::string fb_vout_docstring();
 
-// Stark problem
-std::string stark_problem_docstring();
-std::string stark_problem_propagate_docstring();
-std::string stark_problem_propagate_var_docstring();
+// zero_hold_kep problem
+std::string zero_hold_kep_problem_docstring();
+std::string zero_hold_kep_problem_propagate_docstring();
+std::string zero_hold_kep_problem_propagate_var_docstring();
 
 // Propagators
 std::string propagate_lagrangian_docstring();
