@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -204,8 +204,9 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Surrogate Primer Vector</a></li>
 
@@ -671,10 +672,10 @@ Larger then one! -&gt; Trajectory can be improved
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fc2d56117f0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb6be571160&gt;
 </pre></div>
 </div>
-<img alt="../_images/539ae4ef48d8be663fc3d609c551cdd98115f1abcd43876d1fe60a37b641f585.png" src="../_images/539ae4ef48d8be663fc3d609c551cdd98115f1abcd43876d1fe60a37b641f585.png" />
+<img alt="../_images/4226f1a7f1fe98c07bdd04392b1aefed9b78b163fd264789620d702248a093d7.png" src="../_images/4226f1a7f1fe98c07bdd04392b1aefed9b78b163fd264789620d702248a093d7.png" />
 </div>
 </div>
 <p>Revealing all areas where adding two impulses would improve the trajectory leaving all boundary conditions unchanged.</p>
@@ -766,8 +767,8 @@ Larger then one! -&gt; Trajectory can be improved
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.33129825083855763
-The best solution found has a DV of 3.31298e-01
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.536779077313408
+The best solution found has a DV of 5.36779e-01
 </pre></div>
 </div>
 </div>
@@ -796,7 +797,7 @@ The best solution found has a DV of 3.31298e-01
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3dd0ee703e15fb97a1d092745f02c12272e1b1d8e0008cfe3da86289ae8a37b3.png" src="../_images/3dd0ee703e15fb97a1d092745f02c12272e1b1d8e0008cfe3da86289ae8a37b3.png" />
+<img alt="../_images/8f1a68b8f47af5c5accfb96200b1eb4e35623df8c7e99f531dc766e06a376102.png" src="../_images/8f1a68b8f47af5c5accfb96200b1eb4e35623df8c7e99f531dc766e06a376102.png" />
 </div>
 </div>
 <p>The <strong>surrogate primer vector</strong> correctly had us try to add impulses and, in this case, halved the needed <span class="math notranslate nohighlight">\(\Delta V\)</span>!</p>

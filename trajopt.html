@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -205,8 +205,9 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -531,7 +532,7 @@ in the design of interplanetary trajectories as per the fixed point limitation.<
 <dd><p>Plots the trajectory leg  3D axes.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector containing final mass, thrust direction, and time of flight.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
 <p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The unit scale for the plot. Defaults to _pk.AU.</p>
 <p><em>show_midpoints</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): Whether to show midpoints on the trajectory. Defaults to False.</p>
 <p><em>show_gridpoints</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): Whether to show grid points on the trajectory. Defaults to False.</p>
@@ -540,7 +541,7 @@ in the design of interplanetary trajectories as per the fixed point limitation.<
 <p><em>arrow_length_ratio</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.</p>
 <p><em>**kwargs</em>: Additional keyword arguments for the plot.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis with the plotted trajectory.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis with the plotted trajectory.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -597,7 +598,7 @@ and the controls as to link the two planets with a low-thrust trajectory.</p>
 <dd><p>Plots the trajectory leg  3D axes.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector containing final mass, thrust direction, and time of flight.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
 <p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The unit scale for the plot. Defaults to _pk.AU.</p>
 <p><em>show_midpoints</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): Whether to show midpoints on the trajectory. Defaults to False.</p>
 <p><em>show_gridpoints</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): Whether to show grid points on the trajectory. Defaults to False.</p>
@@ -606,7 +607,7 @@ and the controls as to link the two planets with a low-thrust trajectory.</p>
 <p><em>arrow_length_ratio</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): Arrow length ratio for the throttle vectors. Defaults to 0.05.</p>
 <p><em>**kwargs</em>: Additional keyword arguments for the plot.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis with the plotted trajectory.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis with the plotted trajectory.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -670,9 +671,9 @@ for the minimum mass, fixed time, optimization of a low-thrust trajectory.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
 <em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.
-<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.</p>
+<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.</p>
 </dd>
-<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
+<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -729,11 +730,11 @@ for the minimum time, optimization of a low-thrust trajectory.</p>
 <dd><p>This function plots the trajectory encoded in the decision vector x.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the decision vector.
-<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.
+<em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis to use for the plot. If None, a new axis is created.
 <em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): the number of points to use in the plot.
 <em>**kwargs</em>: Additional keyword arguments to pass to the trajectory plot.</p>
 </dd>
-<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
+<dt>Returns:</dt><dd><p><em>ax3D</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes._axes.Axes</span></code></a>): the axis of the plot.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -818,7 +819,7 @@ is ‘eta’ tof is a float defining an upper bound for the time-of-flight.</p>
 <dd><p>Plots the trajectory encoded into <em>x</em> in 3D axes.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector in the correct tof encoding.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
 <p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The unit scale for the plot. Defaults to pk.AU.</p>
 <p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional): The number of points to use when plotting the trajectory. Defaults to 60.</p>
 <p><em>c_orbit</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional): The color of the planet orbits. Defaults to ‘dimgray’.</p>
@@ -827,7 +828,7 @@ is ‘eta’ tof is a float defining an upper bound for the time-of-flight.</p>
 <p><em>leg_ids</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): selects the legs to plot. Optional, defaults to all legs.</p>
 <p><em>**kwargs</em>: Additional keyword arguments to pass to the trajectory plot (all Lambert arcs)</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis where the trajectory was plotted.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis where the trajectory was plotted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -911,7 +912,7 @@ is ‘eta’, tof is a float defining an upper bound for the time-of-flight.</p>
 <dd><p>Plots the trajectory encoded into <em>x</em> in 3D axes.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector in the correct tof encoding.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): the 3D axis. If None a new one is created.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): the 3D axis. If None a new one is created.</p>
 <p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): length units to be used. Defaults to pk.AU.</p>
 <p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional): number of points to be used in the plots. Defaults to 60.</p>
 <p><em>c_orbit</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional): color of the planetary orbits. Defaults to ‘dimgray’.</p>
@@ -969,7 +970,7 @@ between two planets allowing up to a maximum number of impulsive Deep Space Mane
 <dd><p>Plots the trajectory encoded into <em>x</em> in 3D axes.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector in the correct tof encoding.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>, optional): The 3D axis to plot on. Defaults to None.</p>
 <p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The unit scale for the plot. Defaults to pk.AU.</p>
 <p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional): The number of points to use when plotting the trajectory. Defaults to 60.</p>
 <p><em>c_orbit</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional): The color of the planet orbits. Defaults to ‘dimgray’.</p>
@@ -977,7 +978,7 @@ between two planets allowing up to a maximum number of impulsive Deep Space Mane
 <p><em>figsize</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>): The figure size (only used if a*ax* is None and axis have to be created.), Defaults to (5, 5).</p>
 <p><em>**kwargs</em>: Additional keyword arguments to pass to the trajectory plot (common to Lambert arcs and ballistic arcs)</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis where the trajectory was plotted.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The 3D axis where the trajectory was plotted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -989,9 +990,9 @@ between two planets allowing up to a maximum number of impulsive Deep Space Mane
 <dl>
 <dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector in the correct tof encoding.</p>
 <p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional): The number of points to use when plotting the primer vector. Defaults to 200.</p>
-<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>, optional): The axis to plot on. Defaults to None.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>, optional): The axis to plot on. Defaults to None.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>: The axis where the primer vector was plotted.
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>: The axis where the primer vector was plotted.
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>: A tuple containing the grid and the primer vector magnitude.</p>
 </dd>
 </dl>
@@ -1073,10 +1074,10 @@ and is used to access launchers data.</p>
 a launch from Kourou. Data provided to ESOC by Arianespace when Ariane launch for ExoMars was an option.
 If the inputs are arrays, then a mesh is constructed and the mass is returned on all points of the mesh.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
-<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
+<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
+<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1087,10 +1088,10 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
 <dd><p>Estimates the mass that the Atlas 501 launcher can deliver to a certain vinf and declination.
 If the inputs are arrays, then a mesh is constructed and the mass is returned on all points of the mesh.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
-<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
+<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
+<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1100,9 +1101,9 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
 <span class="sig-name descname"><span class="pre">atlas551</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vinfs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt._launchers.atlas551" title="Permalink to this definition">#</a></dt>
 <dd><p>Estimates the mass that the Atlas 551 launcher can deliver to a certain vinf</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
+<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N): masses delivered to escape with said vinf magnitudes.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N): masses delivered to escape with said vinf magnitudes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1113,10 +1114,10 @@ If the inputs are arrays, then a mesh is constructed and the mass is returned on
 <dd><p>Estimates the mass that the Soyutz-Fregat launcher can deliver to a certain vinf and declination.
 If the inputs are arrays, then a mesh is constructed and the mass is returned on all points of the mesh.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
-<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
+<dt>Args:</dt><dd><p><em>vinfs</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)): the hyperbolic escape velocities in km/s.</p>
+<p><em>decls</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N)):: the declinations in degrees (in the ECF frame).</p>
 </dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (N, N): masses delivered to escape with said declinations and magnitudes.</p>
 </dd>
 </dl>
 </dd></dl>

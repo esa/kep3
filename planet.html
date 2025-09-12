@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -205,8 +205,9 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -552,7 +553,7 @@ in his UDPLA by coding a method having the signature:</p>
 </div>
 <p>see, for example, the python implementation of the UDPLAS <a class="reference internal" href="udpla.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> and <a class="reference internal" href="udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p><em>mjd2000s</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
+<dt>Args:</dt><dd><p><em>mjd2000s</em> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): the Modified Julian Dates at which to compute the ephemerides.</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]: r and v, that is the final position and velocity after the propagation.</p>
 </dd>

@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -205,8 +205,9 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -490,7 +491,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2faea1bc2d10886e1e2d0ded8de47f91fbeb3c296f2971898d93452ca4e2b293.png" src="../_images/2faea1bc2d10886e1e2d0ded8de47f91fbeb3c296f2971898d93452ca4e2b293.png" />
+<img alt="../_images/32894a2d9c197ef9e9f1bd339eef1a8a1fac6cb6aa3cd27d815e76fc7d9bd2fa.png" src="../_images/32894a2d9c197ef9e9f1bd339eef1a8a1fac6cb6aa3cd27d815e76fc7d9bd2fa.png" />
 </div>
 </div>
 <p>and do the same for, e.g. the True Anomaly relation to <span class="math notranslate nohighlight">\(M\)</span></p>
@@ -506,7 +507,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/72688376ad8731e27ab974a1fd8250ef596c4f604df925c3ec25cdaa4bbddae4.png" src="../_images/72688376ad8731e27ab974a1fd8250ef596c4f604df925c3ec25cdaa4bbddae4.png" />
+<img alt="../_images/823e99ceda5e796052578508955197cdc6b2237df887ebced56b63b117129b4f.png" src="../_images/823e99ceda5e796052578508955197cdc6b2237df887ebced56b63b117129b4f.png" />
 </div>
 </div>
 <p>Finally we may want to know about the comutational speed of these functions. Let us compute 100000 times 100 Eccentric anomalies from the Mean anomaly (i.e. solve 1e7 times Kepler’s equation):</p>
@@ -521,7 +522,7 @@ M = E - e \sin E
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 6099828 Kepler&#39;s Equations each second.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>We solve 6198791 Kepler&#39;s Equations each second.
 </pre></div>
 </div>
 </div>

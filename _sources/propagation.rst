@@ -3,8 +3,6 @@
 Numerical Propagation
 ========================
 
-
-
 The backbone of numerical propagation in `pykep` is based on Lagrangian coefficients for 
 Kepler's  dynamics and Taylor numerical integration, as implemented in the 
 `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` python package, for all
@@ -29,7 +27,7 @@ Non-Keplerian
 
 .. currentmodule:: pykep
 
-.. autoclass:: stark_problem
+.. autoclass:: zero_hold_kep_problem
     :members:  propagate, propagate_var, mu, veff, tol
 
 ---------------------------------------------------------
@@ -53,15 +51,15 @@ the control, the Hamiltonian, the switching function, etc., are also provided.
 
 --------------------------------------------------------
 
-Stark
-~~~~~~~~~~~~ 
+zero_hold_kep
+~~~~~~~~~~~~~
 .. currentmodule:: pykep.ta
 
-.. autofunction:: get_stark
+.. autofunction:: get_zero_hold_kep
 
-.. autofunction:: get_stark_var
+.. autofunction:: get_zero_hold_kep_var
 
-.. autofunction:: stark_dyn 
+.. autofunction:: zero_hold_kep_dyn 
 
 
 Circular Restricted Three Body Problem
@@ -96,5 +94,14 @@ Low-thrust Pontryagin Cartesian TPBVP
 .. autofunction:: get_pc_var
 
 .. autofunction:: pc_dyn
+
+Low-thrust Pontryagin Equinoctial TPBVP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+.. autofunction:: get_peq
+
+.. autofunction:: get_peq_var
+
+.. autofunction:: peq_dyn
 
 

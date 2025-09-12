@@ -23,7 +23,7 @@ Traceback (most recent call last):
   File "/home/runner/local/lib/python3.13/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
     return loop.run_until_complete(inner)
            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
-  File "/home/runner/local/lib/python3.13/asyncio/base_events.py", line 719, in run_until_complete
+  File "/home/runner/local/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
     return future.result()
            ~~~~~~~~~~~~~^^
   File "/home/runner/local/lib/python3.13/site-packages/nbclient/client.py", line 709, in async_execute
@@ -36,79 +36,52 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# our stuff
-import pykep as pk 
-import heyoka as hy 
+from ipywidgets import interact
+from ipywidgets import FloatSlider, Layout
 
-# their stuff
-import numpy as np
 
-# plotting
-import matplotlib.pyplot as plt
-%matplotlib ipympl
+fig, ax = plt.subplots()
+
+xx = np.linspace(-1.9, 1.9, 300)
+yy = np.linspace(-1.9, 1.9, 300)
+x_grid, y_grid = np.meshgrid(xx, yy)
+z_grid = np.zeros(np.shape(x_grid))
+x_flat = x_grid.flatten()
+y_flat = y_grid.flatten()
+z_flat = z_grid.flatten()
+
+def update_zero_velocity_plot(jacobi):
+    ax.clear()  # <-- this line clears previous contours
+
+    U_grid = effective_potential_U(
+        np.vstack((x_flat, y_flat, z_flat)),
+        pars=[[CR3BP_MU] * len(x_flat)],
+    ).reshape(np.shape(x_grid))
+    ax.contour(x_grid, y_grid, 2*U_grid, levels=[jacobi], cmap="viridis")
+    ax.set_title(f"Jacobi constant: {jacobi:.3f}")
+    fig.canvas.draw()  # force redraw in some environments
+    ax.set_aspect("equal")
+
+interact(
+    update_zero_velocity_plot,
+    jacobi=FloatSlider(
+        value=1.57*2,
+        min=1.49*2,
+        max=1.64*2,
+        step=0.002,
+        readout_format=".3f",
+        layout=Layout(width="900px"),
+    ),
+)
 ------------------
 
 
 [31m---------------------------------------------------------------------------[39m
-[31mRuntimeError[39m                              Traceback (most recent call last)
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/matplotlib/backends/registry.py:407[39m, in [36mBackendRegistry.resolve_gui_or_backend[39m[34m(self, gui_or_backend)[39m
-[32m    406[39m [38;5;28;01mtry[39;00m:
-[32m--> [39m[32m407[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mresolve_backend[49m[43m([49m[43mgui_or_backend[49m[43m)[49m
-[32m    408[39m [38;5;28;01mexcept[39;00m [38;5;167;01mException[39;00m:  [38;5;66;03m# KeyError ?[39;00m
+[31mModuleNotFoundError[39m                       Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[6][39m[32m, line 1[39m
+[32m----> [39m[32m1[39m [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mipywidgets[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m interact
+[32m      2[39m [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mipywidgets[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m FloatSlider, Layout
+[32m      5[39m fig, ax = plt.subplots()
 
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/matplotlib/backends/registry.py:369[39m, in [36mBackendRegistry.resolve_backend[39m[34m(self, backend)[39m
-[32m    368[39m [38;5;28;01mif[39;00m gui [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m:
-[32m--> [39m[32m369[39m     [38;5;28;01mraise[39;00m [38;5;167;01mRuntimeError[39;00m([33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mbackend[38;5;132;01m}[39;00m[33m'[39m[33m is not a recognised backend name[39m[33m"[39m)
-[32m    371[39m [38;5;28;01mreturn[39;00m backend, gui [38;5;28;01mif[39;00m gui != [33m"[39m[33mheadless[39m[33m"[39m [38;5;28;01melse[39;00m [38;5;28;01mNone[39;00m
-
-[31mRuntimeError[39m: 'ipympl' is not a recognised backend name
-
-During handling of the above exception, another exception occurred:
-
-[31mRuntimeError[39m                              Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[1][39m[32m, line 10[39m
-[32m      8[39m [38;5;66;03m# plotting[39;00m
-[32m      9[39m [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mmatplotlib[39;00m[34;01m.[39;00m[34;01mpyplot[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[34;01mplt[39;00m
-[32m---> [39m[32m10[39m [43mget_ipython[49m[43m([49m[43m)[49m[43m.[49m[43mrun_line_magic[49m[43m([49m[33;43m'[39;49m[33;43mmatplotlib[39;49m[33;43m'[39;49m[43m,[49m[43m [49m[33;43m'[39;49m[33;43mipympl[39;49m[33;43m'[39;49m[43m)[49m
-
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/IPython/core/interactiveshell.py:2488[39m, in [36mInteractiveShell.run_line_magic[39m[34m(self, magic_name, line, _stack_depth)[39m
-[32m   2486[39m     kwargs[[33m'[39m[33mlocal_ns[39m[33m'[39m] = [38;5;28mself[39m.get_local_scope(stack_depth)
-[32m   2487[39m [38;5;28;01mwith[39;00m [38;5;28mself[39m.builtin_trap:
-[32m-> [39m[32m2488[39m     result = [43mfn[49m[43m([49m[43m*[49m[43margs[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
-[32m   2490[39m [38;5;66;03m# The code below prevents the output from being displayed[39;00m
-[32m   2491[39m [38;5;66;03m# when using magics with decorator @output_can_be_silenced[39;00m
-[32m   2492[39m [38;5;66;03m# when the last Python token in the expression is a ';'.[39;00m
-[32m   2493[39m [38;5;28;01mif[39;00m [38;5;28mgetattr[39m(fn, magic.MAGIC_OUTPUT_CAN_BE_SILENCED, [38;5;28;01mFalse[39;00m):
-
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/IPython/core/magics/pylab.py:103[39m, in [36mPylabMagics.matplotlib[39m[34m(self, line)[39m
-[32m     98[39m     [38;5;28mprint[39m(
-[32m     99[39m         [33m"[39m[33mAvailable matplotlib backends: [39m[38;5;132;01m%s[39;00m[33m"[39m
-[32m    100[39m         % _list_matplotlib_backends_and_gui_loops()
-[32m    101[39m     )
-[32m    102[39m [38;5;28;01melse[39;00m:
-[32m--> [39m[32m103[39m     gui, backend = [38;5;28;43mself[39;49m[43m.[49m[43mshell[49m[43m.[49m[43menable_matplotlib[49m[43m([49m[43margs[49m[43m.[49m[43mgui[49m[43m)[49m
-[32m    104[39m     [38;5;28mself[39m._show_matplotlib_backend(args.gui, backend)
-
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/IPython/core/interactiveshell.py:3760[39m, in [36mInteractiveShell.enable_matplotlib[39m[34m(self, gui)[39m
-[32m   3757[39m     [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mmatplotlib_inline[39;00m[34;01m.[39;00m[34;01mbackend_inline[39;00m
-[32m   3759[39m [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mIPython[39;00m[34;01m.[39;00m[34;01mcore[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m pylabtools [38;5;28;01mas[39;00m pt
-[32m-> [39m[32m3760[39m gui, backend = [43mpt[49m[43m.[49m[43mfind_gui_and_backend[49m[43m([49m[43mgui[49m[43m,[49m[43m [49m[38;5;28;43mself[39;49m[43m.[49m[43mpylab_gui_select[49m[43m)[49m
-[32m   3762[39m [38;5;28;01mif[39;00m gui != [38;5;28;01mNone[39;00m:
-[32m   3763[39m     [38;5;66;03m# If we have our first gui selection, store it[39;00m
-[32m   3764[39m     [38;5;28;01mif[39;00m [38;5;28mself[39m.pylab_gui_select [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m:
-
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/IPython/core/pylabtools.py:349[39m, in [36mfind_gui_and_backend[39m[34m(gui, gui_select)[39m
-[32m    347[39m [38;5;28;01melse[39;00m:
-[32m    348[39m     gui = _convert_gui_to_matplotlib(gui)
-[32m--> [39m[32m349[39m     backend, gui = [43mbackend_registry[49m[43m.[49m[43mresolve_gui_or_backend[49m[43m([49m[43mgui[49m[43m)[49m
-[32m    351[39m gui = _convert_gui_from_matplotlib(gui)
-[32m    352[39m [38;5;28;01mreturn[39;00m gui, backend
-
-[36mFile [39m[32m~/local/lib/python3.13/site-packages/matplotlib/backends/registry.py:409[39m, in [36mBackendRegistry.resolve_gui_or_backend[39m[34m(self, gui_or_backend)[39m
-[32m    407[39m     [38;5;28;01mreturn[39;00m [38;5;28mself[39m.resolve_backend(gui_or_backend)
-[32m    408[39m [38;5;28;01mexcept[39;00m [38;5;167;01mException[39;00m:  [38;5;66;03m# KeyError ?[39;00m
-[32m--> [39m[32m409[39m     [38;5;28;01mraise[39;00m [38;5;167;01mRuntimeError[39;00m(
-[32m    410[39m         [33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mgui_or_backend[38;5;132;01m}[39;00m[33m'[39m[33m is not a recognised GUI loop or backend name[39m[33m"[39m)
-
-[31mRuntimeError[39m: 'ipympl' is not a recognised GUI loop or backend name
+[31mModuleNotFoundError[39m: No module named 'ipywidgets'
 

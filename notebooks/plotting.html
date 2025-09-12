@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -205,8 +205,9 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_I.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_II.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -481,7 +482,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dbf251e7363c3f9594ee9cef48505139f3512476e8caf65838d8becd7b75bf9d.png" src="../_images/dbf251e7363c3f9594ee9cef48505139f3512476e8caf65838d8becd7b75bf9d.png" />
+<img alt="../_images/443c9f3a189d78854dbe8a75276ba745df7716db9338553d1179e2d2de4ea23e.png" src="../_images/443c9f3a189d78854dbe8a75276ba745df7716db9338553d1179e2d2de4ea23e.png" />
 </div>
 </div>
 <p>We may then add the Sun and a few planets easily … in the code below we will make use of the JPL low precision ephemerides, and thus use the <a class="reference internal" href="../udpla.html#pykep.udpla.jpl_lp" title="pykep.udpla.jpl_lp"><code class="xref py py-class docutils literal notranslate"><span class="pre">jpl_lp</span></code></a> User Defined Planet, but any other udpla would work.</p>
@@ -521,7 +522,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/9b649e4eb0fdc4ecaf56849342dc2f128960133043062d63ae368aa770c129bf.png" src="../_images/9b649e4eb0fdc4ecaf56849342dc2f128960133043062d63ae368aa770c129bf.png" />
+<img alt="../_images/171eaebfd37d2acb55418eddc9dff503e4b6e7e9683fd842449663a1d7996b77.png" src="../_images/171eaebfd37d2acb55418eddc9dff503e4b6e7e9683fd842449663a1d7996b77.png" />
 </div>
 </div>
 <p>In some cases it may be useful to add solar system planets at once to a plot. The <a class="reference internal" href="../plot.html#pykep.plot.add_solar_system" title="pykep.plot.add_solar_system"><code class="xref py py-class docutils literal notranslate"><span class="pre">add_solar_system</span></code></a> does just that:</p>
@@ -541,7 +542,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/84609df96820c982fb3b1099c3d98c65ed2d325f0166881d55a5e755ec371336.png" src="../_images/84609df96820c982fb3b1099c3d98c65ed2d325f0166881d55a5e755ec371336.png" />
+<img alt="../_images/3b20383472ebd8e36658ec10ce333e73c774a283fc44ce1ebaff39ed384ba924.png" src="../_images/3b20383472ebd8e36658ec10ce333e73c774a283fc44ce1ebaff39ed384ba924.png" />
 </div>
 </div>
 </section>
@@ -588,7 +589,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/eccf9d22d54168fb9b4ce63138a2329cce22962f3ca9dbcf99985c9e33cf8267.png" src="../_images/eccf9d22d54168fb9b4ce63138a2329cce22962f3ca9dbcf99985c9e33cf8267.png" />
+<img alt="../_images/1cf9c6e166a294fe5cae5875be9e95296f0231389355508a1936b757f13c1680.png" src="../_images/1cf9c6e166a294fe5cae5875be9e95296f0231389355508a1936b757f13c1680.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -634,7 +635,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5f5fe264823a034209c1fe1574244b4a71afdd2d4e3acf9b7b9a6cef166fa143.png" src="../_images/5f5fe264823a034209c1fe1574244b4a71afdd2d4e3acf9b7b9a6cef166fa143.png" />
+<img alt="../_images/4b9816606e90b5ae56fd38d0623167ad83fe90e142a4e433d80f88fce50dd2ed.png" src="../_images/4b9816606e90b5ae56fd38d0623167ad83fe90e142a4e433d80f88fce50dd2ed.png" />
 </div>
 </div>
 </section>
@@ -678,7 +679,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/efa4a4a63619c781a85693995e3cfb733b3a49a401f7c834d4a6af82a29a58b0.png" src="../_images/efa4a4a63619c781a85693995e3cfb733b3a49a401f7c834d4a6af82a29a58b0.png" />
+<img alt="../_images/59bc2d119d6a7c5f13c3233d5e0e40f360b9a95a38b69e3dfca1b4b78e8dac32.png" src="../_images/59bc2d119d6a7c5f13c3233d5e0e40f360b9a95a38b69e3dfca1b4b78e8dac32.png" />
 </div>
 </div>
 </section>
