@@ -96,9 +96,7 @@ class pontryagin_equinoctial_mass:
 
         self.n_rev = n_rev
         if self.n_rev >= 0:
-            self.eqf[5] = (self.eqf[5] - self.eq0[5]) % (
-                2.0 * _np.pi * (self.n_rev + 1)
-            ) + self.eq0[5]
+            self.eqf[5] += 2.0 * _np.pi * self.n_rev
 
         self.m0 = m0 / MASS
         self.tof = tof * _pk.DAY2SEC / TIME

@@ -20,11 +20,11 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <xtensor/containers/xarray.hpp>
 #include <xtensor/containers/xadapt.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/core/xmath.hpp>
 #include <xtensor/generators/xbuilder.hpp>
 #include <xtensor/io/xio.hpp>
-#include <xtensor/core/xmath.hpp>
 #include <xtensor/views/xview.hpp>
 
 #include <kep3/core_astro/constants.hpp>
@@ -163,26 +163,9 @@ void sims_flanagan_hf::set_ms(double mass)
 }
 void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
 {
-    kep3::leg::_check_throttles(throttles);
-    m_throttles = throttles;
-    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
-    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
-    m_nseg_bck = m_nseg - m_nseg_fwd;
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
-    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
-    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
-
-    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
-
-    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
-
+    set_throttles(throttles.begin(), throttles.end());
 }
+
 void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &it1,
                                      const std::vector<double>::const_iterator &it2)
 {
@@ -200,16 +183,8 @@ void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
-
-    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
-
-    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
-
 }
+
 void sims_flanagan_hf::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
     std::copy(rv[0].begin(), rv[0].end(), m_rvmf.begin());
@@ -228,8 +203,8 @@ void sims_flanagan_hf::set_isp(double isp)
 {
     kep3::leg::_check_isp(isp);
     m_isp = isp;
-    *(m_tas.get_pars_data()+1l) = isp * kep3::G0;
-    *(m_tas_var.get_pars_data()+1l) = isp * kep3::G0;
+    *(m_tas.get_pars_data() + 1l) = isp * kep3::G0;
+    *(m_tas_var.get_pars_data() + 1l) = isp * kep3::G0;
 }
 void sims_flanagan_hf::set_mu(double mu)
 {
@@ -418,7 +393,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
 {
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
-    const double mass_thresh = 1e-12 * (*(m_rvmf.begin()+6l));
+    const double mass_thresh = 1e-12 * (*(m_rvmf.begin() + 6l));
 
     // Forward pass
     // Initial state
@@ -431,30 +406,32 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         // Assign current thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
 
-        if (!std::isfinite(prop_seg_duration)){
+        if (!std::isfinite(prop_seg_duration)) {
             // fmt::print("Non-finitite propagation duration requested in forward pass\n");
             break;
         } else {
             // ... and integrate
-            double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
+            double norm_thrusts = std::sqrt(std::inner_product(
+                m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
             double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
-            double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
-            // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas.get_state()[6], mass_est);
+            // double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
+            //  fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas.get_state()[6], mass_est);
             if (mass_est < mass_thresh) { // Set Isp to zero
-                // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
+                // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0
+                // {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
+                //*(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
             } else {
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    fmt::print("mismatch fwd: {}\n", status);
-                    break;
-                } // LCOV_EXCL_STOP
+                // if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+                //     fmt::print("mismatch fwd: {}\n", status);
+                //     break;
+                // } // LCOV_EXCL_STOP
             }
         }
     }
 
     // Reset ISP
-    *(m_tas.get_pars_data()+1l) = get_isp() * kep3::G0;
+    *(m_tas.get_pars_data() + 1l) = get_isp() * kep3::G0;
 
     // Set fwd final state
     std::vector<double> rvm_fwd_final = m_tas.get_state();
@@ -470,7 +447,7 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         // Assign current_thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
                   m_tas.get_pars_data() + 2l);
-        if (!std::isfinite(prop_seg_duration)){
+        if (!std::isfinite(prop_seg_duration)) {
             // fmt::print("Non-finitite propagation duration requested in backward pass\n");
             break;
         } else {
@@ -591,7 +568,7 @@ sims_flanagan_hf::compute_all_gradients() const
 
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
-    const double mass_thresh = 1e-12 * (*(m_rvmf.begin()+6l));
+    const double mass_thresh = 1e-12 * (*(m_rvmf.begin() + 6l));
 
     // Forward loop
     // Set the Taylor Integration initial conditions
@@ -604,27 +581,19 @@ sims_flanagan_hf::compute_all_gradients() const
         std::copy(m_vars.begin(), m_vars.end(), m_tas_var.get_state_data() + 7);
         // Assign current thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas_var.get_pars_data() + 2l);
-        
-        if (!std::isfinite(prop_seg_duration)){
-            // fmt::print("Non-finitite propagation duration requested in forward pass\n");
+
+        // LCOV_EXCL_START
+        if (!std::isfinite(prop_seg_duration)) {
+            fmt::print("Non-finite propagation duration requested in forwards step\n");
             break;
-        } else {
+        } else { // LCOV_EXCL_STOP
             // ... and integrate
-            double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-            double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
-            double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
-            // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas_var.get_state()[6], mass_est);
-            if (mass_est < mass_thresh) { // Set Isp to infinity
-                // fmt::print("Warning Gradient: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas_var.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas_var.get_pars_data()+1l) = isp_est * kep3::G0;
-            } else {
+            double norm_thrusts = std::sqrt(std::inner_product(
+                m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
+            double final_mass = m_tas_var.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
+            // Perform the integration only if the final mass is above a certain threshold
+            if (final_mass > mass_thresh) { // Set Isp to infinity
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    // fmt::print("gradient fwd: {} {} {}\n", status, (i + 1) * prop_seg_duration, m_tas_var.get_state());
-                    break;
-                    // throw std::domain_error(
-                    //     "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
-                } // LCOV_EXCL_STOP
             }
         }
 
@@ -639,9 +608,6 @@ sims_flanagan_hf::compute_all_gradients() const
         }
     }
 
-    // Reset ISP
-    *(m_tas_var.get_pars_data()+1l) = get_isp() * kep3::G0;
-
     // Backward loop
     // Set the Taylor Integration initial conditions
     m_tas_var.set_time(m_tof);
@@ -654,17 +620,18 @@ sims_flanagan_hf::compute_all_gradients() const
         // Assign current thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
                   m_tas_var.get_pars_data() + 2l);
-        if (!std::isfinite(prop_seg_duration)){
+        if (!std::isfinite(prop_seg_duration)) {
             // fmt::print("Non-finitite propagation duration requested in backward pass\n");
             break;
         } else {
             // ... and integrate
-            auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
+            auto [status, min_h, max_h, nsteps, _1, _2]
+                = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
             if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
                 // fmt::print("gradient bck: {} {}\n", status, m_tof - (i + 1) * prop_seg_duration);
                 break;
                 // throw std::domain_error(
-                //     "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
+                //     "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
             } // LCOV_EXCL_STOP
         }
         // Save the variational state variables to respective arrays
@@ -696,6 +663,11 @@ sims_flanagan_hf::compute_all_gradients() const
     for (decltype(dxdtof_per_seg.size()) i = 0; i < dxdtof_per_seg.size(); ++i) {
         std::array<double, 3> current_throttles = {m_throttles[i * 3], m_throttles[i * 3 + 1], m_throttles[i * 3 + 2]};
         dxdtof_per_seg[i] = get_state_derivative(x0_per_seg[i], current_throttles);
+    }
+
+    // We must multiple the derivatives wrt thrust into throttles
+    for (auto &item : dxdu_per_seg) {
+        std::transform(item.begin(), item.end(), item.begin(), [this](double x) { return x * m_max_thrust; });
     }
 
     return std::make_tuple(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
@@ -878,14 +850,14 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data() + 2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
             fmt::print(": {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
         } // LCOV_EXCL_STOP
         output_per_seg[i] = output_states;
     }
@@ -911,14 +883,14 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data() + 2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
             fmt::print(": {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
         } // LCOV_EXCL_STOP
         output_per_seg[m_nseg - 1 - i] = output_states;
     }

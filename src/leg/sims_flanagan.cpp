@@ -81,7 +81,6 @@ void sims_flanagan::set_throttles(const std::vector<double>::const_iterator &it1
 }
 void sims_flanagan::set_throttles(const std::vector<double> &throttles)
 {
-    kep3::leg::_check_throttles(throttles);
     set_throttles(throttles.begin(), throttles.end());
 }
 

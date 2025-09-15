@@ -166,7 +166,7 @@ private:
     // Time of flight (defaults to 1/4 of the period)
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion system maximum thrust.
-    double m_max_thrust{1.};
+    double m_max_thrust{1};
     // Spacecraft propulsion system specific impulse.
     double m_isp{1.};
     // Spacecraft gravitational parameter.
