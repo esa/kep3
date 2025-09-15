@@ -453,7 +453,7 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         prop_seg_temp += m_talphas[i];
 
         if (!std::isfinite(prop_seg_temp)){
-            // fmt::print("Non-finitite propagation duration requested in forwards step\n");
+            fmt::print("Non-finitite propagation duration requested in forwards step\n");
             break;
         } else {
             // ... and integrate
