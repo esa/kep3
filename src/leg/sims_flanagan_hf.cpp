@@ -590,7 +590,7 @@ sims_flanagan_hf::compute_all_gradients() const
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(
                 m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-            double final_mass = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
+            double final_mass = m_tas_var.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
             // Perform the integration only if the final mass is above a certain threshold
             if (final_mass > mass_thresh) { // Set Isp to infinity
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
