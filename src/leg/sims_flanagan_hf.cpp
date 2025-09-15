@@ -665,6 +665,11 @@ sims_flanagan_hf::compute_all_gradients() const
         dxdtof_per_seg[i] = get_state_derivative(x0_per_seg[i], current_throttles);
     }
 
+    // We must multiple the derivatives wrt thrust into throttles
+    for (auto &item : dxdu_per_seg) {
+        std::transform(item.begin(), item.end(), item.begin(), [this](double x) { return x * m_max_thrust; });
+    }
+
     return std::make_tuple(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
 }
 
