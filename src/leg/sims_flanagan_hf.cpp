@@ -608,9 +608,6 @@ sims_flanagan_hf::compute_all_gradients() const
         }
     }
 
-    // Reset ISP
-    *(m_tas_var.get_pars_data() + 1l) = get_isp() * kep3::G0;
-
     // Backward loop
     // Set the Taylor Integration initial conditions
     m_tas_var.set_time(m_tof);
