@@ -413,17 +413,17 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
             double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
-            double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
+            //double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
             // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas.get_state()[6], mass_est);
             if (mass_est < mass_thresh) { // Set Isp to zero
                 // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
+                //*(m_tas.get_pars_data()+1l) = isp_est * kep3::G0;
             } else {
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    fmt::print("mismatch fwd: {}\n", status);
-                    break;
-                } // LCOV_EXCL_STOP
+                //if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+                //    fmt::print("mismatch fwd: {}\n", status);
+                //    break;
+                //} // LCOV_EXCL_STOP
             }
         }
     }
@@ -586,20 +586,10 @@ sims_flanagan_hf::compute_all_gradients() const
         } else {
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-            double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
-            double isp_est = norm_thrusts * prop_seg_duration / (-kep3::G0 * (m_tas.get_state()[6] - mass_est ));
-            // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas_var.get_state()[6], mass_est);
-            if (mass_est < mass_thresh) { // Set Isp to infinity
-                // fmt::print("Warning Gradient: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas_var.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas_var.get_pars_data()+1l) = isp_est * kep3::G0;
-            } else {
+            double final_mass = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_isp * kep3::G0);
+            // Perform the integration only if the final mass is above a certain threshold
+            if (final_mass > mass_thresh) { // Set Isp to infinity
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    // fmt::print("gradient fwd: {} {} {}\n", status, (i + 1) * prop_seg_duration, m_tas_var.get_state());
-                    break;
-                    // throw std::domain_error(
-                    //     "zero_hold_kep_problem: failure to reach the final time requested during a propagation."); 
-                } // LCOV_EXCL_STOP
             }
         }
 
