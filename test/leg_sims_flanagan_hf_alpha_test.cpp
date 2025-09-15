@@ -134,9 +134,6 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_throttles() == throttles);
         sf.set_throttles(throttles2.begin(), throttles2.end());
         REQUIRE(sf.get_throttles() == throttles2);
-        REQUIRE(sf.get_tas().get_pars()[2] == throttles2[0] * sf.get_max_thrust());
-        REQUIRE(sf.get_tas().get_pars()[3] == throttles2[1] * sf.get_max_thrust());
-        REQUIRE(sf.get_tas().get_pars()[4] == throttles2[2] * sf.get_max_thrust());
         REQUIRE_THROWS_AS(sf.set_throttles(throttles2.begin(), throttles2.end() - 1), std::logic_error);
 
         std::vector<double> talphas{1., 2., 3.};

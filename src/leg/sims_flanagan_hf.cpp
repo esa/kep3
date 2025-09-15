@@ -581,7 +581,7 @@ sims_flanagan_hf::compute_all_gradients() const
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas_var.get_pars_data() + 2l);
         
         if (!std::isfinite(prop_seg_duration)){
-            // fmt::print("Non-finitite propagation duration requested in forward pass\n");
+            fmt::print("Non-finite propagation duration requested in forward pass\n");
             break;
         } else {
             // ... and integrate
