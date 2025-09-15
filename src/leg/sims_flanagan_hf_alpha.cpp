@@ -171,25 +171,7 @@ void sims_flanagan_hf_alpha::set_ms(double mass)
 }
 void sims_flanagan_hf_alpha::set_throttles(const std::vector<double> &throttles)
 {
-    kep3::leg::_check_throttles(throttles);
-    m_throttles = throttles;
-    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
-    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
-    m_nseg_bck = m_nseg - m_nseg_fwd;
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
-    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
-    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
-
-    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
-
-    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
-
+    set_throttles(throttles.begin(), throttles.end());
 }
 void sims_flanagan_hf_alpha::set_throttles(const std::vector<double>::const_iterator &it1,
                                      const std::vector<double>::const_iterator &it2)
@@ -208,16 +190,8 @@ void sims_flanagan_hf_alpha::set_throttles(const std::vector<double>::const_iter
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
-
-    *(m_tas.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas.get_pars_data()+4l) = m_thrusts[2];
-
-    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
-    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
-    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
-
 }
+
 void sims_flanagan_hf_alpha::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
     std::copy(rv[0].begin(), rv[0].end(), m_rvmf.begin());

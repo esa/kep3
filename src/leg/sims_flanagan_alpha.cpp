@@ -70,11 +70,7 @@ void sims_flanagan_alpha::set_ms(double mass)
 }
 void sims_flanagan_alpha::set_throttles(const std::vector<double> &throttles)
 {
-    kep3::leg::_check_throttles(throttles);
-    m_throttles = throttles;
-    m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
-    m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
-    m_nseg_bck = m_nseg - m_nseg_fwd;
+    set_throttles(throttles.begin(), throttles.end());
 }
 void sims_flanagan_alpha::set_throttles(const std::vector<double>::const_iterator &it1,
                                   const std::vector<double>::const_iterator &it2)
