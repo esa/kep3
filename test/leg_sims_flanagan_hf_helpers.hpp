@@ -11,7 +11,6 @@
 #define kep3_TEST_LEG_SIMS_FLANAGAN_HF_HELPERS_H
 
 #include <cstddef>
-#include <utility>
 #include <vector>
 
 #include <xtensor-blas/xlinalg.hpp>
@@ -48,31 +47,9 @@
 
 struct sf_hf_test_object {
 
-    // Default constructor
-    sf_hf_test_object() = default;
-
-    explicit sf_hf_test_object(std::vector<double> &throttles) : m_throttles(throttles)
-    {
-        for (double m_throttle : m_throttles) {
-            m_thrusts.push_back(m_throttle * m_max_thrust);
-        }
-    }
-
     explicit sf_hf_test_object(double cut) : m_cut(cut) {}
 
     sf_hf_test_object(std::vector<double> &throttles, double cut) : m_throttles(throttles), m_cut(cut)
-    {
-        for (double m_throttle : m_throttles) {
-            m_thrusts.push_back(m_throttle * m_max_thrust);
-        }
-    }
-
-    explicit sf_hf_test_object(std::array<std::array<double, 3>, 2> rvs, double ms, std::vector<double> throttles,
-                               std::array<std::array<double, 3>, 2> rvf,
-                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                               double mf, double tof, double max_thrust, double isp, double mu, double cut, double tol)
-        : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof),
-          m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
     {
         for (double m_throttle : m_throttles) {
             m_thrusts.push_back(m_throttle * m_max_thrust);
@@ -119,9 +96,11 @@ struct sf_hf_test_object {
         m_cut = cut;
     }
 
-    static std::vector<double> set_and_compute_constraints(kep3::leg::sims_flanagan_hf &leg,
-                                                           const std::vector<double> &dv)
+    // We assemble all constraints (equality and inequality) in a single vector from a decision vector dv
+    // so we can use this in estimation of numerical gradients.
+    static std::vector<double> compute_constraints(kep3::leg::sims_flanagan_hf &leg, const std::vector<double> &dv)
     {
+        // First we set the leg from data
         auto nseg = leg.get_nseg();
         std::array<double, 7> rvms{};
         std::copy(dv.begin(), dv.begin() + 7, rvms.begin());
@@ -130,10 +109,22 @@ struct sf_hf_test_object {
         std::array<double, 7> rvmf{};
         std::copy(dv.begin() + 7 + nseg * 3l, dv.begin() + 7 + nseg * 3l + 7, rvmf.begin());
         double time_of_flight = dv[(7 + nseg * 3 + 7 + 1) - 1];
-        // Set relevant quantities before evaluating constraints
         leg.set(rvms, throttles, rvmf, time_of_flight);
-        // Evaluate and return constraints
-        return leg.compute_constraints();
+        // Then we vvaluate and return all constraints
+        std::vector<double> retval(7 + nseg, 0.);
+        // Equality Constraints
+        auto eq_con = leg.compute_mismatch_constraints();
+        retval[0] = eq_con[0];
+        retval[1] = eq_con[1];
+        retval[2] = eq_con[2];
+        retval[3] = eq_con[3];
+        retval[4] = eq_con[4];
+        retval[5] = eq_con[5];
+        retval[6] = eq_con[6];
+        // Inequality Constraints
+        auto ineq_con = leg.compute_throttle_constraints();
+        std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 7);
+        return retval;
     }
 
     [[nodiscard]] std::vector<double> compute_numerical_gradient()
@@ -141,18 +132,16 @@ struct sf_hf_test_object {
         // Create SF leg.
         kep3::leg::sims_flanagan_hf sf_num(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu,
                                            m_cut, 1e-16);
-        // Create chromosome
-        std::vector<double> rvms_vec = std::vector<double>(m_rvms.begin(), m_rvms.end());
-        std::vector<double> rvmf_vec = std::vector<double>(m_rvmf.begin(), m_rvmf.end());
+        // Assemble a flattened decision vector dv
         std::vector<double> dv;
-        dv.insert(dv.end(), rvms_vec.begin(), rvms_vec.end());
+        dv.insert(dv.end(), m_rvms.begin(), m_rvms.end());
         dv.insert(dv.end(), m_throttles.begin(), m_throttles.end());
-        dv.insert(dv.end(), rvmf_vec.begin(), rvmf_vec.end());
+        dv.insert(dv.end(), m_rvmf.begin(), m_rvmf.end());
         dv.push_back(m_tof);
 
         // Calculate numerical gradient
         return pagmo::estimate_gradient_h(
-            [&sf_num](const std::vector<double> &x) { return set_and_compute_constraints(sf_num, x); }, dv);
+            [&sf_num](const std::vector<double> &x) { return compute_constraints(sf_num, x); }, dv);
     }
 
     [[nodiscard]] std::vector<double> compute_analytical_gradient() const
@@ -163,22 +152,22 @@ struct sf_hf_test_object {
         std::array<double, 49> grad_rvm = {0};
         std::array<double, 49> grad_rvm_bck = {0};
         unsigned int nseg = static_cast<unsigned int>(m_throttles.size()) / 3;
-        std::vector<double> grad_final(static_cast<size_t>(7) * (nseg * 3u + 1u), 0.);
-        std::tie(grad_rvm, grad_rvm_bck, grad_final) = sf_a.compute_mc_grad();
+        std::vector<double> grad_utof(static_cast<size_t>(7) * (nseg * 3u + 1u), 0.);
+        std::tie(grad_rvm, grad_rvm_bck, grad_utof) = sf_a.compute_mc_grad();
         auto xgrad_rvm = xt::adapt(grad_rvm, {7u, 7u});
         auto xgrad_rvm_bck = xt::adapt(grad_rvm_bck, {7u, 7u});
-        auto xgrad_final = xt::adapt(grad_final, {7u, nseg * 3u + 1u});
+        auto xgrad_utof = xt::adapt(grad_utof, {7u, nseg * 3u + 1u});
 
         // Cast gradients into a single vector
         std::vector<double> gradient(static_cast<size_t>(7u * (7u + static_cast<unsigned>(nseg) * 3u + 1u + 7u)), 0);
         auto xgradient = xt::adapt(gradient, {7u, 7u + static_cast<unsigned>(nseg) * 3u + 1u + 7u});
         xt::view(xgradient, xt::all(), xt::range(0u, 7u)) = xt::view(xgrad_rvm, xt::all(), xt::all()); // dmc_dxs
         xt::view(xgradient, xt::all(), xt::range(7u, 7u + nseg * 3u))
-            = xt::view(xgrad_final, xt::all(), xt::range(0, nseg * 3u)); // throttles
+            = xt::view(xgrad_utof, xt::all(), xt::range(0, nseg * 3u)); // throttles
         xt::view(xgradient, xt::all(), xt::range(7u + nseg * 3u, 7u + nseg * 3u + 7u))
             = xt::view(xgrad_rvm_bck, xt::all(), xt::all()); // dmc_dxf
         xt::view(xgradient, xt::all(), xt::range(7u + nseg * 3u + 7u, 7u + nseg * 3u + 7u + 1u))
-            = xt::view(xgrad_final, xt::all(), xt::range(nseg * 3u, nseg * 3u + 1)); // tof
+            = xt::view(xgrad_utof, xt::all(), xt::range(nseg * 3u, nseg * 3u + 1)); // tof
 
         return gradient;
     }

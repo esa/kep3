@@ -487,40 +487,6 @@ std::vector<double> sims_flanagan_hf::compute_throttle_constraints() const
     return retval;
 }
 
-std::vector<double> sims_flanagan_hf::compute_constraints() const
-{
-    std::vector<double> retval(7 + m_nseg, 0.);
-    // Fitness
-    // Equality Constraints
-    auto eq_con = compute_mismatch_constraints();
-    retval[0] = eq_con[0];
-    retval[1] = eq_con[1];
-    retval[2] = eq_con[2];
-    retval[3] = eq_con[3];
-    retval[4] = eq_con[4];
-    retval[5] = eq_con[5];
-    retval[6] = eq_con[6];
-    // Inequality Constraints
-    auto ineq_con = compute_throttle_constraints();
-    std::copy(ineq_con.begin(), ineq_con.end(), retval.begin() + 7);
-    return retval;
-}
-
-// std::vector<double> sims_flanagan_hf::set_and_compute_constraints(const std::vector<double> &chromosome)
-// {
-//     std::array<double, 7> rvms{};
-//     std::copy(chromosome.begin(), chromosome.begin() + 7, rvms.begin());
-//     std::vector<double> throttles(m_nseg * 3l);
-//     std::copy(chromosome.begin() + 7, chromosome.begin() + 7 + m_nseg * 3l, throttles.begin());
-//     std::array<double, 7> rvmf{};
-//     std::copy(chromosome.begin() + 7 + m_nseg * 3l, chromosome.begin() + 7 + m_nseg * 3l + 7, rvmf.begin());
-//     double time_of_flight = chromosome[(7 + m_nseg * 3 + 7 + 1) - 1];
-//     // Set relevant quantities before evaluating constraints
-//     set(rvms, throttles, rvmf, time_of_flight);
-//     // Evaluate and return constraints
-//     return compute_constraints();
-// }
-
 // Return specific two-body 'zero_hold_kep' dynamics state derivative
 std::array<double, 7> sims_flanagan_hf::get_state_derivative(const std::array<double, 7> &state,
                                                              const std::array<double, 3> &throttles) const
@@ -620,19 +586,13 @@ sims_flanagan_hf::compute_all_gradients() const
         // Assign current thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
                   m_tas_var.get_pars_data() + 2l);
+        // LCOV_EXCL_START
         if (!std::isfinite(prop_seg_duration)) {
-            // fmt::print("Non-finitite propagation duration requested in backward pass\n");
+            fmt::print("Non-finite propagation duration requested in forwards step\n");
             break;
-        } else {
-            // ... and integrate
+        } else { // LCOV_EXCL_STOP
             auto [status, min_h, max_h, nsteps, _1, _2]
                 = m_tas_var.propagate_until(m_tof - (i + 1) * prop_seg_duration);
-            if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                // fmt::print("gradient bck: {} {}\n", status, m_tof - (i + 1) * prop_seg_duration);
-                break;
-                // throw std::domain_error(
-                //     "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
-            } // LCOV_EXCL_STOP
         }
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7,
@@ -797,10 +757,10 @@ sims_flanagan_hf::compute_mc_grad() const
 
     std::array<double, 49> grad_rvm = {0};
     std::array<double, 49> grad_rvm_bck = {0};
-    std::vector<double> grad_final(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
-    std::tie(grad_rvm, grad_rvm_bck, grad_final) = get_relevant_gradients(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
+    std::vector<double> grad_utof(static_cast<size_t>(7) * (m_nseg * 3u + 1u), 0.);
+    std::tie(grad_rvm, grad_rvm_bck, grad_utof) = get_relevant_gradients(dxdx_per_seg, dxdu_per_seg, dxdtof_per_seg);
 
-    return {grad_rvm, grad_rvm_bck, std::move(grad_final)};
+    return {grad_rvm, grad_rvm_bck, std::move(grad_utof)};
 }
 
 std::vector<double> sims_flanagan_hf::compute_tc_grad() const
