@@ -2777,20 +2777,20 @@ std::string leg_sf_mc_grad_docstring()
     return R"(compute_mc_grad()
 
 Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]`, the
-final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`, the total time of flight with :math:`T` and the introducing the augmented throttle vector
-:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradients:
+final augmented state with :math:`\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]`, the total time of flight with :math:`T` and introducing the throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ]` and :math:`\mathbf {\tilde u} = [\mathbf u, T]` (note the time of flight at the end), this method computes the following gradients:
 
 .. math::
-  \frac{\partial \mathbf {mc}}{\partial \mathbf x_s}
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_s}  \rightarrow (7\times7)
 
 .. math::
-  \frac{\partial \mathbf {mc}}{\partial \mathbf x_f}
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_f} \rightarrow (7\times7)
 
 .. math::
-  \frac{\partial \mathbf {mc}}{\partial \mathbf u}
+  \frac{\partial \mathbf {mc}}{\partial \mathbf {\tilde u}} \rightarrow (7\times(3\mathbf{nseg} + 1))
 
 Returns:
-    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7,nseg*3 + 1)
+    :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The three gradients. sizes will be (7,7), (7,7) and (7, nseg*3 + 1)
 
 Examples:
   >>> import pykep as pk
@@ -2805,11 +2805,11 @@ std::string leg_sf_tc_grad_docstring()
 {
     return R"(compute_tc_grad()
 
-Computes the gradients of the throttles constraints. Indicating the total time of flight with :math:`T` and introducing the augmented throttle vector
-:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ..., T]` (note the time of flight at the end), this method computes the following gradient:
+Computes the gradients of the throttles constraints. Indicating the total time of flight with :math:`T`  and introducing the throttle vector
+:math:`\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1} ]`, this method computes the following gradient:
 
 .. math::
-  \frac{\partial \mathbf {tc}}{\partial \mathbf u}
+  \frac{\partial \mathbf {tc}}{\partial \mathbf u} \rightarrow (\mathbf{nseg} \times3\mathbf{nseg})
 
 Returns:
     :class:`tuple` [:class:`numpy.ndarray`]: The gradient. Size will be (nseg,nseg*3).
