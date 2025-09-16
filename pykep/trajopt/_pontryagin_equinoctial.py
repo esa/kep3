@@ -91,9 +91,13 @@ class pontryagin_equinoctial_mass:
 
         self.eq0 = _pk.ic2eq(posvel0, mu)
         self.eqf = _pk.ic2eq(posvelf, mu)
+        # We want to define the motion from small to large L (counterclockwise)
+        if self.eqf[-1] < self.eq0[-1]:
+            self.eqf[-1] += 2.0 * _np.pi
         self.eq0[0] /= L
         self.eqf[0] /= L
 
+        # If the number of revolutions is set we adjust the final value of L accordingly
         self.n_rev = n_rev
         if self.n_rev >= 0:
             self.eqf[5] += 2.0 * _np.pi * self.n_rev
