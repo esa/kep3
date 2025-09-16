@@ -194,6 +194,8 @@
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+
+
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
@@ -752,7 +754,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 <span class="c1">#g0 = 9.80665</span>
 <span class="c1">#tof = 1000.0</span>
 <span class="c1">#eps = 1.e-5</span>
-<span class="c1">#n_rev=2 #3,4,5 possible</span>
+<span class="c1">#n_rev=4 #3,4,5 possible</span>
 <span class="c1">#</span>
 <span class="c1">#posvel0 = pk.eq2ic(eq0, mu)</span>
 <span class="c1">#posvelf = pk.eq2ic(eqf, mu)</span>
@@ -772,12 +774,12 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
     <span class="n">T_max</span><span class="o">=</span><span class="n">T_max</span><span class="p">,</span>
     <span class="n">Isp</span><span class="o">=</span><span class="n">Isp</span><span class="p">,</span>
     <span class="n">m0</span><span class="o">=</span><span class="n">m0</span><span class="p">,</span>
-    <span class="n">n_rev</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">n_rev</span> <span class="o">=</span> <span class="n">n_rev</span><span class="p">,</span>
     <span class="n">L</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
     <span class="n">MU</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
     <span class="n">MASS</span><span class="o">=</span><span class="n">m0</span><span class="p">,</span>
     <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="c1"># low tolerances for this simple problem enhance speed greatly</span>
+    <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="c1"># lower tolerances with multiple rev can be an issue</span>
     <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
@@ -839,7 +841,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
     <span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_mumber_of_starts</span><span class="p">):</span>
-        <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">udp</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
         <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -877,345 +879,27 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 ******************************************************************************
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-No success
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
+Final mass is: 1259.9008437907737
+Hamiltonian at the final point is: [-0.03600517] 
+
+Total time to success: 1.472 seconds
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">minpack_g</span><span class="p">,</span> <span class="n">n_mumber_of_starts</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">minpack</span><span class="p">,</span> <span class="n">n_mumber_of_starts</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-No success
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
+Final mass is: 1259.9008821946659
+Hamiltonian at the final point is: [-0.03600518] 
+
+Total time to success: 0.526 seconds
 </pre></div>
 </div>
 </div>
@@ -1228,7 +912,7 @@ No success
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d14324798e7a9810261309b79a4427e96b545a50166b48311145e793ec7bc2ae.png" src="../_images/d14324798e7a9810261309b79a4427e96b545a50166b48311145e793ec7bc2ae.png" />
+<img alt="../_images/6bb0a160a9f72af83fc9fa410068f973f252ee76964cc9b540647d3d13ae0e2b.png" src="../_images/6bb0a160a9f72af83fc9fa410068f973f252ee76964cc9b540647d3d13ae0e2b.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -1239,7 +923,7 @@ No success
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4d53b338faf016a47d86e448d7c27d96105a86c1be2bebf9214903b82028d2b5.png" src="../_images/4d53b338faf016a47d86e448d7c27d96105a86c1be2bebf9214903b82028d2b5.png" />
+<img alt="../_images/6ccc83ba1aa9b31e1f7fc6058b86a3dff29c298b9eb3b8b3e8750944822a811d.png" src="../_images/6ccc83ba1aa9b31e1f7fc6058b86a3dff29c298b9eb3b8b3e8750944822a811d.png" />
 </div>
 </div>
 </section>

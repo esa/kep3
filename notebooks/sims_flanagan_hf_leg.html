@@ -194,6 +194,8 @@
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+
+
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plotting.html">Plotting</a></li>
 </ul>
@@ -416,7 +418,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -432,6 +436,21 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradients">The gradients</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-correctness">Gradient correctness</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-the-mismatch-constraints">First the mismatch constraints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then-the-throttle-constraints">Then the throttle constraints</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -443,9 +462,9 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="the-sims-flanagan-high-fidelity-trajectory-leg">
 <h1>The Sims-Flanagan high-fidelity trajectory leg<a class="headerlink" href="#the-sims-flanagan-high-fidelity-trajectory-leg" title="Permalink to this heading">#</a></h1>
-<p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a>. The leg can be used to describe efficiently a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
-and approximates the continuous thrust via a sequence of continuous, constant thrust arcs. The leg is defined by a starting position <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, an arrival position <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span> and a time of flight <span class="math notranslate nohighlight">\(T\)</span>.</p>
-<p>A sequence of throttles <span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, u_{x2}, u_{y2}, u_{z2}, ... ]\)</span> define the direction and magnitude of the continuous thrust vector along each segment (i.e. trajectory parts of equal temporal length <span class="math notranslate nohighlight">\(\frac Tn\)</span>).</p>
+<p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a>. The leg can be used to describe a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
+and approximates the continuous thrust via a sequence of continuous, constant thrust arcs (zero-hold). The leg is defined by a starting position <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, an arrival position <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span> and a time of flight <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p>A sequence of throttles <span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, u_{x2}, u_{y2}, u_{z2}, ... ]\)</span> define the direction and magnitude of the continuous throttle vector along each segment (i.e. trajectory parts of equal temporal length <span class="math notranslate nohighlight">\(\frac Tn\)</span>).</p>
 <p>In this tutorial we show the basic API to interface with the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a> efficiently.</p>
 <p>We start with some imports:</p>
 <div class="cell docutils container">
@@ -453,6 +472,7 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pygmo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits</span><span class="w"> </span><span class="kn">import</span> <span class="n">mplot3d</span>
@@ -540,9 +560,141 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0977f4d750e5abb100c896a6cf810564e7885e3283c834d83c0f46cc7940c7ee.png" src="../_images/0977f4d750e5abb100c896a6cf810564e7885e3283c834d83c0f46cc7940c7ee.png" />
+<img alt="../_images/3d50056c65689657701fef3b96a5d05f33a9ea29c1971c7c9d493d1db46c9c2d.png" src="../_images/3d50056c65689657701fef3b96a5d05f33a9ea29c1971c7c9d493d1db46c9c2d.png" />
 </div>
 </div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="the-gradients">
+<h1>The gradients<a class="headerlink" href="#the-gradients" title="Permalink to this heading">#</a></h1>
+<p>The main function of this leg is to serve as a fwd-bck shooting blosk in larger optimization problems. The efficent autodiff computation of the gradients of the mismatch and throttle constraints are thus provided for convenience. Indicating the mismatch constraints with <span class="math notranslate nohighlight">\(\mathbf{mc}\)</span> and the throttle constraints with <span class="math notranslate nohighlight">\(\mathbf{tc}\)</span> we seek the following quntities:</p>
+<div class="math notranslate nohighlight">
+\[
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_s} \rightarrow (7\times7)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+  \frac{\partial \mathbf {mc}}{\partial \mathbf x_f} \rightarrow (7\times7)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+  \frac{\partial \mathbf {mc}}{\partial \mathbf {\tilde u}} \rightarrow (7\times(3\mathbf{nseg} + 1))
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \mathbf {tc}}{\partial \mathbf u} \rightarrow (\mathbf{nseg} \times3\mathbf{nseg})
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf x_s=[\mathbf r, \mathbf v, m]\)</span> is the starting state, <span class="math notranslate nohighlight">\(\mathbf x_f\)</span> is the final state <span class="math notranslate nohighlight">\(\mathbf u=[u_0, u_1 ... u_{nseg}]\)</span> are the throttles and <span class="math notranslate nohighlight">\(\mathbf {\tilde u}=[\mathbf u, tof]\)</span> the trottles augmented with <span class="math notranslate nohighlight">\(tof\)</span> .</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dmcdxs</span><span class="p">,</span> <span class="n">dmcdxf</span><span class="p">,</span> <span class="n">dmcdu</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_mc_grad</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dmcdxs shape: &quot;</span><span class="p">,</span> <span class="n">dmcdu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dmcdxf shape: &quot;</span><span class="p">,</span> <span class="n">dmcdu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dmcdu shape: &quot;</span><span class="p">,</span> <span class="n">dmcdu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">dtcdu</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_tc_grad</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dtcdu shape: &quot;</span><span class="p">,</span> <span class="n">dtcdu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dmcdxs shape:  (7, 31)
+dmcdxf shape:  (7, 31)
+dmcdu shape:  (7, 31)
+dtcdu shape:  (10, 30)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="gradient-correctness">
+<h1>Gradient correctness<a class="headerlink" href="#gradient-correctness" title="Permalink to this heading">#</a></h1>
+<p>We check the gradient correctness against numerical differentiation.</p>
+<section id="first-the-mismatch-constraints">
+<h2>First the mismatch constraints<a class="headerlink" href="#first-the-mismatch-constraints" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># These functions are to be used in an estimate_gradient_h call</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mc_from_rvms</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">rvms</span><span class="p">):</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">rvms</span> <span class="o">=</span> <span class="n">rvms</span>
+    <span class="k">return</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_mismatch_constraints</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">mc_from_rvmf</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">rvmf</span><span class="p">):</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">rvmf</span> <span class="o">=</span> <span class="n">rvmf</span>
+    <span class="k">return</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_mismatch_constraints</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">mc_from_utilda</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">utilda</span><span class="p">):</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">throttles</span> <span class="o">=</span> <span class="n">utilda</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">tof</span> <span class="o">=</span> <span class="n">utilda</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_mismatch_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reference values where to compute the numerical gradients</span>
+<span class="n">rvms</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">rvms</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">rvmf</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">rvmf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">utilda</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">throttles</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">sf</span><span class="o">.</span><span class="n">tof</span><span class="p">]</span>
+<span class="c1"># Numerical gradients</span>
+<span class="n">dmcdxs_numerical</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mc_from_rvms</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">rvms</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">dmcdxf_numerical</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mc_from_rvmf</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">rvmf</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">dmcdu_numerical</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mc_from_utilda</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">utilda</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">nseg</span><span class="o">*</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We check against the analytical gradients that all went well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check gradient of mc wrt xs: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dmcdxs_numerical</span><span class="p">,</span> <span class="n">dmcdxs</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span>  <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check gradient of mc wrt xf: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dmcdxf_numerical</span><span class="p">,</span> <span class="n">dmcdxf</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span>  <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check gradient of mc wrt u:  &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dmcdu_numerical</span><span class="p">,</span> <span class="n">dmcdu</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">))</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Check gradient of mc wrt xs:  True
+Check gradient of mc wrt xf:  True
+Check gradient of mc wrt u:   True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="then-the-throttle-constraints">
+<h2>Then the throttle constraints<a class="headerlink" href="#then-the-throttle-constraints" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">tc_from_u</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">throttles</span> <span class="o">=</span> <span class="n">u</span>
+    <span class="k">return</span> <span class="n">sf</span><span class="o">.</span><span class="n">compute_throttle_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reference values where to compute the numerical gradients</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">throttles</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># Numerical gradient</span>
+<span class="n">dtcdu_numerical</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">estimate_gradient_h</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tc_from_u</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">u</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nseg</span><span class="p">,</span> <span class="n">nseg</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check gradient of tc wrt u:  &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">dtcdu_numerical</span><span class="p">,</span> <span class="n">dtcdu</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Check gradient of tc wrt u:   True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 
 
@@ -580,6 +732,28 @@ and approximates the continuous thrust via a sequence of continuous, constant th
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradients">The gradients</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-correctness">Gradient correctness</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-the-mismatch-constraints">First the mismatch constraints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then-the-throttle-constraints">Then the throttle constraints</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>
