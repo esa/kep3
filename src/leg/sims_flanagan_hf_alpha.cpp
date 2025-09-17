@@ -435,7 +435,7 @@ const std::array<double, 7> &sims_flanagan_hf_alpha::get_rvmf() const
 std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() const
 {
     // General settings
-    const double mass_thresh = 1e-3 * (*(m_rvmf.begin() + 6l));
+    const double mass_thresh = 1e-4 * (*(m_rvmf.begin() + 6l));
 
     // Forward pass
     // Initial state

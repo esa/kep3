@@ -534,7 +534,7 @@ sims_flanagan_hf::compute_all_gradients() const
 
     // General settings
     const double prop_seg_duration = (m_tof / m_nseg);
-    const double mass_thresh = 1e-12 * (*(m_rvmf.begin() + 6l));
+    const double mass_thresh = 1e-4 * (*(m_rvmf.begin() + 6l));
 
     // Forward loop
     // Set the Taylor Integration initial conditions

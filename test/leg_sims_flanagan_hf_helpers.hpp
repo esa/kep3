@@ -187,7 +187,7 @@ struct sf_hf_test_object {
     double m_tof = 1.234;
     double m_max_thrust = 1.6;
     double m_isp = 1.234;
-    double m_mu = 1.;
+    double m_mu = 0.9234;
     double m_cut = 0.5;
     double m_tol = 1e-16;
     std::vector<double> m_rvms = {m_rvs[0][0], m_rvs[0][1], m_rvs[0][2], m_rvs[1][0], m_rvs[1][1], m_rvs[1][2], m_ms};
