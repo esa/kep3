@@ -859,9 +859,9 @@ in circular relative motion (the circular restricted three body problem, CR3BP).
 \[\begin{split}\left\{
 \begin{array}{l}
     \dot{\mathbf r} = \mathbf v \\
-    \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} \\
-    \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} \\
-    \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} \\
+    \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} + \frac{T_x}{m}\\
+    \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} + \frac{T_y}{m}\\
+    \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} + \frac{T_z}{m}\\
      \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
 \end{array}\right.\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu, v_{eff} = I_{sp}g_0\)</span> and <span class="math notranslate nohighlight">\(\mathbf T = [T_x, T_y, T_z]\)</span> are parameters.</p>
