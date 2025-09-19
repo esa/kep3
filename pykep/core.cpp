@@ -27,13 +27,14 @@
 #include <kep3/leg/sims_flanagan_hf.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
-#include <kep3/zero_hold_kep_problem.hpp>
 #include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
+#include <kep3/ta/kep.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/pontryagin_equinoctial.hpp>
 #include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/keplerian.hpp>
+#include <kep3/zero_hold_kep_problem.hpp>
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
@@ -130,8 +131,10 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing element conversions
     m.def("ic2par", &kep3::ic2par, py::arg("posvel"), py::arg("mu"), pk::ic2par_doc().c_str());
     m.def("par2ic", &kep3::par2ic, py::arg("elem"), py::arg("mu"), pk::par2ic_doc().c_str());
-    m.def("ic2eq", &kep3::ic2eq, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false, pk::ic2eq_doc().c_str());
-    m.def("eq2ic", &kep3::eq2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false, pk::eq2ic_doc().c_str());
+    m.def("ic2eq", &kep3::ic2eq, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false,
+          pk::ic2eq_doc().c_str());
+    m.def("eq2ic", &kep3::eq2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false,
+          pk::eq2ic_doc().c_str());
     m.def("par2eq", &kep3::par2eq, py::arg("elem"), py::arg("retrogde") = false, pk::par2eq_doc().c_str());
     m.def("eq2par", &kep3::eq2par, py::arg("eq_elem"), py::arg("retrogde") = false, pk::eq2par_doc().c_str());
 
@@ -373,6 +376,45 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol"), pykep::get_zero_hold_kep_var_docstring().c_str());
     ta.def("zero_hold_kep_dyn", &kep3::ta::zero_hold_kep_dyn, pykep::zero_hold_kep_dyn_docstring().c_str());
+
+    // KEP
+    ta.def(
+        "get_kep",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_kep(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_kep_docstring().c_str());
+    ta.def(
+        "get_kep_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_kep_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_kep_var_docstring().c_str());
+    ta.def("kep_dyn", &kep3::ta::kep_dyn, pykep::kep_dyn_docstring().c_str());
+
+    // BCP
+    ta.def(
+        "get_bcp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_docstring().c_str());
+    ta.def(
+        "get_bcp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_bcp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_bcp_var_docstring().c_str());
+    ta.def("bcp_dyn", &kep3::ta::bcp_dyn, pykep::bcp_dyn_docstring().c_str());
+
     // CR3BP
     // Add function to submodule
     ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());
@@ -438,7 +480,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     ta.def("get_pc_i_vers_cfunc", &kep3::ta::get_pc_i_vers_cfunc, pykep::get_pc_i_vers_cfunc_docstring().c_str());
     ta.def("get_pc_dyn_cfunc", &kep3::ta::get_pc_dyn_cfunc, pykep::get_pc_dyn_cfunc_docstring().c_str());
 
-   // Pontryagin Equinoctial (TPBVP)
+    // Pontryagin Equinoctial (TPBVP)
     ta.def(
         "get_peq",
         [](double tol, kep3::optimality_type optimality) {
@@ -537,7 +579,8 @@ PYBIND11_MODULE(core, m) // NOLINT
         py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_grid_docstring().c_str());
 
     // Exposing the zero_hold_kep problem class
-    py::class_<kep3::zero_hold_kep_problem> zero_hold_kep_problem(m, "zero_hold_kep_problem", pykep::zero_hold_kep_problem_docstring().c_str());
+    py::class_<kep3::zero_hold_kep_problem> zero_hold_kep_problem(m, "zero_hold_kep_problem",
+                                                                  pykep::zero_hold_kep_problem_docstring().c_str());
     zero_hold_kep_problem
         .def(py::init<double, double, double>(), py::arg("mu") = 1., py::arg("veff") = 1., py::arg("tol") = 1e-16)
         // repr().
@@ -553,8 +596,8 @@ PYBIND11_MODULE(core, m) // NOLINT
         .def_property_readonly("tol", &kep3::zero_hold_kep_problem::get_tol, "The Taylor integrator tolerance.")
         // The actual call to propagators. (we do not here care about copies and allocations as this is 20 times slower
         // than propagate lagrangian already on c++ side).
-        .def("propagate", &kep3::zero_hold_kep_problem::propagate, py::arg("rvm_state"), py::arg("thrust"), py::arg("tof"),
-             pykep::zero_hold_kep_problem_propagate_docstring().c_str())
+        .def("propagate", &kep3::zero_hold_kep_problem::propagate, py::arg("rvm_state"), py::arg("thrust"),
+             py::arg("tof"), pykep::zero_hold_kep_problem_propagate_docstring().c_str())
         .def(
             "propagate_var",
             [](kep3::zero_hold_kep_problem &sp, const std::array<double, 7> &rvm_state, std::array<double, 3> thrust,

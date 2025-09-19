@@ -1897,6 +1897,96 @@ Returns:
 )";
 }
 
+std::string get_kep_docstring()
+{
+    return R"(ta.get_kep(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy. 
+
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
+
+In `pykep`, the simple keplerian dynamics is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The specific dynamics used is that returned by :func:`~pykep.ta.kep_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_kep(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_kep_var_docstring()
+{
+    return R"(ta.get_kep_var(tol)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy. 
+
+If the requested propagator was never created, a call to this function will trigger its creation, else it will
+return the one from a global cache, thus avoiding jitting.
+
+.. note:
+   Variations are only considered with respect to initial conditions.
+
+In `pykep`, the simple Keplerian dynamics is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The specific dynamics used is that returned by :func:`~pykep.ta.kep_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_kep_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
+  >>> mu = 0.01215058560962404
+  >>> tof = 5.7856656782589234
+  >>> ta.pars[0] = mu
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string kep_dyn_docstring()
+{
+    return R"(kep_dyn()
+
+The dynamics of the simple Keplerian problem (kep).
+
+In `pykep`, the kep is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
+
+The parameter :math:`\mu` is the central body gravitational parameter. 
+
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot{\mathbf v} = -\frac{mu}{r^3} \mathbf r \\
+   \end{array}\right.
+
+where :math:`\mu` is the only parameter.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
 std::string get_bcp_docstring()
 {
     return R"(ta.get_cbp(tol)

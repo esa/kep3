@@ -100,9 +100,10 @@ std::string udpla_jpl_lp_docstring();
 std::string udpla_vsop2013_docstring();
 
 // Taylor Adaptive propagators
-std::string get_zero_hold_kep_docstring();
-std::string get_zero_hold_kep_var_docstring();
-std::string zero_hold_kep_dyn_docstring();
+// basic
+std::string get_kep_docstring();
+std::string get_kep_var_docstring();
+std::string kep_dyn_docstring();
 std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
@@ -111,7 +112,11 @@ std::string cr3bp_effective_potential_U_docstring();
 std::string get_bcp_docstring();
 std::string get_bcp_var_docstring();
 std::string bcp_dyn_docstring();
-
+// zero holds
+std::string get_zero_hold_kep_docstring();
+std::string get_zero_hold_kep_var_docstring();
+std::string zero_hold_kep_dyn_docstring();
+// TPBVPs
 std::string get_pc_docstring();
 std::string get_pc_var_docstring();
 std::string pc_dyn_docstring();
