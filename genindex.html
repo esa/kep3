@@ -435,12 +435,10 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.ta.bcp_dyn">bcp_dyn() (in module pykep.ta)</a>
+      <li><a href="approximations.html#pykep.bielliptic">bielliptic() (in module pykep)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="approximations.html#pykep.bielliptic">bielliptic() (in module pykep)</a>
-</li>
       <li><a href="udpla.html#pykep.udpla.de440s.body_list">body_list() (pykep.udpla.de440s method)</a>
 </li>
   </ul></td>
@@ -465,14 +463,14 @@ document.write(`
         <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_mc_grad">(pykep.leg.sims_flanagan_hf method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mismatch_constraints">compute_mismatch_constraints() (pykep.leg.sims_flanagan method)</a>
 
       <ul>
         <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_mismatch_constraints">(pykep.leg.sims_flanagan_hf method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_tc_grad">compute_tc_grad() (pykep.leg.sims_flanagan method)</a>
 
       <ul>
@@ -485,12 +483,6 @@ document.write(`
         <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_throttle_constraints">(pykep.leg.sims_flanagan_hf method)</a>
 </li>
       </ul></li>
-      <li><a href="propagation.html#pykep.ta.cr3bp_dyn">cr3bp_dyn() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.cr3bp_effective_potential_U">cr3bp_effective_potential_U() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.cr3bp_jacobi_C">cr3bp_jacobi_C() (in module pykep.ta)</a>
-</li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.cut">cut (pykep.leg.sims_flanagan property)</a>
 
       <ul>
@@ -621,14 +613,6 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.ta.get_bcp">get_bcp() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.get_bcp_var">get_bcp_var() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.get_cr3bp">get_cr3bp() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.get_cr3bp_var">get_cr3bp_var() (in module pykep.ta)</a>
-</li>
       <li><a href="planet.html#pykep.planet.get_extra_info">get_extra_info() (pykep.planet method)</a>
 
       <ul>
@@ -655,10 +639,10 @@ document.write(`
         <li><a href="udpla.html#pykep.udpla.tle.get_name">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="propagation.html#pykep.ta.get_pc">get_pc() (in module pykep.ta)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="propagation.html#pykep.ta.get_pc_var">get_pc_var() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_peq">get_peq() (in module pykep.ta)</a>
@@ -674,6 +658,10 @@ document.write(`
       <li><a href="planet.html#pykep.planet.get_safe_radius">get_safe_radius() (pykep.planet method)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan_hf.get_state_history">get_state_history() (pykep.leg.sims_flanagan_hf method)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp">get_zero_hold_cr3bp() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp_var">get_zero_hold_cr3bp_var() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_zero_hold_kep">get_zero_hold_kep() (in module pykep.ta)</a>
 </li>
@@ -1091,12 +1079,14 @@ document.write(`
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.ta.zero_hold_kep_dyn">zero_hold_kep_dyn() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.zero_hold_cr3bp_dyn">zero_hold_cr3bp_dyn() (in module pykep.ta)</a>
 </li>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem">zero_hold_kep_problem (class in pykep)</a>
+      <li><a href="propagation.html#pykep.ta.zero_hold_kep_dyn">zero_hold_kep_dyn() (in module pykep.ta)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="propagation.html#pykep.zero_hold_kep_problem">zero_hold_kep_problem (class in pykep)</a>
+</li>
       <li><a href="anomalies.html#pykep.zeta2f">zeta2f() (in module pykep)</a>
 </li>
       <li><a href="anomalies.html#pykep.zeta2f_v">zeta2f_v() (in module pykep)</a>
