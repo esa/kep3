@@ -1683,7 +1683,7 @@ std::string zero_hold_kep_problem_docstring()
 {
     return R"(__init__(mu = 1., veff = 1., tol = 1e-16)
 
-Class representing the zero_hold_kep problem. In `pykep`, abusing a term well established in electrodynamics, 
+Class representing the zero_hold_kep problem. In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body and
 described by the equations:
 
@@ -1727,7 +1727,7 @@ std::string zero_hold_kep_problem_propagate_docstring()
 {
     return R"(propagate(rvm_state, thrust, tof)
 
-zero_hold_kep problem numerical propagation. In `pykep`, abusing a term well established in electrodynamics, 
+zero_hold_kep problem numerical propagation. In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
 The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
@@ -1764,7 +1764,7 @@ std::string zero_hold_kep_problem_propagate_var_docstring()
 
 zero_hold_kep problem numerical propagation via variational equations. 
 
-In `pykep`, abusing a term well established in electrodynamics, 
+In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
 The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.
@@ -1809,9 +1809,10 @@ std::string get_zero_hold_kep_docstring()
 {
     return R"(ta.get_zero_hold_kep(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep problem retreiving one from a global cache and making a copy. 
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics retreiving
+one from a global cache and making a copy. 
 
-In `pykep`, abusing a term well established in electrodynamics, 
+In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
 
 If the requested propagator was never created this will create it, else it will
@@ -1843,13 +1844,16 @@ std::string get_zero_hold_kep_var_docstring()
 {
     return R"(ta.get_zero_hold_kep_var(tol)
 
-Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_kep problem retreiving one from a global cache and making a copy. 
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics
+retreiving one from a global cache and making a copy. 
+
+In `pykep`, using a term well established in electrodynamics, 
+this is the initial value problem of a constant inertial thrust mass-varying spacecraft orbiting a main body.
 
 .. note:
-   Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
-
-In `pykep`, abusing a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+   Variations are only considered with repsect to initial conditions and the constant thurst :math:`T`.
+   The variations with respect to the constant thrust differ from those with respect to
+   the often introduced throttles :math:`\mathbf T = T_{max} \mathbf u` by a factor :math:`T_{max}`.
 
 The dynamics is that returned by :func:`~pykep.ta.zero_hold_kep_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_kep`
 
@@ -1866,7 +1870,7 @@ Examples:
   >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
   >>> mu = 1.
   >>> veff = 1.
-  >>> thrust = [0., 0., 0.]
+  >>> thrust = [0., 0., 1e-22]
   >>> tof = 1.
   >>> ta.pars[:5] = [mu, veff] + thrust
   >>> ta.propagate_until(tof)
@@ -1877,10 +1881,7 @@ std::string zero_hold_kep_dyn_docstring()
 {
     return R"(zero_hold_kep_dyn()
 
-The dynamics of the zero_hold_kep problem. 
-
-In `pykep`, abusing a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.
+The dynamics of a constant inertial thrust mass-varying spacecraft orbiting a main body.
 
 .. math::
    \left\{
@@ -1888,6 +1889,106 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
        \dot{\mathbf r} = \mathbf v \\
        \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
        \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
+   \end{array}\right.
+
+where :math:`\mu, v_{eff} = I_{sp}g_0` and :math:`\mathbf T = [T_x, T_y, T_z]` are parameters.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
+std::string get_zero_hold_cr3bp_docstring()
+{
+    return R"(ta.get_zero_hold_cr3bp(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp dynamics retreiving
+one from a global cache and making a copy. 
+
+In `pykep`, using a term well established in electrodynamics, 
+this is the initial value problem of a constant thrust mass-varying spacecraft orbiting two main bodies
+in circular relative motion (the circular restricted three body problem, CR3BP). Thrust direction is
+fixed in the rotating frame.
+
+If the requested propagator was never created this will create it, else it will
+return the one from the global cache, thus avoiding jitting.
+
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_zero_hold_cr3bp(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1.
+  >>> veff = 1.
+  >>> thrust = [0., 0., 0.]
+  >>> tof = 1.
+  >>> ta.pars[:] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_zero_hold_cr3bp_var_docstring()
+{
+    return R"(ta.get_zero_hold_cr3bp_var(tol)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp
+dynamics retreiving one from a global cache and making a copy. 
+
+In `pykep`, using a term well established in electrodynamics, 
+this is the initial value problem of a constant thrust mass-varying spacecraft orbiting two main bodies
+in circular relative motion (the circular restricted three body problem, CR3BP). Thrust direction is
+fixed in the rotating frame.
+
+.. note:
+   Variations are only considered with repsect to initial conditions and the constant thurst :math:`T`.
+   The variations with respect to the constant thrust differ from those with respect to
+   the often introduced throttles :math:`\mathbf T = T_{max} \mathbf u` by a factor :math:`T_{max}`.
+
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_cr3bp`
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_zero_hold_cr3bp_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1.
+  >>> veff = 1.
+  >>> thrust = [0., 0., 1e-22]
+  >>> tof = 1.
+  >>> ta.pars[:5] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string zero_hold_cr3bp_dyn_docstring()
+{
+    return R"(zero_hold_cr3bp_dyn()
+
+The dynamics of a fixed thrust mass-varying spacecraft orbiting two main bodies
+in circular relative motion (the circular restricted three body problem, CR3BP).
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} \\
+       \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} \\
+       \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} \\
+        \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
    \end{array}\right.
 
 where :math:`\mu, v_{eff} = I_{sp}g_0` and :math:`\mathbf T = [T_x, T_y, T_z]` are parameters.

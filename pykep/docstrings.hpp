@@ -116,6 +116,9 @@ std::string bcp_dyn_docstring();
 std::string get_zero_hold_kep_docstring();
 std::string get_zero_hold_kep_var_docstring();
 std::string zero_hold_kep_dyn_docstring();
+std::string get_zero_hold_cr3bp_docstring();
+std::string get_zero_hold_cr3bp_var_docstring();
+std::string zero_hold_cr3bp_dyn_docstring();
 // TPBVPs
 std::string get_pc_docstring();
 std::string get_pc_var_docstring();

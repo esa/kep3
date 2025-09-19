@@ -46,21 +46,21 @@ std::vector<std::pair<expression, expression>> zero_hold_kep_dyn()
     // Renaming parameters
     const auto &mu = par[0];
     const auto &veff = par[1];
-    const auto &[ux, uy, uz] = std::array{par[2], par[3], par[4]};
+    const auto &[Tx, Ty, Tz] = std::array{par[2], par[3], par[4]};
 
     // The square of the radius
     const auto r2 = sum({pow(x, 2.), pow(y, 2.), pow(z, 2.)});
 
     // The thrust magnitude
-    const auto u_norm = sqrt(sum({pow(ux, 2.), pow(uy, 2.), pow(uz, 2.)}));
+    const auto u_norm = sqrt(sum({pow(Tx, 2.), pow(Ty, 2.), pow(Tz, 2.)}));
 
     // The Equations of Motion
     const auto xdot = vx;
     const auto ydot = vy;
     const auto zdot = vz;
-    const auto vxdot = -mu * pow(r2, -3. / 2) * x + ux / m;
-    const auto vydot = -mu * pow(r2, -3. / 2) * y + uy / m;
-    const auto vzdot = -mu * pow(r2, -3. / 2) * z + uz / m;
+    const auto vxdot = -mu * pow(r2, -3. / 2) * x + Tx / m;
+    const auto vydot = -mu * pow(r2, -3. / 2) * y + Ty / m;
+    const auto vzdot = -mu * pow(r2, -3. / 2) * z + Tz / m;
     // To avoid singularities in the corner case u_norm=0. we use a select here. Implications on performances should be
     // studied.
     const auto mdot = select(eq(u_norm, 0.), 0., -u_norm / veff);
