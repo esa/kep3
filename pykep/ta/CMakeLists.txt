@@ -1,2 +1,2 @@
-set(PYKEP_TA_PYTHON_FILES __init__.py)
+set(PYKEP_TA_PYTHON_FILES __init__.py _zero_hold_eq.py)
 install(FILES ${PYKEP_TA_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR}/ta)
