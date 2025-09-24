@@ -106,6 +106,10 @@ zero_hold_eq
 ~~~~~~~~~~~~~~~
 .. currentmodule:: pykep.ta
 
+.. autofunction:: get_zero_hold_eq
+
+.. autofunction:: get_zero_hold_eq_var
+
 .. autofunction:: zero_hold_eq_dyn 
 
 zero_hold_cr3bp

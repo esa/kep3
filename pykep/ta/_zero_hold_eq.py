@@ -174,7 +174,7 @@ def get_zero_hold_eq_var(tol: float):
     .. note:
     Variations are only considered with repsect to initial conditions and the constant thurst :math:`T_r, T_t, T_n`.
     The variations with respect to the constant thrust differ from those with respect to
-    the often introduced throttles :math:`\mathbf T = T_{max} \mathbf u` by a factor :math:`T_{max}`.
+    the often introduced throttles :math:`\\mathbf T = T_{max} \\mathbf u` by a factor :math:`T_{max}`.
 
     The dynamics is that returned by :func:`~pykep.ta.zero_hold_eq_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_qe`
 
@@ -205,12 +205,9 @@ def get_zero_hold_eq_var(tol: float):
             [p, f, g, h, k, L, m, _hy.par[2], _hy.par[3], _hy.par[4]],
             1,
         )
-        init_state = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         new_ta = _hy.taylor_adaptive(
             vsys,
-            init_state,
             tol=tol,
-            pars=[1.0, 1.0, 0.0, 0.0, 1e-32],
             compact_mode=True,
         )
         # Insert in cache and return
