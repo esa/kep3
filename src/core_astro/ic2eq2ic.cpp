@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -13,8 +13,8 @@
 
 #include <fmt/ranges.h>
 
-#include <xtensor/containers/xadapt.hpp>
 #include <xtensor-blas/xlinalg.hpp>
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
 
 #include <kep3/core_astro/constants.hpp>
@@ -30,7 +30,7 @@ namespace kep3
 // Cefola: Equinoctial orbit elements - Application to artificial satellite
 // orbitsCefola, P., 1972, September. Equinoctial orbit elements-Application to
 // artificial satellite orbits. In Astrodynamics Conference (p. 937).
- 
+
 std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel, double mu, bool retrogade)
 {
     {
@@ -85,21 +85,28 @@ std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel,
         double det1 = (gv(1) * fv(0) - fv(1) * gv(0)); // xy
         double det2 = (gv(2) * fv(0) - fv(2) * gv(0)); // xz
         double det3 = (gv(2) * fv(1) - fv(2) * gv(1)); // yz
-        double max = std::max({std::abs(det1), std::abs(det2), std::abs(det3)});
+
+        std::array<double, 3> dets = {std::abs(det1), std::abs(det2), std::abs(det3)};
+        std::size_t idx
+            = static_cast<std::size_t>(std::distance(dets.begin(), std::max_element(dets.begin(), dets.end())));
 
         double X = 0., Y = 0.;
-        if (std::abs(det1) == max) {
-            X = (gv(1) * r0(0) - gv(0) * r0(1)) / det1;
-            Y = (-fv(1) * r0(0) + fv(0) * r0(1)) / det1;
-        } else if (std::abs(det2) == max) {
-            X = (gv(2) * r0(0) - gv(0) * r0(2)) / det2;
-            Y = (-fv(2) * r0(0) + fv(0) * r0(2)) / det2;
-        } else {
-            X = (gv(2) * r0(1) - gv(1) * r0(2)) / det3;
-            Y = (-fv(2) * r0(1) + fv(1) * r0(2)) / det3;
+        switch (idx) {
+            case 0:
+                X = (gv(1) * r0(0) - gv(0) * r0(1)) / det1;
+                Y = (-fv(1) * r0(0) + fv(0) * r0(1)) / det1;
+                break;
+            case 1:
+                X = (gv(2) * r0(0) - gv(0) * r0(2)) / det2;
+                Y = (-fv(2) * r0(0) + fv(0) * r0(2)) / det2;
+                break;
+            case 2:
+                X = (gv(2) * r0(1) - gv(1) * r0(2)) / det3;
+                Y = (-fv(2) * r0(1) + fv(1) * r0(2)) / det3;
+                break;
         }
 
-        double L = std::atan2(Y / R0, X / R0);
+        double L = std::atan2(Y, X);
 
         // 5 - We assign the results
         return {sma * (1. - ecc * ecc), f, g, h, k, L};

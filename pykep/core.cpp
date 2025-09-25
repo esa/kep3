@@ -355,11 +355,11 @@ PYBIND11_MODULE(core, m) // NOLINT
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.");
 
     // Exposing Taylor adaptive propagators
-    // Create submodule "ta"
-    py::module_ ta = m.def_submodule("ta", "Submodule for heyoka Taylor integrator related stuff");
+    // Create submodule "ta_cxx"
+    py::module_ ta = m.def_submodule("ta_cxx", "Submodule for heyoka Taylor integrator related stuff");
     // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
-    sys.attr("modules")["pykep.ta"] = ta;
+    sys.attr("modules")["pykep.ta_cxx"] = ta;
     
     // KEP
     ta.def(
