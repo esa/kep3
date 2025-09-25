@@ -32,6 +32,7 @@ class pontryagin_cartesian_mass:
         posvelf=_posvelf,
         tof=250,
         mu=_pk.MU_SUN,
+        lambda0 = 1.0,
         eps=1e-4,
         T_max=0.6,
         Isp=3000,
@@ -53,6 +54,8 @@ class pontryagin_cartesian_mass:
             *tof* (:class:`float`): the time of flight of the trajectory (in days).
 
             *mu* (:class:`float`): the gravitational parameter of the central body.
+            
+            *lambda0* (:class:`float` or None): multiplicative factor for the objective. If None, lambda0 is added to the decision vector and the constraint ||lambda||=1 is added so that all costates must be in [-1,1].
 
             *eps* (:class:`float`): the accuracy of the numerical integrator.
 
@@ -81,6 +84,7 @@ class pontryagin_cartesian_mass:
 
         # We redefine the user inputs in non dimensional units
         self.mu = mu / MU
+        self.lambda0 = lambda0
         self.eps = eps
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
@@ -102,9 +106,14 @@ class pontryagin_cartesian_mass:
         self.with_gradient = with_gradient
 
     def get_bounds(self):
-        lb = [-1.0] * 6 + [0.0] * 2
-        ub = [1.0] * 8
-        return [lb, ub]
+        if self.lambda0 == None:
+            lb = [-1.0] * 6 + [0.0] * 2
+            ub = [1.0] * 8
+            return [lb, ub]
+        else:
+            lb = [-1.0] * 6 + [0.0]
+            ub = [1.0] * 7 
+            return [lb, ub]
 
     def set_ta_state(self, x):
         # Preparing the numerical integration parameters
@@ -112,7 +121,10 @@ class pontryagin_cartesian_mass:
         self.ta.pars[1] = self.c1
         self.ta.pars[2] = self.c2
         self.ta.pars[3] = self.eps
-        self.ta.pars[4] = x[7]
+        if self.lambda0 == None:
+            self.ta.pars[4] = x[7]
+        else:
+            self.ta.pars[4] = self.lambda0
         self.ta.time = 0.0
 
         # And initial conditions
@@ -127,7 +139,10 @@ class pontryagin_cartesian_mass:
         self.ta_var.pars[1] = self.c1
         self.ta_var.pars[2] = self.c2
         self.ta_var.pars[3] = self.eps
-        self.ta_var.pars[4] = x[7]
+        if self.lambda0 == None:
+            self.ta_var.pars[4] = x[7]
+        else:
+            self.ta_var.pars[4] = self.lambda0
         self.ta_var.time = 0.0
 
         # And initial conditions
@@ -149,7 +164,8 @@ class pontryagin_cartesian_mass:
         ceq += [(self.ta.state[4] - self.posvelf[1][1])]
         ceq += [(self.ta.state[5] - self.posvelf[1][2])]
         ceq += [self.ta.state[13]]  # lm = 0
-        ceq += [sum([it * it for it in x]) - 1.0]  # |lambdas|^2 = 1
+        if self.lambda0 == None:
+            ceq += [sum([it * it for it in x]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
     def gradient(self, x):
@@ -160,30 +176,49 @@ class pontryagin_cartesian_mass:
         # Fitness (sparsity takes care of the fitness since it does not depend on the dv)
         retval = []
         # Constraints
-        for i in range(6):
-            sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
-        # Constraint on mass
+        if self.lambda0 == None:
+            for i in range(6):
+                sl = self.ta_var.get_vslice(order=1, component=i)
+                retval.extend(list(self.ta_var.state[sl]))
+        else:
+            for i in range(6):
+                sl = self.ta_var.get_vslice(order=1, component=i)
+                retval.extend(list(self.ta_var.state[sl])[:-1]) # we exclude the d/dlambda0
+        # Constraint on final mass costate
         sl = self.ta_var.get_vslice(order=1, component=13)
-        retval.extend(list(self.ta_var.state[sl]))
-        # Norm constraint
-        for item in x:
-            retval.extend([2 * item])
+        if self.lambda0 == None:
+            retval.extend(list(self.ta_var.state[sl]))
+            # Norm constraint
+            for item in x:
+                retval.extend([2 * item])
+        else:
+            retval.extend(list(self.ta_var.state[sl])[:-1]) # we exclude the d/dlambda0
+            # No norm constraint
+        
         return retval
 
     def gradient_sparsity(self):
         retval = []
-        for i in range(1, 9):
-            for j in range(8):
-                retval.append((i, j))
+        if self.lambda0 == None:
+            for i in range(1, 9):
+                for j in range(8):
+                    retval.append((i, j))
+        else:
+            # The constraint does not depend on lambda0 and theres no norm constraint
+            for i in range(1, 8):
+                for j in range(7):
+                    retval.append((i, j))
         return retval
 
     def has_gradient(self):
         return self.with_gradient
 
     def get_nec(self):
-        return 8
-
+        if self.lambda0 == None:
+            return 8
+        else:
+            return 7
+        
     def plot(self, x, N=100, ax3D=None):
         """
         This function plots the trajectory encoded in the decision vector x.
@@ -351,6 +386,7 @@ class pontryagin_cartesian_time:
         target=_plf,
         t0=_pk.epoch(0),
         tof_guess=250,
+        lambda0 = 1.0,
         T_max=0.6,
         Isp=3000,
         m0=1500,
@@ -371,6 +407,8 @@ class pontryagin_cartesian_time:
             *t0* (:class:`~pk.epoch`): the initial epoch.
 
             *tof_guess* (:class:`float`): a guess for the time of flight. Bound will be defined as tof_guess/2 and 2*tof_guess.
+            
+            *lambda0* (:class:`float` or None): multiplicative factor for the objective. If None, lambda0 is added to the decision vector and the constraint ||lambda||=1 is added so that all costates must be in [-1,1].
 
             *T_max* (:class:`float`): the maximum thrust of the spacecraft.
 
@@ -398,6 +436,7 @@ class pontryagin_cartesian_time:
         # Store user inputs
         self.Isp = Isp
         self.t0 = t0
+        self.lambda0 = lambda0
 
         # We redefine the user inputs in non dimensional units.
         self.mu = source.get_mu_central_body() / MU
@@ -435,8 +474,13 @@ class pontryagin_cartesian_time:
         self.with_gradient = with_gradient
 
     def get_bounds(self):
-        lb = [-1.0] * 6 + [0.0] * 2 + [self.tof_guess / 2]
-        ub = [1.0] * 8 + [self.tof_guess * 2]
+        if self.lambda0 == None:
+            lb = [-1.0] * 6 + [0.0] * 2 + [self.tof_guess / 2]
+            ub = [1.0] * 8 + [self.tof_guess * 2]
+        else:
+            lb = [-1.0] * 6 + [0.0] + [self.tof_guess / 2]
+            ub = [1.0] * 6 + [1.0] + [self.tof_guess * 2]
+
         return [lb, ub]
 
     def set_ta_state(self, x):
@@ -467,13 +511,13 @@ class pontryagin_cartesian_time:
         self.ta_var.state[14:] = self.ic_var
 
     def fitness(self, x):
-        # x = [lx, ly, lz, lvx, lvy, lvz, lm, lJ, tof]
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, l0, tof]
         # Single Shooting
-        self.set_ta_state(x[:8])
-        self.ta.propagate_until(x[8])
+        self.set_ta_state(x[:7])
+        self.ta.propagate_until(x[-1])
         
         # Computing the target position at epoch
-        rf, vf = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
+        rf, vf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
         rf = [it / self.L for it in rf]
         vf = [it / self.VEL for it in vf]
         
@@ -485,16 +529,17 @@ class pontryagin_cartesian_time:
         ceq += [(self.ta.state[4] - vf[1])]
         ceq += [(self.ta.state[5] - vf[2])]
         ceq += [self.ta.state[13]]  # lm = 0
-        ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
+        if self.lambda0 == None:
+            ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
     def gradient(self, x):
         # Single Shooting of variational equations
-        self.set_ta_var_state(x[:8])
-        self.ta_var.propagate_until(x[8])
+        self.set_ta_var_state(x[:7])
+        self.ta_var.propagate_until(x[-1])
         # Computing the target position, velocity and acceleration at epoch
         # NOTE: if the planet is not keplerian the acceleration will be assumed as Keplerian
-        rf, vf = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
+        rf, vf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
         vf = [it / self.VEL for it in vf]
         rf = [it / self.L for it in rf]
         af = -self.mu / _np.linalg.norm(rf) ** 3 * _np.array(rf)
@@ -502,41 +547,56 @@ class pontryagin_cartesian_time:
         # Fitness (sparsity takes care of the fitness since it does not depend on the dv)
         retval = []
         dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:2])
+        # If we normalize lambdas, we need to consider the derivatives w.r.t. lambda0
+        if self.lambda0 == None:
+            final_idx = 8
+        else:
+            final_idx = 7
         # Constraints
         for i in range(3):
             sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
+            retval.extend(list(self.ta_var.state[sl])[:final_idx])
             retval.append(dyn[i] - vf[i])
         for i in range(3, 6):
             sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
+            retval.extend(list(self.ta_var.state[sl])[:final_idx])
             retval.append(dyn[i] - af[i - 3])
         # Constraint on mass costate
         sl = self.ta_var.get_vslice(order=1, component=13)
-        retval.extend(list(self.ta_var.state[sl]))
+        retval.extend(list(self.ta_var.state[sl])[:final_idx])
         retval.append(dyn[6])
-        # Norm constraint
-        for item in x[:-1]:
-            retval.extend([2 * item])
+        if self.lambda0 == None:
+            # Norm constraint
+            for item in x[:-1]:
+                retval.extend([2 * item])
         return retval
 
     def gradient_sparsity(self):
-        # x = [lx,ly,lz,lvx,lvy,lvz,lm,l0,tof]
+        # x = [lx,ly,lz,lvx,lvy,lvz,lm,(l0),tof]
         retval = []
-        for i in range(1, 8):
-            for j in range(9):
-                retval.append((i, j))
-        # The norm constraint does not depend on tof
-        for i in range(8, 9):
-            for j in range(8):
-                retval.append((i, j))
+        if self.lambda0 == None:
+            for i in range(1, 8):
+                for j in range(9):
+                    retval.append((i, j))
+            # The norm constraint does not depend on tof
+            for i in range(8, 9):
+                for j in range(8):
+                    retval.append((i, j))
+        else:
+            for i in range(1, 8):
+                for j in range(8):
+                    retval.append((i, j))
+
         return retval
 
     def has_gradient(self):
         return self.with_gradient
 
     def get_nec(self):
-        return 8
+        if self.lambda0 == None:
+            return 8
+        else:
+            return 7
 
     def plot(self, x, ax3D=None,  N=100, **kwargs):
         """
@@ -556,7 +616,7 @@ class pontryagin_cartesian_time:
 
         # Single Shooting
         self.set_ta_state(x[:8])
-        t_grid = _np.linspace(0, x[8], N)
+        t_grid = _np.linspace(0, x[-1], N)
         sol = self.ta.propagate_grid(t_grid)
         # We make the axis if needed
         if ax3D is None:
@@ -574,7 +634,7 @@ class pontryagin_cartesian_time:
 
         # Plotting the boundary conditions
         ax3D.scatter(self.posvel0[0][0], self.posvel0[0][1], self.posvel0[0][2])
-        rf, _ = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
+        rf, _ = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
         rf = [it / self.L for it in rf]
         ax3D.scatter(rf[0], rf[1], rf[2])
         return ax3D
@@ -596,7 +656,7 @@ class pontryagin_cartesian_time:
 
         # Single Shooting
         self.set_ta_state(x[:8])
-        t_grid = _np.linspace(0, x[8], N)
+        t_grid = _np.linspace(0, x[-1], N)
         sol = self.ta.propagate_grid(t_grid)
         # Retreive useful cfuncs
         # The Hamiltonian

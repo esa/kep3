@@ -34,6 +34,7 @@ class pontryagin_equinoctial_mass:
         tof=250,
         mu=_pk.MU_SUN,
         eps=1e-4,
+        lambda0=None,
         T_max=0.6,
         Isp=3000,
         m0=1500,
@@ -57,6 +58,8 @@ class pontryagin_equinoctial_mass:
             *mu* (:class:`float`): the gravitational parameter of the central body.
 
             *eps* (:class:`float`): the accuracy of the numerical integrator.
+            
+            *lambda0* (:class:`float` or None): multiplicative factor for the objective. If None, lambda0 is added to the decision vector and the constraint ||lambda||=1 is added so that all costates must be in [-1,1].
 
             *T_max* (:class:`float`): the maximum thrust of the spacecraft.
 
@@ -86,6 +89,7 @@ class pontryagin_equinoctial_mass:
         # We redefine the user inputs in non dimensional units
         self.mu = mu / MU
         self.eps = eps
+        self.lambda0 = lambda0
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
 
@@ -116,8 +120,12 @@ class pontryagin_equinoctial_mass:
         self.with_gradient = with_gradient
 
     def get_bounds(self):
-        lb = [-1.0] * 6 + [0.0] * 2
-        ub = [1.0] * 8
+        if self.lambda0 == None:
+            lb = [-1.0] * 6 + [0.0] * 2
+            ub = [1.0] * 8
+        else:
+            lb = [-1.0] * 6 + [0.0]
+            ub = [1.0] * 7
         return [lb, ub]
 
     def set_ta_state(self, x):
@@ -126,7 +134,10 @@ class pontryagin_equinoctial_mass:
         self.ta.pars[1] = self.c1
         self.ta.pars[2] = self.c2
         self.ta.pars[3] = self.eps
-        self.ta.pars[4] = x[7]
+        if self.lambda0 == None:
+            self.ta.pars[4] = x[7]
+        else:
+            self.ta.pars[4] = self.lambda0
         self.ta.time = 0.0
 
         # And initial conditions
@@ -140,7 +151,10 @@ class pontryagin_equinoctial_mass:
         self.ta_var.pars[1] = self.c1
         self.ta_var.pars[2] = self.c2
         self.ta_var.pars[3] = self.eps
-        self.ta_var.pars[4] = x[7]
+        if self.lambda0 == None:
+            self.ta_var.pars[4] = x[7]
+        else:
+            self.ta_var.pars[4] = self.lambda0
         self.ta_var.time = 0.0
 
         # And initial conditions
@@ -150,6 +164,7 @@ class pontryagin_equinoctial_mass:
         self.ta_var.state[14:] = self.ic_var
 
     def fitness(self, x):
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0)]
         # Single Shooting
         self.set_ta_state(x)
         self.ta.propagate_until(self.tof)
@@ -166,46 +181,61 @@ class pontryagin_equinoctial_mass:
         else:
             ceq += [self.ta.state[5] - self.eqf[5]]
         ceq += [self.ta.state[13]]  # lm = 0
-        ceq += [sum([it * it for it in x]) - 1.0]  # |lambdas|^2 = 1
+        if self.lambda0 == None:
+            ceq += [sum([it * it for it in x]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
     def gradient(self, x):
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0)]
         # Single Shooting of variational equations
         self.set_ta_var_state(x)
         self.ta_var.propagate_until(self.tof)
         # Assembling the gradient
         # Fitness (sparsity takes care of the fitness since it does not depend on the dv)
         retval = []
+        if self.lambda0 == None:
+            final_idx = 8
+        else:
+            final_idx = 7
         # Constraints (p,f,g,h,k)
         for i in range(5):
             sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
+            retval.extend(list(self.ta_var.state[sl])[:final_idx])
         # Constraints (L) (we account for the differently written constraint in case the number of revs is fixed or free)
         sl = self.ta_var.get_vslice(order=1, component=5)
         tmp = self.ta_var.state[sl]
         if self.n_rev < 0.0:
             tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
-        retval.extend(list(tmp))
+        retval.extend(list(tmp)[:final_idx])
         # Constraint on mass
         sl = self.ta_var.get_vslice(order=1, component=13)
-        retval.extend(list(self.ta_var.state[sl]))
-        # Norm constraint
-        for item in x:
-            retval.extend([2 * item])
+        retval.extend(list(self.ta_var.state[sl])[:final_idx])
+        if self.lambda0 == None:
+            # Norm constraint
+            for item in x:
+                retval.extend([2 * item])
         return retval
 
     def gradient_sparsity(self):
         retval = []
-        for i in range(1, 9):
-            for j in range(8):
-                retval.append((i, j))
+        if self.lambda0 == None:
+            for i in range(1, 9):
+                for j in range(8):
+                    retval.append((i, j))
+        else:
+            for i in range(1, 8):
+                for j in range(7):
+                    retval.append((i, j))
         return retval
 
     def has_gradient(self):
         return self.with_gradient
 
     def get_nec(self):
-        return 8
+        if self.lambda0 == None:
+            return 8
+        else:
+            return 7
 
     def plot(self, x, N=100, ax3D=None):
         """
@@ -365,7 +395,7 @@ _plf = _pk.planet(
     )
 )
 
-
+# This is untested (TODO: make a notebook? add lambda0?)
 class pontryagin_cartesian_time:
     """
     This class is a pygmo (http://esa.github.io/pygmo/) UDP representing a single-shooting indirect method
