@@ -14,7 +14,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
@@ -51,11 +51,11 @@ std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3
             }
             retval[5] = kep3::f2m(retval[5], retval[1]);
             break;
-        case kep3::elements_type::MEQ:
-            retval = kep3::par2eq(retval, false);
+        case kep3::elements_type::MEE:
+            retval = kep3::par2mee(retval, false);
             break;
-        case kep3::elements_type::MEQ_R:
-            retval = kep3::par2eq(retval, true);
+        case kep3::elements_type::MEE_R:
+            retval = kep3::par2mee(retval, true);
             break;
         // LCOV_EXCL_START
         default:

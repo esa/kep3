@@ -17,8 +17,8 @@ namespace kep3
 enum elements_type {
     KEP_M,  // Keplerian Osculating (with Mean Anomaly)
     KEP_F,  // Keplerian Osculating (with True Anomaly)
-    MEQ,    // Modified Equinoctial Elements
-    MEQ_R,  // Modified Equinoctial Elements (retrogade)
+    MEE,    // Modified Equinoctial Elements
+    MEE_R,  // Modified Equinoctial Elements (retrogade)
     POSVEL, // position and Velocity
 };
 

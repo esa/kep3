@@ -162,7 +162,7 @@ TEST_CASE("ic2par2ic")
             double ni = ni_d(rng_engine);
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
+            // Test ic2mee2ic
             auto eq = ic2par(pos_vel, 1.);
             auto pos_vel_new = par2ic(eq, 1.0);
             double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1]
@@ -196,7 +196,7 @@ TEST_CASE("ic2par2ic")
             }
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
+            // Test ic2mee2ic
             auto eq = ic2par(pos_vel, 1.);
             auto pos_vel_new = par2ic(eq, 1.0);
 

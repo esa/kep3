@@ -12,7 +12,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/udpla/jpl_lp.hpp>
@@ -154,14 +154,14 @@ TEST_CASE("elements")
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(ref_epoch, kep3::elements_type::MEQ);
-        auto [r, v] = kep3::eq2ic(par, kep3::MU_SUN);
+        auto par = udpla.elements(ref_epoch, kep3::elements_type::MEE);
+        auto [r, v] = kep3::mee2ic(par, kep3::MU_SUN);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(ref_epoch, kep3::elements_type::MEQ_R);
-        auto [r, v] = kep3::eq2ic(par, kep3::MU_SUN, true);
+        auto par = udpla.elements(ref_epoch, kep3::elements_type::MEE_R);
+        auto [r, v] = kep3::mee2ic(par, kep3::MU_SUN, true);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }

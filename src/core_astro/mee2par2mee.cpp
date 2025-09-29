@@ -10,12 +10,12 @@
 #include <cmath>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 
 namespace kep3
 {
 
-std::array<double, 6> eq2par(const std::array<double, 6> &eq, bool retrogade)
+std::array<double, 6> mee2par(const std::array<double, 6> &eq, bool retrogade)
 {
     std::array<double, 6> retval{};
     int I = 1;
@@ -46,7 +46,7 @@ std::array<double, 6> eq2par(const std::array<double, 6> &eq, bool retrogade)
     return retval;
 }
 
-std::array<double, 6> par2eq(const std::array<double, 6> &par, bool retrogade)
+std::array<double, 6> par2mee(const std::array<double, 6> &par, bool retrogade)
 {
     std::array<double, 6> eq{};
     int I = 0;

@@ -806,9 +806,9 @@ std::string par2ic_doc()
 )";
 }
 
-std::string ic2eq_doc()
+std::string ic2mee_doc()
 {
-    return R"(ic2eq(posvel, mu, retrogade)
+    return R"(ic2mee(posvel, mu, retrogade)
 
     Converts Cartesian state vectors (position and velocity) to equinoctial orbital elements.
 
@@ -840,14 +840,14 @@ std::string ic2eq_doc()
       >>> v = [0.0, 7.5e3, 1.0e3]
       >>> mu = pk.MU_EARTH
       >>> retro = False
-      >>> eq = pk.ic2eq([r, v], mu, retro)
+      >>> eq = pk.ic2mee([r, v], mu, retro)
       >>> print("Equinoctial elements:", eq)
 )";
 }
 
-std::string eq2ic_doc()
+std::string mee2ic_doc()
 {
-    return R"(eq2ic(eq_elem, mu, retrogade)
+    return R"(mee2ic(eq_elem, mu, retrogade)
 
     Converts equinoctial orbital elements to Cartesian state vectors (position and velocity).
 
@@ -880,15 +880,15 @@ std::string eq2ic_doc()
       >>> eq = [7000e3, 0.01, 0.01, 0.01, 0.01, 0.0]
       >>> mu = pk.MU_EARTH
       >>> retro = False
-      >>> r, v = pk.eq2ic(eq, mu, retro)
+      >>> r, v = pk.mee2ic(eq, mu, retro)
       >>> print("Position:", r)
       >>> print("Velocity:", v)
 )";
 }
 
-std::string eq2par_doc()
+std::string mee2par_doc()
 {
-    return R"(eq2par(eq_elem, retrogade)
+    return R"(mee2par(eq_elem, retrogade)
 
     Converts equinoctial orbital elements to classical Keplerian elements.
 
@@ -921,14 +921,14 @@ std::string eq2par_doc()
     Examples:
       >>> eq = [7000e3, 0.01, 0.02, 0.001, 0.002, 0.5]
       >>> retro = False
-      >>> par = eq2par(eq, retro)
+      >>> par = mee2par(eq, retro)
       >>> print("Keplerian elements:", par)
 )";
 }
 
-std::string par2eq_doc()
+std::string par2mee_doc()
 {
-    return R"(par2eq(par, retrogade)
+    return R"(par2mee(par, retrogade)
 
     Converts classical Keplerian orbital elements to equinoctial elements.
 
@@ -961,7 +961,7 @@ std::string par2eq_doc()
     Examples:
       >>> par = [7000e3, 0.01, 0.1, 1.0, 0.5, 0.3]
       >>> retro = False
-      >>> eq = par2eq(par, retro)
+      >>> eq = par2mee(par, retro)
       >>> print("Equinoctial elements:", eq)
 )";
 }

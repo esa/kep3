@@ -93,8 +93,8 @@ class pontryagin_equinoctial_mass:
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
 
-        self.eq0 = _pk.ic2eq(posvel0, mu)
-        self.eqf = _pk.ic2eq(posvelf, mu)
+        self.eq0 = _pk.ic2mee(posvel0, mu)
+        self.eqf = _pk.ic2mee(posvelf, mu)
         # We want to define the motion from small to large L (counterclockwise)
         if self.eqf[-1] < self.eq0[-1]:
             self.eqf[-1] += 2.0 * _np.pi
@@ -263,13 +263,13 @@ class pontryagin_equinoctial_mass:
         # Adding the main body
         _pk.plot.add_sun(ax3D)
         # Adding the osculating orbits to the initial conditions
-        posvel0 = _pk.eq2ic(self.eq0, self.mu)
+        posvel0 = _pk.mee2ic(self.eq0, self.mu)
         pl1 = _pk.planet(
             _pk.udpla.keplerian(
                 when=_pk.epoch(0), posvel=posvel0, mu_central_body=self.mu
             )
         )
-        posvelf = _pk.eq2ic(self.eqf, self.mu)
+        posvelf = _pk.mee2ic(self.eqf, self.mu)
         pl2 = _pk.planet(
             _pk.udpla.keplerian(
                 when=_pk.epoch(0), posvel=posvelf, mu_central_body=self.mu
@@ -285,7 +285,7 @@ class pontryagin_equinoctial_mass:
         z = _np.zeros((state.shape[0],))
 
         for i, equinoctial in enumerate(state):
-            [[x[i], y[i], z[i]], [_, _, _]] = _pk.eq2ic(equinoctial[:6], self.mu)
+            [[x[i], y[i], z[i]], [_, _, _]] = _pk.mee2ic(equinoctial[:6], self.mu)
 
         # Compute color values
         u_func = _pk.ta.get_peq_u_cfunc(_pk.optimality_type.MASS)

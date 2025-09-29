@@ -46,4 +46,4 @@ propagate_stm_reynolds(const std::array<std::array<double, 3>, 2> &pos_vel0, dou
                        bool stm = false);
 
 } // namespace kep3
-#endif // kep3_IC2EQ2IC_H
+#endif // kep3_IC2mee2IC_H

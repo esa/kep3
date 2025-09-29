@@ -6,8 +6,8 @@
 // Licensed under the Mozilla Public License, version 2.0.
 // You may obtain a copy of the MPL at https://www.mozilla.org/MPL/2.0/.
 
-#ifndef kep3_IC2EQ2IC_H
-#define kep3_IC2EQ2IC_H
+#ifndef kep3_IC2mee2IC_H
+#define kep3_IC2mee2IC_H
 
 #include <array>
 
@@ -16,11 +16,11 @@
 namespace kep3
 {
 
-kep3_DLL_PUBLIC std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel, double mu,
+kep3_DLL_PUBLIC std::array<double, 6> ic2mee(const std::array<std::array<double, 3>, 2> &pos_vel, double mu,
                                             bool retrogade = false);
 
-kep3_DLL_PUBLIC std::array<std::array<double, 3>, 2> eq2ic(const std::array<double, 6> &eq, double mu,
+kep3_DLL_PUBLIC std::array<std::array<double, 3>, 2> mee2ic(const std::array<double, 6> &eq, double mu,
                                                            bool retrogade = false);
 
 } // namespace kep3
-#endif // kep3_IC2EQ2IC_H
+#endif // kep3_IC2mee2IC_H
