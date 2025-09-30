@@ -413,10 +413,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.el_type"><code class="docutils literal notranslate"><span class="pre">el_type</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2par"><code class="docutils literal notranslate"><span class="pre">ic2par()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2ic"><code class="docutils literal notranslate"><span class="pre">par2ic()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2eq"><code class="docutils literal notranslate"><span class="pre">ic2eq()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.eq2ic"><code class="docutils literal notranslate"><span class="pre">eq2ic()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.eq2par"><code class="docutils literal notranslate"><span class="pre">eq2par()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2eq"><code class="docutils literal notranslate"><span class="pre">par2eq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2mee"><code class="docutils literal notranslate"><span class="pre">ic2mee()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.mee2ic"><code class="docutils literal notranslate"><span class="pre">mee2ic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.mee2par"><code class="docutils literal notranslate"><span class="pre">mee2par()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2mee"><code class="docutils literal notranslate"><span class="pre">par2mee()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -461,8 +461,8 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 <blockquote>
 <div><p>KEP_M : Keplerian Elements <span class="math notranslate nohighlight">\([a,e,i,\Omega,\omega,M]\)</span> (Mean anomaly)</p>
 <p>KEP_F : Keplerian Elements <span class="math notranslate nohighlight">\([a,e,i,\Omega,\omega,f]\)</span> (True anomaly)</p>
-<p>MEQ : Modified Equinoctial Elements <span class="math notranslate nohighlight">\([p,f,g,h,k,L]\)</span> (Mean Longitude)</p>
-<p>MEQ_R : Modified Equinoctial Elements (retrograde) <span class="math notranslate nohighlight">\([p,f,g,h,k,L]\)</span> (Mean Longitude)</p>
+<p>MEE : Modified Equinoctial Elements <span class="math notranslate nohighlight">\([p,f,g,h,k,L]\)</span> (Mean Longitude)</p>
+<p>MEE_R : Modified Equinoctial Elements (retrograde) <span class="math notranslate nohighlight">\([p,f,g,h,k,L]\)</span> (Mean Longitude)</p>
 <p>POSVEL : Position and Velocity</p>
 </div></blockquote>
 </dd></dl>
@@ -552,8 +552,8 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ic2eq">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2eq" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykep.ic2mee">
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2mee" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts Cartesian state vectors (position and velocity) to equinoctial orbital elements.</p>
 <p>Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
 near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
@@ -581,7 +581,7 @@ retrograde equinoctial elements. These last are not singular for inclinations of
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">7.5e3</span><span class="p">,</span> <span class="mf">1.0e3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_EARTH</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">retro</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ic2eq</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ic2mee</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equinoctial elements:&quot;</span><span class="p">,</span> <span class="n">eq</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -590,8 +590,8 @@ retrograde equinoctial elements. These last are not singular for inclinations of
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.eq2ic">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">eq2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.eq2ic" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykep.mee2ic">
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2ic" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts equinoctial orbital elements to Cartesian state vectors (position and velocity).</p>
 <p>Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
 near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
@@ -624,7 +624,7 @@ retrograde equinoctial frames. These last are not singular for inclinations of p
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="p">[</span><span class="mf">7000e3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_EARTH</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">retro</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">eq2ic</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">mee2ic</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Position:&quot;</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Velocity:&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </pre></div>
@@ -634,8 +634,8 @@ retrograde equinoctial frames. These last are not singular for inclinations of p
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.eq2par">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">eq2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.eq2par" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykep.mee2par">
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2par" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts equinoctial orbital elements to classical Keplerian elements.</p>
 <p>This function transforms the non-singular equinoctial elements into classical orbital elements, which are 
 more intuitive but can be singular for certain inclinations or eccentricities. The retrograde flag selects
@@ -669,7 +669,7 @@ the appropriate transformation for orbits with inclination near pi.</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="p">[</span><span class="mf">7000e3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">retro</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span> <span class="o">=</span> <span class="n">eq2par</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span> <span class="o">=</span> <span class="n">mee2par</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Keplerian elements:&quot;</span><span class="p">,</span> <span class="n">par</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -678,8 +678,8 @@ the appropriate transformation for orbits with inclination near pi.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.par2eq">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2eq" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykep.par2mee">
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2mee" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts classical Keplerian orbital elements to equinoctial elements.</p>
 <p>This function provides a non-singular representation of orbits by transforming Keplerian elements into 
 equinoctial elements. The retrograde flag allows conversion to a frame that remains non-singular for 
@@ -713,7 +713,7 @@ inclinations near pi.</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">par</span> <span class="o">=</span> <span class="p">[</span><span class="mf">7000e3</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">retro</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">par2eq</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">par2mee</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">retro</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equinoctial elements:&quot;</span><span class="p">,</span> <span class="n">eq</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -771,10 +771,10 @@ inclinations near pi.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.el_type"><code class="docutils literal notranslate"><span class="pre">el_type</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2par"><code class="docutils literal notranslate"><span class="pre">ic2par()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2ic"><code class="docutils literal notranslate"><span class="pre">par2ic()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2eq"><code class="docutils literal notranslate"><span class="pre">ic2eq()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.eq2ic"><code class="docutils literal notranslate"><span class="pre">eq2ic()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.eq2par"><code class="docutils literal notranslate"><span class="pre">eq2par()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2eq"><code class="docutils literal notranslate"><span class="pre">par2eq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ic2mee"><code class="docutils literal notranslate"><span class="pre">ic2mee()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.mee2ic"><code class="docutils literal notranslate"><span class="pre">mee2ic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.mee2par"><code class="docutils literal notranslate"><span class="pre">mee2par()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.par2mee"><code class="docutils literal notranslate"><span class="pre">par2mee()</span></code></a></li>
 </ul>
   </nav></div>
 

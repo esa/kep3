@@ -40,10 +40,10 @@ A number of functions are provided to convert to and from the various orbital pa
 
 .. autofunction:: par2ic
 
-.. autofunction:: ic2eq
+.. autofunction:: ic2mee
 
-.. autofunction:: eq2ic
+.. autofunction:: mee2ic
 
-.. autofunction:: eq2par
+.. autofunction:: mee2par
 
-.. autofunction:: par2eq
+.. autofunction:: par2mee
