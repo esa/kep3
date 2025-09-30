@@ -14,10 +14,10 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/encodings.hpp>
-#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
@@ -32,11 +32,10 @@
 #include <kep3/ta/kep.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/pontryagin_equinoctial.hpp>
-#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/ta/zero_hold_cr3bp.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/keplerian.hpp>
 #include <kep3/zero_hold_kep_problem.hpp>
-
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
@@ -360,7 +359,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
     sys.attr("modules")["pykep.ta_cxx"] = ta;
-    
+
     // KEP
     ta.def(
         "get_kep",
@@ -501,7 +500,6 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol"), pykep::get_zero_hold_cr3bp_var_docstring().c_str());
     ta.def("zero_hold_cr3bp_dyn", &kep3::ta::zero_hold_cr3bp_dyn, pykep::zero_hold_cr3bp_dyn_docstring().c_str());
-
 
     // Pontryagin Equinoctial (TPBVP)
     ta.def(
@@ -859,6 +857,8 @@ PYBIND11_MODULE(core, m) // NOLINT
 
 #undef PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES
 
+    using tas_type = std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>;
+
     sims_flanagan_alpha.def("compute_mismatch_constraints",
                             &kep3::leg::sims_flanagan_alpha::compute_mismatch_constraints,
                             pykep::leg_sf_mc_docstring().c_str());
@@ -875,14 +875,25 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing the sims_flanagan_hf leg
     py::class_<kep3::leg::sims_flanagan_hf> sims_flanagan_hf(m, "_sims_flanagan_hf",
                                                              pykep::leg_sf_hf_docstring().c_str());
+    // Main constructor (rvms/rvmf variant) with optional tas
     sims_flanagan_hf.def(
-        py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
-                 const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
-        py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
+        py::init<const std::array<double, 7> &, const std::vector<double> &, const std::array<double, 7> &, double,
+                 double, double, double, double, double, std::optional<tas_type>>(),
+        py::arg("rvms") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-        py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
-        py::arg("cut") = 0.5);
+        py::arg("rvmf") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.}, py::arg("tof") = kep3::pi / 2,
+        py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5,
+        py::arg("tol") = 1e-16, py::arg("tas") = py::none());
+    // Second constructor from posvel, m
+    sims_flanagan_hf.def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
+                                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
+                                  double, double, std::optional<tas_type>>(),
+                         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}},
+                         py::arg("ms") = 1., py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
+                         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}},
+                         py::arg("mf") = 1., py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1.,
+                         py::arg("isp") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5, py::arg("tol") = 1e-16,
+                         py::arg("tas") = py::none());
     // repr().
     sims_flanagan_hf.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf>);
     // Copy and deepcopy.

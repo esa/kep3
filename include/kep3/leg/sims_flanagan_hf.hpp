@@ -12,6 +12,8 @@
 
 #include <array>
 #include <fmt/ostream.h>
+#include <optional>
+#include <utility>
 #include <vector>
 
 #include <heyoka/taylor.hpp>
@@ -42,14 +44,19 @@ public:
     // Constructors
     // Default Constructor.
     sims_flanagan_hf(); // = default;
+    // Main constructor from rvm states
+    sims_flanagan_hf(
+        const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
+        double tof, double max_thrust, double isp, double mu, double cut, double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
     // Backwards-compatible constructor with rv and m states separately
-    sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
-                     const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                     double isp, double mu, double cut = 0.5, double tol = 1e-16);
-    // Constructor with rvm states
-    sims_flanagan_hf(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
-                     const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
-                     double cut, double tol = 1e-16);
+    sims_flanagan_hf(
+        const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
+        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+        double mu, double cut = 0.5, double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
 
     // Setters
     void set_tof(double tof);
@@ -150,7 +157,7 @@ private:
         ar & m_nseg;
         ar & m_nseg_fwd;
         ar & m_nseg_bck;
-        ar & m_tas;
+        ar & m_ta;
     }
 
     // Initial rvm state
@@ -180,11 +187,11 @@ private:
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
     // Taylor-adaptive integrator
-    // m_tas needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas{};
+    // m_ta needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta{};
     // Variational Taylor-adaptive integrator
-    // m_tas_var needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas_var{};
+    // m_ta_var needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta_var{};
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
