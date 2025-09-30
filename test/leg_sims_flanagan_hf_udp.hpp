@@ -43,8 +43,6 @@ struct sf_hf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        // kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-        //                              m_isp, kep3::MU_SUN);
 
         // Set leg constants
         leg.set_rvs(m_rvs);
@@ -88,9 +86,6 @@ struct sf_hf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        // if (!std::isfinite(tof)) {tof=1.0; fmt::print("Warning Gradient: tof=Nan, setting tof=1.0\n"); }
-        // kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-        //                              m_isp, kep3::MU_SUN);
         
         // Set leg constants
         leg.set_rvs(m_rvs);

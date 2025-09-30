@@ -377,7 +377,7 @@ class sims_flanagan_test(_ut.TestCase):
         sf_leg.mf = 13 / 15
         sf_leg.max_thrust = 1
         sf_leg.mu = 1
-        sf_leg.isp = 1
+        sf_leg.veff = 1
         sf_leg.tof = 1
         #sf_leg.tol = 1e-16
         state_length = np.array(sf_leg.rvs).flatten().size + 1
@@ -409,7 +409,7 @@ class sims_flanagan_hf_test(_ut.TestCase):
         sf_leg.mf = 13 / 15
         sf_leg.max_thrust = 1
         sf_leg.mu = 1
-        sf_leg.isp = 1
+        sf_leg.veff = 1
         sf_leg.tof = 1
         rvm_mc_sf = sf_leg.compute_mismatch_constraints()
 

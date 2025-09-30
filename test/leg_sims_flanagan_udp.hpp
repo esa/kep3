@@ -25,8 +25,8 @@ struct sf_test_udp {
     sf_test_udp() = default;
     sf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                double max_thrust, double isp, unsigned nseg)
-        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg)
+                double max_thrust, double veff, unsigned nseg)
+        : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_veff(veff), m_nseg(nseg)
     {
     }
 
@@ -37,7 +37,7 @@ struct sf_test_udp {
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+                                     m_veff, kep3::MU_SUN);
 
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
@@ -72,7 +72,7 @@ struct sf_test_udp {
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, kep3::MU_SUN);
+                                     m_veff, kep3::MU_SUN);
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 
@@ -148,7 +148,7 @@ struct sf_test_udp {
     std::array<std::array<double, 3>, 2> m_rvf{};
     double m_ms{};
     double m_max_thrust{};
-    double m_isp{};
+    double m_veff{};
     std::size_t m_nseg{};
 };
 

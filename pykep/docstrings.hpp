@@ -166,7 +166,7 @@ std::string leg_sf_rvf_docstring();
 std::string leg_sf_mf_docstring();
 std::string leg_sf_tof_docstring();
 std::string leg_sf_max_thrust_docstring();
-std::string leg_sf_isp_docstring();
+std::string leg_sf_veff_docstring();
 std::string leg_sf_mu_docstring();
 std::string leg_sf_cut_docstring();
 std::string leg_sf_mc_docstring();

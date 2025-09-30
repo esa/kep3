@@ -700,7 +700,7 @@ PYBIND11_MODULE(core, m) // NOLINT
         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
+        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5);
     // repr().
     sims_flanagan.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan>);
@@ -725,7 +725,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(veff);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
 
@@ -841,19 +841,19 @@ PYBIND11_MODULE(core, m) // NOLINT
         [](kep3::leg::sims_flanagan_alpha &sf, const std::vector<double> &talphas) { return sf.set_talphas(talphas); },
         pykep::leg_sf_talphas_docstring().c_str());
 
-#define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
+#define PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(name)                                                                          \
     sims_flanagan_alpha.def_property(#name, &kep3::leg::sims_flanagan_alpha::get_##name,                               \
                                      &kep3::leg::sims_flanagan_alpha::set_##name,                                      \
                                      pykep::leg_sf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(max_thrust);
+    //PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mu);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(cut);
 
 #undef PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES
 

@@ -44,12 +44,12 @@ sims_flanagan::sims_flanagan(const std::array<std::array<double, 3>, 2> &rvs, do
                              const std::vector<double> &throttles,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                             double isp, double mu, double cut)
+                             double veff, double mu, double cut)
     : m_rvs(rvs), m_ms(ms), m_throttles(throttles), m_rvf(rvf), m_mf(mf), m_tof(tof), m_max_thrust(max_thrust),
-      m_isp(isp), m_mu(mu), m_cut(cut), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
+      m_veff(veff), m_mu(mu), m_cut(cut), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
-    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
 }
 
 // Setters
@@ -97,10 +97,10 @@ void sims_flanagan::set_max_thrust(double max_thrust)
     kep3::leg::_check_max_thrust(max_thrust);
     m_max_thrust = max_thrust;
 }
-void sims_flanagan::set_isp(double isp)
+void sims_flanagan::set_veff(double veff)
 {
-    kep3::leg::_check_isp(isp);
-    m_isp = isp;
+    kep3::leg::_check_veff(veff);
+    m_veff = veff;
 }
 void sims_flanagan::set_mu(double mu)
 {
@@ -118,9 +118,9 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
                         const std::vector<double> &throttles,
                         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                         const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                        double isp, double mu, double cut)
+                        double veff, double mu, double cut)
 {
-    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks(m_throttles, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
     m_rvs = rvs;
     m_ms = ms;
     m_throttles = throttles;
@@ -128,7 +128,7 @@ void sims_flanagan::set(const std::array<std::array<double, 3>, 2> &rvs, double 
     m_mf = mf;
     m_tof = tof;
     m_max_thrust = max_thrust;
-    m_isp = isp;
+    m_veff = veff;
     m_mu = mu;
     m_cut = cut;
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
@@ -165,9 +165,9 @@ double sims_flanagan::get_max_thrust() const
 {
     return m_max_thrust;
 }
-double sims_flanagan::get_isp() const
+double sims_flanagan::get_veff() const
 {
-    return m_isp;
+    return m_veff;
 }
 double sims_flanagan::get_mu() const
 {
@@ -195,7 +195,7 @@ std::array<double, 7> sims_flanagan::compute_mismatch_constraints() const
 {
     // We introduce some convenience variables
     std::array<double, 3> dv{};
-    const double veff = m_isp * kep3::G0;
+    const double veff = m_veff;
     const double dt = m_tof / static_cast<double>(m_nseg);
     const double c = m_max_thrust * dt;
     // Forward pass
@@ -449,7 +449,7 @@ sims_flanagan::gradients_bck(std::vector<double>::const_iterator th1, std::vecto
         reversed_throttles[j] = *(th1 + i + 2);
     }
 
-    // 3) We reverse the Isp, hence veff (a = 1/veff)
+    // 3) We reverse the veff, hence veff (a = 1/veff)
     a = -a;
 
     // 4) We then compute gradients as if this was a forward leg
@@ -483,7 +483,7 @@ std::tuple<std::array<double, 49>, std::array<double, 49>, std::vector<double>> 
     // Preliminaries
     const auto dt = m_tof / static_cast<double>(m_nseg); // dt
     const auto c = m_max_thrust * dt;                    // T*tof/nseg
-    const auto a = 1. / m_isp / kep3::G0;                // 1/veff
+    const auto a = 1. / m_veff;                // 1/veff
 
     // We compute for the forward half-leg: dxf/dxs and dxf/dxu (the gradients w.r.t. initial state ant throttles )
     auto [grad_rvm, grad_fwd]
@@ -533,7 +533,7 @@ std::ostream &operator<<(std::ostream &s, const sims_flanagan &sf)
     s << fmt::format("Number of bck segments: {}\n", sf.get_nseg_bck());
     s << fmt::format("Maximum thrust: {}\n", sf.get_max_thrust());
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
-    s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());
+    s << fmt::format("Specific impulse: {}\n\n", sf.get_veff());
     s << fmt::format("Time of flight: {}\n", sf.get_tof());
     s << fmt::format("Initial mass: {}\n", sf.get_ms());
     s << fmt::format("Final mass: {}\n", sf.get_mf());
