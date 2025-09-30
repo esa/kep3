@@ -14,10 +14,10 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/encodings.hpp>
-#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/flyby.hpp>
 #include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
@@ -32,11 +32,10 @@
 #include <kep3/ta/kep.hpp>
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/pontryagin_equinoctial.hpp>
-#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/ta/zero_hold_cr3bp.hpp>
+#include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/keplerian.hpp>
 #include <kep3/zero_hold_kep_problem.hpp>
-
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
@@ -360,7 +359,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Register the submodule so Python sees it as real (note we use the final python visible name for this)
     py::module_ sys = py::module_::import("sys");
     sys.attr("modules")["pykep.ta_cxx"] = ta;
-    
+
     // KEP
     ta.def(
         "get_kep",
@@ -501,7 +500,6 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol"), pykep::get_zero_hold_cr3bp_var_docstring().c_str());
     ta.def("zero_hold_cr3bp_dyn", &kep3::ta::zero_hold_cr3bp_dyn, pykep::zero_hold_cr3bp_dyn_docstring().c_str());
-
 
     // Pontryagin Equinoctial (TPBVP)
     ta.def(
@@ -702,7 +700,7 @@ PYBIND11_MODULE(core, m) // NOLINT
         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
+        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5);
     // repr().
     sims_flanagan.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan>);
@@ -727,7 +725,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(veff);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
     PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
 
@@ -843,21 +841,23 @@ PYBIND11_MODULE(core, m) // NOLINT
         [](kep3::leg::sims_flanagan_alpha &sf, const std::vector<double> &talphas) { return sf.set_talphas(talphas); },
         pykep::leg_sf_talphas_docstring().c_str());
 
-#define PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(name)                                                                          \
+#define PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(name)                                                                          \
     sims_flanagan_alpha.def_property(#name, &kep3::leg::sims_flanagan_alpha::get_##name,                               \
                                      &kep3::leg::sims_flanagan_alpha::set_##name,                                      \
                                      pykep::leg_sf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(isp);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(max_thrust);
+    //PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mu);
+    PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(cut);
 
 #undef PYKEP3_EXPOSE_LEG_SF_ATTRIBUTES
+
+    using tas_type = std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>;
 
     sims_flanagan_alpha.def("compute_mismatch_constraints",
                             &kep3::leg::sims_flanagan_alpha::compute_mismatch_constraints,
@@ -875,14 +875,25 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing the sims_flanagan_hf leg
     py::class_<kep3::leg::sims_flanagan_hf> sims_flanagan_hf(m, "_sims_flanagan_hf",
                                                              pykep::leg_sf_hf_docstring().c_str());
+    // Main constructor (rvms/rvmf variant) with optional tas
     sims_flanagan_hf.def(
-        py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
-                 const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
-        py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
+        py::init<const std::array<double, 7> &, const std::vector<double> &, const std::array<double, 7> &, double,
+                 double, double, double, double, double, std::optional<tas_type>>(),
+        py::arg("rvms") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-        py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
-        py::arg("cut") = 0.5);
+        py::arg("rvmf") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.}, py::arg("tof") = kep3::pi / 2,
+        py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5,
+        py::arg("tol") = 1e-16, py::arg("tas") = py::none());
+    // Second constructor from posvel, m
+    sims_flanagan_hf.def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
+                                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
+                                  double, double, std::optional<tas_type>>(),
+                         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}},
+                         py::arg("ms") = 1., py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
+                         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}},
+                         py::arg("mf") = 1., py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1.,
+                         py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5, py::arg("tol") = 1e-16,
+                         py::arg("tas") = py::none());
     // repr().
     sims_flanagan_hf.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf>);
     // Copy and deepcopy.
@@ -898,27 +909,6 @@ PYBIND11_MODULE(core, m) // NOLINT
             return sf.set_throttles(throttles);
         },
         pykep::leg_sf_hf_throttles_docstring().c_str());
-
-#define PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(name)                                                                       \
-    sims_flanagan_hf.def_property(#name, &kep3::leg::sims_flanagan_hf::get_##name,                                     \
-                                  &kep3::leg::sims_flanagan_hf::set_##name,                                            \
-                                  pykep::leg_sf_hf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvmf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(isp);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(cut);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tol);
-
-#undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
 
     sims_flanagan_hf.def("compute_mismatch_constraints", &kep3::leg::sims_flanagan_hf::compute_mismatch_constraints,
                          pykep::leg_sf_hf_mc_docstring().c_str());
@@ -999,6 +989,27 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf::get_nseg_bck,
                                            pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 
+#define PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(name)                                                                       \
+    sims_flanagan_hf.def_property(#name, &kep3::leg::sims_flanagan_hf::get_##name,                                     \
+                                  &kep3::leg::sims_flanagan_hf::set_##name,                                            \
+                                  pykep::leg_sf_hf_##name##_docstring().c_str());
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvmf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(max_thrust);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(veff);
+    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
+    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mu);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tol);
+
+#undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
+
     // Exposing the sims_flanagan_hf_alpha leg
     py::class_<kep3::leg::sims_flanagan_hf_alpha> sims_flanagan_hf_alpha(m, "_sims_flanagan_hf_alpha",
                                                                          pykep::leg_sf_hf_alpha_docstring().c_str());
@@ -1034,26 +1045,26 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         pykep::leg_sf_hf_talphas_docstring().c_str());
 
-#define PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(name)                                                                       \
+#define PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(name)                                                                       \
     sims_flanagan_hf_alpha.def_property(#name, &kep3::leg::sims_flanagan_hf_alpha::get_##name,                         \
                                         &kep3::leg::sims_flanagan_hf_alpha::set_##name,                                \
                                         pykep::leg_sf_hf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvmf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvmf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(max_thrust);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(isp);
     // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
     // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(cut);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tol);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mu);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(tol);
 
-#undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
+#undef PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES
 
     sims_flanagan_hf_alpha.def("compute_mismatch_constraints",
                                &kep3::leg::sims_flanagan_hf_alpha::compute_mismatch_constraints,

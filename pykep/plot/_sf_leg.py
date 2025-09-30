@@ -92,7 +92,7 @@ def add_sf_leg(
         # add dv to the state (now dimensional)
         rv[1] = [a + b * c / mass_fwd for a, b in zip(rv[1], throttles)]
         # update the mass (increases)
-        mass_fwd *= _np.exp(-dv / sf.isp / _pk.G0)
+        mass_fwd *= _np.exp(-dv / sf.veff)
         # 2 - propagate for dt/2
         _pk.plot.add_ballistic_arc(
             ax, rv, dt / 2, sf.mu, units=units, N=N, c=color, **kwargs
@@ -161,7 +161,7 @@ def add_sf_leg(
         # add it to the state (now dimensional)
         rv[1] = [a - b * c / mass_bck for a, b in zip(rv[1], throttles)]
         # update the mass
-        mass_bck *= _np.exp(dv / sf.isp / _pk.G0)
+        mass_bck *= _np.exp(dv / sf.veff)
         # 2 - propagate for dt/2
         _pk.plot.add_ballistic_arc(
             ax, rv, -dt / 2, sf.mu, units=units, N=N, c=color, **kwargs

@@ -12,6 +12,7 @@
 #include <array>
 #include <vector>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
 #include <xtensor/io/xio.hpp>
 
@@ -38,7 +39,7 @@ struct sf_bench_udp {
         double tof = x[m_nseg * 3];// * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, 1);
+                                     m_isp*kep3::G0, 1);
 
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
@@ -82,7 +83,7 @@ struct sf_bench_udp {
         double tof = x[m_nseg * 3]; // * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
         kep3::leg::sims_flanagan leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-                                     m_isp, 1);
+                                     m_isp*kep3::G0, 1);
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 

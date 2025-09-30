@@ -65,7 +65,7 @@ struct sf_hf_test_object {
 
         m_new_ta = heyoka::taylor_adaptive<double>{kep3::ta::zero_hold_kep_dyn(), m_rvms, heyoka::kw::tol = m_tol};
         *(m_new_ta.get_pars_data()) = m_mu;
-        *(m_new_ta.get_pars_data() + 1) = m_isp * kep3::G0;
+        *(m_new_ta.get_pars_data() + 1) = m_veff;
 
         // Fwd leg
         std::copy(m_thrusts.begin(), std::next(m_thrusts.begin(), 3), m_new_ta.get_pars_data() + 2);
@@ -130,7 +130,7 @@ struct sf_hf_test_object {
     [[nodiscard]] std::vector<double> compute_numerical_gradient()
     {
         // Create SF leg.
-        kep3::leg::sims_flanagan_hf sf_num(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu,
+        kep3::leg::sims_flanagan_hf sf_num(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_veff, m_mu,
                                            m_cut, 1e-16);
         // Assemble a flattened decision vector dv
         std::vector<double> dv;
@@ -147,7 +147,7 @@ struct sf_hf_test_object {
     [[nodiscard]] std::vector<double> compute_analytical_gradient() const
     {
         // Initialise
-        kep3::leg::sims_flanagan_hf sf_a(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu, m_cut,
+        kep3::leg::sims_flanagan_hf sf_a(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_veff, m_mu, m_cut,
                                          1e-16);
         std::array<double, 49> grad_rvm = {0};
         std::array<double, 49> grad_rvm_bck = {0};
@@ -186,7 +186,7 @@ struct sf_hf_test_object {
     double m_mf = m_ms * 13 / 15;
     double m_tof = 1.234;
     double m_max_thrust = 1.6;
-    double m_isp = 1.234;
+    double m_veff = 1.234*kep3::G0;
     double m_mu = 0.9234;
     double m_cut = 0.5;
     double m_tol = 1e-16;

@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <vector>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
 #include <xtensor/io/xio.hpp>
 
@@ -29,11 +30,11 @@ struct sf_hf_test_udp {
 
     sf_hf_test_udp() = default;
     sf_hf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
-                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                double max_thrust, double isp, unsigned nseg)
-        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0),m_rvf, 1, 1, 
-            max_thrust, isp, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp),
-        m_nseg(nseg) // Initialize leg here!
+                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                   double max_thrust, double veff, unsigned nseg)
+        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0), m_rvf, 1, 1, max_thrust, veff,
+              kep3::MU_SUN),
+          m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_veff(veff), m_nseg(nseg) // Initialize leg here!
     {
     }
 
@@ -43,15 +44,13 @@ struct sf_hf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        // kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-        //                              m_isp, kep3::MU_SUN);
 
         // Set leg constants
         leg.set_rvs(m_rvs);
         leg.set_ms(m_ms);
         leg.set_rvf(m_rvf);
         leg.set_max_thrust(m_max_thrust);
-        leg.set_isp(m_isp);
+        leg.set_veff(m_veff);
 
         leg.set_mf(mf);
         leg.set_tof(tof);
@@ -88,20 +87,17 @@ struct sf_hf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        // if (!std::isfinite(tof)) {tof=1.0; fmt::print("Warning Gradient: tof=Nan, setting tof=1.0\n"); }
-        // kep3::leg::sims_flanagan_hf leg(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, mf, tof, m_max_thrust,
-        //                              m_isp, kep3::MU_SUN);
-        
+
         // Set leg constants
         leg.set_rvs(m_rvs);
         leg.set_ms(m_ms);
         leg.set_rvf(m_rvf);
         leg.set_max_thrust(m_max_thrust);
-        leg.set_isp(m_isp);
+        leg.set_veff(m_veff);
 
         leg.set_mf(mf);
         leg.set_tof(tof);
-        
+
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 
@@ -177,7 +173,7 @@ struct sf_hf_test_udp {
     std::array<std::array<double, 3>, 2> m_rvf{};
     double m_ms{};
     double m_max_thrust{};
-    double m_isp{};
+    double m_veff{};
     std::size_t m_nseg{};
 };
 

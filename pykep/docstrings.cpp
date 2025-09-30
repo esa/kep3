@@ -2780,7 +2780,7 @@ std::string propagate_lagrangian_grid_docstring()
 
 std::string leg_sf_docstring()
 {
-    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5)
+    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., veff = 1., mu=1., cut = 0.5)
 
       This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
       The low-thrust transfer is described by a sequence of equally spaced impulses as described in:
@@ -2805,7 +2805,7 @@ std::string leg_sf_docstring()
 
           *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
 
-          *isp* (:class:`float`): specific impulse of the propulasion system. Defaults to 1.
+          *veff* (:class:`float`): effective velocity of the propulsion system. Defaults to 1.
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
@@ -2827,10 +2827,7 @@ std::string leg_sf_alpha_docstring()
     return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], talphas = [0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5)
 
       This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
-      The low-thrust transfer is described by a sequence impulses (not necessarily equally spaced, but centered in the time-intervals given by talphas) as described in:
-
-      Sims, J., Finlayson, P., Rinderle, E., Vavrina, M. and Kowalkowski, T., 2006, August. Implementation of a low-thrust trajectory optimization algorithm for preliminary design. 
-      In AIAA/AAS Astrodynamics specialist conference and exhibit (p. 6746).
+      The low-thrust transfer is described by a sequence impulses (not necessarily equally spaced, but centered in the time-intervals defined by *talphas*):
 
       The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
 
@@ -2901,9 +2898,9 @@ std::string leg_sf_max_thrust_docstring()
 {
     return "Maximum spacecraft thruet.";
 };
-std::string leg_sf_isp_docstring()
+std::string leg_sf_veff_docstring()
 {
-    return "Specific impulse of the propulasion system";
+    return "Effective velocity of the propulsion system (Isp*G0 in the V units of the dynamics)";
 };
 std::string leg_sf_mu_docstring()
 {
@@ -3142,14 +3139,16 @@ Examples:
 
 std::string leg_sf_hf_docstring()
 {
-    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5, tol=1e-16)
+    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., veff = 1., mu=1., cut = 0.5, tol=1e-16, tas = None)
 
       This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
-      The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment:
+      The low-thrust transfer is described by a sequence of forward/backward segments. Along each segment a constant thrust is applied.
 
-      Lantoine, Gregory & Russell, Ryan. (2009). The zero_hold_kep Model: an exact, closed-form approach to low-thrust trajectory optimization. 
+      The low-thrust transfer will thus be feasible if the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
 
-      The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
+      The dynamics, by default, is that of a :func:`~pykep.ta.get_zero_hold_kep`, but the user can pass any zero_hold taylor adaptive integrator, e.g.
+      for example :func:`~pykep.ta.get_zero_hold_cr3bp`, as far as it includes seven states (mass being the last) and 5 parameters :math:`\mu, v_{eff}, T_1, T_2, T_3`. 
+      In this case the user must also provide the variational version of the numerical integrator with variational parameters being the state and the three parameters :math:`T_1, T_2, T_3`.
 
       Args:
           *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
@@ -3166,13 +3165,15 @@ std::string leg_sf_hf_docstring()
 
           *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
 
-          *isp* (:class:`float`): specific impulse of the propulasion system. Defaults to 1.
+          *veff* (:class:`float`): effective velocity of the propulasion system. Defaults to 1.
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
           *cut* (:class:`float`): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.
 
           *tol* (:class:`float`): the leg tolerance, in [0,1]. It determines the tolerance allowed by the heyoka Taylor integrator. Defaults to 1e-16.
+
+          *tas* (:class:`tuple` [:class:`hy::taylor_adaptive`, :class:`hy::taylor_adaptive`]): the numerical inetgartors defining the dynamics and its variational counterpart. If None, zero hold Keplerian dynamics is used.
 
       .. note::
 
@@ -3192,8 +3193,6 @@ std::string leg_sf_hf_alpha_docstring()
       The low-thrust transfer is described by a sequence of two-body segments with a continuous and constant thrust defined per segment.
       These segments are not necessarily equally spaced, but their time-intervals are given by talphas).
       
-      Lantoine, Gregory & Russell, Ryan. (2009). The zero_hold_kep Model: an exact, closed-form approach to low-thrust trajectory optimization. 
-
       The low-thrust transfer will be feasible is the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
 
       Args:
@@ -3271,9 +3270,13 @@ std::string leg_sf_hf_max_thrust_docstring()
 {
     return "Maximum spacecraft thruet.";
 };
+std::string leg_sf_hf_veff_docstring()
+{
+    return "Effective velocity of the propulsion system (Isp*G0 in the V units of the dynamics)";
+};
 std::string leg_sf_hf_isp_docstring()
 {
-    return "Specific impulse of the propulasion system";
+    return "Specific impulse of the propulsion system.";
 };
 std::string leg_sf_hf_mu_docstring()
 {

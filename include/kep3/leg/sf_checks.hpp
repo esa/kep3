@@ -20,6 +20,7 @@ kep3_DLL_PUBLIC void _check_tof(double tof);
 kep3_DLL_PUBLIC void _check_throttles(const std::vector<double> &throttles);
 kep3_DLL_PUBLIC void _check_talphas(const std::vector<double> &talphas,unsigned nseg);
 kep3_DLL_PUBLIC void _check_max_thrust(double max_thrust);
+kep3_DLL_PUBLIC void _check_veff(double veff);
 kep3_DLL_PUBLIC void _check_isp(double isp);
 kep3_DLL_PUBLIC void _check_mu(double mu);
 kep3_DLL_PUBLIC void _check_cut(double cut);

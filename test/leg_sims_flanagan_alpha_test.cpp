@@ -290,7 +290,7 @@ TEST_CASE("compare_withandwithout_alpha")
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
     std::vector<double> talphas(5, tof / 5);
 
-    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, tof, 0.12, 100 * kep3::G0, MU_OLD, 0.6);
     kep3::leg::sims_flanagan_alpha sf_alpha(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
 
     auto retval = sf.compute_mismatch_constraints();

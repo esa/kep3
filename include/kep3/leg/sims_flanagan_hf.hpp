@@ -12,6 +12,8 @@
 
 #include <array>
 #include <fmt/ostream.h>
+#include <optional>
+#include <utility>
 #include <vector>
 
 #include <heyoka/taylor.hpp>
@@ -32,9 +34,8 @@ namespace kep3::leg
  * returns all zeros and the method get_throttles_con returns all values less than zero.
  *
  * The dynamics is by default Keplerian, but the user can construct his own and pass it to the
- * leg. The user constructed dynamics will need to meet the requirements of having the variables
- * x,y,z,vx,vy,vz,m and the first three parameters heyoka::par[0], heyoka::par[1], heyoka::par[2] that represent
- * the thrust direction.
+ * leg. The user constructed dynamics will need to meet the requirements of having 7 variables
+ * with the mass being the last one (zero_hold tas) and five parameters that represent mu, veff and the thrust direction.
  */
 class kep3_DLL_PUBLIC sims_flanagan_hf
 {
@@ -42,14 +43,19 @@ public:
     // Constructors
     // Default Constructor.
     sims_flanagan_hf(); // = default;
+    // Main constructor from rvm states
+    sims_flanagan_hf(
+        const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
+        double tof, double max_thrust, double veff, double mu, double cut, double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
     // Backwards-compatible constructor with rv and m states separately
-    sims_flanagan_hf(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
-                     const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                     double isp, double mu, double cut = 0.5, double tol = 1e-16);
-    // Constructor with rvm states
-    sims_flanagan_hf(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
-                     const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
-                     double cut, double tol = 1e-16);
+    sims_flanagan_hf(
+        const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
+        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double veff,
+        double mu, double cut = 0.5, double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
 
     // Setters
     void set_tof(double tof);
@@ -60,7 +66,7 @@ public:
     void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
-    void set_isp(double isp);
+    void set_veff(double veff);
     void set_mu(double mu);
     void set_cut(double cut);
     void set_tol(double tol);
@@ -70,11 +76,11 @@ public:
     // void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
-             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double veff,
              double mu, double cut = 0.5, double tol = 1e-16);
     // Setting function with rvm states
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
-             double tof, double max_thrust, double isp, double mu, double cut = 0.5, double tol = 1e-16);
+             double tof, double max_thrust, double veff, double mu, double cut = 0.5, double tol = 1e-16);
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
              double time_of_flight);
 
@@ -86,7 +92,7 @@ public:
     [[nodiscard]] const std::vector<double> &get_throttles() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
-    [[nodiscard]] double get_isp() const;
+    [[nodiscard]] double get_veff() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
     [[nodiscard]] double get_tol() const;
@@ -143,14 +149,16 @@ private:
         ar & m_tof;
         ar & m_rvmf;
         ar & m_max_thrust;
-        ar & m_isp;
+        ar & m_veff;
         ar & m_mu;
         ar & m_cut;
         ar & m_tol;
         ar & m_nseg;
         ar & m_nseg_fwd;
         ar & m_nseg_bck;
-        ar & m_tas;
+        ar & m_ta;
+        ar & m_ta_var;
+        ar & m_cf_dyn;
     }
 
     // Initial rvm state
@@ -167,8 +175,8 @@ private:
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion system maximum thrust.
     double m_max_thrust{1};
-    // Spacecraft propulsion system specific impulse.
-    double m_isp{1.};
+    // Spacecraft effective velocity Isp*G0 (in units of the dynamics)
+    double m_veff{1.};
     // Spacecraft gravitational parameter.
     double m_mu{1.};
     // The cut parameter
@@ -180,11 +188,13 @@ private:
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
     // Taylor-adaptive integrator
-    // m_tas needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas{};
+    // m_ta needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta{};
     // Variational Taylor-adaptive integrator
-    // m_tas_var needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas_var{};
+    // m_ta_var needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta_var{};
+    // Dynamics c_func needed for the derivatives w.r.t. tof
+    mutable heyoka::cfunc<double> m_cf_dyn{};
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.

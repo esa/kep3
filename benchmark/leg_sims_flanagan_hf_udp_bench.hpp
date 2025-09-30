@@ -30,7 +30,7 @@ struct sf_hf_bench_udp {
         : m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp), m_nseg(nseg),
           m_analytical(analytical),
           m_leg(kep3::leg::sims_flanagan_hf(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0,
-                                            m_max_thrust, m_isp, 1.0, 0.5, 1e-16))
+                                            m_max_thrust, m_isp*kep3::G0, 1.0, 0.5, 1e-16))
     {
     }
     void create_leg(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
@@ -45,7 +45,7 @@ struct sf_hf_bench_udp {
         m_nseg = nseg;
         m_analytical = analytical;
         m_leg = kep3::leg::sims_flanagan_hf(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0,
-                                            m_max_thrust, m_isp, 1.0, 0.5, 1e-16);
+                                            m_max_thrust, m_isp*kep3::G0, 1.0, 0.5, 1e-16);
     }
 
     void set_leg(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
@@ -59,7 +59,7 @@ struct sf_hf_bench_udp {
         m_isp = isp;
         m_nseg = nseg;
         m_analytical = analytical;
-        m_leg.set(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0, m_max_thrust, m_isp, 1.0, 0.5,
+        m_leg.set(m_rvs, m_ms, std::vector<double>(m_nseg * 3, 0.), m_rvf, 0.0, 0.0, m_max_thrust, m_isp*kep3::G0, 1.0, 0.5,
                   1e-16);
     }
 

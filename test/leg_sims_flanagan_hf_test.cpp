@@ -129,10 +129,10 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_cut() == 0.333);
         sf.set_max_thrust(0.333);
         REQUIRE(sf.get_max_thrust() == 0.333);
-        sf.set_isp(0.333);
-        REQUIRE(sf.get_isp() == 0.333);
-        REQUIRE(sf.get_tas().get_pars()[1] == 0.333 * kep3::G0);
-        REQUIRE(sf.get_tas_var().get_pars()[1] == 0.333 * kep3::G0);
+        sf.set_veff(0.333);
+        REQUIRE(sf.get_veff() == 0.333);
+        REQUIRE(sf.get_tas().get_pars()[1] == 0.333);
+        REQUIRE(sf.get_tas_var().get_pars()[1] == 0.333);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
         REQUIRE(sf.get_tas().get_pars()[0] == 0.333);
@@ -154,7 +154,7 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_mf() == 12);
         REQUIRE(sf.get_throttles() == throttles);
         REQUIRE(sf.get_max_thrust() == 4);
-        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_veff() == 4);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
@@ -170,7 +170,7 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_rvmf() == rvms);
         REQUIRE(sf.get_throttles() == throttles);
         REQUIRE(sf.get_max_thrust() == 4);
-        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_veff() == 4);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
@@ -252,8 +252,8 @@ TEST_CASE("compute_mismatch_constraints_test")
         double m1 = 4500.;
         double tof = 340. * kep3::DAY2SEC;
         double max_thrust = 0.05;
-        double isp = 2500.;
-        kep3::leg::sims_flanagan_hf sf(rv0, m0, throttles, rv1, m1, tof, max_thrust, isp, 1.32712440018e+20, 0.5);
+        double veff = 2500. * kep3::G0;
+        kep3::leg::sims_flanagan_hf sf(rv0, m0, throttles, rv1, m1, tof, max_thrust, veff, 1.32712440018e+20, 0.5);
         auto mc = sf.compute_mismatch_constraints();
         // This was computed using directly an independent method (manually via Taylor integration)
         std::array<double, 7> ground_truth
@@ -278,7 +278,7 @@ TEST_CASE("UDP Fitness function timing")
     double dt = dt_days * kep3::DAY2SEC;
     double mass = 1500;
     double max_thrust = 0.6;
-    double Isp = 3000.0;
+    double veff = 3000.0 * kep3::G0;
 
     // Define optimization parameters
     size_t nseg = 8u;
@@ -289,7 +289,7 @@ TEST_CASE("UDP Fitness function timing")
     std::vector<double> throttles(nseg * 3, 0.0);
     std::vector<double> talphas(nseg, dt / static_cast<double>(nseg));
 
-    pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
+    pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, veff, 8u}};
 
     // Start timing
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -320,7 +320,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     double dt = dt_days * kep3::DAY2SEC;
     double mass = 1500;
     double max_thrust = 0.6;
-    double Isp = 3000.0;
+    double veff = 3000.0 * kep3::G0;
     // We create a ballistic arc matching the two.
     kep3::lambert_problem lp{rv0[0], rv1[0], dt, kep3::MU_SUN};
     rv0[1][0] = lp.get_v0()[0][0];
@@ -346,7 +346,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, Isp, 8u}};
+        pagmo::problem prob{sf_hf_test_udp{rv0, mass, rv1, max_thrust, veff, 8u}};
         prob.set_c_tol(1e-6);
         bool found = false;
         pagmo::nlopt uda{"slsqp"};
@@ -392,11 +392,11 @@ TEST_CASE("compare_low_and_high_fidelity")
 
     kep3::leg::sims_flanagan_hf sf(sf_helper_object.m_rvs, sf_helper_object.m_ms, sf_helper_object.m_throttles,
                                    sf_helper_object.m_rvf, sf_helper_object.m_mf, sf_helper_object.m_tof,
-                                   sf_helper_object.m_max_thrust, sf_helper_object.m_isp, sf_helper_object.m_mu,
+                                   sf_helper_object.m_max_thrust, sf_helper_object.m_veff, sf_helper_object.m_mu,
                                    sf_helper_object.m_cut, 1e-16);
     kep3::leg::sims_flanagan sf_lf(sf_helper_object.m_rvs, sf_helper_object.m_ms, sf_helper_object.m_throttles,
                                    sf_helper_object.m_rvf, sf_helper_object.m_mf, sf_helper_object.m_tof,
-                                   sf_helper_object.m_max_thrust, sf_helper_object.m_isp, sf_helper_object.m_mu,
+                                   sf_helper_object.m_max_thrust, sf_helper_object.m_veff, sf_helper_object.m_mu,
                                    sf_helper_object.m_cut);
 
     auto retval = sf.compute_mismatch_constraints();
@@ -425,7 +425,7 @@ TEST_CASE("compute_mismatch_constraints_test3")
     // Calculate equivalent with hf leg.
     kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
                                    sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
-                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_veff, sf_test_object.m_mu,
                                    sf_test_object.m_cut, 1e-16);
     auto mc_sf_hf = sf.compute_mismatch_constraints();
 
@@ -488,7 +488,7 @@ TEST_CASE("compute_tc_grad_test")
     // Calculate throttle constraint gradients
     kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
                                    sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
-                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_veff, sf_test_object.m_mu,
                                    sf_test_object.m_cut, 1e-16);
     std::vector<double> tc_a_grad = sf.compute_tc_grad();
     auto xt_tc_a_grad = xt::adapt(tc_a_grad, {nseg, 3u * nseg});
@@ -535,7 +535,7 @@ TEST_CASE("compute_state_history_2")
 
     kep3::leg::sims_flanagan_hf sf(sf_test_object.m_rvs, sf_test_object.m_ms, sf_test_object.m_throttles,
                                    sf_test_object.m_rvf, sf_test_object.m_mf, sf_test_object.m_tof,
-                                   sf_test_object.m_max_thrust, sf_test_object.m_isp, sf_test_object.m_mu,
+                                   sf_test_object.m_max_thrust, sf_test_object.m_veff, sf_test_object.m_mu,
                                    sf_test_object.m_cut, 1e-16);
 
     // Get state history

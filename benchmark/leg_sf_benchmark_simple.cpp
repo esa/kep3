@@ -44,7 +44,7 @@ void perform_single_nogradient_speed_test()
 
     auto start_con = high_resolution_clock::now();
     auto sf_leg
-        = kep3::leg::sims_flanagan(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp, m_mu, m_cut);
+        = kep3::leg::sims_flanagan(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp*kep3::G0, m_mu, m_cut);
     auto stop_con = high_resolution_clock::now();
     auto duration_con = duration_cast<microseconds>(stop_con - start_con);
     fmt::print("\nLow-fidelity leg construction: {} nseg - timing: {}", m_throttles.size() / 3,
@@ -65,7 +65,7 @@ void perform_single_nogradient_speed_test()
                static_cast<double>(two_duration.count()) / 1e6);
 
     auto start_hf_con = high_resolution_clock::now();
-    auto sf_hf_leg = kep3::leg::sims_flanagan_hf(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp,
+    auto sf_hf_leg = kep3::leg::sims_flanagan_hf(m_rvs, m_ms, m_throttles, m_rvf, m_mf, m_tof, m_max_thrust, m_isp*kep3::G0,
                                                  m_mu, m_cut, 1e-16);
     auto stop_hf_con = high_resolution_clock::now();
     auto duration_hf_con = duration_cast<microseconds>(stop_hf_con - start_hf_con);

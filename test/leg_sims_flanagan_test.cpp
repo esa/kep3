@@ -101,8 +101,8 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_cut() == 0.333);
         sf.set_max_thrust(0.333);
         REQUIRE(sf.get_max_thrust() == 0.333);
-        sf.set_isp(0.333);
-        REQUIRE(sf.get_isp() == 0.333);
+        sf.set_veff(0.333);
+        REQUIRE(sf.get_veff() == 0.333);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
         sf.set_tof(0.333);
@@ -120,7 +120,7 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_mf() == 12);
         REQUIRE(sf.get_throttles() == throttles);
         REQUIRE(sf.get_max_thrust() == 4);
-        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_veff() == 4);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
@@ -179,7 +179,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     for (unsigned long N = 1u; N < 34; ++N) {
         for (auto cut : cut_values) {
             std::vector<double> throttles(N * 3, 0.);
-            kep3::leg::sims_flanagan sf(rv0, 1., throttles, rv1, 1., dt, 1., 1., kep3::MU_SUN, cut);
+            kep3::leg::sims_flanagan sf(rv0, 1., throttles, rv1, 1., dt, 1., 1.*kep3::G0, kep3::MU_SUN, cut);
             auto mc = sf.compute_mismatch_constraints();
             mc = normalize_con(mc);
             REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
@@ -189,7 +189,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000*kep3::G0, 10u}};
         prob.set_c_tol(1e-8);
         bool found = false;
         unsigned trial = 0u;
@@ -265,7 +265,7 @@ TEST_CASE("mismatch_constraints_MatchHardCodedGroundTruth")
     double mf = 1300.;
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
-    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100, MU_OLD, 0.6);
+    kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, 324.0 * kep3::DAY2SEC, 0.12, 100*kep3::G0, MU_OLD, 0.6);
     auto retval = sf.compute_mismatch_constraints();
     std::vector<double> ground_truth
         = {-1.9701274809621304e+11, 4.6965044246848071e+11, -1.5007523306033661e+11, -2.9975151466948650e+04,
