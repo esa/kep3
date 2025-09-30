@@ -56,6 +56,7 @@ the control, the Hamiltonian, the switching function, etc., are also provided.
 
 Two Body Problem (Kepler)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_kep
 
@@ -66,6 +67,7 @@ Two Body Problem (Kepler)
 
 Circular Restricted Three Body Problem
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_cr3bp
 
@@ -81,6 +83,8 @@ Bicircular Problem
 ~~~~~~~~~~~~~~~~~~~~~
 
 Introduced by Simo' et al. in his '97 paper :cite:p:`simo1995bicircular`.
+
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_bcp
 
@@ -98,6 +102,16 @@ zero_hold_kep
 
 .. autofunction:: zero_hold_kep_dyn 
 
+zero_hold_eq
+~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_zero_hold_eq
+
+.. autofunction:: get_zero_hold_eq_var
+
+.. autofunction:: zero_hold_eq_dyn 
+
 zero_hold_cr3bp
 ~~~~~~~~~~~~~~~
 .. currentmodule:: pykep.ta
@@ -111,6 +125,8 @@ zero_hold_cr3bp
 Low-thrust Pontryagin Cartesian TPBVP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. currentmodule:: pykep.ta
+
 .. autofunction:: get_pc
 
 .. autofunction:: get_pc_var
@@ -119,6 +135,8 @@ Low-thrust Pontryagin Cartesian TPBVP
 
 Low-thrust Pontryagin Equinoctial TPBVP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_peq
 

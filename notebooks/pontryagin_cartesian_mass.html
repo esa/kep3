@@ -685,6 +685,7 @@ for analysis of specific cases, but in general they are used internally by the v
     <span class="n">posvelf</span><span class="o">=</span><span class="n">posvelf</span><span class="p">,</span>
     <span class="n">tof</span><span class="o">=</span><span class="n">tof</span><span class="p">,</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
+    <span class="n">lambda0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
     <span class="n">T_max</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
     <span class="n">Isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
@@ -707,7 +708,7 @@ for analysis of specific cases, but in general they are used internally by the v
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ip</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">ipopt</span><span class="p">()</span>
-<span class="n">ip</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;tol&quot;</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">)</span>  <span class="c1"># Change the relative convergence tolerance</span>
+<span class="n">ip</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;tol&quot;</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">)</span>  <span class="c1"># Change the relative convergence tolerance</span>
 <span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;max_iter&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Change the maximum iterations</span>
 <span class="n">ip</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;print_level&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Makes Ipopt unverbose</span>
 <span class="n">ip</span><span class="o">.</span><span class="n">set_string_option</span><span class="p">(</span>
@@ -725,17 +726,24 @@ for analysis of specific cases, but in general they are used internally by the v
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">my_solver</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">gradient</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">):</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">root</span>
         <span class="n">prob</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">problem</span>
         <span class="n">x0</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">})</span>  <span class="c1"># factor=1 is very important for convergence</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">get_nx</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">},</span> <span class="n">jac</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>  <span class="c1"># factor=1 is very important for convergence</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">})</span>  <span class="c1"># factor=1 is very important for convergence</span>
         <span class="n">pop</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">pop</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Minpack hybrd routine&quot;</span>
 
-<span class="n">minpack</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">my_solver</span><span class="p">())</span>
+<span class="n">minpack</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">my_solver</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">minpack_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">my_solver</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -743,28 +751,30 @@ for analysis of specific cases, but in general they are used internally by the v
 <p>To solve the problem here we use a multi-start teachnique, since this is in general a good practice. In this specific case convergence is immediate and multiple starts are not strictly necessary.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multistart</span><span class="p">(</span><span class="n">algo</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multistart</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">success</span><span class="o">=</span><span class="mi">0</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">):</span>
         <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">udp</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
         <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">total_time</span> <span class="o">+=</span> <span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span>
         <span class="k">if</span> <span class="n">prob</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;. Success!!&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="n">udp</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
             <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
             <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-            <span class="k">break</span>
+            <span class="n">success</span><span class="o">+=</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Final mass is: </span><span class="si">{</span><span class="n">masses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">MASS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian at the final point is: </span><span class="si">{</span><span class="n">H_func</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">pars</span><span class="o">=</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time to success: </span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of successes: </span><span class="si">{</span><span class="n">success</span><span class="si">}</span><span class="s2"> over </span><span class="si">{</span><span class="n">n_trials</span><span class="si">}</span><span class="s2"> trials (</span><span class="si">{</span><span class="n">success</span><span class="o">/</span><span class="n">n_trials</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> %)&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pop</span>
 </pre></div>
 </div>
@@ -772,38 +782,34 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">ipopt</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">ipopt</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit https://github.com/coin-or/Ipopt
-******************************************************************************
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>......x..........x............x..x......
+Final mass is: 1259.9009127384545
+Hamiltonian at the final point is: [-0.05597387] 
 
-. Success!!
-Final mass is: 1259.9009186255066
-Hamiltonian at the final point is: [-0.05597388] 
-
-Total time to success: 0.117 seconds
+Total time to success: 7.245 seconds
+Number of successes: 36 over 40 trials (90.0 %)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">minpack</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">multistart</span><span class="p">(</span><span class="n">minpack_g</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!!
-Final mass is: 1259.9009185800144
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..xx..x.x..xx.xx......xxxxxxx.x.x.xxxx.x
+Final mass is: 1259.900918578598
 Hamiltonian at the final point is: [-0.05597388] 
 
-Total time to success: 0.018 seconds
+Total time to success: 0.713 seconds
+Number of successes: 18 over 40 trials (45.0 %)
 </pre></div>
 </div>
 </div>
@@ -817,7 +823,7 @@ Total time to success: 0.018 seconds
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cee1750fca52f709d4a3e2b8e70cea8cc9dc292fc62a3b68403531c17452fe07.png" src="../_images/cee1750fca52f709d4a3e2b8e70cea8cc9dc292fc62a3b68403531c17452fe07.png" />
+<img alt="../_images/54444ac288a5edc548df4f9fdbfccf8338c3e04fd7cc423d3ea9b233320e6c13.png" src="../_images/54444ac288a5edc548df4f9fdbfccf8338c3e04fd7cc423d3ea9b233320e6c13.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -828,7 +834,7 @@ Total time to success: 0.018 seconds
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ad1d9937dd4ef3832be13557ef1bf5297e336f7710467740b55264c369ac9487.png" src="../_images/ad1d9937dd4ef3832be13557ef1bf5297e336f7710467740b55264c369ac9487.png" />
+<img alt="../_images/7de4a7abf17a622f5d8d72bfe605444faa9788f2f1708c7e30bce6c81004348d.png" src="../_images/7de4a7abf17a622f5d8d72bfe605444faa9788f2f1708c7e30bce6c81004348d.png" />
 </div>
 </div>
 </section>
@@ -869,6 +875,7 @@ small values.</p>
     <span class="n">posvelf</span><span class="o">=</span><span class="n">posvelf</span><span class="p">,</span>
     <span class="n">tof</span><span class="o">=</span><span class="n">tof</span><span class="p">,</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
+    <span class="n">lambda0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
     <span class="n">T_max</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
     <span class="n">Isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
@@ -891,7 +898,7 @@ small values.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We can select the algorithm here:</span>
 <span class="c1">#algo = ipopt</span>
-<span class="n">algo</span> <span class="o">=</span> <span class="n">minpack</span>
+<span class="n">algo</span> <span class="o">=</span> <span class="n">minpack_g</span>
 </pre></div>
 </div>
 </div>
@@ -982,9 +989,9 @@ small values.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 1.88e-10 | CPU time: 1.10e-02 | Epsilon = 1.0854e-04
-Desired epsilon reached ! | Error: 1.88e-10 | CPU time: 1.10e-02 | Epsilon = 9.2260e-05
-Total CPU time: 1.44e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 4.19e-10 | CPU time: 1.72e-02 | Epsilon = 1.0854e-04
+Desired epsilon reached ! | Error: 4.19e-10 | CPU time: 1.72e-02 | Epsilon = 9.2260e-05
+Total CPU time: 1.57e+00
 </pre></div>
 </div>
 </div>
@@ -1174,14 +1181,14 @@ $$</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 6.27e-11 | CPU time: 1.10e-02 | Epsilon = 7.5254e-05
-Desired epsilon reached ! | Error: 6.27e-11 | CPU time: 1.10e-02 | Epsilon = 7.5254e-05
-Total CPU time: 1.38e+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>. Success!! | Error: 3.23e-12 | CPU time: 1.64e-02 | Epsilon = 7.5254e-05
+Desired epsilon reached ! | Error: 3.23e-12 | CPU time: 1.64e-02 | Epsilon = 7.5254e-05
+Total CPU time: 1.51e+00
 </pre></div>
 </div>
 </div>
 </div>
-<p>We obtained a smoother and faster method as our predictor is much better and allows for a more rapid exponential decrease (i.e. factor <span class="math notranslate nohighlight">\(0.75\)</span>).</p>
+<p>We may obtain like this a smoother and faster method as our predictor is much better and allows for a more rapid exponential decrease (i.e. factor <span class="math notranslate nohighlight">\(0.75\)</span>).</p>
 </section>
 </section>
 
