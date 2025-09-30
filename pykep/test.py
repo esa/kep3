@@ -315,7 +315,7 @@ def compute_numerical_gradient(sf_leg, sf_leg_type = 'lf'):
         sf_leg_constraint.cut = 0.5
         sf_leg_constraint.max_thrust = 1
         sf_leg_constraint.mu = 1
-        sf_leg_constraint.isp = 1
+        sf_leg_constraint.veff = 1
         sf_leg_constraint.rvs = [chromosome[0:3],chromosome[3:6]]
         sf_leg_constraint.ms = chromosome[6]
         sf_leg_constraint.throttles = chromosome[state_length:state_length+throttle_length]
@@ -420,7 +420,7 @@ class sims_flanagan_hf_test(_ut.TestCase):
         sf_hf_leg.rvmf = np.array([1.2, -0.1, 0.1, -0.2, 1.023, -0.44, 13 / 15])
         sf_hf_leg.max_thrust = 1
         sf_hf_leg.mu = 1
-        sf_hf_leg.isp = 1
+        sf_hf_leg.veff = 1
         sf_hf_leg.tof = 1
         rvm_mc_sf_hf = sf_hf_leg.compute_mismatch_constraints()
         self.assertTrue(np.allclose(rvm_mc_sf, rvm_mc_sf_hf, atol=1e-13))
@@ -473,7 +473,7 @@ class sims_flanagan_hf_test(_ut.TestCase):
         sf_leg.mf = 13 / 15
         sf_leg.max_thrust = 1
         sf_leg.mu = 1
-        sf_leg.isp = 1
+        sf_leg.veff = 1
         sf_leg.tof = 1
         state_length = np.array(sf_leg.rvs).flatten().size + 1
         throttle_length = np.array(sf_leg.throttles).size

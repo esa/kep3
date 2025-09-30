@@ -30,9 +30,9 @@ struct sf_hf_test_udp {
     sf_hf_test_udp() = default;
     sf_hf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
                 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                double max_thrust, double isp, unsigned nseg)
+                double max_thrust, double veff, unsigned nseg)
         : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0),m_rvf, 1, 1, 
-            max_thrust, isp, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_isp(isp),
+            max_thrust, veff, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_veff(veff),
         m_nseg(nseg) // Initialize leg here!
     {
     }
@@ -51,7 +51,7 @@ struct sf_hf_test_udp {
         leg.set_ms(m_ms);
         leg.set_rvf(m_rvf);
         leg.set_max_thrust(m_max_thrust);
-        leg.set_isp(m_isp);
+        leg.set_veff(m_veff);
 
         leg.set_mf(mf);
         leg.set_tof(tof);
@@ -97,7 +97,7 @@ struct sf_hf_test_udp {
         leg.set_ms(m_ms);
         leg.set_rvf(m_rvf);
         leg.set_max_thrust(m_max_thrust);
-        leg.set_isp(m_isp);
+        leg.set_veff(m_veff);
 
         leg.set_mf(mf);
         leg.set_tof(tof);
@@ -177,7 +177,7 @@ struct sf_hf_test_udp {
     std::array<std::array<double, 3>, 2> m_rvf{};
     double m_ms{};
     double m_max_thrust{};
-    double m_isp{};
+    double m_veff{};
     std::size_t m_nseg{};
 };
 

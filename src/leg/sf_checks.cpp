@@ -49,6 +49,12 @@ void _check_max_thrust(double max_thrust)
             "The maximum allowed thrust of a sims_flanagan leg is detected to be smaller than zero.");
     }
 }
+void _check_veff(double veff)
+{
+    if (veff < 0.) {
+        throw std::domain_error("The effective velocity of a sims_flanagan leg is detected to be smaller than zero.");
+    }
+}
 void _check_isp(double isp)
 {
     if (isp < 0.) {
@@ -83,53 +89,53 @@ void _check_nseg(unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
 }
 void _sanity_checks(const std::vector<double> &throttles, 
                     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                    double tof, double max_thrust, double isp, double mu,
+                    double tof, double max_thrust, double veff, double mu,
                     double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
 {
     _check_throttles(throttles);
     _check_tof(tof);
     _check_max_thrust(max_thrust);
-    _check_isp(isp);
+    _check_veff(veff);
     _check_mu(mu);
     _check_cut(cut);
     _check_nseg(nseg, nseg_fwd, nseg_bck);
 }
 void _sanity_checks(const std::vector<double> &throttles, 
                     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                    double tof, double max_thrust, double isp, double mu,
+                    double tof, double max_thrust, double veff, double mu,
                     double cut, double tol, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
 {
     _check_throttles(throttles);
     _check_tof(tof);
     _check_max_thrust(max_thrust);
-    _check_isp(isp);
+    _check_veff(veff);
     _check_mu(mu);
     _check_cut(cut);
     _check_tol(tol);
     _check_nseg(nseg, nseg_fwd, nseg_bck);
 }
 void _sanity_checks_alpha(// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-    const std::vector<double> &throttles, const std::vector<double> &talphas, double tof, double max_thrust, double isp, double mu,
+    const std::vector<double> &throttles, const std::vector<double> &talphas, double tof, double max_thrust, double veff, double mu,
     double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
 {
     _check_throttles(throttles);
     _check_tof(tof);
     _check_talphas(talphas, nseg);
     _check_max_thrust(max_thrust);
-    _check_isp(isp);
+    _check_veff(veff);
     _check_mu(mu);
     _check_cut(cut);
     _check_nseg(nseg, nseg_fwd, nseg_bck);
 }
 void _sanity_checks_alpha(// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-    const std::vector<double> &throttles, const std::vector<double> &talphas, double tof, double max_thrust, double isp, double mu,
+    const std::vector<double> &throttles, const std::vector<double> &talphas, double tof, double max_thrust, double veff, double mu,
     double cut, double tol, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
 {
     _check_throttles(throttles);
     _check_tof(tof);
     _check_talphas(talphas, nseg);
     _check_max_thrust(max_thrust);
-    _check_isp(isp);
+    _check_veff(veff);
     _check_mu(mu);
     _check_cut(cut);
     _check_tol(tol);

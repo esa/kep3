@@ -192,6 +192,7 @@ std::string leg_sf_hf_mf_docstring();
 std::string leg_sf_hf_rvmf_docstring();
 std::string leg_sf_hf_tof_docstring();
 std::string leg_sf_hf_max_thrust_docstring();
+std::string leg_sf_hf_veff_docstring();
 std::string leg_sf_hf_isp_docstring();
 std::string leg_sf_hf_mu_docstring();
 std::string leg_sf_hf_cut_docstring();

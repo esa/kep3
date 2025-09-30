@@ -2903,7 +2903,7 @@ std::string leg_sf_max_thrust_docstring()
 };
 std::string leg_sf_isp_docstring()
 {
-    return "Specific impulse of the propulasion system";
+    return "Specific impulse of the propulsion system";
 };
 std::string leg_sf_mu_docstring()
 {
@@ -3271,9 +3271,13 @@ std::string leg_sf_hf_max_thrust_docstring()
 {
     return "Maximum spacecraft thruet.";
 };
+std::string leg_sf_hf_veff_docstring()
+{
+    return "Effective velocity of the propulsion system (Isp*G0 in the V units of the dynamics)";
+};
 std::string leg_sf_hf_isp_docstring()
 {
-    return "Specific impulse of the propulasion system";
+    return "Specific impulse of the propulsion system.";
 };
 std::string leg_sf_hf_mu_docstring()
 {
