@@ -18,8 +18,8 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/eq2par2eq.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
 #include <kep3/epoch.hpp>
@@ -71,11 +71,11 @@ keplerian::keplerian(const epoch &ref_epoch, const std::array<double, 6> &elem, 
             }
             m_kep_f_elements[5] = kep3::m2f(m_kep_f_elements[5], m_kep_f_elements[1]);
             break;
-        case kep3::elements_type::MEQ:
-            m_kep_f_elements = kep3::eq2par(m_kep_f_elements, false);
+        case kep3::elements_type::MEE:
+            m_kep_f_elements = kep3::mee2par(m_kep_f_elements, false);
             break;
-        case kep3::elements_type::MEQ_R:
-            m_kep_f_elements = kep3::eq2par(m_kep_f_elements, true);
+        case kep3::elements_type::MEE_R:
+            m_kep_f_elements = kep3::mee2par(m_kep_f_elements, true);
             break;
         default:
             throw std::logic_error("You should not go here!");
@@ -151,13 +151,13 @@ std::array<double, 6> keplerian::elements(double, kep3::elements_type el_type) c
             retval = m_kep_f_elements;
             retval[5] = kep3::f2m(retval[5], retval[1]);
             break;
-        case kep3::elements_type::MEQ:
+        case kep3::elements_type::MEE:
             retval = m_kep_f_elements;
-            retval = kep3::par2eq(retval, false);
+            retval = kep3::par2mee(retval, false);
             break;
-        case kep3::elements_type::MEQ_R:
+        case kep3::elements_type::MEE_R:
             retval = m_kep_f_elements;
-            retval = kep3::par2eq(retval, true);
+            retval = kep3::par2mee(retval, true);
             break;
         default:
             throw std::logic_error("You should not go here!");

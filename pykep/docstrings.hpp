@@ -56,10 +56,10 @@ std::string f2zeta_v_doc();
 // Elements conversions
 std::string ic2par_doc();
 std::string par2ic_doc();
-std::string ic2eq_doc();
-std::string eq2ic_doc();
-std::string par2eq_doc();
-std::string eq2par_doc();
+std::string ic2mee_doc();
+std::string mee2ic_doc();
+std::string par2mee_doc();
+std::string mee2par_doc();
 
 // MIMA
 std::string mima_doc();

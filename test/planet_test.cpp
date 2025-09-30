@@ -269,8 +269,8 @@ TEST_CASE("construction")
         REQUIRE(!std::isfinite(pla.period()));
         REQUIRE(pla.elements()[0] < 0);
         REQUIRE_THROWS_AS(pla.elements(kep3::epoch(), kep3::elements_type::KEP_M), std::logic_error);
-        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
-        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEE)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEE_R)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] < 0);
     }
     {
@@ -282,8 +282,8 @@ TEST_CASE("construction")
         REQUIRE(pla.elements()[0] > 0);
         REQUIRE(pla.elements()[1] < 1);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_M)[0] > 0);
-        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ)[0] > 0);
-        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEQ_R)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEE)[0] > 0);
+        REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::MEE_R)[0] > 0);
         REQUIRE(pla.elements(kep3::epoch(), kep3::elements_type::KEP_F)[0] > 0);
     }
     {

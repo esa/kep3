@@ -13,22 +13,22 @@
 #include <fmt/ranges.h>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 
 #include "catch.hpp"
 #include "test_helpers.hpp"
 
 using Catch::Matchers::WithinRel;
-using kep3::eq2ic;
-using kep3::ic2eq;
+using kep3::mee2ic;
+using kep3::ic2mee;
 using kep3::pi;
 
     TEST_CASE("fb_con")
 {
     // Zero inclination and eccentricity
     {
-        auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}}}, 1.0);
+        auto par = ic2mee({{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}}}, 1.0);
         REQUIRE(par[0] == 1.); // p is 1
         REQUIRE(par[1] == 0.); // f is zero
         REQUIRE(par[2] == 0.); // g is zero
@@ -38,7 +38,7 @@ using kep3::pi;
     }
     // Orbit at 90 degrees inclination
     {
-        auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 0.0, 1.1}}}, 1.0);
+        auto par = ic2mee({{{1.0, 0.0, 0.0}, {0.0, 0.0, 1.1}}}, 1.0);
         REQUIRE_THAT(par[0], WithinRel(1.2658227848101269 * (1. - 0.21 * 0.21), 1e-14));
         REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
         REQUIRE(par[2] == 0.); // f is zero
@@ -48,7 +48,7 @@ using kep3::pi;
     }
     // Orbit at 90 degrees inclination
     {
-        auto par = ic2eq({{{1.0, 0.0, 0.0}, {0.0, 0.0, -1.1}}}, 1.0);
+        auto par = ic2mee({{{1.0, 0.0, 0.0}, {0.0, 0.0, -1.1}}}, 1.0);
         REQUIRE_THAT(par[0], WithinRel(1.2658227848101269 * (1. - 0.21 * 0.21), 1e-14));
         REQUIRE_THAT(par[1], WithinRel(0.21, 1e-14));
         REQUIRE(par[2] == 0.);  // f is zero
@@ -58,7 +58,7 @@ using kep3::pi;
     }
 }
 
-TEST_CASE("ic2eq2ic")
+TEST_CASE("ic2mee2ic")
 {
     // Engines
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
@@ -84,9 +84,9 @@ TEST_CASE("ic2eq2ic")
             double ni = ni_d(rng_engine);
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
-            auto eq = ic2eq(pos_vel, 1.);
-            auto pos_vel_new = eq2ic(eq, 1.0);
+            // Test ic2mee2ic
+            auto eq = ic2mee(pos_vel, 1.);
+            auto pos_vel_new = mee2ic(eq, 1.0);
             double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1]
                                  + pos_vel[0][2] * pos_vel[0][2]);
             double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] + pos_vel[1][1] * pos_vel[1][1]
@@ -120,9 +120,9 @@ TEST_CASE("ic2eq2ic")
             }
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
-            auto eq = ic2eq(pos_vel, 1.);
-            auto pos_vel_new = eq2ic(eq, 1.0);
+            // Test ic2mee2ic
+            auto eq = ic2mee(pos_vel, 1.);
+            auto pos_vel_new = mee2ic(eq, 1.0);
 
             double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1]
                                  + pos_vel[0][2] * pos_vel[0][2]);
@@ -142,7 +142,7 @@ TEST_CASE("ic2eq2ic")
     }
 }
 
-TEST_CASE("ic2eq2ic_retrogade")
+TEST_CASE("ic2mee2ic_retrogade")
 {
     // Engines
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
@@ -168,9 +168,9 @@ TEST_CASE("ic2eq2ic_retrogade")
             double ni = ni_d(rng_engine);
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
-            auto eq = ic2eq(pos_vel, 1., true);
-            auto pos_vel_new = eq2ic(eq, 1.0, true);
+            // Test ic2mee2ic
+            auto eq = ic2mee(pos_vel, 1., true);
+            auto pos_vel_new = mee2ic(eq, 1.0, true);
             double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1]
                                  + pos_vel[0][2] * pos_vel[0][2]);
             double V = std::sqrt(pos_vel[1][0] * pos_vel[1][0] + pos_vel[1][1] * pos_vel[1][1]
@@ -202,9 +202,9 @@ TEST_CASE("ic2eq2ic_retrogade")
             }
             // Compute the initial r,v
             auto pos_vel = kep3::par2ic({sma, ecc, incl, Omega, omega, ni}, 1.);
-            // Test ic2eq2ic
-            auto eq = ic2eq(pos_vel, 1., true);
-            auto pos_vel_new = eq2ic(eq, 1.0, true);
+            // Test ic2mee2ic
+            auto eq = ic2mee(pos_vel, 1., true);
+            auto pos_vel_new = mee2ic(eq, 1.0, true);
 
             double R = std::sqrt(pos_vel[0][0] * pos_vel[0][0] + pos_vel[0][1] * pos_vel[0][1]
                                  + pos_vel[0][2] * pos_vel[0][2]);

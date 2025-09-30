@@ -15,7 +15,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
@@ -160,11 +160,11 @@ std::array<double, 6> jpl_lp::elements(double mjd2000, kep3::elements_type el_ty
         case kep3::elements_type::KEP_M:
             elements[5] = kep3::f2m(elements[5], elements[1]);
             break;
-        case kep3::elements_type::MEQ:
-            elements = kep3::par2eq(elements, false);
+        case kep3::elements_type::MEE:
+            elements = kep3::par2mee(elements, false);
             break;
-        case kep3::elements_type::MEQ_R:
-            elements = kep3::par2eq(elements, true);
+        case kep3::elements_type::MEE_R:
+            elements = kep3::par2mee(elements, true);
             break;
         default:
             throw std::logic_error("You should not go here!");

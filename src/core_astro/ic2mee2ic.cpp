@@ -18,7 +18,7 @@
 #include <xtensor/containers/xarray.hpp>
 
 #include <kep3/core_astro/constants.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 
 using xt::linalg::cross;
 using xt::linalg::dot;
@@ -31,7 +31,7 @@ namespace kep3
 // orbitsCefola, P., 1972, September. Equinoctial orbit elements-Application to
 // artificial satellite orbits. In Astrodynamics Conference (p. 937).
 
-std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel, double mu, bool retrogade)
+std::array<double, 6> ic2mee(const std::array<std::array<double, 3>, 2> &pos_vel, double mu, bool retrogade)
 {
     {
         // Switch between the element types.
@@ -113,7 +113,7 @@ std::array<double, 6> ic2eq(const std::array<std::array<double, 3>, 2> &pos_vel,
     }
 }
 
-std::array<std::array<double, 3>, 2> eq2ic(const std::array<double, 6> &eq, double mu, bool retrogade)
+std::array<std::array<double, 3>, 2> mee2ic(const std::array<double, 6> &eq, double mu, bool retrogade)
 {
     std::array<std::array<double, 3>, 2> retval{};
     int I = 0;

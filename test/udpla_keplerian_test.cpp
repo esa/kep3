@@ -12,7 +12,7 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/udpla/keplerian.hpp>
@@ -55,11 +55,11 @@ TEST_CASE("constructor")
     }
     {
         std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-        REQUIRE_NOTHROW(keplerian{ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEQ});
+        REQUIRE_NOTHROW(keplerian{ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEE});
     }
     {
         std::array<double, 6> par{{1., 0., 0., 1., 0., 0.}};
-        REQUIRE_NOTHROW(keplerian{ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEQ_R});
+        REQUIRE_NOTHROW(keplerian{ref_epoch, par, 1., "unknown", {-1, -1, -1}, kep3::elements_type::MEE_R});
     }
     { // hyperbola and mean anomaly????
         std::array<double, 6> par{{-10., 10., 0., 1., 0., 0.}};
@@ -131,14 +131,14 @@ TEST_CASE("elements")
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(0., kep3::elements_type::MEQ);
-        auto [r, v] = kep3::eq2ic(par, 1.);
+        auto par = udpla.elements(0., kep3::elements_type::MEE);
+        auto [r, v] = kep3::mee2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(0., kep3::elements_type::MEQ_R);
-        auto [r, v] = kep3::eq2ic(par, 1., true);
+        auto par = udpla.elements(0., kep3::elements_type::MEE_R);
+        auto [r, v] = kep3::mee2ic(par, 1., true);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }

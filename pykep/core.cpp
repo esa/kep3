@@ -14,9 +14,9 @@
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/encodings.hpp>
-#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/flyby.hpp>
-#include <kep3/core_astro/ic2eq2ic.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/mima.hpp>
 #include <kep3/core_astro/propagate_lagrangian.hpp>
@@ -86,8 +86,8 @@ PYBIND11_MODULE(core, m) // NOLINT
     py::enum_<kep3::elements_type>(m, "el_type", "")
         .value("KEP_M", kep3::KEP_M, "Keplerian Elements :math:`[a,e,i,\\Omega,\\omega,M]` (Mean anomaly)")
         .value("KEP_F", kep3::KEP_F, "Keplerian Elements :math:`[a,e,i,\\Omega,\\omega,f]` (True anomaly)")
-        .value("MEQ", kep3::MEQ, "Modified Equinoctial Elements :math:`[p,f,g,h,k,L]` (Mean Longitude)")
-        .value("MEQ_R", kep3::MEQ_R,
+        .value("MEE", kep3::MEE, "Modified Equinoctial Elements :math:`[p,f,g,h,k,L]` (Mean Longitude)")
+        .value("MEE_R", kep3::MEE_R,
                "Modified Equinoctial Elements (retrograde) :math:`[p,f,g,h,k,L]` (Mean "
                "Longitude)")
         .value("POSVEL", kep3::POSVEL, "Position and Velocity")
@@ -133,12 +133,12 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing element conversions
     m.def("ic2par", &kep3::ic2par, py::arg("posvel"), py::arg("mu"), pk::ic2par_doc().c_str());
     m.def("par2ic", &kep3::par2ic, py::arg("elem"), py::arg("mu"), pk::par2ic_doc().c_str());
-    m.def("ic2eq", &kep3::ic2eq, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false,
-          pk::ic2eq_doc().c_str());
-    m.def("eq2ic", &kep3::eq2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false,
-          pk::eq2ic_doc().c_str());
-    m.def("par2eq", &kep3::par2eq, py::arg("elem"), py::arg("retrogde") = false, pk::par2eq_doc().c_str());
-    m.def("eq2par", &kep3::eq2par, py::arg("eq_elem"), py::arg("retrogde") = false, pk::eq2par_doc().c_str());
+    m.def("ic2mee", &kep3::ic2mee, py::arg("posvel"), py::arg("mu"), py::arg("retrogde") = false,
+          pk::ic2mee_doc().c_str());
+    m.def("mee2ic", &kep3::mee2ic, py::arg("eq_elem"), py::arg("mu"), py::arg("retrogde") = false,
+          pk::mee2ic_doc().c_str());
+    m.def("par2mee", &kep3::par2mee, py::arg("elem"), py::arg("retrogde") = false, pk::par2mee_doc().c_str());
+    m.def("mee2par", &kep3::mee2par, py::arg("eq_elem"), py::arg("retrogde") = false, pk::mee2par_doc().c_str());
 
     // Exposing mima functions and basic transfer functionalities
     m.def("mima", &kep3::mima, py::arg("dv1"), py::arg("dv2"), py::arg("tof"), py::arg("Tmax"), py::arg("veff"),

@@ -14,14 +14,14 @@
 
 #include <boost/math/constants/constants.hpp>
 
-#include <kep3/core_astro/eq2par2eq.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
 
 #include "catch.hpp"
 #include "test_helpers.hpp"
 
 constexpr double pi{boost::math::constants::pi<double>()};
 
-TEST_CASE("eq2par2eq")
+TEST_CASE("mee2par2mee")
 {
     // Engines
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
@@ -46,9 +46,9 @@ TEST_CASE("eq2par2eq")
             double omega = omega_d(rng_engine);
             double ni = ni_d(rng_engine);
             // Compute the initial eq
-            auto eq = kep3::par2eq({sma, ecc, incl, Omega, omega, ni});
-            // Test eq2par2eq
-            auto par = kep3::eq2par(eq);
+            auto eq = kep3::par2mee({sma, ecc, incl, Omega, omega, ni});
+            // Test mee2par2mee
+            auto par = kep3::mee2par(eq);
 
             // Here we do not use catch matchers to test floating point as for small
             // numbers (<1) we care about absolute while for large (>1) we care for
@@ -77,9 +77,9 @@ TEST_CASE("eq2par2eq")
                 continue;
             }
             // Compute the initial eq
-            auto eq = kep3::par2eq({sma, ecc, incl, Omega, omega, ni});
-            // Test eq2par2eq
-            auto par = kep3::eq2par(eq);
+            auto eq = kep3::par2mee({sma, ecc, incl, Omega, omega, ni});
+            // Test mee2par2mee
+            auto par = kep3::mee2par(eq);
 
             // Here we do not use catch matchers to test floating point as for small
             // numbers (<1) we care about absolute while for large (>1) we care for
@@ -95,7 +95,7 @@ TEST_CASE("eq2par2eq")
     }
 }
 
-TEST_CASE("eq2par2eq_retrogade")
+TEST_CASE("mee2par2mee_retrogade")
 {
     // Engines
     // NOLINTNEXTLINE(cert-msc32-c, cert-msc51-cpp)
@@ -120,9 +120,9 @@ TEST_CASE("eq2par2eq_retrogade")
             double omega = omega_d(rng_engine);
             double ni = ni_d(rng_engine);
             // Compute the initial eq
-            auto eq = kep3::par2eq({sma, ecc, incl, Omega, omega, ni}, true);
-            // Test eq2par2eq
-            auto par = kep3::eq2par(eq, true);
+            auto eq = kep3::par2mee({sma, ecc, incl, Omega, omega, ni}, true);
+            // Test mee2par2mee
+            auto par = kep3::mee2par(eq, true);
 
             // Here we do not use catch matchers to test floating point as for small
             // numbers (<1) we care about absolute while for large (>1) we care for
@@ -154,9 +154,9 @@ TEST_CASE("eq2par2eq_retrogade")
                 continue;
             }
             // Compute the initial eq
-            auto eq = kep3::par2eq({sma, ecc, incl, Omega, omega, ni}, true);
-            // Test eq2par2eq
-            auto par = kep3::eq2par(eq, true);
+            auto eq = kep3::par2mee({sma, ecc, incl, Omega, omega, ni}, true);
+            // Test mee2par2mee
+            auto par = kep3::mee2par(eq, true);
 
             // Here we do not use catch matchers to test floating point as for small
             // numbers (<1) we care about absolute while for large (>1) we care for
