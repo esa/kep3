@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <vector>
 
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/containers/xarray.hpp>
 #include <xtensor/io/xio.hpp>
 
@@ -29,11 +30,11 @@ struct sf_hf_test_udp {
 
     sf_hf_test_udp() = default;
     sf_hf_test_udp(std::array<std::array<double, 3>, 2> rvs, double ms, std::array<std::array<double, 3>, 2> rvf,
-                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                double max_thrust, double veff, unsigned nseg)
-        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0),m_rvf, 1, 1, 
-            max_thrust, veff, kep3::MU_SUN), m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_veff(veff),
-        m_nseg(nseg) // Initialize leg here!
+                   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                   double max_thrust, double veff, unsigned nseg)
+        : leg(rvs, ms, std::vector<double>(static_cast<size_t>(nseg * 3), 0.0), m_rvf, 1, 1, max_thrust, veff,
+              kep3::MU_SUN),
+          m_rvs(rvs), m_rvf(rvf), m_ms(ms), m_max_thrust(max_thrust), m_veff(veff), m_nseg(nseg) // Initialize leg here!
     {
     }
 
@@ -86,7 +87,7 @@ struct sf_hf_test_udp {
         // We set the leg (avoiding the allocation for the throttles is possible but requires mutable data members.)
         double tof = x[m_nseg * 3] * kep3::DAY2SEC; // in s
         double mf = x[m_nseg * 3 + 1];              // in kg
-        
+
         // Set leg constants
         leg.set_rvs(m_rvs);
         leg.set_ms(m_ms);
@@ -96,7 +97,7 @@ struct sf_hf_test_udp {
 
         leg.set_mf(mf);
         leg.set_tof(tof);
-        
+
         // We set the throttles
         leg.set_throttles(x.begin(), x.end() - 2);
 

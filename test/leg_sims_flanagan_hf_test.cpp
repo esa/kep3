@@ -252,7 +252,7 @@ TEST_CASE("compute_mismatch_constraints_test")
         double m1 = 4500.;
         double tof = 340. * kep3::DAY2SEC;
         double max_thrust = 0.05;
-        double veff = 2500.*kep3::G0;
+        double veff = 2500. * kep3::G0;
         kep3::leg::sims_flanagan_hf sf(rv0, m0, throttles, rv1, m1, tof, max_thrust, veff, 1.32712440018e+20, 0.5);
         auto mc = sf.compute_mismatch_constraints();
         // This was computed using directly an independent method (manually via Taylor integration)
