@@ -37,16 +37,53 @@
 
 #include <heyoka/taylor.hpp>
 
-namespace kep3::leg
+// Anonymous namespace for functions
+namespace
 {
+// Check that the dynamics is a zero hold one
+void _check_zero_hold(const std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &> &tas) {
+    const heyoka::taylor_adaptive<double> &ta = tas.first;
+    const heyoka::taylor_adaptive<double> &ta_var = tas.second;
+    // 1) the ta must have dimension 7
+    if (!ta.get_state().size() == 7) {
+         throw std::domain_error(
+            "The zero-hold Taylor adaptive integrator in the high fidelity sf leg, does not have a dimension of 7.");
+    }
+    // 2) the ta must have at least 5 parameters mu, veff, T1,T2,T3
+    if (ta.get_pars().size() < 5) {
+         throw std::domain_error(
+            "The zero-hold Taylor adaptive integrator in the high fidelity sf leg, must have at least 5 parameters");
+    }
+    // 3) the ta is not a variational integrator
+    if (ta.is_variational()) {
+        throw std::domain_error(
+            "The zero-hold Taylor adaptive integrator in the high fidelity sf leg cannot be variational");
+    }
+    // 4) the ta_var must have dimension 7 + 7 * 7 + 3 * 7
+    if (!(ta_var.get_state().size() == 77)) {
+         throw std::domain_error(
+            "The zero-hold variational Taylor adaptive integrator in the high fidelity sf leg, does not have a dimension of 28.");
+    }
+    // 2) the ta_var must have the same parameters as ts
+    if (ta.get_pars().size() != ta_var.get_pars().size()) {
+         throw std::domain_error(
+            "The zero-hold Taylor adaptive integrator and its varitional counterpart seem to have different number of parameters?");
+    }
+    // 3) the ta_var is a variational integrator
+    if (!ta_var.is_variational()) {
+        throw std::domain_error(
+            "The zero-hold variartional Taylor adaptive integrator in the high fidelity sf must be variational");
+    }
+    return;
+}
 // Utilty
-static std::array<double, 7> make_rvm(const std::array<std::array<double, 3>, 2> &posvel, double m)
+std::array<double, 7> make_rvm(const std::array<std::array<double, 3>, 2> &posvel, double m)
 {
     return {posvel[0][0], posvel[0][1], posvel[0][2], posvel[1][0], posvel[1][1], posvel[1][2], m};
 }
 
 // Returning the dynamics excluding mass
-static heyoka::cfunc<double> dynamic_cfunc_factory(const heyoka::taylor_adaptive<double> &ta)
+heyoka::cfunc<double> dynamic_cfunc_factory(const heyoka::taylor_adaptive<double> &ta)
 {
     auto dyn = ta.get_sys();
     // Collect variables and RHS expressions
@@ -63,6 +100,10 @@ static heyoka::cfunc<double> dynamic_cfunc_factory(const heyoka::taylor_adaptive
         {rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5], rhs[6]},                                     // outputs
         {variable[0], variable[1], variable[2], variable[3], variable[4], variable[5], variable[6]}); // inputs (state)
 }
+
+} // namespace
+namespace kep3::leg
+{
 
 // Default constructor
 sims_flanagan_hf::sims_flanagan_hf()
@@ -110,6 +151,7 @@ sims_flanagan_hf::sims_flanagan_hf(
 
     // Initialize m_ta and m_ta_var
     if (tas) {
+        _check_zero_hold(tas.value());
         m_ta = tas.value().first;
         m_ta_var = tas.value().second;
     } else {
