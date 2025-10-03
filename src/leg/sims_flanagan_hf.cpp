@@ -45,7 +45,7 @@ void _check_zero_hold(const std::pair<const heyoka::taylor_adaptive<double> &, c
     const heyoka::taylor_adaptive<double> &ta = tas.first;
     const heyoka::taylor_adaptive<double> &ta_var = tas.second;
     // 1) the ta must have dimension 7
-    if (!ta.get_state().size() == 7) {
+    if (!(ta.get_state().size() == 7)) {
          throw std::domain_error(
             "The zero-hold Taylor adaptive integrator in the high fidelity sf leg, does not have a dimension of 7.");
     }
