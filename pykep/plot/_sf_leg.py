@@ -50,10 +50,10 @@ def add_sf_leg(
         :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Sims-Flanagan leg added.
     """
     # We extract the number of segments from the leg.
-    nseg = sf.nseg  
+    nseg = sf.nseg
     nseg_fwd = sf.nseg_fwd
     nseg_bck = sf.nseg_bck
-    
+
     if not use_alpha:
         dt = sf.tof / nseg
         c = sf.max_thrust * dt
@@ -139,7 +139,7 @@ def add_sf_leg(
 
     for i in range(nseg_bck):
         if use_alpha:
-            dt = sf.talphas[nseg-i-1]
+            dt = sf.talphas[nseg - i - 1]
             c = sf.max_thrust * dt
         # compute the dv (first non dimensional)
         throttles = sf.throttles[nseg * 3 - 3 - 3 * i : nseg * 3 - 3 * i]
@@ -207,7 +207,7 @@ def add_sf_hf_leg(
     N=30,
     show_gridpoints=False,
     show_throttles=False,
-    show_throttles_tips = False,
+    show_throttles_tips=False,
     length=0.1,
     arrow_length_ratio=0.05,
     **kwargs
@@ -227,7 +227,7 @@ def add_sf_hf_leg(
         *show_gridpoints* (:class:`bool`, optional): If True, gridpoints of the trajectory are shown. Default is False.
 
         *show_throttles* (:class:`bool`, optional): If True, thrust vectors at midpoints are shown. Default is False.
-        
+
         *show_throttles_tips* (:class:`bool`, optional): If True, and show_throttles is True, thrust vectors at midpoints are shown with an endline. Default is False.
 
         *length* (:class:`float`, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.
@@ -273,26 +273,21 @@ def add_sf_hf_leg(
     )
 
     if show_gridpoints:
-
         # Plot the 3D trajectory
-        for i in range(1,nseg_fwd):
-            current_states = state_history_fwd[
-                i * N, 0:3
-            ]
+        for i in range(1, nseg_fwd):
+            current_states = state_history_fwd[i * N, 0:3]
             ax.scatter(
                 current_states[0] / units,
                 current_states[1] / units,
                 current_states[2] / units,
-                marker = 'x',
+                marker="x",
                 c="C0",
-                s=50
+                s=50,
             )
 
     if show_throttles:
         for i in range(nseg_fwd):
-            current_states = state_history_fwd[
-                i * N : (i + 1) * N, 0:3
-            ]
+            current_states = state_history_fwd[i * N : (i + 1) * N, 0:3]
             current_throttles = throttles_fwd[:, i * 3 : (i + 1) * 3]
             current_quiver_tips = current_states / units + current_throttles * length
             ax.quiver(
@@ -307,14 +302,15 @@ def add_sf_hf_leg(
                 arrow_length_ratio=arrow_length_ratio,
             )
             if show_throttles_tips:
-                current_quiver_tips = current_states / units + current_throttles * length
+                current_quiver_tips = (
+                    current_states / units + current_throttles * length
+                )
                 ax.plot(
                     current_quiver_tips[:, 0],
                     current_quiver_tips[:, 1],
                     current_quiver_tips[:, 2],
                     color="indianred",
                 )
-
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     state_history_bck = _np.zeros((nseg_bck * N, 7))
@@ -336,29 +332,23 @@ def add_sf_hf_leg(
     if show_gridpoints:
 
         # Plot the 3D trajectory
-        for i in range(1, nseg_bck+1):
+        for i in range(1, nseg_bck + 1):
             if i < nseg_bck:
-                current_states = state_history_bck[
-                    i * N, 0:3
-                ]
+                current_states = state_history_bck[i * N, 0:3]
             else:
-                current_states = state_history_bck[
-                    -1, 0:3
-                ]
+                current_states = state_history_bck[-1, 0:3]
             ax.scatter(
                 current_states[0] / units,
                 current_states[1] / units,
                 current_states[2] / units,
-                marker = 'x',
+                marker="x",
                 c="C0",
-                s=50
-            )    
+                s=50,
+            )
 
     if show_throttles:
         for i in range(nseg_bck):
-            current_states = state_history_bck[
-                i * N : (i + 1) * N, 0:3
-            ]
+            current_states = state_history_bck[i * N : (i + 1) * N, 0:3]
             current_throttles = throttles_bck[:, i * 3 : (i + 1) * 3]
             current_quiver_tips = current_states / units + current_throttles * length
             ax.quiver(
@@ -373,13 +363,14 @@ def add_sf_hf_leg(
                 arrow_length_ratio=arrow_length_ratio,
             )
             if show_throttles_tips:
-                current_quiver_tips = current_states / units + current_throttles * length
+                current_quiver_tips = (
+                    current_states / units + current_throttles * length
+                )
                 ax.plot(
                     current_quiver_tips[:, 0],
                     current_quiver_tips[:, 1],
                     current_quiver_tips[:, 2],
                     color="indianred",
                 )
-
 
     return ax

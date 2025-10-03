@@ -51,7 +51,7 @@ std::vector<std::pair<expression, expression>> zero_hold_cr3bp_dyn()
     auto r_2 = sqrt(sum({pow(x - (1. - par[0]), 2.), pow(y, 2.), pow(z, 2.)}));
 
     // The thrust magnitude
-    const auto u_norm = sqrt(sum({pow(Tx, 2.), pow(Ty, 2.), pow(Tz, 2.)}));
+    const auto T_norm = sqrt(sum({pow(Tx, 2.), pow(Ty, 2.), pow(Tz, 2.)}));
 
     // The Equations of Motion.
     const auto xdot = vx;
@@ -64,7 +64,7 @@ std::vector<std::pair<expression, expression>> zero_hold_cr3bp_dyn()
     const auto vzdot = -(1. - par[0]) * z / pow(r_1, 3.) - par[0] * z / pow(r_2, 3.) + Tz / m;
     // To avoid singularities in the corner case u_norm=0. we use a select here. Implications on performances should be
     // studied.
-    const auto mdot = select(eq(u_norm, 0.), 0., -u_norm / veff);
+    const auto mdot = select(eq(T_norm, 0.), 0., -T_norm / veff);
     return {prime(x) = xdot,   prime(y) = ydot,   prime(z) = zdot, prime(vx) = vxdot,
             prime(vy) = vydot, prime(vz) = vzdot, prime(m) = mdot};
 }

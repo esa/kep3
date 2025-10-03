@@ -135,7 +135,7 @@ public:
     [[nodiscard]] std::vector<double> compute_tc_grad() const;
 
     // Retrieve the state history of the sims flanagan leg
-    [[nodiscard]] std::vector<std::vector<double>> get_state_history(const unsigned grid_points_per_segment) const;
+    [[nodiscard]] std::vector<std::vector<double>> get_state_history(unsigned grid_points_per_segment) const;
 
 private:
     friend class boost::serialization::access;
