@@ -9,4 +9,4 @@ Interplanetary transfer legs
    :members:
 
 .. autoclass:: sims_flanagan_hf
-   :members:
+   :members: 
