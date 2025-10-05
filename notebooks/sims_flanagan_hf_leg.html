@@ -568,7 +568,7 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/378d32a9a9ea04b85d37736f705b497d51d17657bd7c13659d011051cfc78fb8.png" src="../_images/378d32a9a9ea04b85d37736f705b497d51d17657bd7c13659d011051cfc78fb8.png" />
+<img alt="../_images/2a9380beb1d1289dcdba6a789894545eb45df955e2b081cce25464de771ff040.png" src="../_images/2a9380beb1d1289dcdba6a789894545eb45df955e2b081cce25464de771ff040.png" />
 </div>
 </div>
 </section>
@@ -810,7 +810,7 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/971ebb2602281db65dce25333db56746ac3c9ef0ed54128231b44c53db5794cb.png" src="../_images/971ebb2602281db65dce25333db56746ac3c9ef0ed54128231b44c53db5794cb.png" />
+<img alt="../_images/b1132d21f3d065533a8a1d91acffefdf8bd2ebf234878bb45c1878c2473ffb6d.png" src="../_images/b1132d21f3d065533a8a1d91acffefdf8bd2ebf234878bb45c1878c2473ffb6d.png" />
 </div>
 </div>
 </section>
@@ -927,35 +927,6 @@ Check gradient of mc wrt u:   True
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>---------------------------------------------------------------------------
-ValueError                                Traceback (most recent call last)
-Cell In[17], line 2
-      1 pop = pg.population(prob, 1)
-----&gt; 2 pop = algo.evolve(pop)
-
-ValueError: 
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 603
-what: 
-An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
-reasons:
-
-- The file declared to be the snopt7_c library, i.e. /usr/local/lib/libsnopt7_c.so, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
-a valid shared library?)
- - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
-at run-time.
-
-We report the exact text of the original exception thrown:
-
- 
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 553
-what: The snopt7_c library path was constructed to be: /usr/local/lib/libsnopt7_c.so and it does not appear to be a file
-
 </pre></div>
 </div>
 </div>
