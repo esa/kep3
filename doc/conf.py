@@ -77,7 +77,7 @@ nb_execution_excludepatterns = [
     "udp_mga*",
     "pontryagin_cartesian*",
     "approximations*",
-    "sims_flanagan_hf_leg",
+    "sims_flanagan_hf_leg*",
 ]
 
 latex_engine = "xelatex"
