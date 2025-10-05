@@ -568,7 +568,7 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/07a85ce6fed35b45cd6a5afcdd54fc03a721e9c3d2dc0df05cef796d2ef9bd49.png" src="../_images/07a85ce6fed35b45cd6a5afcdd54fc03a721e9c3d2dc0df05cef796d2ef9bd49.png" />
+<img alt="../_images/378d32a9a9ea04b85d37736f705b497d51d17657bd7c13659d011051cfc78fb8.png" src="../_images/378d32a9a9ea04b85d37736f705b497d51d17657bd7c13659d011051cfc78fb8.png" />
 </div>
 </div>
 </section>
@@ -716,38 +716,31 @@ Check gradient of mc wrt u:   True
 <p>Lets see how to use the CR3BP zero hold dynamics for this purpose.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We create the zero-hold integrators</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We are going to use a json file which contains data of problems connecting </span>
+<span class="c1"># periodic orbits in the cr3bp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;sims_flanagan_hf_leg_problems.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># We create the zero-hold integrators</span>
 <span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_cr3bp</span><span class="p">(</span><span class="mf">1e-12</span><span class="p">)</span>
 <span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_cr3bp_var</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">)</span>
 <span class="n">tas</span> <span class="o">=</span> <span class="p">[</span><span class="n">ta</span><span class="p">,</span> <span class="n">ta_var</span><span class="p">]</span>
 
-<span class="c1"># Data for starting and final orbit. In this case both periodic orbits around L2.</span>
-<span class="c1">#Problem ID-0</span>
-<span class="c1">#state_s = [ 1.0809931218390707,0.0, -0.20235953267405354,0.0, -0.19895001215078018,0.0, 1.]</span>
-<span class="c1">#period_s = 2.353867041754664</span>
-<span class="c1">#state_f = [ 1.1648780946517576,0.0,-0.11145303634437023,0.0,-0.20191923237095796,0.0, 1.]</span>
-<span class="c1">#period_f = 3.3031221822879884</span>
-
-<span class="c1">#Problem ID-1</span>
-<span class="n">state_s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1648780946517576</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.11145303634437023</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.20191923237095796</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="n">period_s</span> <span class="o">=</span> <span class="mf">3.3031221822879884</span>
-<span class="n">state_f</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8241716997696729</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05763660825010655</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1681906215591753</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-<span class="n">period_f</span> <span class="o">=</span> <span class="mf">2.7629516051826917</span>
-
-<span class="n">mu_cr3bp</span> <span class="o">=</span> <span class="mf">0.01215058560962404</span>
-<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.3010999584011414</span> <span class="c1"># already nd</span>
-<span class="n">veff</span> <span class="o">=</span> <span class="mf">11.56499372183432</span> <span class="c1"># already nd</span>
+<span class="c1"># Change the following line to use a different problem from the json file.</span>
+<span class="n">problem_id</span> <span class="o">=</span> <span class="s2">&quot;instances_lb ID1&quot;</span>
+<span class="c1"># We load the values in the json dictionary</span>
+<span class="n">state_s</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;state_s&quot;</span><span class="p">]</span>
+<span class="n">period_s</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;period_s&quot;</span><span class="p">]</span>
+<span class="n">state_f</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;state_f&quot;</span><span class="p">]</span>
+<span class="n">period_f</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;period_f&quot;</span><span class="p">]</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;max_thrust&quot;</span><span class="p">]</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;veff&quot;</span><span class="p">]</span>
+<span class="n">mu_cr3bp</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;mu_cr3bp&quot;</span><span class="p">]</span>
 
 <span class="c1"># We create new random throttles</span>
+<span class="n">nseg</span><span class="o">=</span><span class="mi">20</span>
 <span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
-
-<span class="c1"># For reference in the Earth-Moon system we use the units</span>
-<span class="n">LU</span> <span class="o">=</span> <span class="mi">384400000</span> <span class="c1">#m</span>
-<span class="n">TU</span> <span class="o">=</span> <span class="mf">2360592.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="c1">#s</span>
-<span class="n">VU</span> <span class="o">=</span> <span class="n">LU</span><span class="o">/</span><span class="n">TU</span> <span class="c1">#m/s</span>
-<span class="n">MassU</span> <span class="o">=</span> <span class="mf">1000.</span>
-<span class="n">AccU</span> <span class="o">=</span> <span class="n">VU</span><span class="o">/</span><span class="n">TU</span> <span class="c1">#m/s^2</span>
-<span class="n">ForceU</span> <span class="o">=</span> <span class="n">AccU</span> <span class="o">*</span> <span class="n">MassU</span> <span class="c1">#kg m/s^2</span>
 </pre></div>
 </div>
 </div>
@@ -756,9 +749,9 @@ Check gradient of mc wrt u:   True
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We are now ready to instantiate a generalized leg</span>
 <span class="n">sf</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan_hf</span><span class="p">(</span>
-    <span class="n">rvms</span><span class="o">=</span><span class="n">state_s</span><span class="p">,</span>
+    <span class="n">state_s</span><span class="o">=</span><span class="n">state_s</span><span class="p">,</span>
     <span class="n">throttles</span><span class="o">=</span><span class="n">throttles</span><span class="p">,</span>
-    <span class="n">rvmf</span><span class="o">=</span><span class="n">state_f</span><span class="p">,</span>
+    <span class="n">state_f</span><span class="o">=</span><span class="n">state_f</span><span class="p">,</span>
     <span class="n">tof</span><span class="o">=</span><span class="mf">3.141592653589793</span><span class="p">,</span>
     <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
     <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
@@ -796,12 +789,12 @@ Check gradient of mc wrt u:   True
     <span class="c1"># START</span>
     <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state_s</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">propagate_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">period_s</span><span class="p">,</span> <span class="mi">100</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">propagate_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">period_s</span><span class="p">,</span> <span class="mi">2000</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
     <span class="c1">#END</span>
     <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state_f</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">propagate_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">period_f</span><span class="p">,</span> <span class="mi">100</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">propagate_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">period_f</span><span class="p">,</span> <span class="mi">2000</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="c1"># Plotting the trajctory leg</span>
@@ -810,14 +803,14 @@ Check gradient of mc wrt u:   True
     <span class="p">)</span>
 
     <span class="c1"># Making the axis nicer</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
 
 <span class="n">plot_leg_cr3bp</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8f9ef06dbca42abe3911af12edd24c8b23e3de3a9728510f554eafc1dad6934f.png" src="../_images/8f9ef06dbca42abe3911af12edd24c8b23e3de3a9728510f554eafc1dad6934f.png" />
+<img alt="../_images/971ebb2602281db65dce25333db56746ac3c9ef0ed54128231b44c53db5794cb.png" src="../_images/971ebb2602281db65dce25333db56746ac3c9ef0ed54128231b44c53db5794cb.png" />
 </div>
 </div>
 </section>
@@ -856,9 +849,9 @@ Check gradient of mc wrt u:   True
         <span class="c1"># We instantiate the leg (tof, final mass and throttles will be changed when the leg is set from the decision vector,</span>
         <span class="c1"># hence they are just dummy values to construct the object)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">leg</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">sims_flanagan_hf</span><span class="p">(</span>
-            <span class="n">rvms</span><span class="o">=</span><span class="n">state_s</span><span class="p">,</span>
+            <span class="n">state_s</span><span class="o">=</span><span class="n">state_s</span><span class="p">,</span>
             <span class="n">throttles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="n">rvmf</span><span class="o">=</span><span class="n">state_f</span><span class="p">,</span>
+            <span class="n">state_f</span><span class="o">=</span><span class="n">state_f</span><span class="p">,</span>
             <span class="n">tof</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
             <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
             <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
@@ -907,25 +900,29 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 </div>
-<p>We can now instatiate the UDP:</p>
+<p>We can now instatiate the UDP and hence the pagmo problem:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem</span>
-<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="c1"># IMPORTANT: according to the problem selected the tof_bounds should be adjusted (e.g.[ 1,5] or [5,10])</span>
+<span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="n">tof_bounds</span><span class="o">=</span><span class="n">tof_bounds</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
-<span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="c1"># ensures pagmo consider feasible constraint at this level (this is NOT changing SNOPT behaviour)</span>
 
 <span class="c1"># Algorithm</span>
 <span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<span class="c1"># Activate screen output here to see what the SQP solver is doing</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major optimality tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-7</span><span class="p">)</span>
+<span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-7</span><span class="p">)</span> <span class="c1"># must be low else will not be met</span>
 <span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>… and call the solver (call a few times to get multiple local minima)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -967,14 +964,18 @@ what: The snopt7_c library path was constructed to be: /usr/local/lib/libsnopt7_
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final mass: &quot;</span><span class="p">,</span> <span class="o">-</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transfer time: &quot;</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feasibility: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">8</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.990153035052
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.974205448534
+Transfer time:  2.96554791112
+Feasibility:  1.08541824494e-08
 </pre></div>
 </div>
-<img alt="../_images/e9d0691ae632688df3275103c8692aeaabeed8b29f94eaa22458f8930231c35a.png" src="../_images/e9d0691ae632688df3275103c8692aeaabeed8b29f94eaa22458f8930231c35a.png" />
+<img alt="../_images/cddb919a71a844c36d940cd76dfe9b700eaf5fe9121b6772c36d06b278f87d9c.png" src="../_images/cddb919a71a844c36d940cd76dfe9b700eaf5fe9121b6772c36d06b278f87d9c.png" />
 </div>
 </div>
 </section>
@@ -1029,9 +1030,9 @@ what: The snopt7_c library path was constructed to be: /usr/local/lib/libsnopt7_
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem</span>
-<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="n">tof_bounds</span><span class="o">=</span><span class="n">tof_bounds</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
-<span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
 </pre></div>
 </div>
 </div>
@@ -1048,14 +1049,18 @@ what: The snopt7_c library path was constructed to be: /usr/local/lib/libsnopt7_
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final mass: &quot;</span><span class="p">,</span> <span class="o">-</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transfer time: &quot;</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feasibility: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">8</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.990153308621
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.974242162253
+Transfer time:  3.07032612344
+Feasibility:  3.87682460857e-13
 </pre></div>
 </div>
-<img alt="../_images/1ae31d8accb71ccd9f884f56e35fad5d3c4e7c6eda6c93fd477dcf99ad5eba84.png" src="../_images/1ae31d8accb71ccd9f884f56e35fad5d3c4e7c6eda6c93fd477dcf99ad5eba84.png" />
+<img alt="../_images/94ceb25eb2f06345cdcf3520e5f07452c283ebc8324721ac86baa985ad5bc71f.png" src="../_images/94ceb25eb2f06345cdcf3520e5f07452c283ebc8324721ac86baa985ad5bc71f.png" />
 </div>
 </div>
 </section>
