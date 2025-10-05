@@ -3137,54 +3137,68 @@ Examples:
 )";
 };
 
+
 std::string leg_sf_hf_docstring()
 {
-    return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., veff = 1., mu=1., cut = 0.5, tol=1e-16, tas = None)
+    return R"(__init__(state_s = [1,0,0,0,1,0,1.], throttles = [0,0,0,0,0,0], state_f = [1,0,0,0,1,0,1.], tof = pi/2, max_thrust = 1., veff = 1., mu=1., cut=0.5, tol=1e-16, tas=None)
 
-      This class represents an interplanetary low-thrust transfer between a starting and a final point in the augmented state-space :math:`[\mathbf r, \mathbf v, m]`.
-      The low-thrust transfer is described by a sequence of forward/backward segments. Along each segment a constant thrust is applied.
+    *Secondary constructor available*:
 
-      The low-thrust transfer will thus be feasible if the state mismatch equality constraints and the throttle mismatch inequality constraints are satisfied.
+    **pykep.leg.sims_flanagan_hf** (**rvs** = [[1,0,0], [0,1,0]], **ms** = 1., **throttles** = [0,0,0,0,0,0], **rvf** = [[0,1,0], [-1,0,0]], **mf** = 1., **tof** = pi/2, **max_thrust** = 1., **veff** = 1., **mu**=1., **cut** = 0.5, **tol**=1e-16, **tas** = None)
+    
+    This class represents an interplanetary low-thrust transfer between a starting and a final point. It makes use of a fwd-bck zero-hold
+    transcription which can be usefully seen as a generalization of the :class:`~pykep.leg.sims_flanagan()` methodology.
 
-      The dynamics, by default, is that of a :func:`~pykep.ta.get_zero_hold_kep`, but the user can pass any zero_hold taylor adaptive integrator, e.g.
-      for example :func:`~pykep.ta.get_zero_hold_cr3bp`, as far as it includes seven states (mass being the last) and 5 parameters :math:`\mu, v_{eff}, T_1, T_2, T_3`. 
-      In this case the user must also provide the variational version of the numerical integrator with variational parameters being the state and the three parameters :math:`T_1, T_2, T_3`.
+    The low-thrust transfer will thus be feasible if the state mismatch equality constraints and the throttle mismatch inequality
+    constraints are satisfied.
 
-      Args:
-          *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
+    The dynamics, by default, is that of a :func:`~pykep.ta.get_zero_hold_kep`, but the user can pass any zero_hold taylor adaptive integrator, e.g.:
+    for example :func:`~pykep.ta.get_zero_hold_cr3bp`, as far as it includes seven states (mass being the last) and 5 parameters :math:`\mu, v_{eff}, T_1, T_2, T_3`.
+    In this case the user must also provide the variational version of the numerical integrator with variational parameters being the state and the three parameters :math:`T_1, T_2, T_3`.
 
-          *ms* (:class:`float`): initial mass. Defaults to 1.
+    Args:
+        *state_s* (1D array-like): Flattened initial state vector. Defaults to [1,0,0,0,1,0,1.].
 
-          *throttles* (1D array-like): the Cartesan components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....]. Defaults to a ballistic, two segments profile [0,0,0,0,0,0].
+        *rvs* (2D array-like): Cartesian components of the initial position vector and velocity [[xs, ys, zs], [vxs, vys, vzs]]. Defaults to [[1,0,0], [0,1,0]].
 
-          *rvf* (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].
+        *ms* (:class:`float`): initial mass. Defaults to 1.
 
-          *mf* (:class:`float`): final mass. Defaults to 1.
+        *throttles* (1D array-like): the Cartesian components of the throttle history [ux1, uy1, uz1, ux2, uy2, uz2, .....]. Defaults to [0,0,0,0,0,0].
+        
+        *state_f* (1D array-like): Flattened final state vector. Defaults to [1,0,0,0,1,0,1.].
+        
+        *rvf* (2D array-like): Cartesian components of the final position vector and velocity [[xf, yf, zf], [vxf, vyf, vzf]]. Defaults to [[0,1,0], [-1,0,0]].
 
-          *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+        *mf* (:class:`float`): final mass. Defaults to 1.
 
-          *max_thrust* (:class:`float`): maximum level for the spacecraft thrust. Defaults to 1.
+        *tof* (:class:`float`): time of flight. Defaults to :math:`\frac{\pi}{2}`.
+        
+        *max_thrust* (:class:`float`): maximum thrust. Defaults to 1.
+        
+        *veff* (:class:`float`): effective exhaust velocity. Defaults to 1.
+        
+        *mu* (:class:`float`): gravitational parameter. Defaults to 1.
+        
+        *cut* (:class:`float`): the leg cut, in [0,1]. Defaults to 0.5.
+        
+        *tol* (:class:`float`): tolerance for the Taylor integrator. Defaults to 1e-16.
+        
+        *tas* (:class:`tuple`): Tuple of (:class:`hy::taylor_adaptive`, :class:`hy::taylor_adaptive`). If None, zero hold Keplerian dynamics is used.
 
-          *veff* (:class:`float`): effective velocity of the propulasion system. Defaults to 1.
+    .. note::
+        The parameters ``rvs``, ``rvf``, ``ms`` and ``mf`` are used only in the secondary constructor;
+        ``state_s`` and ``state_f`` are used only in the second constructor.
+    
+    .. note::
+        Units need to be consistent. (may not be straight-forward, e.g. in cr3bp zero-hold dynamics)
 
-          *mu* (:class:`float`): gravitational parameter. Defaults to 1.
-
-          *cut* (:class:`float`): the leg cut, in [0,1]. It determines the number of forward and backward segments. Defaults to 0.5.
-
-          *tol* (:class:`float`): the leg tolerance, in [0,1]. It determines the tolerance allowed by the heyoka Taylor integrator. Defaults to 1e-16.
-
-          *tas* (:class:`tuple` [:class:`hy::taylor_adaptive`, :class:`hy::taylor_adaptive`]): the numerical inetgartors defining the dynamics and its variational counterpart. If None, zero hold Keplerian dynamics is used.
-
-      .. note::
-
-        Units need to be consistent. 
-
-      Examples:
+    Examples:
         >>> import pykep as pk
-        >>> import numpy as np
         >>> sf_hf = pk.leg.sims_flanagan_hf()
-)";
+        >>> sf_hf2 = pk.leg.sims_flanagan_hf(state_s=[1,0,0,0,1,0,1.])
+    )";
 }
+
 std::string leg_sf_hf_alpha_docstring()
 {
     return R"(__init__(rvs = [[1,0,0], [0,1,0]], ms = 1., throttles = [0,0,0,0,0,0], , talphas = [0,0], rvf = [[0,1,0], [-1,0,0]], mf = 1., tof = pi/2, max_thrust = 1., isp = 1., mu=1., cut = 0.5, tol=1e-16)
