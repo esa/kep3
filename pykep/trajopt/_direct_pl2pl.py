@@ -32,7 +32,7 @@ class direct_pl2pl:
         ms=1500,
         mu=_pk.MU_SUN,
         max_thrust=0.12,
-        isp=3000,
+        veff=3000,
         t0_bounds=[6700.0, 6800.0],
         tof_bounds=[200.0, 300.0],
         mf_bounds=[1300.0, 1500.0],
@@ -94,7 +94,7 @@ class direct_pl2pl:
             
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
-        self.leg.isp = isp
+        self.leg.veff = veff
         self.leg.mu = mu
         self.leg.cut = cut
 

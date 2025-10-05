@@ -210,6 +210,9 @@ def add_sf_hf_leg(
     show_throttles_tips=False,
     length=0.1,
     arrow_length_ratio=0.05,
+    unit_L = 1,
+    unit_T = 1,
+    unit_M = 1,
     **kwargs
 ):
     """
@@ -266,21 +269,20 @@ def add_sf_hf_leg(
             it += 1
 
     ax.plot(
-        state_history_fwd[:, 0] / units,
-        state_history_fwd[:, 1] / units,
-        state_history_fwd[:, 2] / units,
+        state_history_fwd[:, 0] * unit_L / units,
+        state_history_fwd[:, 1] * unit_L / units,
+        state_history_fwd[:, 2] * unit_L / units,
         c="k",
     )
-
     if show_gridpoints:
         # Plot the 3D trajectory
         for i in range(1, nseg_fwd):
             current_states = state_history_fwd[i * N, 0:3]
             ax.scatter(
-                current_states[0] / units,
-                current_states[1] / units,
-                current_states[2] / units,
-                marker="x",
+                current_states[0] * unit_L / units,
+                current_states[1] * unit_L / units,
+                current_states[2] * unit_L / units,
+                marker = 'x',
                 c="C0",
                 s=50,
             )
@@ -289,11 +291,11 @@ def add_sf_hf_leg(
         for i in range(nseg_fwd):
             current_states = state_history_fwd[i * N : (i + 1) * N, 0:3]
             current_throttles = throttles_fwd[:, i * 3 : (i + 1) * 3]
-            current_quiver_tips = current_states / units + current_throttles * length
+            current_quiver_tips = current_states * unit_L / units + current_throttles * length
             ax.quiver(
-                current_states[:, 0] / units,
-                current_states[:, 1] / units,
-                current_states[:, 2] / units,
+                current_states[:, 0] * unit_L / units,
+                current_states[:, 1] * unit_L / units,
+                current_states[:, 2] * unit_L / units,
                 current_throttles[:, 0],
                 current_throttles[:, 1],
                 current_throttles[:, 2],
@@ -302,9 +304,7 @@ def add_sf_hf_leg(
                 arrow_length_ratio=arrow_length_ratio,
             )
             if show_throttles_tips:
-                current_quiver_tips = (
-                    current_states / units + current_throttles * length
-                )
+                current_quiver_tips = current_states * unit_L / units + current_throttles * length
                 ax.plot(
                     current_quiver_tips[:, 0],
                     current_quiver_tips[:, 1],
@@ -323,9 +323,9 @@ def add_sf_hf_leg(
             it += 1
 
     ax.plot(
-        state_history_bck[:, 0] / units,
-        state_history_bck[:, 1] / units,
-        state_history_bck[:, 2] / units,
+        state_history_bck[:, 0] * unit_L / units,
+        state_history_bck[:, 1] * unit_L / units,
+        state_history_bck[:, 2] * unit_L / units,
         c="k",
     )
 
@@ -338,10 +338,10 @@ def add_sf_hf_leg(
             else:
                 current_states = state_history_bck[-1, 0:3]
             ax.scatter(
-                current_states[0] / units,
-                current_states[1] / units,
-                current_states[2] / units,
-                marker="x",
+                current_states[0] * unit_L / units,
+                current_states[1] * unit_L / units,
+                current_states[2] * unit_L / units,
+                marker = 'x',
                 c="C0",
                 s=50,
             )
@@ -350,11 +350,11 @@ def add_sf_hf_leg(
         for i in range(nseg_bck):
             current_states = state_history_bck[i * N : (i + 1) * N, 0:3]
             current_throttles = throttles_bck[:, i * 3 : (i + 1) * 3]
-            current_quiver_tips = current_states / units + current_throttles * length
+            current_quiver_tips = current_states * unit_L / units + current_throttles * length
             ax.quiver(
-                current_states[:, 0] / units,
-                current_states[:, 1] / units,
-                current_states[:, 2] / units,
+                current_states[:, 0] * unit_L / units,
+                current_states[:, 1] * unit_L / units,
+                current_states[:, 2] * unit_L / units,
                 current_throttles[:, 0],
                 current_throttles[:, 1],
                 current_throttles[:, 2],
@@ -363,14 +363,13 @@ def add_sf_hf_leg(
                 arrow_length_ratio=arrow_length_ratio,
             )
             if show_throttles_tips:
-                current_quiver_tips = (
-                    current_states / units + current_throttles * length
-                )
+                current_quiver_tips = current_states * unit_L / units + current_throttles * length
                 ax.plot(
                     current_quiver_tips[:, 0],
                     current_quiver_tips[:, 1],
                     current_quiver_tips[:, 2],
                     color="indianred",
                 )
+
 
     return ax

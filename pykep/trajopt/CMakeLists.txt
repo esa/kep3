@@ -2,6 +2,7 @@ set(PYKEP_TRAJOPT_PYTHON_FILES
     __init__.py 
     _direct_point2point.py 
     _direct_pl2pl.py 
+    _direct_nd.py 
     _direct_pl2pl_alpha.py 
     _mga.py _mga_1dsm.py
     _min_Bu_bu.py 
