@@ -45,13 +45,13 @@ sims_flanagan_alpha::sims_flanagan_alpha(const std::array<std::array<double, 3>,
                              const std::vector<double> &throttles, const std::vector<double> &talphas,
                              // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                              const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                             double isp, double mu, double cut)
+                             double veff, double mu, double cut)
     : m_rvs(rvs), m_ms(ms), m_throttles(throttles),m_talphas(talphas), m_rvf(rvf), m_mf(mf), m_tof(tof),
-      m_max_thrust(max_thrust), m_isp(isp), m_mu(mu), m_cut(cut),
+      m_max_thrust(max_thrust), m_veff(veff), m_mu(mu), m_cut(cut),
       m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
       m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
 {
-    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
 }
 
 // Setters
@@ -97,10 +97,10 @@ void sims_flanagan_alpha::set_max_thrust(double max_thrust)
     kep3::leg::_check_max_thrust(max_thrust);
     m_max_thrust = max_thrust;
 }
-void sims_flanagan_alpha::set_isp(double isp)
+void sims_flanagan_alpha::set_veff(double veff)
 {
-    kep3::leg::_check_isp(isp);
-    m_isp = isp;
+    kep3::leg::_check_veff(veff);
+    m_veff = veff;
 }
 void sims_flanagan_alpha::set_mu(double mu)
 {
@@ -134,9 +134,9 @@ void sims_flanagan_alpha::set(const std::array<std::array<double, 3>, 2> &rvs, d
                         const std::vector<double> &throttles, const std::vector<double> &talphas,
                         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                         const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                        double isp, double mu, double cut)
+                        double veff, double mu, double cut)
 {
-    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
+    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_nseg, m_nseg_fwd, m_nseg_bck);
     m_rvs = rvs;
     m_ms = ms;
     m_throttles = throttles;
@@ -145,7 +145,7 @@ void sims_flanagan_alpha::set(const std::array<std::array<double, 3>, 2> &rvs, d
     m_mf = mf;
     m_tof = tof;
     m_max_thrust = max_thrust;
-    m_isp = isp;
+    m_veff = veff;
     m_mu = mu;
     m_cut = cut;
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
@@ -182,9 +182,9 @@ double sims_flanagan_alpha::get_max_thrust() const
 {
     return m_max_thrust;
 }
-double sims_flanagan_alpha::get_isp() const
+double sims_flanagan_alpha::get_veff() const
 {
-    return m_isp;
+    return m_veff;
 }
 double sims_flanagan_alpha::get_mu() const
 {
@@ -217,7 +217,7 @@ std::array<double, 7> sims_flanagan_alpha::compute_mismatch_constraints() const
 {
     // We introduce some convenience variables
     std::array<double, 3> dv{};
-    const double veff = m_isp * kep3::G0;
+    const double veff = m_veff;
     // const double dtorig = m_tof / static_cast<double>(m_nseg);
     // const double c = m_max_thrust * dt;
 
@@ -324,7 +324,7 @@ std::ostream &operator<<(std::ostream &s, const sims_flanagan_alpha &sf)
     s << fmt::format("Number of bck segments: {}\n", sf.get_nseg_bck());
     s << fmt::format("Maximum thrust: {}\n", sf.get_max_thrust());
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
-    s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());
+    s << fmt::format("Specific impulse: {}\n\n", sf.get_veff());
     s << fmt::format("Time of flight: {}\n", sf.get_tof());
     s << fmt::format("Initial mass: {}\n", sf.get_ms());
     s << fmt::format("Final mass: {}\n", sf.get_mf());

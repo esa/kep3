@@ -817,7 +817,7 @@ PYBIND11_MODULE(core, m) // NOLINT
         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
+        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5);
     // repr().
     sims_flanagan_alpha.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_alpha>);
@@ -851,7 +851,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mf);
     PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(tof);
     PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(max_thrust);
-    //PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(isp);
+    //PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(veff);
     PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(mu);
     PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(cut);
 
@@ -1013,14 +1013,26 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing the sims_flanagan_hf_alpha leg
     py::class_<kep3::leg::sims_flanagan_hf_alpha> sims_flanagan_hf_alpha(m, "_sims_flanagan_hf_alpha",
                                                                          pykep::leg_sf_hf_alpha_docstring().c_str());
+    // Main constructor (rvms/rvmf variant) with optional tas
     sims_flanagan_hf_alpha.def(
-        py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>, std::vector<double>,
-                 const std::array<std::array<double, 3>, 2> &, double, double, double, double, double, double>(),
-        py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
-        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
-        py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp") = 1., py::arg("mu") = 1,
-        py::arg("cut") = 0.5);
+        py::init<const std::array<double, 7> &, const std::vector<double>, const std::vector<double>,
+            const std::array<double, 7> &, double, double, double, double, double, double, std::optional<tas_type>>(),
+        py::arg("rvms") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
+        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, 
+        py::arg("talphas") = std::vector<double>{0, 0},
+        py::arg("rvmf") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.},
+        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
+        py::arg("cut") = 0.5, py::arg("tol") = 1e-16, py::arg("tas") = py::none());
+    // Second constructor from posvel, m
+    sims_flanagan_hf_alpha.def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>, const std::vector<double>,
+                                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
+                                  double, double, std::optional<tas_type>>(),
+                         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}},
+                         py::arg("ms") = 1., py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
+                         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}},
+                         py::arg("mf") = 1., py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1.,
+                         py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5, py::arg("tol") = 1e-16,
+                         py::arg("tas") = py::none());
     // repr().
     sims_flanagan_hf_alpha.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf_alpha>);
     // Copy and deepcopy.
@@ -1057,7 +1069,7 @@ PYBIND11_MODULE(core, m) // NOLINT
     PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mf);
     PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(tof);
     PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(isp);
+    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(veff);
     // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
     // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
     PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mu);

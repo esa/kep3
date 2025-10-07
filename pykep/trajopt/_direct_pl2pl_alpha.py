@@ -294,6 +294,7 @@ class direct_pl2pl_alpha:
                 length=length,
                 show_gridpoints=show_gridpoints,
                 arrow_length_ratio=arrow_length_ratio,
+                use_alpha = True,
                 **kwargs,
             )
         else:

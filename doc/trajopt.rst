@@ -36,7 +36,17 @@ to then solve it using numerical solvers available for the task.
 
 -------------------------------------------------------
 
+.. autoclass:: direct_pl2pl_alpha
+    :members: pretty, plot
+
+-------------------------------------------------------
+
 .. autoclass:: direct_nd
+    :members: pretty, plot
+
+-------------------------------------------------------
+
+.. autoclass:: direct_nd_alpha
     :members: pretty, plot
 
 -------------------------------------------------------

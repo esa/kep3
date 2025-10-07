@@ -37,7 +37,7 @@ public:
     sims_flanagan_alpha() = default;
     // Constructors
     sims_flanagan_alpha(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles, const std::vector<double> &talphas,
-                  const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+                  const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double veff,
                   double mu, double cut = 0.5);
 
     // Setters
@@ -49,7 +49,7 @@ public:
     void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
-    void set_isp(double isp);
+    void set_veff(double veff);
     void set_mu(double mu);
     void set_cut(double cut);
     // Independent setter for m_talphas
@@ -57,7 +57,7 @@ public:
     void set_talphas(const std::vector<double>::const_iterator &it1, const std::vector<double>::const_iterator &it2);
 
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles, const std::vector<double> &talphas,
-             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double veff,
              double mu, double cut = 0.5);
 
     // Getters
@@ -68,7 +68,7 @@ public:
     [[nodiscard]] const std::array<std::array<double, 3>, 2> &get_rvf() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
-    [[nodiscard]] double get_isp() const;
+    [[nodiscard]] double get_veff() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
     [[nodiscard]] unsigned get_nseg() const;
@@ -96,7 +96,7 @@ private:
         ar & m_rvf;
         ar & m_mf;
         ar & m_max_thrust;
-        ar & m_isp;
+        ar & m_veff;
         ar & m_mu;
         ar & m_cut;
         ar & m_nseg;
@@ -119,7 +119,7 @@ private:
     // Spacecraft propulsion system maximum thrust.
     double m_max_thrust{1.};
     // Spacecraft propulsion system specific impulse.
-    double m_isp{1.};
+    double m_veff{1.};
     // Spacecraft gravitational parameter.
     double m_mu{1.};
     // The cut parameter
