@@ -95,7 +95,7 @@ class direct_nd_alpha:
                 tas = tas
             )
         else:
-            raise("No sf_lf_alpha implemented for cr3bp yet!")
+            raise("No sf_lf_alpha implemented for direct_nd_alpha yet!")
         
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
@@ -313,12 +313,6 @@ class direct_nd_alpha:
             
         rs, _ = sf.rvs
         rf, _ = sf.rvf
-        
-        # # Adding the Earth and the Moon the boundary states
-        # ax.scatter(-sf.mu, 0, 0, c="green", s=20)
-        # ax.scatter(1-sf.mu, 0, 0, c="gray", s=20)
-        # ax.scatter(rs[0], rs[1], rs[2], c="k", s=20)
-        # ax.scatter(rf[0], rf[1], rf[2], c="r", s=20)
 
         # Propagate initial states
         tgrid = _np.linspace(0.0, 2*(x[0] + x[-1]), 1000)
@@ -375,19 +369,9 @@ class direct_nd_alpha:
                 show_gridpoints=show_gridpoints,
                 arrow_length_ratio=arrow_length_ratio,
                 use_alpha = True,
-                N = 5,
+                N = 20,
                 **kwargs,
             )
-        # else:
-        #     ax = _pk.plot.add_sf_leg(
-        #         ax,
-        #         sf,
-        #         units=units,
-        #         show_throttles=show_throttles,
-        #         length=length,
-        #         show_gridpoints=show_gridpoints,
-        #         show_midpoints=show_midpoints,
-        #         arrow_length_ratio=arrow_length_ratio,
-        #         **kwargs,
-        #     )
+        else:
+            raise("No sf_lf_alpha implemented for direct_nd_alpha yet!")  
         return ax
