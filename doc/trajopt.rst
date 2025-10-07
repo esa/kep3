@@ -41,12 +41,12 @@ to then solve it using numerical solvers available for the task.
 
 -------------------------------------------------------
 
-.. autoclass:: direct_nd
+.. autoclass:: direct_cr3bp
     :members: pretty, plot
 
 -------------------------------------------------------
 
-.. autoclass:: direct_nd_alpha
+.. autoclass:: direct_cr3bp_alpha
     :members: pretty, plot
 
 -------------------------------------------------------
