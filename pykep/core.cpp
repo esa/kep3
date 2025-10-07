@@ -1017,10 +1017,10 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf_alpha.def(
         py::init<const std::array<double, 7> &, const std::vector<double>, const std::vector<double>,
             const std::array<double, 7> &, double, double, double, double, double, double, std::optional<tas_type>>(),
-        py::arg("rvms") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
+        py::arg("state_s") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, 
         py::arg("talphas") = std::vector<double>{0, 0},
-        py::arg("rvmf") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.},
+        py::arg("state_f") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.},
         py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
         py::arg("cut") = 0.5, py::arg("tol") = 1e-16, py::arg("tas") = py::none());
     // Second constructor from posvel, m
