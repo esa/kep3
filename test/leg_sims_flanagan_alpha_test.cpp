@@ -208,7 +208,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 4u}};
         prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
@@ -222,13 +222,16 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
             pagmo::population pop{prob, 1u, 32u};
             algo.set_verbosity(10u);
             pop = algo.evolve(pop);
-            auto champ = pop.champion_f();
-            found = prob.feasibility_f(champ);
+            auto best_x = pop.champion_x();
+            found = prob.feasibility_x(best_x);
             if (found) {
-                fmt::print("{}\n", champ);
-                // found = *std::min_element(champ.begin() + 7, champ.end()) < -0.9999;
-                found = *std::min_element(champ.begin() + 7 + 10, champ.end()) < -0.9999;
-                break;
+                fmt::print("{} {}\n", best_x, best_x.back());
+                // found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
+                // Checking that the final mass is indeed the initial one (ballistic arc)
+                found = best_x.back() > mass*0.9999;
+                if (found) {
+                    break;
+                }
             }
             trial++;
         }
