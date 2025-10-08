@@ -425,8 +425,8 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         auto champ = pop.champion_f();
         found = prob.feasibility_f(champ);
 
-        fmt::print("{}\n", champ);
-        fmt::print("{}\n", pop.champion_x());
+        fmt::print("Champ {}\n", champ);
+        fmt::print("Best x{}\n", pop.champion_x());
 
         REQUIRE_FALSE(!found); // If this does not pass, then the optimization above never found a ballistic arc ...
                                // theres a problem somewhere.
