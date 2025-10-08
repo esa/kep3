@@ -111,6 +111,18 @@ TEST_CASE("constructor")
                                                             kep3::pi / 2, 1., 1., 1., 0.5, 1.2),
                           std::domain_error);
         REQUIRE_THROWS_AS(kep3::leg::_check_nseg(2, 1, 2), std::logic_error);
+        // Create two Taylor adaptive integrators
+        auto ta1 = kep3::ta::get_ta_zero_hold_kep(1e-13);
+        auto ta2 = kep3::ta::get_ta_zero_hold_kep_var(1e-13);
+
+        // Wrap them in an optional pair of references
+        auto tas_opt = std::optional{
+            std::pair<const heyoka::taylor_adaptive<double>&,
+                    const heyoka::taylor_adaptive<double>&>(ta1, ta2)
+        };
+        REQUIRE_NOTHROW(kep3::leg::sims_flanagan_hf_alpha(rvs, ms, {0., 0., 0., 0., 0., 0.}, {0., 0.}, rvf, mf,
+                                                          kep3::pi / 2, 1., 1., 1., 0.5, 1e-13,
+                                                          tas_opt));
     }
 }
 

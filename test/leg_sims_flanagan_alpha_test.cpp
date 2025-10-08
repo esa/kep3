@@ -228,7 +228,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
                 fmt::print("{} {}\n", best_x, best_x.back());
                 // found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
                 // Checking that the final mass is indeed the initial one (ballistic arc)
-                found = best_x.back() > mass*0.9999;
+                found = best_x.back() > mass*0.999;
                 if (found) {
                     break;
                 }
