@@ -114,7 +114,6 @@ TEST_CASE("constructor")
         // Create two Taylor adaptive integrators
         auto ta1 = kep3::ta::get_ta_zero_hold_kep(1e-13);
         auto ta2 = kep3::ta::get_ta_zero_hold_kep_var(1e-13);
-
         // Wrap them in an optional pair of references
         auto tas_opt = std::optional{
             std::pair<const heyoka::taylor_adaptive<double>&,
@@ -208,6 +207,19 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
         REQUIRE(sf.get_tol() == 2e-5);
+        REQUIRE(typeid(sf.get_tas()) == typeid(kep3::ta::get_ta_zero_hold_kep(sf.get_tol())));
+        REQUIRE(typeid(sf.get_tas_var()) == typeid(kep3::ta::get_ta_zero_hold_kep_var(sf.get_tol())));
+    }
+    {
+        kep3::leg::sims_flanagan_hf_alpha sf{};
+        std::array<double, 7> rvms{1, 1, 1, 1, 1, 1, 1};
+        std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
+        std::vector<double> talphas{1., 2.};
+
+        sf.set(rvms, throttles, talphas, rvms, 4);
+        REQUIRE(sf.get_rvms() == rvms);
+        REQUIRE(sf.get_rvmf() == rvms);
+        REQUIRE(sf.get_tof() == 4);
         REQUIRE(typeid(sf.get_tas()) == typeid(kep3::ta::get_ta_zero_hold_kep(sf.get_tol())));
         REQUIRE(typeid(sf.get_tas_var()) == typeid(kep3::ta::get_ta_zero_hold_kep_var(sf.get_tol())));
     }
