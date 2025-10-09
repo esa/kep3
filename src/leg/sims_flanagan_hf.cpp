@@ -830,7 +830,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
             fmt::print("reached time: {}\n", m_ta.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
+                "zero_hold forward: failure to reach the final time requested during a propagation.");
         } // LCOV_EXCL_STOP
         output_per_seg[i] = output_states;
     }
@@ -863,7 +863,7 @@ std::vector<std::vector<double>> sims_flanagan_hf::get_state_history(unsigned gr
             fmt::print("reached time: {}\n", m_ta.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
+                "zero_hold backward: failure to reach the final time requested during a propagation.");
         } // LCOV_EXCL_STOP
         output_per_seg[m_nseg - 1 - i] = output_states;
     }

@@ -70,9 +70,9 @@ struct sf_hf_test_alpha_object {
     explicit sf_hf_test_alpha_object(std::array<std::array<double, 3>, 2> rvs, double ms, std::vector<double> throttles, std::vector<double> talphas,
         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)                       
         std::array<std::array<double, 3>, 2> rvf, double mf, double tof, double max_thrust,
-                               double isp, double mu, double cut, double tol)
+                               double veff, double mu, double cut, double tol)
         : m_rvs(rvs), m_ms(ms), m_throttles(std::move(throttles)), m_rvf(rvf), m_mf(mf), m_tof(tof), m_talphas(std::move(talphas)), m_max_thrust(max_thrust),
-          m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol)
+          m_veff(veff), m_mu(mu), m_cut(cut), m_tol(tol)
     {
         for (double m_throttle : m_throttles) {
             m_thrusts.push_back(m_throttle * m_max_thrust);
@@ -99,7 +99,7 @@ struct sf_hf_test_alpha_object {
     double m_tof = 1;
     std::vector<double> m_talphas = {0.2, 0.2, 0.2, 0.2, 0.2};
     double m_max_thrust = 1;
-    double m_isp = 1;
+    double m_veff = 1;
     double m_mu = 1;
     double m_cut = 0.5;
     double m_tol = 1e-16;

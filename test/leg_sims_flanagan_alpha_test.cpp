@@ -118,8 +118,8 @@ TEST_CASE("getters_and_setters")
         REQUIRE(sf.get_cut() == 0.333);
         sf.set_max_thrust(0.333);
         REQUIRE(sf.get_max_thrust() == 0.333);
-        sf.set_isp(0.333);
-        REQUIRE(sf.get_isp() == 0.333);
+        sf.set_veff(0.333 * kep3::G0);
+        REQUIRE(sf.get_veff() == 0.333 * kep3::G0);
         sf.set_mu(0.333);
         REQUIRE(sf.get_mu() == 0.333);
         sf.set_tof(0.333);
@@ -131,14 +131,14 @@ TEST_CASE("getters_and_setters")
         std::vector<double> throttles{1., 2., 3., 1., 2., 3.};
         std::vector<double> talphas{1., 2.};
 
-        sf.set(rvf, 12, throttles, talphas, rvf, 12, 4, 4, 4, 4, 0.333);
+        sf.set(rvf, 12, throttles, talphas, rvf, 12, 4, 4, 4 * kep3::G0, 4, 0.333);
         REQUIRE(sf.get_rvs() == rvf);
         REQUIRE(sf.get_ms() == 12);
         REQUIRE(sf.get_rvf() == rvf);
         REQUIRE(sf.get_mf() == 12);
         REQUIRE(sf.get_throttles() == throttles);
         REQUIRE(sf.get_max_thrust() == 4);
-        REQUIRE(sf.get_isp() == 4);
+        REQUIRE(sf.get_veff() == 4 * kep3::G0);
         REQUIRE(sf.get_mu() == 4);
         REQUIRE(sf.get_tof() == 4);
         REQUIRE(sf.get_cut() == 0.333);
@@ -208,7 +208,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
     {
         // Here we reuse the ballitic arc as a ground truth for an optimization.
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 10u}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1, 0.05, 2000, 4u}};
         prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
@@ -222,13 +222,16 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
             pagmo::population pop{prob, 1u, 32u};
             algo.set_verbosity(10u);
             pop = algo.evolve(pop);
-            auto champ = pop.champion_f();
-            found = prob.feasibility_f(champ);
+            auto best_x = pop.champion_x();
+            found = prob.feasibility_x(best_x);
             if (found) {
-                fmt::print("{}\n", champ);
-                // found = *std::min_element(champ.begin() + 7, champ.end()) < -0.9999;
-                found = *std::min_element(champ.begin() + 7 + 10, champ.end()) < -0.9999;
-                break;
+                fmt::print("{} {}\n", best_x, best_x.back());
+                // found = *std::min_element(champ.begin() + 7, champ.end()) < -0.99999;
+                // Checking that the final mass is indeed the initial one (ballistic arc)
+                found = best_x.back() > mass*0.999;
+                if (found) {
+                    break;
+                }
             }
             trial++;
         }
@@ -240,7 +243,7 @@ TEST_CASE("compute_mismatch_constraints_test_SLSQP")
         // We check that, when feasible, the optimal mass solution is indeed ballistic.
         auto rv1_modified = rv1;
         rv1_modified[1][0] += 1000; // Adding 1km/s along x
-        pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000, 10u}};
+        pagmo::problem prob{sf_test_udp{rv0, mass, rv1_modified, 0.05, 2000 * kep3::G0, 10u}};
         prob.set_c_tol(1e-6);
         bool found = false;
         unsigned trial = 0u;
@@ -291,7 +294,7 @@ TEST_CASE("compare_withandwithout_alpha")
     std::vector<double> talphas(5, tof / 5);
 
     kep3::leg::sims_flanagan sf(rvs, ms, throttles, rvf, mf, tof, 0.12, 100 * kep3::G0, MU_OLD, 0.6);
-    kep3::leg::sims_flanagan_alpha sf_alpha(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+    kep3::leg::sims_flanagan_alpha sf_alpha(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100 * kep3::G0, MU_OLD, 0.6);
 
     auto retval = sf.compute_mismatch_constraints();
     auto retval_alpha = sf_alpha.compute_mismatch_constraints();
@@ -327,7 +330,7 @@ TEST_CASE("mismatch_constraints_MatchHardCodedGroundTruth")
     std::vector<double> throttles
         = {0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24};
     std::vector<double> talphas(5, tof / 5);
-    kep3::leg::sims_flanagan_alpha sf(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100, MU_OLD, 0.6);
+    kep3::leg::sims_flanagan_alpha sf(rvs, ms, throttles, talphas, rvf, mf, tof, 0.12, 100 * kep3::G0 , MU_OLD, 0.6);
     auto retval = sf.compute_mismatch_constraints();
     std::vector<double> ground_truth
         = {-1.9701274809621304e+11, 4.6965044246848071e+11, -1.5007523306033661e+11, -2.9975151466948650e+04,
