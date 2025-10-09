@@ -282,7 +282,21 @@ TEST_CASE("compute_mismatch_constraints_test")
                 kep3::leg::sims_flanagan_hf_alpha sf(rv0, 1., throttles, talphas, rv1, 1., dt, 1., 1., kep3::MU_SUN,
                                                      cut);
                 auto mc = sf.compute_mismatch_constraints();
+                auto mc_before = mc;
                 mc = normalize_con(mc);
+                auto tmp = *std::max_element(mc.begin(), mc.end());
+                if (!std::isfinite(tmp)) {
+                    fmt::print("\n\n");
+                    fmt::print("Before Norm Mismatch constraint {}\n", mc_before);
+                    fmt::print("Norm Mismatch constraint {}\n", mc);
+                    fmt::print("Cut {}\n", cut);
+                    fmt::print("rv0 {}\n", rv0);
+                    fmt::print("Throttles {}\n", throttles);
+                    fmt::print("talphas {}\n", talphas);
+                    fmt::print("dt {}\n", dt);
+                    fmt::print("rv1 {}\n", rv1);
+                    fmt::print("\n\n");
+                }
                 REQUIRE(*std::max_element(mc.begin(), mc.end()) < 1e-8);
             }
         }
