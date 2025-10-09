@@ -493,8 +493,9 @@ document.write(`
 <span class="c1">####</span>
 <span class="c1">## Testcase Earth-Mars with</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="n">isp</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
 <span class="n">tof</span> <span class="o">=</span> <span class="mf">550.0</span>
 
 <span class="n">posvel0</span> <span class="o">=</span> <span class="p">[</span>
@@ -514,7 +515,7 @@ document.write(`
 <span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
 
 <span class="c1"># Number of segments</span>
-<span class="n">nseg</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">4</span>
 </pre></div>
 </div>
 </div>
@@ -529,7 +530,7 @@ document.write(`
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="n">isp</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
         <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">tof</span><span class="p">,</span><span class="n">tof</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">ms</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
@@ -568,7 +569,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>512 μs ± 17.5 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>572 μs ± 30 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -582,7 +583,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.52 ms ± 21.1 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.12 ms ± 25.8 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -596,7 +597,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.57 ms ± 159 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.33 ms ± 220 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -678,8 +679,8 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Best mass is:  1228.3311866248748
-Worst mass is:  1228.3311866248748
+Best mass is:  1196.12063419
+Worst mass is:  1196.12063419
 </pre></div>
 </div>
 </div>
@@ -700,27 +701,27 @@ Launch epoch: 0.00000 MJD2000, a.k.a. 2000-01-01T00:00:00.000000
 Arrival epoch: 550.00000 MJD2000, a.k.a. 2001-07-04T00:00:00.000000
 Time of flight (days): 550.00000 
 
-Launch DV (km/s) 0.00000000 - [0.0,0.0,0.0]
-Arrival DV (km/s) 0.00000000 - [0.0,0.0,0.0]
-Final mass (kg): 1228.3311866248748
+Launch DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
+Arrival DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
+Final mass (kg): 1196.1206341939621
 
 Details on the low-thrust leg: 
-Number of segments: 8
-Number of fwd segments: 4
-Number of bck segments: 4
-Maximum thrust: 0.6
+Number of segments: 4
+Number of fwd segments: 2
+Number of bck segments: 2
+Maximum thrust: 0.3
 Central body gravitational parameter: 1.3271244004127942e+20
-Specific impulse: 3000
+Specific impulse: 29419.949999999997
 
 Time of flight: 47520000
 Initial mass: 1500
-Final mass: 1228.3311866248748
+Final mass: 1196.1206341939621
 State at departure: [[-125036811000.422, -83670919168.87277, 2610252.8064399767], [16081.829029183446, -24868.923007449284, 0.7758272135425942]]
 State at arrival: [[-169327023332.1986, -161931354587.78766, 763967345.9733696], [17656.297796509956, -15438.116653052988, -756.9165272457421]]
-Throttles values: [0.28404342114704567, -0.11756951521636556, -0.06415339641713103, 0.38514156594665594, 0.3462346433984619, -0.03736459989720119, -0.08967686601532968, 0.45671953089598843, 0.06938861628932326, -0.43742475491167293, 0.2244687086819875, 0.12465723655169705, -0.00012138915377945443, -3.3133691758693374e-05, 2.2187235622817863e-05, -2.087457654491167e-06, -2.5952223676484847e-06, -1.4736423459387272e-07, -6.390089999317183e-06, -0.0001928419261327589, -2.3509504271308248e-05, 0.20674465489333915, -0.36227364948148894, -0.10915292254812232]
+Throttles values: [0.914502859047611, 0.37037036429600856, -0.1628198824708989, -0.5766008167750486, 0.7923743354512867, 0.19918436532077213, -0.030047096620356525, -0.017201006150337955, 0.0054774810712432415, 0.16692546831162094, -0.42907761228266256, -0.11015034981592384]
 
-Mismatch constraints: [4201.261446475983, 1438.3291931152344, -400.57904076576233, 0.00021869289776077494, 0.000550304797343415, 3.212227477433771e-05, 5.358298494684277e-06]
-Throttle constraints: [-0.9013810857230172, -0.7303914325654197, -0.77855054972927, -0.7427339559883981, -0.9999999836745584, -0.9999999999888857, -0.9999999622184614, -0.814100090063601]
+Mismatch constraints: [2.0175914764404297, -1.889923095703125, -0.660738468170166, -1.3527824194170535e-07, 5.62747118237894e-07, 5.400443114922382e-08, -4.860785338678397e-07]
+Throttle constraints: [8.285017116804738e-11, 7.757601228064459e-10, -0.9987712945732171, -0.7758951911021847]
 </pre></div>
 </div>
 </div>
@@ -733,7 +734,7 @@ Throttle constraints: [-0.9013810857230172, -0.7303914325654197, -0.778550549729
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/72795dbafae257a091a1ebdbc15a2b4edc9fb1d6b2bf13336eec3ed840a8912e.png" src="../_images/72795dbafae257a091a1ebdbc15a2b4edc9fb1d6b2bf13336eec3ed840a8912e.png" />
+<img alt="../_images/de0879029bb3122cffa8ea5e9da2313035f0d04477062ef770e2adf2075ea2b5.png" src="../_images/de0879029bb3122cffa8ea5e9da2313035f0d04477062ef770e2adf2075ea2b5.png" />
 </div>
 </div>
 </section>

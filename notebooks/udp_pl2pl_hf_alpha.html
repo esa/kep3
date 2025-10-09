@@ -458,7 +458,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="planet-to-planet-low-thrust-with-alpha-encoding">
 <h1>Planet to planet low-thrust (with Alpha encoding)<a class="headerlink" href="#planet-to-planet-low-thrust-with-alpha-encoding" title="Permalink to this heading">#</a></h1>
-<p>In this tutorial we show the use of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl_alpha</span></code> to find a low-thrust (zero-order hold continous thrust) trajectory connecting two moving planets.
+<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.direct_pl2pl_alpha" title="pykep.trajopt.direct_pl2pl_alpha"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl_alpha</span></code></a> to find a low-thrust (zero-order hold continous thrust) trajectory connecting two moving planets.
 Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl</span></code>, where the segments are of equal duration, here we use the alpha encoding to change the duraction of each segment. The thrust vector is constant across each segment.</p>
 <p>The decision vector for this class, compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
 <div class="math notranslate nohighlight">
@@ -496,6 +496,7 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
 <span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.6</span>
 <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="n">isp</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
 <span class="n">tof</span> <span class="o">=</span> <span class="mf">550.0</span>
 <span class="n">tof_lb</span> <span class="o">=</span> <span class="n">tof</span>
 <span class="n">t0_lb</span> <span class="o">=</span> <span class="mi">0</span>
@@ -534,7 +535,7 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="n">isp</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">t0_lb</span><span class="p">,</span> <span class="n">t0_ub</span><span class="p">],</span>
         <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">tof_lb</span><span class="p">,</span><span class="n">tof</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">ms</span><span class="o">*</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
@@ -555,7 +556,7 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="n">isp</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">t0_lb</span><span class="p">,</span> <span class="n">t0_ub</span><span class="p">],</span>
         <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">tof_lb</span><span class="p">,</span><span class="n">tof</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">ms</span><span class="o">*</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
@@ -576,7 +577,7 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="n">isp</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">t0_lb</span><span class="p">,</span> <span class="n">t0_ub</span><span class="p">],</span>
         <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">tof_lb</span><span class="p">,</span><span class="n">tof</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="n">ms</span><span class="o">*</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
@@ -605,6 +606,7 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Low Fidelity</span>
 <span class="n">prob_lf</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_lf</span><span class="p">)</span>
 <span class="n">prob_lf</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+
 
 <span class="c1"># Without Alpha</span>
 <span class="n">prob_hf</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp_hf</span><span class="p">)</span>
@@ -662,10 +664,10 @@ Unlike in <code class="docutils literal notranslate"><span class="pre">pykep.tra
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..........
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..x.......
 Low-fidelity. Nseg:  8
-Best mass:  1237.173554279578
-Time:  4.825332880020142 s 0.48253328800201417 per step
+Best mass:  1237.17347565
+Time:  7.3469908237457275 s 0.7346990823745727 per step
 </pre></div>
 </div>
 </div>
@@ -698,10 +700,10 @@ Time:  4.825332880020142 s 0.48253328800201417 per step
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x.........
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..........
 High-fidelity Constant. Nseg:  8
-Best mass:  1228.3320330210877
-Time:  8.709558010101318 s 0.8709558010101318 per step
+Best mass:  1228.33207581
+Time:  10.345659255981445 s 1.0345659255981445 per step
 </pre></div>
 </div>
 </div>
@@ -735,10 +737,10 @@ Time:  8.709558010101318 s 0.8709558010101318 per step
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>xx.x.xxxxx
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>xxxxxxx.x.
 High-fidelity Constant. Nseg:  8
-Best mass:  1235.0484356755703
-Time:  20.380075931549072 s 2.0380075931549073 per step
+Best mass:  1235.05683356
+Time:  27.080817937850952 s 2.7080817937850954 per step
 </pre></div>
 </div>
 </div>
@@ -776,12 +778,12 @@ Time:  20.380075931549072 s 2.0380075931549073 per step
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;SF HF with Alpha Encoding, Mass: 1235.05 kg, Nseg: 8&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;SF HF with Alpha Encoding, Mass: 1235.06 kg, Nseg: 8&#39;)
 </pre></div>
 </div>
-<img alt="../_images/46d09edfd1dbfb2cf23866af55775c9b6b4fd5d12039ffb127a0ec595587e29f.png" src="../_images/46d09edfd1dbfb2cf23866af55775c9b6b4fd5d12039ffb127a0ec595587e29f.png" />
-<img alt="../_images/ebb621497c3e7afda261ec46a7b9328a31cf1600becbe3537cca6682427f7185.png" src="../_images/ebb621497c3e7afda261ec46a7b9328a31cf1600becbe3537cca6682427f7185.png" />
-<img alt="../_images/d505c2f280417d687e0db795c1f407f65fba430ab97361de52491021e24c6d41.png" src="../_images/d505c2f280417d687e0db795c1f407f65fba430ab97361de52491021e24c6d41.png" />
+<img alt="../_images/8362dc01793c0af68aacb2399c684e3df1cd411c846239469cecd0fff8ebf33f.png" src="../_images/8362dc01793c0af68aacb2399c684e3df1cd411c846239469cecd0fff8ebf33f.png" />
+<img alt="../_images/1a6e8215977b19869f5612a8002f3f5a581d3b93c4eb74c607ac147c3b782677.png" src="../_images/1a6e8215977b19869f5612a8002f3f5a581d3b93c4eb74c607ac147c3b782677.png" />
+<img alt="../_images/af30927ec9bd646b770ac2074d589b5c8121608c7b8f8cfe7d71863ea9e34ce4.png" src="../_images/af30927ec9bd646b770ac2074d589b5c8121608c7b8f8cfe7d71863ea9e34ce4.png" />
 </div>
 </div>
 </section>

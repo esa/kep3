@@ -491,8 +491,9 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem data</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.6</span>
 <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="n">isp</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
 
 <span class="c1"># Source and destination planets</span>
 <span class="n">earth</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet_to_keplerian</span><span class="p">(</span>
@@ -507,14 +508,11 @@ document.write(`
     <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;venus&quot;</span><span class="p">)),</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">p1</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="p">[</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">mu_central_body</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">))</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">keplerian</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="p">[</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="o">*</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">3.</span><span class="p">],</span> <span class="n">when</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">mu_central_body</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">))</span>
-
 <span class="c1"># Initial state</span>
 <span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
 
 <span class="c1"># Number of segments</span>
-<span class="n">nseg</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">30</span>
 </pre></div>
 </div>
 </div>
@@ -529,10 +527,10 @@ document.write(`
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
         <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
-        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">6700.0</span><span class="p">,</span> <span class="mf">6800.0</span><span class="p">],</span>
-        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">],</span>
-        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1300.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
+        <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">7360</span><span class="p">,</span> <span class="mf">8300.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">350.0</span><span class="p">],</span>
+        <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
         <span class="n">vinfs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
@@ -544,18 +542,18 @@ document.write(`
 <span class="p">)</span>
 
 <span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
-        <span class="n">pls</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span>
-        <span class="n">plf</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span>
+        <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
+        <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
-        <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-        <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+        <span class="n">max_thrust</span><span class="o">=</span><span class="n">max_thrust</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="n">veff</span><span class="p">,</span>
         <span class="n">t0_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">7360</span><span class="p">,</span> <span class="mf">8300.0</span><span class="p">],</span>
-        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">250.0</span><span class="p">],</span>
+        <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">350.0</span><span class="p">],</span>
         <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">ms</span><span class="p">],</span>
         <span class="n">vinfs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">vinff</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-        <span class="n">nseg</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
         <span class="n">cut</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
         <span class="n">mass_scaling</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
         <span class="n">r_scaling</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
@@ -587,7 +585,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>337 μs ± 676 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>388 μs ± 10.3 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -601,7 +599,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.08 ms ± 9.79 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.84 ms ± 50.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -615,7 +613,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.18 ms ± 4.79 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14.4 ms ± 48.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -675,9 +673,9 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>....x.x...
-Best mass is:  1260.0379732879646
-Worst mass is:  1235.8224576648008
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.x...x.x..
+Best mass is:  1234.15683652
+Worst mass is:  1000.00240866
 </pre></div>
 </div>
 </div>
@@ -691,16 +689,16 @@ Worst mass is:  1235.8224576648008
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Low-thrust NEP transfer
-Departure: unknown UDPLA
-Arrival: unknown UDPLA
+Departure: earth(jpl_lp)(K)
+Arrival: mars(jpl_lp)(K)
 
-Launch epoch: 7604.00035 MJD2000, a.k.a. 2020-10-26T00:00:29.824280
-Arrival epoch: 7854.00035 MJD2000, a.k.a. 2021-07-03T00:00:29.824280
-Time of flight (days): 250.00000 
+Launch epoch: 7451.99905 MJD2000, a.k.a. 2020-05-26T23:58:37.777239
+Arrival epoch: 7801.99905 MJD2000, a.k.a. 2021-05-11T23:58:37.777239
+Time of flight (days): 350.00000 
 
 Launch DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
 Arrival DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
-Final mass (kg): 1260.0379732879646
+Final mass (kg): 1234.1568365174858
 
 Details on the low-thrust leg: 
 Number of segments: 30
@@ -708,17 +706,17 @@ Number of fwd segments: 18
 Number of bck segments: 12
 Maximum thrust: 0.6
 Central body gravitational parameter: 1.3271244004127942e+20
-Specific impulse: 3000
+Specific impulse: 29419.949999999997
 
-Time of flight: 21600000
+Time of flight: 30240000
 Initial mass: 1500
-Final mass: 1260.0379732879646
-State at departure: [[34110913367.783306, -139910016918.87585, -14037825669.025244], [29090.9902134693, 10000.390168313803, 1003.3858682643288]]
-State at arrival: [[-159018773159.22266, -18832495968.945133, 15781467087.350443], [2781.182556622003, -28898.40730995848, -483.4533989771214]]
-Throttles values: [-0.07023251523987217, 0.034332943410028266, -0.9969396384936693, -0.07349327132621603, 0.004224313047079454, -0.9972867663060554, -0.07489321217845256, -0.029502285081097313, -0.996755046109509, -0.07327428477042026, -0.06902296178046946, -0.9949204540759232, 4.14852860193033e-11, 3.5375341469855814e-11, -8.573095243669458e-10, -6.097393163681223e-14, -8.725143678860424e-13, -8.530411920612091e-13, -3.5966763318418805e-13, -4.172922015609591e-13, -4.54973592586823e-13, 2.0924877610202944e-14, -2.467932517679902e-14, 7.35196456915747e-14, -2.580650764945926e-13, 7.246512042075852e-15, -5.189539995941978e-14, 2.1752198564410137e-15, 1.8385238359951235e-13, 5.743416788241826e-13, -1.60509960791611e-13, 4.1198517362607954e-13, -2.026023346330085e-13, -1.1184930109794683e-12, 9.594547251332383e-13, -1.181718936270026e-12, -4.1414130130008956e-13, 4.85513091991763e-13, -1.2522447283419034e-13, -8.135556053330194e-14, -8.966147992694586e-15, 4.593367831993075e-14, 6.73517222273945e-14, 1.3625494210431208e-13, -1.6489275837928297e-13, -3.6699427066577824e-13, -1.275297442390812e-14, 2.5593837660061043e-13, -1.8766394774289837e-13, -2.171373641866431e-13, 3.1636194888875857e-12, 0.036625211870962626, -0.09856986056750797, 0.2767546026747471, 0.09145022442209139, -0.3320461406426424, 0.9388195870014002, 0.06532231206241622, -0.3449043390930958, 0.9363621053960609, 0.04587879077616351, -0.36948129299890947, 0.9281049028428225, 0.03391378321832844, -0.40424843449756015, 0.9140202724854073, 0.030389835076269082, -0.44790181702766474, 0.8935661252686014, 0.03640723409019633, -0.499146619541211, 0.865752369622257, 0.05315208094921412, -0.5564836075119695, 0.8291567106773935, 0.08180081258596507, -0.6179607686375264, 0.7819418875373135, 0.12333545749953842, -0.6808810671449723, 0.7219344411559026, 0.1782251655774031, -0.7414995754436315, 0.646849418312967, 0.2459398876888526, -0.7948250864559712, 0.5547672066587716, 0.3243837104350158, -0.8347583842214152, 0.44491982241350736]
+Final mass: 1234.1568365174858
+State at departure: [[-61940343629.2697, -138342786962.2452, 4315832.209158619], [26703.174217445237, -12284.734893133622, 0.38324263734277736]]
+State at arrival: [[-154574671931.75818, 191750935543.9109, 7812362370.575885], [-17947.983008640604, -13143.524741070263, 165.21826805857714]]
+Throttles values: [0.9149919539929579, -0.2725359209100713, -0.29751285015299656, 0.962467223571917, -0.10214778572097537, -0.25144119278969174, 0.9776102300781263, 0.0761024016853803, -0.19618017885672326, 0.9577082586238517, 0.25533303803466817, -0.13266475948495784, 0.9020227810244762, 0.4270404077693045, -0.06317747015340268, 0.8124941812081083, 0.5828797608824411, 0.010217150887220914, 0.6258910897305112, 0.6441274653944074, 0.07604724328788541, 8.643112090963488e-06, 1.2971573089761085e-05, 2.02573959082645e-06, 1.9402676195389745e-06, 4.116571390270388e-06, 1.0918826610204628e-06, 1.7531486204076886e-06, 6.6492515764816175e-06, 2.0439159913518445e-06, 6.497048168817056e-06, 6.254154897918531e-05, 2.222633512201523e-05, -3.907433113104457e-05, 0.0005705546606046523, 0.00023585797399559014, -0.1980851209765093, 0.8898566605361083, 0.40849620097319755, -0.3261733750073858, 0.8402697810771312, 0.4330792360402391, -0.44216210010572304, 0.7765577216795246, 0.4488326890553638, -0.16827487274493602, 0.21634099070250623, 0.14069169750160235, -0.00028083636215234757, 0.00027196352431085234, 0.00020171101827332145, -6.755298505147713e-07, 4.901379402024183e-07, 4.368915123034922e-07, -3.224169200091259e-06, 1.5455028409302713e-06, 1.7622592268945932e-06, -5.128303061091521e-06, 1.8289984300969872e-06, 2.5613455275741694e-06, -1.201177884483597e-06, 2.4358299399221113e-07, 6.745275326332689e-07, -7.32175825082655e-07, 1.1147397752068074e-07, 4.2811046712246406e-07, -1.4768666477965314e-06, -3.741517913801966e-08, 5.316783969739916e-07, -2.822836736482606e-06, -6.205060557090042e-07, 7.994338305580654e-07, -8.907902552019307e-06, -1.6478656337137234e-06, 2.1705592125269153e-06, -7.391982864209063e-06, -2.372687553706626e-06, 1.530148390821635e-06, -8.090054508720513e-07, -2.8958416763596854e-07, 7.234658896056569e-08, -0.6702759079241221, -0.3770492971452008, 0.0754920979561721, -0.8177587262868643, -0.5735537329417719, 0.0480289692781687, -0.7588285984053121, -0.6512901333686354, -0.0005674653604181771]
 
-Mismatch constraints: [-0.001232147216796875, 0.007049560546875, 0.021036148071289062, 3.4669938031584024e-09, 1.3099565876473207e-10, -3.423338057473302e-09, -1.5802470443304628e-10]
-Throttle constraints: [3.1086244689504383e-15, 1.3722356584366935e-13, 1.8252066524837574e-13, 2.0605739337042905e-13, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -0.912349466341452, 3.9968028886505635e-15, 1.687538997430238e-13, 1.141309269314661e-13, 2.0605739337042905e-13, 1.8829382497642655e-13, 6.994405055138486e-14, 1.2234657731369225e-13, 2.2315482794965646e-13, 1.8207657603852567e-13, 2.4424906541753444e-15, 1.234568003383174e-13, 3.1086244689504383e-15]
+Mismatch constraints: [0.94464111328125, 6.167388916015625, 3.928389072418213, 2.843007678166032e-07, 2.4610253603896126e-06, 9.204180742017343e-07, -3.0061348752496997e-06]
+Throttle constraints: [6.431122301364667e-11, 9.435785486289205e-12, 7.194600470938894e-11, 7.3575454617724745e-09, 8.988809696575117e-11, 3.156583883168196e-10, -0.1875769689088429, -0.9999999997529313, -0.999999999978097, -0.9999999999485363, -0.9999999955523331, -0.999999617311592, -0.002048262337711937, 2.4431590084361687e-10, 6.346663194989333e-10, -0.9050859891986514, -0.9999998064794442, -0.9999999999991126, -0.9999999999841106, -0.9999999999637947, -0.9999999999980429, -0.9999999999992683, -0.9999999999975347, -0.9999999999910074, -0.9999999999132225, -0.9999999999373876, -0.9999999999992564, -0.40286497792497955, 8.796792183574098e-10, 1.5980405887461302e-09]
 </pre></div>
 </div>
 </div>
@@ -731,35 +729,7 @@ Throttle constraints: [3.1086244689504383e-15, 1.3722356584366935e-13, 1.8252066
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b0471104483fbccdd38e12460e538f3c49ab6154ba6ccb3f530abde3d805a8b2.png" src="../_images/b0471104483fbccdd38e12460e538f3c49ab6154ba6ccb3f530abde3d805a8b2.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">tof</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">p1</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[34110913367.783306, -139910016918.87585, -14037825669.025244],
- [29090.9902134693, 10000.390168313803, 1003.3858682643288]]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p2</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">t0</span><span class="o">+</span><span class="n">tof</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[-159018773159.22266, -18832495968.945133, 15781467087.350443],
- [2781.182556622003, -28898.40730995848, -483.4533989771214]]
-</pre></div>
-</div>
+<img alt="../_images/fe565bb1cc4c850bfe36300ba1ea8509a2a27e1fb69a8d593af768f235f2d3b9.png" src="../_images/fe565bb1cc4c850bfe36300ba1ea8509a2a27e1fb69a8d593af768f235f2d3b9.png" />
 </div>
 </div>
 </section>
@@ -812,14 +782,14 @@ To do so we solve the same problem starting from 100 different initial guesses u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [02:09&lt;00:00,  1.29s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [05:15&lt;00:00,  3.16s/it]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 4.8809e-01s
-No Gradient: 5.5510e-01s
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 1.0034e+00s
+No Gradient: 1.9059e+00s
 
-Gradient (n.fails): 7
-No Gradient (n.fails): 64
+Gradient (n.fails): 13
+No Gradient (n.fails): 46
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -835,7 +805,7 @@ No Gradient (n.fails): 64
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cpu_nog</span><span class="p">[</span><span class="n">cpu_nog</span> <span class="o">&lt;</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;no_gradient&quot;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="c1"># plt.xlim([0,0.15])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;point2point, 4 seg case&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;point2point, 10 seg case&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;CPU time&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;N. occurrences&quot;</span><span class="p">)</span>
 </pre></div>
@@ -845,7 +815,7 @@ No Gradient (n.fails): 64
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;N. occurrences&#39;)
 </pre></div>
 </div>
-<img alt="../_images/cfe10624ec001205eb75198db6126ff26b314565b0abd800cd2efc1843999535.png" src="../_images/cfe10624ec001205eb75198db6126ff26b314565b0abd800cd2efc1843999535.png" />
+<img alt="../_images/d6a5fd0fd2b8eed09653c28721d367b80a2dd6e1107976e681548a01a7725635.png" src="../_images/d6a5fd0fd2b8eed09653c28721d367b80a2dd6e1107976e681548a01a7725635.png" />
 </div>
 </div>
 </section>

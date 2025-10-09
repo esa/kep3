@@ -1,0 +1,123 @@
+Traceback (most recent call last):
+  File "/home/runner/local/lib/python3.13/site-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/local/lib/python3.13/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+    ~~~~~~~~~^
+        nb,
+        ^^^
+    ...<4 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/runner/local/lib/python3.13/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/runner/local/lib/python3.13/site-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/runner/local/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/runner/local/lib/python3.13/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+        cell, index, execution_count=self.code_cells_executed + 1
+    )
+  File "/home/runner/local/lib/python3.13/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/runner/local/lib/python3.13/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+print('--------------------------')
+print(f'Testing Nseg {nseg}')
+total_time = 0.0
+
+ntotal = 10
+errs = []
+obj = []
+xs = []
+successes = []
+average_time = []
+
+for i in range(ntotal):
+    time_start = time.time()
+
+    pop_g = pg.population(prob, 1)
+    
+    pop_g = algo.evolve(pop_g)
+    
+    time_end = time.time()
+    average_time.append(time_end - time_start)
+    total_time += time_end - time_start
+    
+    # print('err', np.linalg.norm(pop_g.champion_f[1:]), np.linalg.norm(pop_g.champion_f[1:4]), np.linalg.norm(pop_g.champion_f[4:7]))
+    if(prob.feasibility_f(pop_g.champion_f)):
+        print(".", end="")
+        obj.append(pop_g.champion_x[1])
+        xs.append(pop_g.champion_x)
+        successes.append(1)
+        # if nseg != nseg_old:
+        #     break
+    else:
+        print("x", end ="")
+
+if len(obj)>0:
+    print("\nBest mass is: ", np.max(obj))
+    print(f"Total time to success: {total_time:.3f} seconds")
+    print(f"mean time {np.mean(np.array(average_time)):.4g} s")
+    print(f"median time {np.median(np.array(average_time)):.4g} s")
+    print(f"std time {np.std(np.array(average_time)):.4g} s")
+    best_idx = np.argmax(obj)
+else:
+    xs = [pop_g.champion_x]
+    best_idx = 0
+    successes.append(0)
+    obj.append(np.nan)
+    print("\nNo solution found")
+
+best_x = xs[best_idx]
+------------------
+
+----- stdout -----
+--------------------------
+Testing Nseg 10
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mValueError[39m                                Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[9][39m[32m, line 17[39m
+[32m     13[39m time_start = time.time()
+[32m     15[39m pop_g = pg.population(prob, [32m1[39m)
+[32m---> [39m[32m17[39m pop_g = [43malgo[49m[43m.[49m[43mevolve[49m[43m([49m[43mpop_g[49m[43m)[49m
+[32m     19[39m time_end = time.time()
+[32m     20[39m average_time.append(time_end - time_start)
+
+[31mValueError[39m: 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 603
+what: 
+An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+a valid shared library?)
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ 
+function: evolve_version
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1734526829715/work/src/snopt7.cpp, 553
+what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
+
+
+
