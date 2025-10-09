@@ -33,7 +33,7 @@ class direct_pl2pl_alpha:
         ms=1500,
         mu=_pk.MU_SUN,
         max_thrust=0.12,
-        isp=3000,
+        veff=3000*_pk.G0,
         t0_bounds=[6700.0, 6800.0],
         tof_bounds=[200.0, 300.0],
         mf_bounds=[1300.0, 1500.0],
@@ -59,7 +59,7 @@ class direct_pl2pl_alpha:
 
             *max_thrust* (:class:`float`): Maximum thrust in Newtons. Defaults to 0.12 N.
 
-            *isp* (:class:`float`): Specific impulse in seconds. Defaults to 3000 s.
+            *veff* (:class:`float`): Exhaust velocity (Specific impulse * _pk.G0) in m/s. Defaults to 3000 s * _pk.G0.
 
             *t0_bounds* (:class:`list`): Bounds for departure epoch in MJD2000. Defaults to [6700.0, 6800.0].
 
@@ -92,7 +92,7 @@ class direct_pl2pl_alpha:
             
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
-        self.leg.isp = isp
+        self.leg.veff = veff
         self.leg.mu = mu
         self.leg.cut = cut
 
