@@ -2457,6 +2457,11 @@ where :math:`\mathcal U` is the set of admissible controls, i.e. the set of thru
 
 and substituting in the equations the optimal controls found as function of the augmented system state.
 
+.. note::
+   In the case of time optimality, the dynamics will not depend on neither :math:`\epsilon` nor :math:`\lambda_0`
+   and the size of the parameter vector will this be three.
+   
+
 Args:
     *optimality* (:class:`pykep.optimality_type`): the optimality principle to be used.
 

@@ -397,7 +397,7 @@ class pontryagin_cartesian_time:
         taylor_tolerance=1e-16,
         taylor_tolerance_var=1e-8
     ):
-        r"""pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
+        r"""pykep.trajopt.pontryagin_cartesian_time(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
         Args:
             *source* (:class:`list`): the initial planet.
@@ -670,9 +670,9 @@ class pontryagin_cartesian_time:
         _, axs = plt.subplots(2, 2, **kwargs)
         axs[0, 0].set_title("Mass")
         axs[0, 0].plot(t_grid, self.MASS * sol[-1][:, 6].T)
+        
         # Plot thrust direction
         thrust_dir = i_vers_func(_np.ascontiguousarray(sol[-1][:, 10:13].T))
-
         for i in range(3):
             axs[0, 1].plot(t_grid, thrust_dir[i, :])
         axs[0, 1].set_title("Thrust direction")
