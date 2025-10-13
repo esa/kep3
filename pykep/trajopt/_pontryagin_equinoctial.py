@@ -484,15 +484,8 @@ class pontryagin_equinoctial_time:
         self.eq0 = _pk.ic2mee(posvel0, source.get_mu_central_body()) # we need the mu with SI dimensions
 
         # Target elements are computed here once, but the target mean longitude will change
-        rf, vf = target.eph(t0 + tof_guess)
-        posvelf = [rf, vf]
-        self.eqf = _pk.ic2mee(posvelf, source.get_mu_central_body())
         self.target=target
-        
-        # We want to define the motion from small to large L (counterclockwise)
-        if self.eqf[-1] < self.eq0[-1]:
-            self.eqf[-1] += 2.0 * _np.pi
-            
+                    
         # We normalize units (only one parameter of the mee is dimensional)
         self.eq0[0] /= L
         self.eqf[0] /= L
