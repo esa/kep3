@@ -487,6 +487,7 @@ class pontryagin_equinoctial_time:
         rf, vf = target.eph(t0 + tof_guess)
         posvelf = [rf, vf]
         self.eqf = _pk.ic2mee(posvelf, source.get_mu_central_body())
+        self.target=target
         
         # We want to define the motion from small to large L (counterclockwise)
         if self.eqf[-1] < self.eq0[-1]:
@@ -527,6 +528,16 @@ class pontryagin_equinoctial_time:
             lb = [-1.0] * 6 + [0.0] + [self.tof_guess / 2.]
             ub = [1.0] * 7 + [self.tof_guess * 2.]
         return [lb, ub]
+    
+    # small helper to wrap L to the next value larger than L0 and add nrev
+    def _wrap_L(self, Lf):
+        # We want to define the motion from small to large L (counterclockwise)
+        if Lf < self.eq0[5]:
+            Lf += 2.0 * _np.pi 
+        # If the number of revolutions is set we adjust the final value of L accordingly
+        if self.n_rev > 0:
+            Lf += 2.0 * _np.pi * self.n_rev
+        return Lf
 
     def set_ta_state(self, x):
         # Preparing the numerical integration parameters
@@ -558,20 +569,29 @@ class pontryagin_equinoctial_time:
         # Single Shooting
         self.set_ta_state(x)
         self.ta.propagate_until(x[-1])
+        
+        # Target elements are computed here once, but the target mean longitude will change
+        posvelf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
+        eqf = _pk.ic2mee(posvelf, self.target.get_mu_central_body())
+        # We normalize units (only one parameter of the mee is dimensional)
+        eqf[0] /= self.L
+        # We wrap the L value to the correct nrev
+        eqf[5] = self._wrap_L(eqf[5])
+
         # Assembling the constraints
-        ceq = [self.ta.state[0] - self.eqf[0]]
-        ceq += [self.ta.state[1] - self.eqf[1]]
-        ceq += [self.ta.state[2] - self.eqf[2]]
-        ceq += [self.ta.state[3] - self.eqf[3]]
-        ceq += [self.ta.state[4] - self.eqf[4]]
+        ceq = [self.ta.state[0] - eqf[0]]
+        ceq += [self.ta.state[1] - eqf[1]]
+        ceq += [self.ta.state[2] - eqf[2]]
+        ceq += [self.ta.state[3] - eqf[3]]
+        ceq += [self.ta.state[4] - eqf[4]]
         # If no number of revolutions has been selected we can use this form of the constraint to let the 
         # optimizer fall into one. As of 2025 (end) I (Dario) think this option should be removed, as I no longer see its utility.
         if self.n_rev < 0:
             ceq += [
-                2.0 - 2.0 * _np.cos(self.ta.state[5] - self.eqf[5])
+                2.0 - 2.0 * _np.cos(self.ta.state[5] - eqf[5])
             ]  # 2 - 2cos(alfa-beta) is fully differentiable and zero only if alfa=beta mod 2pi
         else:
-            ceq += [self.ta.state[5] - self.eqf[5]]
+            ceq += [self.ta.state[5] - eqf[5]]
         ceq += [self.ta.state[13]]  # lm = 0
         # Note that in a time optimal problem this is the only constraint where l0 appears, making its
         # use ony affect normalization, not the dynamics.
@@ -579,45 +599,45 @@ class pontryagin_equinoctial_time:
             ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
-    def gradient(self, x):
-        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
-        # Single Shooting of variational equations
-        self.set_ta_var_state(x)
-        self.ta_var.propagate_until(x[-1])
-        # Assembling the gradient
-        # Nothing for the Fitness (sparsity takes care of the fitness: since it does not depend on the decision vector, the sparsity pattern will not contain [0,..])
-        
-        # When lambda is not selected we need to account for a different indexing
-        retval = []
-        dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:3])
-        dLdt = 
-
-        if self.lambda0 == None:
-            final_idx = 8
-        else:
-            final_idx = 7
-            
-        
-
-        # Constraints (p,f,g,h,k)
-        for i in range(5):
-            sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl])[:final_idx]) # ta_var has pars [p,f,g,h,k,L,l0] even though l0 does not influence the dynamics.
-            retval.extend()
-        # Constraints (L) (we account for the differently written constraint in case the number of revs is fixed or free)
-        sl = self.ta_var.get_vslice(order=1, component=5)
-        tmp = self.ta_var.state[sl]
-        if self.n_rev < 0.0:
-            tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
-        retval.extend(list(tmp)[:final_idx])
-        # Constraint on mass
-        sl = self.ta_var.get_vslice(order=1, component=13)
-        retval.extend(list(self.ta_var.state[sl])[:final_idx])
-        if self.lambda0 == None:
-            # Norm constraint
-            for item in x:
-                retval.extend([2 * item])
-        return retval
+    #def gradient(self, x):
+    #    # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
+    #    # Single Shooting of variational equations
+    #    self.set_ta_var_state(x)
+    #    self.ta_var.propagate_until(x[-1])
+    #    # Assembling the gradient
+    #    # Nothing for the Fitness (sparsity takes care of the fitness: since it does not depend on the decision vector, the sparsity pattern will not contain [0,..])
+    #    
+    #    # When lambda is not selected we need to account for a different indexing
+    #    retval = []
+    #    dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:3])
+    #    dLdt = 
+#
+    #    if self.lambda0 == None:
+    #        final_idx = 8
+    #    else:
+    #        final_idx = 7
+    #        
+    #    
+#
+    #    # Constraints (p,f,g,h,k)
+    #    for i in range(5):
+    #        sl = self.ta_var.get_vslice(order=1, component=i)
+    #        retval.extend(list(self.ta_var.state[sl])[:final_idx]) # ta_var has pars [p,f,g,h,k,L,l0] even though l0 does not influence the dynamics.
+    #        retval.extend()
+    #    # Constraints (L) (we account for the differently written constraint in case the number of revs is fixed or free)
+    #    sl = self.ta_var.get_vslice(order=1, component=5)
+    #    tmp = self.ta_var.state[sl]
+    #    if self.n_rev < 0.0:
+    #        tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
+    #    retval.extend(list(tmp)[:final_idx])
+    #    # Constraint on mass
+    #    sl = self.ta_var.get_vslice(order=1, component=13)
+    #    retval.extend(list(self.ta_var.state[sl])[:final_idx])
+    #    if self.lambda0 == None:
+    #        # Norm constraint
+    #        for item in x:
+    #            retval.extend([2 * item])
+    #    return retval
 
     #def gradient_sparsity(self):
     #    retval = []
@@ -726,31 +746,24 @@ class pontryagin_equinoctial_time:
         i_vers_func = _pk.ta.get_peq_i_vers_cfunc(_pk.optimality_type.TIME)
         
         # Create axis
-        _, axs = plt.subplots(3, 2, figsize=(10, 10))
-        
-        # Plot throttle
-        throttle = u_func(
-            _np.ascontiguousarray(sol[-1].T)
-        )
-        axs[0, 0].set_title("Throttle (log-scale)")
-        axs[0, 0].semilogy(t_grid, _np.squeeze(throttle))
-        
+        _, axs = plt.subplots(2, 2, figsize=(10, 7))
+               
         # Plot thrust direction (in equinoctial elements these depend on all the lambdas not only lv, and on par[0]
         thrust_dir = i_vers_func(
             _np.ascontiguousarray(sol[-1].T),
             pars=_np.ascontiguousarray(_np.tile(self.ta.pars[0], (N, 1)).T),
         )
         for i in range(3):
-            axs[0, 1].plot(t_grid, thrust_dir[i, :])
-        axs[0, 1].set_title("Thrust direction (R-T-N frame)")
+            axs[0, 0].plot(t_grid, thrust_dir[i, :])
+        axs[0, 0].set_title("Thrust direction (R-T-N frame)")
         
         # Plot mass
-        axs[1, 0].set_title("Mass")
-        axs[1, 0].plot(t_grid, self.MASS * sol[-1][:, 6].T)
+        axs[0, 1].set_title("Mass")
+        axs[0, 1].plot(t_grid, self.MASS * sol[-1][:, 6].T)
         
         # Plot mass costate
-        axs[1, 1].set_title("lm")
-        axs[1, 1].plot(sol[-1][:, 13].T)
+        axs[1, 0].set_title("lm")
+        axs[1, 0].plot(sol[-1][:, 13].T)
         
         # Plot Hamiltonian
         all_pars = list(self.ta.pars) + [1., x[-2]]
@@ -758,8 +771,8 @@ class pontryagin_equinoctial_time:
             _np.ascontiguousarray(sol[-1].T),
             pars=_np.ascontiguousarray(_np.tile(all_pars, (N, 1)).T),
         )
-        axs[2, 0].set_title("Hamiltonian")
-        axs[2, 0].plot(t_grid, _np.squeeze(Ham))
+        axs[1, 1].set_title("Hamiltonian")
+        axs[1, 1].plot(t_grid, _np.squeeze(Ham))
 
         plt.tight_layout()
 
