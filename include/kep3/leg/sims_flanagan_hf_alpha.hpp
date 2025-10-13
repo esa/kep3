@@ -33,15 +33,19 @@ public:
 
     // Constructor with full initialization
     sims_flanagan_hf_alpha(const std::array<std::array<double, 3>, 2> &rvs, double ms,
-                            const std::vector<double> &throttles, const std::vector<double> &talphas,
-                            const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
-                            double max_thrust, double isp, double mu, double cut = 0.5, double tol = 1e-16);
+        const std::vector<double> &throttles, const std::vector<double> &talphas,
+        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
+        double max_thrust, double veff, double mu, double cut = 0.5, double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
 
 
     // Constructor with 7D state representation
     sims_flanagan_hf_alpha(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
-                            const std::vector<double> &talphas, const std::array<double, 7> &rvmf,
-                            double tof, double max_thrust, double isp, double mu, double cut,double tol = 1e-16);
+        const std::vector<double> &talphas, const std::array<double, 7> &rvmf,
+        double tof, double max_thrust, double veff, double mu, double cut,double tol = 1e-16,
+        std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>>
+        = std::nullopt);
         
 
     // Setters
@@ -53,7 +57,7 @@ public:
     void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
-    void set_isp(double isp);
+    void set_veff(double veff);
     void set_mu(double mu);
     void set_cut(double cut);
     void set_tol(double tol);
@@ -69,11 +73,11 @@ public:
     // void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles, const std::vector<double> &talphas,
-        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+        const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double veff,
         double mu, double cut = 0.5, double tol = 1e-16);
     // Setting function with rvm states
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::vector<double> &talphas,  const std::array<double, 7> &rvmf,
-            double tof, double max_thrust, double isp, double mu, double cut = 0.5, double tol = 1e-16);
+            double tof, double max_thrust, double veff, double mu, double cut = 0.5, double tol = 1e-16);
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::vector<double> &talphas, const std::array<double, 7> &rvmf,
             double time_of_flight);
 
@@ -85,7 +89,7 @@ public:
     [[nodiscard]] const std::vector<double> &get_throttles() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
-    [[nodiscard]] double get_isp() const;
+    [[nodiscard]] double get_veff() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
     [[nodiscard]] double get_tol() const;
@@ -123,14 +127,16 @@ private:
         ar & m_tof;
         ar & m_rvmf;
         ar & m_max_thrust;
-        ar & m_isp;
+        ar & m_veff;
         ar & m_mu;
         ar & m_cut;
         ar & m_tol;
         ar & m_nseg;
         ar & m_nseg_fwd;
         ar & m_nseg_bck;
-        ar & m_tas;
+        ar & m_ta;
+        ar & m_ta_var;
+        ar & m_cf_dyn;
     }
 
     // Initial rvm state
@@ -149,7 +155,7 @@ private:
     double m_tof = kep3::pi / 2;
     // Spacecraft propulsion parameters
     double m_max_thrust{1.};
-    double m_isp{1.};
+    double m_veff{1.};
     double m_mu{1.};
     // Sims-Flanagan parameters
     double m_cut = 0.5;
@@ -159,11 +165,13 @@ private:
     unsigned m_nseg_fwd = 1u;
     unsigned m_nseg_bck = 1u;
     // Taylor-adaptive integrator
-    // m_tas needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas{};
+    // m_ta needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta{};
     // Variational Taylor-adaptive integrator
-    // m_tas_var needs to be mutable because the heyoka integrator needs to be modifiable
-    mutable heyoka::taylor_adaptive<double> m_tas_var{};
+    // m_ta_var needs to be mutable because the heyoka integrator needs to be modifiable
+    mutable heyoka::taylor_adaptive<double> m_ta_var{};
+    // Dynamics c_func needed for the derivatives w.r.t. tof
+    mutable heyoka::cfunc<double> m_cf_dyn{};
 };
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const sims_flanagan_hf_alpha &);

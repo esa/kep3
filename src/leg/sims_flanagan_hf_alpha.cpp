@@ -36,35 +36,105 @@
 
 namespace kep3::leg
 {
+// Utilty
+static std::array<double, 7> make_rvm(const std::array<std::array<double, 3>, 2> &posvel, double m)
+{
+    return {posvel[0][0], posvel[0][1], posvel[0][2], posvel[1][0], posvel[1][1], posvel[1][2], m};
+}
+
+// Returning the dynamics excluding mass
+static heyoka::cfunc<double> dynamic_cfunc_factory(const heyoka::taylor_adaptive<double> &ta)
+{
+    auto dyn = ta.get_sys();
+    // Collect variables and RHS expressions
+    std::vector<heyoka::expression> variable;
+    std::vector<heyoka::expression> rhs;
+    variable.reserve(dyn.size());
+    rhs.reserve(dyn.size());
+    for (auto &row : dyn) {
+        variable.push_back(row.first);
+        rhs.push_back(row.second);
+    }
+    // Build compiled function, include parameters in var list
+    return heyoka::cfunc<double>(
+        {rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5], rhs[6]},                                     // outputs
+        {variable[0], variable[1], variable[2], variable[3], variable[4], variable[5], variable[6]}); // inputs (state)
+}
 
 // Constructors
 
 sims_flanagan_hf_alpha::sims_flanagan_hf_alpha()
 {
     // We perform some sanity checks on the user provided inputs
-    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg,
+    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_tol, m_nseg,
                                     m_nseg_fwd, m_nseg_bck);
 
-    // Initialize m_tas and m_tas_var
+    // Initialize m_ta and m_ta_var
     const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
-    m_tas = ta_cache;
+    m_ta = ta_cache;
     const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
-    m_tas_var = ta_var_cache;
+    m_ta_var = ta_var_cache;
+    m_cf_dyn = dynamic_cfunc_factory(m_ta);
 
     // We set mu and veff for the non-variational
-    *m_tas.get_pars_data() = m_mu;
-    *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
+    *m_ta.get_pars_data() = m_mu;
+    *(m_ta.get_pars_data() + 1) = m_veff;
 
     // ... and variational version of the integrator
-    *(m_tas_var.get_pars_data()) = m_mu;
-    *(m_tas_var.get_pars_data() + 1) = m_isp * kep3::G0;
+    *(m_ta_var.get_pars_data()) = m_mu;
+    *(m_ta_var.get_pars_data() + 1) = m_veff;
 
     // We copy the initial conditions for the variational equations
-    std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
+    std::copy(m_ta_var.get_state().begin() + 7, m_ta_var.get_state().end(), m_vars.begin());
 
     // Convert throttles to current_thrusts.
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is the same size as m_throttles
+    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
+}
+
+sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<double, 7> &rvms,
+                                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                               const std::vector<double> &throttles, const std::vector<double> &talphas,
+                                               const std::array<double, 7> &rvmf,
+                                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                                               double tof, double max_thrust, double veff, double mu, double cut, double tol,
+                                               std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>> tas)
+    : m_rvms(rvms), m_throttles(throttles), m_talphas(talphas), m_rvmf(rvmf), m_tof(tof), m_max_thrust(max_thrust),
+      m_veff(veff), m_mu(mu), m_cut(cut), m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
+      m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
+{
+    // We perform some sanity checks on the user provided inputs
+    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_tol, m_nseg,
+                                    m_nseg_fwd, m_nseg_bck);
+
+    // Initialize m_ta and m_ta_var
+    if (tas) {
+        m_ta = tas.value().first;
+        m_ta_var = tas.value().second;
+    } else {
+        const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
+        m_ta = ta_cache;
+        const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
+        m_ta_var = ta_var_cache;
+    }
+    // Build the cfunc for the dynamics
+    m_cf_dyn = dynamic_cfunc_factory(m_ta);
+
+    // We set mu and veff for the non-variational
+    *m_ta.get_pars_data() = m_mu;
+    *(m_ta.get_pars_data() + 1) = m_veff;
+
+    // ... and variational version of the integrator
+    *(m_ta_var.get_pars_data()) = m_mu;
+    *(m_ta_var.get_pars_data() + 1) = m_veff;
+
+    // We copy the initial conditions for the variational equations
+    std::copy(m_ta_var.get_state().begin() + 7, m_ta_var.get_state().end(), m_vars.begin());
+
+    // Convert throttles to current_thrusts.
+    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
+    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
     std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
 
@@ -73,85 +143,10 @@ sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<std::array<doubl
                                                const std::vector<double> &throttles, const std::vector<double> &talphas,
                                                // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                                const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
-
-                                               double max_thrust, double isp, double mu, double cut, double tol)
-    : m_throttles(throttles), m_talphas(talphas), m_tof(tof), m_max_thrust(max_thrust), m_isp(isp), m_mu(mu),
-      m_cut(cut), m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
-      m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
+                                               double max_thrust, double veff, double mu, double cut, double tol,
+                                               std::optional<std::pair<const heyoka::taylor_adaptive<double> &, const heyoka::taylor_adaptive<double> &>> tas)
+    : sims_flanagan_hf_alpha(make_rvm(rvs, ms), throttles, talphas, make_rvm(rvf, mf), tof, max_thrust, veff, mu, cut, tol, tas)
 {
-    // We perform some sanity checks on the user provided inputs
-    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg,
-                                    m_nseg_fwd, m_nseg_bck);
-
-    // Initialize m_tas and m_tas_var
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
-    m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
-    m_tas_var = ta_var_cache;
-
-    // We set mu and veff for the non-variational
-    *m_tas.get_pars_data() = m_mu;
-    *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
-
-    // ... and variational version of the integrator
-    *(m_tas_var.get_pars_data()) = m_mu;
-    *(m_tas_var.get_pars_data() + 1) = m_isp * kep3::G0;
-
-    // We copy the initial conditions for the variational equations
-    std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
-    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
-    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
-
-    // Fill in m_rvm from m_rvs and m_ms
-    std::copy(rvs[0].begin(), rvs[0].end(), m_rvms.begin());
-    std::copy(rvs[1].begin(), rvs[1].end(), std::next(m_rvms.begin(), 3));
-    set_ms(ms);
-
-    // Fill in m_rvm from m_rvf and m_mf
-    std::copy(rvf[0].begin(), rvf[0].end(), m_rvmf.begin());
-    std::copy(rvf[1].begin(), rvf[1].end(), std::next(m_rvmf.begin(), 3));
-    set_mf(mf);
-}
-
-sims_flanagan_hf_alpha::sims_flanagan_hf_alpha(const std::array<double, 7> &rvms,
-                                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                                               const std::vector<double> &throttles, const std::vector<double> &talphas,
-                                               const std::array<double, 7> &rvmf,
-                                               // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-                                               double tof, double max_thrust, double isp, double mu, double cut,
-                                               double tol)
-    : m_rvms(rvms), m_throttles(throttles), m_talphas(talphas), m_rvmf(rvmf), m_tof(tof), m_max_thrust(max_thrust),
-      m_isp(isp), m_mu(mu), m_cut(cut), m_tol(tol), m_nseg(static_cast<unsigned>(m_throttles.size()) / 3u),
-      m_nseg_fwd(static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut)), m_nseg_bck(m_nseg - m_nseg_fwd)
-{
-    // We perform some sanity checks on the user provided inputs
-    kep3::leg::_sanity_checks_alpha(m_throttles, m_talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg,
-                                    m_nseg_fwd, m_nseg_bck);
-
-    // Initialize m_tas and m_tas_var
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold_kep(m_tol);
-    m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_kep_var(m_tol);
-    m_tas_var = ta_var_cache;
-
-    // We set mu and veff for the non-variational
-    *m_tas.get_pars_data() = m_mu;
-    *(m_tas.get_pars_data() + 1) = m_isp * kep3::G0;
-
-    // ... and variational version of the integrator
-    *(m_tas_var.get_pars_data()) = m_mu;
-    *(m_tas_var.get_pars_data() + 1) = m_isp * kep3::G0;
-
-    // We copy the initial conditions for the variational equations
-    std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
-
-    // Convert throttles to current_thrusts.
-    auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
-    m_thrusts.resize(m_throttles.size()); // Ensure that std::vector m_thrusts is same size as m_throttles
-    std::transform(m_throttles.begin(), m_throttles.end(), m_thrusts.begin(), throttle_to_thrust);
 }
 
 // Setters
@@ -206,19 +201,19 @@ void sims_flanagan_hf_alpha::set_max_thrust(double max_thrust)
     kep3::leg::_check_max_thrust(max_thrust);
     m_max_thrust = max_thrust;
 }
-void sims_flanagan_hf_alpha::set_isp(double isp)
+void sims_flanagan_hf_alpha::set_veff(double veff)
 {
-    kep3::leg::_check_isp(isp);
-    m_isp = isp;
-    *(m_tas.get_pars_data() + 1l) = isp * kep3::G0;
-    *(m_tas_var.get_pars_data() + 1l) = isp * kep3::G0;
+    kep3::leg::_check_veff(veff);
+    m_veff = veff;
+    *(m_ta.get_pars_data() + 1l) = veff;
+    *(m_ta_var.get_pars_data() + 1l) = veff;
 }
 void sims_flanagan_hf_alpha::set_mu(double mu)
 {
     kep3::leg::_check_mu(mu);
     m_mu = mu;
-    *m_tas.get_pars_data() = mu;
-    *m_tas_var.get_pars_data() = mu;
+    *m_ta.get_pars_data() = mu;
+    *m_ta_var.get_pars_data() = mu;
 }
 void sims_flanagan_hf_alpha::set_cut(double cut)
 {
@@ -257,11 +252,11 @@ void sims_flanagan_hf_alpha::set_talphas(const std::vector<double>::const_iterat
 
 // void sims_flanagan_hf_alpha::set_tas(const heyoka::taylor_adaptive<double> &tas)
 // {
-//     m_tas = tas;
+//     m_ta = tas;
 // }
 // void sims_flanagan_hf_alpha::set_tas_var(const heyoka::taylor_adaptive<double> &tas_var)
 // {
-//     m_tas_var = tas_var;
+//     m_ta_var = tas_var;
 // }
 //
 
@@ -269,7 +264,7 @@ void sims_flanagan_hf_alpha::set(const std::array<std::array<double, 3>, 2> &rvs
                                  const std::vector<double> &throttles, const std::vector<double> &talphas,
                                  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
                                  const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof,
-                                 double max_thrust, double isp, double mu, double cut, double tol)
+                                 double max_thrust, double veff, double mu, double cut, double tol)
 {
     // Set initial state
     set_rvs(rvs);
@@ -281,14 +276,14 @@ void sims_flanagan_hf_alpha::set(const std::array<std::array<double, 3>, 2> &rvs
     m_talphas = talphas; // Set the talphas vector
     m_tof = tof;
     m_max_thrust = max_thrust;
-    m_isp = isp;
+    m_veff = veff;
     m_mu = mu;
     m_cut = cut;
     m_tol = tol;
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
-    kep3::leg::_sanity_checks_alpha(throttles, talphas, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd,
+    kep3::leg::_sanity_checks_alpha(throttles, talphas, tof, max_thrust, veff, mu, cut, tol, m_nseg, m_nseg_fwd,
                                     m_nseg_bck);
 
     // Convert throttles to current_thrusts.
@@ -299,7 +294,7 @@ void sims_flanagan_hf_alpha::set(const std::array<std::array<double, 3>, 2> &rvs
 
 void sims_flanagan_hf_alpha::set(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
                                  const std::vector<double> &talphas, const std::array<double, 7> &rvmf, double tof,
-                                 double max_thrust, double isp, double mu, double cut, double tol)
+                                 double max_thrust, double veff, double mu, double cut, double tol)
 {
     set_rvms(rvms);
     m_throttles = throttles;
@@ -307,14 +302,14 @@ void sims_flanagan_hf_alpha::set(const std::array<double, 7> &rvms, const std::v
     set_rvmf(rvmf);
     m_tof = tof;
     m_max_thrust = max_thrust;
-    m_isp = isp;
+    m_veff = veff;
     m_mu = mu;
     m_cut = cut;
     m_tol = tol;
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
-    kep3::leg::_sanity_checks_alpha(throttles, talphas, tof, max_thrust, isp, mu, cut, tol, m_nseg, m_nseg_fwd,
+    kep3::leg::_sanity_checks_alpha(throttles, talphas, tof, max_thrust, veff, mu, cut, tol, m_nseg, m_nseg_fwd,
                                     m_nseg_bck);
 
     // Convert throttles to current_thrusts.
@@ -335,7 +330,7 @@ void sims_flanagan_hf_alpha::set(const std::array<double, 7> &rvms, const std::v
     m_nseg = static_cast<unsigned>(m_throttles.size()) / 3u;
     m_nseg_fwd = static_cast<unsigned>(static_cast<double>(m_nseg) * m_cut);
     m_nseg_bck = m_nseg - m_nseg_fwd;
-    _sanity_checks_alpha(throttles, talphas, m_tof, m_max_thrust, m_isp, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd,
+    _sanity_checks_alpha(throttles, talphas, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd,
                          m_nseg_bck);
 
     // Convert throttles to current_thrusts.
@@ -379,9 +374,9 @@ double sims_flanagan_hf_alpha::get_max_thrust() const
 {
     return m_max_thrust;
 }
-double sims_flanagan_hf_alpha::get_isp() const
+double sims_flanagan_hf_alpha::get_veff() const
 {
-    return m_isp;
+    return m_veff;
 }
 double sims_flanagan_hf_alpha::get_mu() const
 {
@@ -415,11 +410,11 @@ const std::vector<double> &sims_flanagan_hf_alpha::get_talphas() const
 // LCOV_EXCL_START
 const heyoka::taylor_adaptive<double> &sims_flanagan_hf_alpha::get_tas() const
 {
-    return m_tas;
+    return m_ta;
 }
 const heyoka::taylor_adaptive<double> &sims_flanagan_hf_alpha::get_tas_var() const
 {
-    return m_tas_var;
+    return m_ta_var;
 }
 // LCOV_EXCL_END
 const std::array<double, 7> &sims_flanagan_hf_alpha::get_rvms() const
@@ -442,13 +437,13 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
     // Set the Taylor Integration initial conditions
     double prop_seg_temp = 0.0;
 
-    m_tas.set_time(prop_seg_temp);
-    std::copy(m_rvms.begin(), m_rvms.end(), m_tas.get_state_data());
+    m_ta.set_time(prop_seg_temp);
+    std::copy(m_rvms.begin(), m_rvms.end(), m_ta.get_state_data());
 
     // Loop through segments in forward pass of Sims-Flanagan transcription
     for (auto i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
-        std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
+        std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_ta.get_pars_data() + 2l);
 
         // ... and integrate
         prop_seg_temp += m_talphas[i];
@@ -461,40 +456,40 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(
                 m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-            double final_mass = m_tas.get_state()[6] - norm_thrusts * m_talphas[i] / (m_isp * kep3::G0);
+            double final_mass = m_ta.get_state()[6] - norm_thrusts * m_talphas[i] / (m_veff);
             // Perform the integration only if the final mass is above a certain threshold
-            if (final_mass > mass_thresh) { // Set Isp to zero
-                auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
+            if (final_mass > mass_thresh) { // Set veff to zero
+                auto [status, min_h, max_h, nsteps, _1, _2] = m_ta.propagate_until(prop_seg_temp);
             }
         }
     }
 
-    // Reset ISP
-    *(m_tas.get_pars_data() + 1l) = get_isp() * kep3::G0;
+    // Reset veff
+    *(m_ta.get_pars_data() + 1l) = get_veff();
 
     // Set fwd final state
-    std::vector<double> rvm_fwd_final = m_tas.get_state();
+    std::vector<double> rvm_fwd_final = m_ta.get_state();
 
     // Backward pass
     // Final state
     // Set the Taylor Integration final conditions
     prop_seg_temp = m_tof;
 
-    m_tas.set_time(prop_seg_temp);
-    std::copy(m_rvmf.begin(), m_rvmf.end(), m_tas.get_state_data());
+    m_ta.set_time(prop_seg_temp);
+    std::copy(m_rvmf.begin(), m_rvmf.end(), m_ta.get_state_data());
 
     // Loop through segments in backward pass of Sims-Flanagan transcription
     for (auto i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
-                  m_tas.get_pars_data() + 2l);
+                  m_ta.get_pars_data() + 2l);
         // ... and integrate
         prop_seg_temp -= m_talphas[m_talphas.size() - (i + 1)];
         if (!std::isfinite(prop_seg_temp)) {
             // fmt::print("Non-finitite propagation duration requested in backwards step\n");
             break;
         } else {
-            auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
+            auto [status, min_h, max_h, nsteps, _1, _2] = m_ta.propagate_until(prop_seg_temp);
             if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
                 // fmt::print("mismatch bck: {}\n", status);
                 break;
@@ -502,10 +497,10 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         }
     }
 
-    return {rvm_fwd_final[0] - m_tas.get_state()[0], rvm_fwd_final[1] - m_tas.get_state()[1],
-            rvm_fwd_final[2] - m_tas.get_state()[2], rvm_fwd_final[3] - m_tas.get_state()[3],
-            rvm_fwd_final[4] - m_tas.get_state()[4], rvm_fwd_final[5] - m_tas.get_state()[5],
-            rvm_fwd_final[6] - m_tas.get_state()[6]};
+    return {rvm_fwd_final[0] - m_ta.get_state()[0], rvm_fwd_final[1] - m_ta.get_state()[1],
+            rvm_fwd_final[2] - m_ta.get_state()[2], rvm_fwd_final[3] - m_ta.get_state()[3],
+            rvm_fwd_final[4] - m_ta.get_state()[4], rvm_fwd_final[5] - m_ta.get_state()[5],
+            rvm_fwd_final[6] - m_ta.get_state()[6]};
 }
 
 std::vector<double> sims_flanagan_hf_alpha::compute_throttle_constraints() const
@@ -580,30 +575,30 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
     // Forward pass
     // Initial state
     // Set the Taylor Integration initial conditions
-    m_tas.set_time(0.);
-    std::copy(m_rvms.begin(), m_rvms.end(), m_tas.get_state_data());
+    m_ta.set_time(0.);
+    std::copy(m_rvms.begin(), m_rvms.end(), m_ta.get_state_data());
     std::vector<std::vector<double>> output_per_seg(m_nseg);
 
     // Loop through segments in forward pass of Sims-Flanagan transcription
     for (decltype(m_nseg_fwd) i = 0u; i < m_nseg_fwd; ++i) {
         // Assign current thrusts to Taylor adaptive integrator
-        std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas.get_pars_data() + 2l);
+        std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_ta.get_pars_data() + 2l);
 
         // Current leg time grid
         std::copy(leg_time_grid.begin() + i * (grid_points_per_segment - 1l),
                   leg_time_grid.begin() + (i + 1l) * (grid_points_per_segment - 1l) + 1l,
                   current_leg_time_grid.begin());
 
-        m_tas.set_time(current_leg_time_grid.at(0));
+        m_ta.set_time(current_leg_time_grid.at(0));
         // ... and integrate
-        auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(current_leg_time_grid);
+        auto [status, min_h, max_h, nsteps, _1, output_states] = m_ta.propagate_grid(current_leg_time_grid);
 
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data() + 2l), *(m_tas.get_pars_data() + 3l),
-                       *(m_tas.get_pars_data() + 4l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_ta.get_pars_data() + 2l), *(m_ta.get_pars_data() + 3l),
+                       *(m_ta.get_pars_data() + 4l));
             fmt::print(": {}\n", status);
-            fmt::print("state: {}\n", m_tas.get_state());
-            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("state: {}\n", m_ta.get_state());
+            fmt::print("reached time: {}\n", m_ta.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
                 "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
@@ -614,31 +609,31 @@ std::vector<std::vector<double>> sims_flanagan_hf_alpha::get_state_history(unsig
     // Backward pass
     // Final state
     // Set the Taylor Integration final conditions
-    m_tas.set_time(m_tof);
-    std::copy(m_rvmf.begin(), m_rvmf.end(), m_tas.get_state_data());
+    m_ta.set_time(m_tof);
+    std::copy(m_rvmf.begin(), m_rvmf.end(), m_ta.get_state_data());
     std::vector<double> back_time_grid(grid_points_per_segment);
 
     // Loop through segments in backward pass of Sims-Flanagan transcription
     for (decltype(m_nseg) i = 0u; i < m_nseg_bck; ++i) {
         // Assign current_thrusts to Taylor adaptive integrator
         std::copy(m_thrusts.begin() + (m_nseg - (i + 1)) * 3l, m_thrusts.begin() + 3l * (m_nseg - i),
-                  m_tas.get_pars_data() + 2l);
+                  m_ta.get_pars_data() + 2l);
         // Current leg time grid
         std::reverse_copy(leg_time_grid.begin() + (m_nseg - (i + 1l)) * (grid_points_per_segment - 1l),
                           leg_time_grid.begin() + (m_nseg - i) * (grid_points_per_segment - 1l) + 1l,
                           back_time_grid.begin());
 
-        m_tas.set_time(back_time_grid.at(0));
+        m_ta.set_time(back_time_grid.at(0));
 
         // ... and integrate
-        auto [status, min_h, max_h, nsteps, _1, output_states] = m_tas.propagate_grid(back_time_grid);
+        auto [status, min_h, max_h, nsteps, _1, output_states] = m_ta.propagate_grid(back_time_grid);
 
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data() + 2l), *(m_tas.get_pars_data() + 3l),
-                       *(m_tas.get_pars_data() + 4l));
+            fmt::print("thrust: [{}, {}, {}]\n", *(m_ta.get_pars_data() + 2l), *(m_ta.get_pars_data() + 3l),
+                       *(m_ta.get_pars_data() + 4l));
             fmt::print(": {}\n", status);
-            fmt::print("state: {}\n", m_tas.get_state());
-            fmt::print("reached time: {}\n", m_tas.get_time());
+            fmt::print("state: {}\n", m_ta.get_state());
+            fmt::print("reached time: {}\n", m_ta.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
                 "zero_hold_kep_problem: failure to reach the final time requested during a propagation.");
@@ -656,7 +651,7 @@ std::ostream &operator<<(std::ostream &s, const sims_flanagan_hf_alpha &sf)
     s << fmt::format("Number of bck segments: {}\n", sf.get_nseg_bck());
     s << fmt::format("Maximum thrust: {}\n", sf.get_max_thrust());
     s << fmt::format("Central body gravitational parameter: {}\n", sf.get_mu());
-    s << fmt::format("Specific impulse: {}\n\n", sf.get_isp());
+    s << fmt::format("Specific impulse: {}\n\n", sf.get_veff());
     s << fmt::format("Time of flight: {}\n", sf.get_tof());
     s << fmt::format("Initial mass: {}\n", sf.get_ms());
     s << fmt::format("Final mass: {}\n", sf.get_mf());

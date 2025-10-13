@@ -7,46 +7,48 @@
 
 import numpy as _np
 import pykep as _pk
-import pygmo as _pg
+import heyoka as _hy
 
 
-class direct_pl2pl_alpha:
-    """Represents the optimal low-thrust transfer between two :class:`~pykep.planet` using a direct method.
+class direct_cr3bp_alpha:
+    """Represents the optimal low-thrust transfer between two cr3bp orbits (they can be propagated) using a direct method.
 
     This problem works internally using the :class:`~pykep.leg.sims_flanagan` and manipulates its initial and final states, as well as its transfer time T, final mass mf
-    and the controls as to link the two planets with a low-thrust trajectory.
-
-    The particular transcription used is suitable only for few revolutions, after which convergence will start to be problematic.
+    and the controls as to link the two orbits with a low-thrust trajectory.
 
     The decision vector is::
 
-        z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, alphas, throttles, tof] - all in S.I. units except t0 and tof in days
+        z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, alphas, throttles, tof] - all in non-dimensional units (standard for CR3BP)
 
     where throttles is a vector of throttles structured as [u0x, u0y,u0z, ...]. By throttles we intend non dimensiona thrust levels in [0,1].
+    and alphas is a vector of time-segments structured as [alpha0, alpha1, ...]. We can convert alphas to time segments using pk.alpha2direct(alphas, tof).
 
     """
 
     def __init__(
         self,
-        pls=_pk.planet(_pk.udpla.jpl_lp(body="EARTH")),
-        plf=_pk.planet(_pk.udpla.jpl_lp(body="MARS")),
-        ms=1500,
-        mu=_pk.MU_SUN,
-        max_thrust=0.12,
-        veff=3000*_pk.G0,
-        t0_bounds=[6700.0, 6800.0],
-        tof_bounds=[200.0, 300.0],
-        mf_bounds=[1300.0, 1500.0],
-        vinfs=3.0,
+        pls=[[-0.1, 0.0, 0.0], [0.0, -0.1, 0.0]],
+        plf=[[1, 0.0, 0.0], [0.0, +0.1, 0.0]],
+        ms=1,
+        mu=_pk.MU_MOON/(_pk.MU_EARTH+_pk.MU_MOON),
+        max_thrust=0.1,
+        veff=30,
+        t0_bounds=[0.0, 2*_np.pi],
+        tof_bounds=[1.0, 2*_np.pi],
+        mf_bounds=[1.0, 0.1],
+        vinfs=0.1,
         vinff=0.0,
         nseg=10,
         cut=0.6,
-        mass_scaling=1500,
-        r_scaling=_pk.AU,
-        v_scaling=_pk.EARTH_VELOCITY,
+        mass_scaling=1.0,
+        r_scaling=1.0,
+        v_scaling=1.0,
+        with_gradient=True,
         high_fidelity=False,
+        tas = (_pk.ta.get_zero_hold_kep(1e-16),
+                       _pk.ta.get_zero_hold_kep_var(1e-16))
     ):
-        """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, high_fidelity=False)
+        """direct_cr3bp_alpha(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
@@ -81,40 +83,62 @@ class direct_pl2pl_alpha:
 
             *v_scaling* (:class:`float`): Scaling factor for velocity (used to scale constraints). Defaults the Earth's velocity (:class:`~pykep.EARTH_VELOCITY`).
 
+            *with_gradient* (:class:`bool`): Indicates if gradient information should be used. Defaults True.
+
             *high_fidelity* (:class:`bool`): Indicates if sims flanagan leg uses DV impulses, or zero-order hold continous thrust (note unclear how reliable graidents are). Defaults False.
 
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
         if high_fidelity:
-            self.leg = _pk.leg.sims_flanagan_hf_alpha()
+            self.leg = _pk.leg.sims_flanagan_hf_alpha(
+                tas = tas
+            )
         else:
-            self.leg = _pk.leg.sims_flanagan_alpha()
-            
+            raise("No sf_lf_alpha implemented for direct_cr3bp_alpha yet!")
+        
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
         self.leg.veff = veff
         self.leg.mu = mu
         self.leg.cut = cut
 
+        # We also need to propagate the target state
+        self.ta_dyn = tas[0] # Extract from inputs
+        self.ta_dyn.pars[0] = self.leg.mu
+        self.ta_dyn.pars[1] = self.leg.veff # Veff
+        self.ta_dyn.pars[2] = 0.0 # No thrust
+        self.ta_dyn.pars[3] = 0.0 # No thrust
+        self.ta_dyn.pars[4] = 0.0 # No thrust
+
+        # Now make a cfunc for the dynamics
+        x, y, z, vx, vy, vz, m = _hy.make_vars("x", "y", "z", "vx", "vy", "vz", "m")
+        x_hy = _np.array([x, y, z, vx, vy, vz, m])
+        self.cf_dyn = _hy.cfunc([row[1] for row in self.ta_dyn.sys], x_hy.tolist())
+
+    
         # We define some additional datamembers useful later-on
         self.pls = pls
         self.plf = plf
         self.t0_bounds = t0_bounds
         self.tof_bounds = tof_bounds
         self.mf_bounds = mf_bounds
-        self.vinfs = vinfs * 1000  # now in m/s
-        self.vinff = vinff * 1000  # now in m/s
+        self.vinfs = vinfs
+        self.vinff = vinff
         self.nseg = nseg
         self.mass_scaling = mass_scaling
         self.r_scaling = r_scaling
         self.v_scaling = v_scaling
+        if high_fidelity:
+            self.thrust_scaling = 1 / max_thrust
+        else:
+            self.thrust_scaling = 1
+        self.with_gradient = with_gradient
         self.high_fidelity = high_fidelity
 
     # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, talphas, throttles, tof]
     def get_bounds(self):
-        
         # Determine range on alphas
-        factor = 0.5
+        factor = 0.25
         alpha_low = _pk.direct2alpha([1/(self.nseg*factor)] * int(self.nseg*factor))[0][0]
         alpha_high = _pk.direct2alpha([1/(self.nseg/factor)] * int(self.nseg/factor))[0][0]
 
@@ -138,11 +162,26 @@ class direct_pl2pl_alpha:
 
     def _set_leg_from_x(self, x):
         # We set the leg using data in the decision vector
-        rs, vs = self.pls.eph(x[0])
-        rf, vf = self.plf.eph(x[0] + x[-1])
+        # Propagate initial states
+        self.ta_dyn.time = 0.0
+        self.ta_dyn.state[:3] = self.pls[0]
+        self.ta_dyn.state[3:6] = self.pls[1]
+        self.ta_dyn.propagate_until(x[0])
+        rs = self.ta_dyn.state[:3].copy()
+        vs = self.ta_dyn.state[3:6].copy()
+        # Propagate target state
+        self.ta_dyn.time = 0.0
+        self.ta_dyn.state[:3] = self.plf[0]
+        self.ta_dyn.state[3:6] = self.plf[1]
+        self.ta_dyn.propagate_until(x[0] + x[-1])
+        rf = self.ta_dyn.state[:3].copy()
+        vf = self.ta_dyn.state[3:6].copy()
+        # print('SF final state: ', rf, rs, x[-1])
+
+        # We set the leg using data in the decision vector
         self.leg.rvs = [rs, [a + b for a, b in zip(vs, x[2:5])]]  # we add vinfs
         self.leg.rvf = [rf, [a + b for a, b in zip(vf, x[5:8])]]  # we add vinff
-        self.leg.tof = x[-1] * _pk.DAY2SEC
+        self.leg.tof = x[-1] # * _pk.DAY2SEC
         self.leg.mf = x[1]
 
         # Split alphas and throttles
@@ -151,7 +190,8 @@ class direct_pl2pl_alpha:
         throttles = data[self.nseg:]
 
         # Decode alphas to direct
-        T = _pk.alpha2direct(alphas, x[-1]*_pk.DAY2SEC)
+        T = _pk.alpha2direct(alphas, x[-1])
+        # print('Alphas: ', alphas, 'T', T)
 
         # Now save the modified back to self.leg.talphas and self.leg.throttles
         self.leg.talphas = T
@@ -160,21 +200,20 @@ class direct_pl2pl_alpha:
         # We return the eph as to avoid having to recompute them later on if needed.
         return rs, vs, rf, vf
 
-    # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof]
+    # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, talphas, throttles, tof]
     def fitness(self, x):
         # 1 - We set the optimality principle
         mf = x[1]
 
         # 2 - We compute the constraints violations (mismatch+throttle)
         self._set_leg_from_x(x)  # set the leg
-
         ceq = self.leg.compute_mismatch_constraints()
         cineq = self.leg.compute_throttle_constraints()
 
         # 3 - We add the departure vinfs constraint (quadratic)
         cineq = cineq + [
             (x[2] ** 2 + x[3] ** 2 + x[4] ** 2 - self.vinfs**2) / (self.v_scaling**2)
-        ]
+        ] 
         # We add the departure vinff constraint (quadratic)
         cineq = cineq + [
             (x[5] ** 2 + x[6] ** 2 + x[7] ** 2 - self.vinff**2) / (self.v_scaling**2)
@@ -191,17 +230,14 @@ class direct_pl2pl_alpha:
 
         return retval
 
+    def has_gradient(self):
+        return False
+
     def get_nec(self):
         return 7
 
     def get_nic(self):
         return self.nseg + 2
-    
-    # def has_gradient(self):
-    #     return self.with_gradient
-    
-    # def gradient(self, x):
-    #     return _pg.estimate_gradient(callable = self.fitness,x=x, dx=1e-8)
 
     def pretty(self, x):
         """
@@ -212,30 +248,30 @@ class direct_pl2pl_alpha:
         """
         self._set_leg_from_x(x)
         print(f"\nLow-thrust NEP transfer")
-        print(f"Departure: {self.pls.get_name()}\nArrival: {self.plf.get_name()}")
+        print(f"Departure: {self.pls}\nArrival: {self.plf}")
         print(
-            f"\nLaunch epoch: {x[0]:.5f} MJD2000, a.k.a. {_pk.epoch(x[0], _pk.epoch.julian_type.MJD2000)}"
+            f"\nLaunch epoch: {x[0]:.5f}"
         )
         print(
-            f"Arrival epoch: {x[0]+x[-1]:.5f} MJD2000, a.k.a. {_pk.epoch(x[0]+x[-1], _pk.epoch.julian_type.MJD2000)}"
+            f"Arrival epoch: {x[0]+x[-1]:.5f}"
         )
 
-        print(f"Time of flight (days): {x[-1]:.5f} ")
+        print(f"Time of flight (-): {x[-1]:.5f} ")
         print(
-            f"\nLaunch DV (km/s) {_np.sqrt(x[2] ** 2 + x[3] ** 2 + x[4] ** 2) / 1000:.8f} - [{x[2]/1000.},{x[3]/1000.},{x[4]/1000.}]"
+            f"\nLaunch DV (-) {_np.sqrt(x[2] ** 2 + x[3] ** 2 + x[4] ** 2):.8f} - [{x[2]},{x[3]},{x[4]}]"
         )
         print(
-            f"Arrival DV (km/s) {_np.sqrt(x[5] ** 2 + x[6] ** 2 + x[7] ** 2) / 1000:.8f} - [{x[5]/1000.},{x[6]/1000.},{x[7]/1000.}]"
+            f"Arrival DV (-) {_np.sqrt(x[5] ** 2 + x[6] ** 2 + x[7] ** 2):.8f} - [{x[5]},{x[6]},{x[7]}]"
         )
-        print(f"Final mass (kg): {x[1]}")
-        print(f"\nDetails on the low-thrust leg: ")
+        print(f"Final mass (mf/m0): {x[1]}")
+        print(f"\nDetails on the low-thrust leg: (NEEDS fixing) ")
         print(self.leg)
 
     def plot(
         self,
         x,
         ax=None,
-        units=_pk.AU,
+        units=1,
         show_midpoints=False,
         show_gridpoints=False,
         show_throttles=False,
@@ -273,16 +309,53 @@ class direct_pl2pl_alpha:
         # Making the axis
         if ax is None:
             ax = _pk.plot.make_3Daxis(figsize=(7, 7))
+            
         rs, _ = sf.rvs
         rf, _ = sf.rvf
-        ax.scatter(rs[0] / _pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
-        ax.scatter(rf[0] / _pk.AU, rf[1] / units, rf[2] / units, c="k", s=20)
 
-        # Plotting planets
-        ax = _pk.plot.add_planet(ax, self.pls, when=x[0])
-        ax = _pk.plot.add_planet_orbit(ax, self.pls, c="gray", alpha=0.5)
-        ax = _pk.plot.add_planet(ax, self.plf, when=x[0] + x[-1])
-        ax = _pk.plot.add_planet_orbit(ax, self.plf, c="gray", alpha=0.5)
+        # Propagate initial states
+        tgrid = _np.linspace(0.0, 2*(x[0] + x[-1]), 1000)
+        self.ta_dyn.time = 0.0
+        self.ta_dyn.state[:3] = self.pls[0]
+        self.ta_dyn.state[3:6] = self.pls[1]
+        sol_0 = self.ta_dyn.propagate_grid(tgrid)
+        status = sol_0[0]
+        integration_0 = sol_0[5]
+        # Crop time
+        tgrid = tgrid[:len(integration_0[:,0])]
+        if status.name != 'time_limit':
+            integration_0 = _np.concatenate([integration_0, [self.ta_dyn.state]]) 
+
+        # Propagate target state
+        self.ta_dyn.time = 0.0
+        self.ta_dyn.state[:3] = self.plf[0]
+        self.ta_dyn.state[3:6] = self.plf[1]
+        sol_f = self.ta_dyn.propagate_grid(tgrid)
+        status = sol_f[0]
+        integration_f = sol_f[5]
+        # Crop time
+        tgrid = tgrid[:len(integration_f[:,0])]
+        if status.name != 'time_limit':
+            integration_f = _np.concatenate([integration_f, [self.ta_dyn.state]]) 
+
+        # Extract traj_x0ectory from integration results
+        traj_x0 = integration_0[:, :3]  # x, y, z
+        traj_xf = integration_f[:, :3]  # x, y, z
+
+        # MATLAB tab blue color
+        matlab_colors = [
+            (0, 0.4470, 0.7410),
+            (0.8500, 0.3250, 0.0980),
+            (0.9290, 0.6940, 0.1250),
+            (0.4940, 0.1840, 0.5560),
+            (0.4660, 0.6740, 0.1880),
+            (0.3010, 0.7450, 0.9330),
+            (0.6350, 0.0780, 0.1840)
+        ]
+
+        ax.plot(traj_x0[:, 0], traj_x0[:, 1], traj_x0[:, 2], color=matlab_colors[0], label='x0')
+        ax.plot(traj_xf[:, 0], traj_xf[:, 1], traj_xf[:, 2], color=matlab_colors[2], label='xf')
+
 
         # Plotting the trajctory leg
         if self.high_fidelity:
@@ -295,19 +368,9 @@ class direct_pl2pl_alpha:
                 show_gridpoints=show_gridpoints,
                 arrow_length_ratio=arrow_length_ratio,
                 use_alpha = True,
+                N = 20,
                 **kwargs,
             )
         else:
-            ax = _pk.plot.add_sf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                show_midpoints=show_midpoints,
-                use_alpha = True,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
+            raise("No sf_lf_alpha implemented for direct_cr3bp_alpha yet!")  
         return ax
