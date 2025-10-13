@@ -552,21 +552,26 @@ class pontryagin_cartesian_time:
             final_idx = 8
         else:
             final_idx = 7
-        # Constraints
+            
+        # Constraints x,y,z
         for i in range(3):
             sl = self.ta_var.get_vslice(order=1, component=i)
             retval.extend(list(self.ta_var.state[sl])[:final_idx])
             retval.append(dyn[i] - vf[i])
+            
+        # Constraints vx,vy,vz
         for i in range(3, 6):
             sl = self.ta_var.get_vslice(order=1, component=i)
             retval.extend(list(self.ta_var.state[sl])[:final_idx])
             retval.append(dyn[i] - af[i - 3])
-        # Constraint on mass costate
+            
+        # Constraint lm
         sl = self.ta_var.get_vslice(order=1, component=13)
         retval.extend(list(self.ta_var.state[sl])[:final_idx])
         retval.append(dyn[6])
+        
+        # Constraint norm on lambdas (only if present)
         if self.lambda0 == None:
-            # Norm constraint
             for item in x[:-1]:
                 retval.extend([2 * item])
         return retval
