@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Low-thrust transfers via indirect methods I (mass-fixed time) &#8212; pykep 0.0.1 documentation</title>
+    <title>Low-thrust transfers via indirect methods I (mass, fixed time) &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -210,9 +210,10 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_time.html">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -434,7 +435,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Low-thrust transfers via indirect methods I (mass-fixed time)</h1>
+    <h1>Low-thrust transfers via indirect methods I (mass, fixed time)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -462,7 +463,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-i-mass-fixed-time">
-<h1>Low-thrust transfers via indirect methods I (mass-fixed time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass-fixed-time" title="Permalink to this heading">#</a></h1>
+<h1>Low-thrust transfers via indirect methods I (mass, fixed time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass-fixed-time" title="Permalink to this heading">#</a></h1>
 <p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed time low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle. The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Low-thrust transfers via indirect methods III (mass, fixed time, mee) &#8212; pykep 0.0.1 documentation</title>
+    <title>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements) &#8212; pykep 0.0.1 documentation</title>
   
   
   
@@ -44,11 +44,11 @@
     <script src="../_static/scripts/sphinx-book-theme.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_equinoctial_mass';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_equinoctial_time';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)" href="pontryagin_equinoctial_time.html" />
-    <link rel="prev" title="Low-thrust transfers via indirect methods II (time)" href="pontryagin_cartesian_time.html" />
+    <link rel="next" title="Primer Vector" href="primer_vector.html" />
+    <link rel="prev" title="Low-thrust transfers via indirect methods III (mass, fixed time, mee)" href="pontryagin_equinoctial_mass.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -212,8 +212,8 @@
 
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_time.html">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -273,7 +273,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/pontryagin_equinoctial_mass.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/pontryagin_equinoctial_time.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -321,7 +321,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/pontryagin_equinoctial_mass.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/pontryagin_equinoctial_time.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -351,7 +351,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/pontryagin_equinoctial_mass.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/pontryagin_equinoctial_time.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -435,7 +435,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Low-thrust transfers via indirect methods III (mass, fixed time, mee)</h1>
+    <h1>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -459,9 +459,11 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-iii-mass-fixed-time-mee">
-<h1>Low-thrust transfers via indirect methods III (mass, fixed time, mee)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-iii-mass-fixed-time-mee" title="Permalink to this heading">#</a></h1>
-<p>In this notebook we tackle the exact same fixed-time, mass optimal problem tackled using Cartesian coordinates in <a class="reference internal" href="pontryagin_cartesian_mass.html"><span class="std std-doc">a previous notebook</span></a>. As opposed to the previous notebook, we will use modified-equinoctial elements to describe the orbit.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-iv-time-mean-equinoctial-elements">
+<h1>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-iv-time-mean-equinoctial-elements" title="Permalink to this heading">#</a></h1>
+<p>In this notebook we show how to solve the <strong>minimum time</strong> Optimal Control Problem (OCP) for a low-thrust interplanetary transfer employing an indirect method and using</p>
+<p>Indirect methods follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle (PMP). The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
+<p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
@@ -589,21 +591,21 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 <p>We introduce the Hamiltonian (<span class="math notranslate nohighlight">\(\mathbf x\)</span> is the whole state, <span class="math notranslate nohighlight">\(\mathbf \lambda\)</span> is the whole co-state, and <span class="math notranslate nohighlight">\(\mathbf u\)</span> represent are all the controls),</p>
 <div class="math notranslate nohighlight">
 \[
-\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_x \cdot \mathbf f_x + \lambda_m  f_m + \lambda_0 \frac{c_1}{c_2} \left(u + \epsilon\log(u(1-u))\right)
+\mathcal H(\mathbf x, \mathbf \lambda, \mathbf u) = \mathbf \lambda_x \cdot \mathbf f_x + \lambda_m  f_m + \lambda_0 \frac {c_1}{c_2}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hamiltonian</span>
-<span class="n">H_full</span> <span class="o">=</span> <span class="p">(</span><span class="n">lx</span> <span class="o">@</span> <span class="n">fx</span> <span class="o">+</span> <span class="n">lm</span> <span class="o">*</span> <span class="n">fm</span> <span class="o">+</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">u</span><span class="p">))))</span>
+<span class="n">H_full</span> <span class="o">=</span> <span class="p">(</span><span class="n">lx</span> <span class="o">@</span> <span class="n">fx</span> <span class="o">+</span> <span class="n">lm</span> <span class="o">*</span> <span class="n">fm</span> <span class="o">+</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 <span class="c1"># Switching function (this must be found by hand)</span>
 <span class="n">BTlam</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="nd">@lx</span> 
 <span class="n">BTlam_norm</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">BTlam</span> <span class="o">@</span> <span class="n">BTlam</span><span class="p">)</span>
-<span class="n">rho</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">BTlam_norm</span> <span class="o">/</span> <span class="n">m</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">lm</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="o">-</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">BTlam_norm</span> <span class="o">/</span> <span class="n">m</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">lm</span> <span class="o">/</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = I_{sp}g_0\)</span></p>
+<p>Note how the various constants of our problem are considered as heyoka parameters in the following order: <span class="math notranslate nohighlight">\([\mu, c_1, c_2, \epsilon, \lambda_0]\)</span>, <span class="math notranslate nohighlight">\(c_1 = T_{max}\)</span>, <span class="math notranslate nohighlight">\(c_2 = v_{eff}\)</span>. It is to be noted here that the continuation parameter <span class="math notranslate nohighlight">\(\epsilon\)</span> is actually not in here and that also <span class="math notranslate nohighlight">\(\lambda_0\)</span> plays no role in the dynamics.</p>
 <p>And write the resulting Hamiltonian system:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -639,9 +641,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
     <span class="n">i_r</span><span class="p">:</span> <span class="o">-</span><span class="n">BTlam</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">BTlam_norm</span><span class="p">,</span>
     <span class="n">i_t</span><span class="p">:</span> <span class="o">-</span><span class="n">BTlam</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">BTlam_norm</span><span class="p">,</span>
     <span class="n">i_n</span><span class="p">:</span> <span class="o">-</span><span class="n">BTlam</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">BTlam_norm</span><span class="p">,</span>
-    <span class="n">u</span><span class="p">:</span> <span class="mf">2.</span>
-    <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-    <span class="o">/</span> <span class="p">(</span><span class="n">rho</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">hy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">+</span> <span class="mf">4.</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">])),</span>
+    <span class="n">u</span><span class="p">:</span> <span class="n">hy</span><span class="o">.</span><span class="n">expression</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -662,7 +662,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 <p>The following code block thus instantiate the heyoka integrator as well as other convenience functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We compile the Hamiltonian into a C function (to be called with pars = [mu, c1, c2, eps, l0])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We compile the Hamiltonian into a C function (to be called with pars = [mu, c1, c2, eps, l0], but epsilon does not really matter)</span>
 <span class="n">H_func</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">cfunc</span><span class="p">([</span><span class="n">H</span><span class="p">],</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">m</span> <span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">lf</span><span class="p">,</span> <span class="n">lg</span><span class="p">,</span> <span class="n">lh</span><span class="p">,</span> <span class="n">lk</span><span class="p">,</span> <span class="n">lL</span><span class="p">,</span> <span class="n">lm</span> <span class="p">])</span>
 <span class="c1"># We compile the thrust direction</span>
 <span class="n">u_func</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">cfunc</span><span class="p">(</span>
@@ -684,8 +684,10 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var_sys</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">var_ode_sys</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lp</span><span class="p">,</span><span class="n">lf</span><span class="p">,</span><span class="n">lg</span><span class="p">,</span><span class="n">lh</span><span class="p">,</span><span class="n">lk</span><span class="p">,</span><span class="n">lL</span><span class="p">,</span><span class="n">lm</span><span class="p">,</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
-<span class="n">ta</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">taylor_adaptive</span><span class="p">(</span><span class="n">var_sys</span><span class="p">,</span> <span class="n">compact_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># note that the dynamics does not depend on hy.par[4] so all those equations will be zero. </span>
+<span class="c1"># we nevertheless use hy.par[4] for consistency with the mass optimal case which can be handy.</span>
+<span class="n">var_sys</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">var_ode_sys</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lp</span><span class="p">,</span><span class="n">lf</span><span class="p">,</span><span class="n">lg</span><span class="p">,</span><span class="n">lh</span><span class="p">,</span><span class="n">lk</span><span class="p">,</span><span class="n">lL</span><span class="p">,</span><span class="n">lm</span><span class="p">,</span> <span class="n">hy</span><span class="o">.</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+<span class="n">ta_var</span> <span class="o">=</span> <span class="n">hy</span><span class="o">.</span><span class="n">taylor_adaptive</span><span class="p">(</span><span class="n">var_sys</span><span class="p">,</span> <span class="n">compact_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -698,19 +700,19 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The Taylor integrator</span>
-<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The Variational Taylor integrator</span>
-<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_var</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">ta_var</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_var</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The Hamiltonian</span>
-<span class="n">H_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_H_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">H_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_H_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The switching function</span>
-<span class="n">SF_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_SF_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">SF_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_SF_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The magnitude of the throttle</span>
-<span class="n">u_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_u_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">u_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_u_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The thrust direction</span>
-<span class="n">i_vers_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_i_vers_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">i_vers_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_i_vers_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 <span class="c1"># The dynamics cfunc</span>
-<span class="n">dyn_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_dyn_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+<span class="n">dyn_func</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_peq_dyn_cfunc</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -720,24 +722,17 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 <h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
 <p>All the code above was merely showed for tutorial purposes.</p>
 <p>Now we scratch all of that and use dedicated <code class="docutils literal notranslate"><span class="pre">pykep</span></code> clsses to construct, based on the TPVP described in detail above, a shoting problem.</p>
-<p>We use, as a test case, the very same simple transfer used in the <a class="reference internal" href="pontryagin_cartesian_mass.html"><span class="std std-doc">notebook on the Cartesian case</span></a>. The transfer is simple enough to allow fast convergence and to directly go for a mass optimal trajectory, without using continuation, so that we can directly start using a value <span class="math notranslate nohighlight">\(\epsilon &lt;&lt; 1\)</span>.</p>
-<p>Later, we will also study a case where we need a continuation technique to bring <span class="math notranslate nohighlight">\(\epsilon\)</span> to low values.</p>
+<p>We use, as a test case, the very same simple transfer used in a previous <a class="reference internal" href="pontryagin_equinoctial_mass.html"><span class="std std-doc">notebook on the mass optimal</span></a>. The transfer is simple enough to allow fast convergence.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Testcase 1 </span>
-<span class="n">posvel0</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="mf">34110913367.783306</span><span class="p">,</span> <span class="o">-</span><span class="mf">139910016918.87585</span><span class="p">,</span> <span class="o">-</span><span class="mf">14037825669.025244</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">29090.9902134693</span><span class="p">,</span> <span class="mf">10000.390168313803</span><span class="p">,</span> <span class="mf">1003.3858682643288</span><span class="p">],</span>
-<span class="p">]</span>
-<span class="n">posvelf</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="o">-</span><span class="mf">159018773159.22266</span><span class="p">,</span> <span class="o">-</span><span class="mf">18832495968.945133</span><span class="p">,</span> <span class="mf">15781467087.350443</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">2781.182556622003</span><span class="p">,</span> <span class="o">-</span><span class="mf">28898.40730995848</span><span class="p">,</span> <span class="o">-</span><span class="mf">483.4533989771214</span><span class="p">],</span>
-<span class="p">]</span>
+<span class="n">source</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;earth&quot;</span><span class="p">))</span>
+<span class="n">target</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">jpl_lp</span><span class="p">(</span><span class="s2">&quot;mars&quot;</span><span class="p">))</span>
 
-<span class="n">tof</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="n">tof_guess</span> <span class="o">=</span> <span class="mi">250</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
 <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-5</span>
-<span class="n">T_max</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">T_max</span> <span class="o">=</span> <span class="mf">6.</span>
 <span class="n">Isp</span> <span class="o">=</span> <span class="mi">3000</span>
 <span class="n">m0</span> <span class="o">=</span> <span class="mi">1500</span>
 <span class="n">n_rev</span><span class="o">=</span><span class="mi">0</span>
@@ -745,50 +740,36 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Testcase based on Jiang&#39;s paper: https://doi.org/10.2514/1.52476</span>
-<span class="c1">#eq0 = [149654984885.857604980468750, -0.003159967920532, 0.016705492433629, 0.000007081860749, 0.000002593720250, 0.240005388978809]</span>
-<span class="c1">#eqf = [108204221662.185256958007812, -0.004499485159298, 0.005049416150669, 0.006838004167958, 0.028831463943950, 2.045599177147440]</span>
-<span class="c1">#</span>
-<span class="c1">#m0 = 1500.0</span>
-<span class="c1">#mu = 1.32712440018e20</span>
-<span class="c1">#T_max = 0.33</span>
-<span class="c1">#Isp = 3800.0</span>
-<span class="c1">#g0 = 9.80665</span>
-<span class="c1">#tof = 1000.0</span>
-<span class="c1">#eps = 1.e-5</span>
-<span class="c1">#n_rev=4 #3,4,5 possible</span>
-<span class="c1">#</span>
-<span class="c1">#posvel0 = pk.mee2ic(eq0, mu)</span>
-<span class="c1">#posvelf = pk.mee2ic(eqf, mu)</span>
-</pre></div>
-</div>
-</div>
-</div>
 <p>We instantiate the shooting method using the UDP provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_equinoctial_mass</span><span class="p">(</span>
-    <span class="n">posvel0</span><span class="o">=</span><span class="n">posvel0</span><span class="p">,</span>
-    <span class="n">posvelf</span><span class="o">=</span><span class="n">posvelf</span><span class="p">,</span>
-    <span class="n">tof</span><span class="o">=</span><span class="n">tof</span><span class="p">,</span>
-    <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
-    <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
-    <span class="n">lambda0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="c1"># use 0.3 in case no normalization is seeked.</span>
-    <span class="n">T_max</span><span class="o">=</span><span class="n">T_max</span><span class="p">,</span>
-    <span class="n">Isp</span><span class="o">=</span><span class="n">Isp</span><span class="p">,</span>
-    <span class="n">m0</span><span class="o">=</span><span class="n">m0</span><span class="p">,</span>
-    <span class="n">n_rev</span> <span class="o">=</span> <span class="n">n_rev</span><span class="p">,</span>
-    <span class="n">L</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
-    <span class="n">MU</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
-    <span class="n">MASS</span><span class="o">=</span><span class="n">m0</span><span class="p">,</span>
-    <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="c1"># lower tolerances with multiple rev can be an issue</span>
-    <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
-<span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Factory for the pygmo udp.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">prob_factory</span><span class="p">(</span><span class="n">T_max</span><span class="p">,</span> <span class="n">tof_guess</span><span class="p">):</span>
+    <span class="n">udp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_equinoctial_time</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+        <span class="n">tof_guess</span><span class="o">=</span><span class="n">tof_guess</span><span class="p">,</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span>
+        <span class="n">lambda0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># We normalize the costates</span>
+        <span class="n">T_max</span><span class="o">=</span><span class="n">T_max</span><span class="p">,</span>
+        <span class="n">veff</span><span class="o">=</span><span class="mi">3000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">G0</span><span class="p">,</span>
+        <span class="n">m0</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+        <span class="n">n_rev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">L</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="p">,</span>
+        <span class="n">MU</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
+        <span class="n">MASS</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+        <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="c1"># lower tolerance for the Taylor integrator since the problem is easy</span>
+        <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-10</span>
+    <span class="p">)</span>
+    <span class="n">udp</span><span class="o">.</span><span class="n">ta</span> <span class="o">=</span> <span class="n">ta</span>
+    <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
+    <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+    <span class="k">return</span> <span class="n">prob</span>
+
+<span class="n">prob</span> <span class="o">=</span> <span class="n">prob_factory</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+<span class="n">sparsity</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">gradient_sparsity</span><span class="p">()</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">pontryagin_equinoctial_time</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -822,11 +803,15 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">root</span>
         <span class="n">prob</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">problem</span>
         <span class="n">x0</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">get_nx</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">get_nx</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">},</span> <span class="n">jac</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>  <span class="c1"># factor=1 is very important for convergence</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">dense_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+                <span class="n">G</span><span class="p">[</span><span class="n">sparsity</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sparsity</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>  <span class="nb">list</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="p">)},</span> <span class="n">jac</span><span class="o">=</span><span class="n">dense_grad</span><span class="p">)</span>  <span class="c1"># factor=1 is very important for convergence</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">})</span>  <span class="c1"># factor=1 is very important for convergence</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>  <span class="nb">list</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">fitness</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">x0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hybr&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;diag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="p">)})</span>  <span class="c1"># factor=1 is very important for convergence</span>
         <span class="n">pop</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">pop</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -863,7 +848,6 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">masses</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Final mass is: </span><span class="si">{</span><span class="n">masses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">udp</span><span class="o">.</span><span class="n">MASS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian at the final point is: </span><span class="si">{</span><span class="n">H_func</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">pars</span><span class="o">=</span><span class="n">udp</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time to success: </span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of successes: </span><span class="si">{</span><span class="n">success</span><span class="si">}</span><span class="s2"> over </span><span class="si">{</span><span class="n">n_trials</span><span class="si">}</span><span class="s2"> trials (</span><span class="si">{</span><span class="n">success</span><span class="o">/</span><span class="n">n_trials</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> %)&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -893,19 +877,7 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
@@ -914,12 +886,22 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1259.9008819629953
-Hamiltonian at the final point is: [-0.03600518] 
-
-Total time to success: 7.365 seconds
-Number of successes: 9 over 10 trials (90.0 %)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+Final mass is: 1049.433861185731
+Total time to success: 19.761 seconds
+Number of successes: 7 over 10 trials (70.0 %)
 </pre></div>
 </div>
 </div>
@@ -934,12 +916,15 @@ Number of successes: 9 over 10 trials (90.0 %)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
@@ -952,15 +937,13 @@ Number of successes: 9 over 10 trials (90.0 %)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.x
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1259.9008822523683
-Hamiltonian at the final point is: [-0.03600518] 
-
-Total time to success: 2.391 seconds
-Number of successes: 6 over 10 trials (60.0 %)
+Final mass is: 1049.4338612054842
+Total time to success: 3.870 seconds
+Number of successes: 8 over 10 trials (80.0 %)
 </pre></div>
 </div>
 </div>
@@ -973,7 +956,7 @@ Number of successes: 6 over 10 trials (60.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/6bb0a160a9f72af83fc9fa410068f973f252ee76964cc9b540647d3d13ae0e2b.png" src="../_images/6bb0a160a9f72af83fc9fa410068f973f252ee76964cc9b540647d3d13ae0e2b.png" />
+<img alt="../_images/c05ae605c7309a7ef8415af2b021b4a89cbd05c013eabce75b58fe8f6d014e36.png" src="../_images/c05ae605c7309a7ef8415af2b021b4a89cbd05c013eabce75b58fe8f6d014e36.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -984,7 +967,7 @@ Number of successes: 6 over 10 trials (60.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/797fbfa10114f27db3f26436cb683462b29c23975c68646352e69e2e2a5f52c8.png" src="../_images/797fbfa10114f27db3f26436cb683462b29c23975c68646352e69e2e2a5f52c8.png" />
+<img alt="../_images/13118350a6c58c380c3c73fb7899abd833cd2355f24cd278590ad6d0ffcd92cc.png" src="../_images/13118350a6c58c380c3c73fb7899abd833cd2355f24cd278590ad6d0ffcd92cc.png" />
 </div>
 </div>
 </section>
@@ -1002,20 +985,20 @@ Number of successes: 6 over 10 trials (60.0 %)
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="pontryagin_cartesian_time.html"
+       href="pontryagin_equinoctial_mass.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Low-thrust transfers via indirect methods II (time)</p>
+        <p class="prev-next-title">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</p>
       </div>
     </a>
     <a class="right-next"
-       href="pontryagin_equinoctial_time.html"
+       href="primer_vector.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</p>
+        <p class="prev-next-title">Primer Vector</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

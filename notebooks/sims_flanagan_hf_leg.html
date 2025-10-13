@@ -210,9 +210,10 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_time.html">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -490,6 +491,26 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_pc</span><span class="p">(</span><span class="mf">1e-16</span><span class="p">,</span> <span class="n">pk</span><span class="o">.</span><span class="n">optimality_type</span><span class="o">.</span><span class="n">MASS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C++ datatype            : double
+Tolerance               : 1e-16
+High accuracy           : false
+Compact mode            : false
+Taylor order            : 20
+Dimension               : 14
+Time                    : 0
+State                   : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Parameters              : [0, 0, 0, 0, 0]
+</pre></div>
+</div>
+</div>
+</div>
 <p>We then define the spacecraft propulsion system and the initial and final state. In this case they are not related to any orbital mechanics and are chosen arbitrarily for the purpose of demostrating the API.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -568,7 +589,7 @@ and approximates the continuous thrust via a sequence of continuous, constant th
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2a9380beb1d1289dcdba6a789894545eb45df955e2b081cce25464de771ff040.png" src="../_images/2a9380beb1d1289dcdba6a789894545eb45df955e2b081cce25464de771ff040.png" />
+<img alt="../_images/fcfc7781ced17b4a45714af190b1fb7b155cca095bf1a5822f4ae47b8ece984d.png" src="../_images/fcfc7781ced17b4a45714af190b1fb7b155cca095bf1a5822f4ae47b8ece984d.png" />
 </div>
 </div>
 </section>
@@ -728,7 +749,7 @@ Check gradient of mc wrt u:   True
 <span class="n">tas</span> <span class="o">=</span> <span class="p">[</span><span class="n">ta</span><span class="p">,</span> <span class="n">ta_var</span><span class="p">]</span>
 
 <span class="c1"># Change the following line to use a different problem from the json file.</span>
-<span class="n">problem_id</span> <span class="o">=</span> <span class="s2">&quot;instances_lb ID1&quot;</span>
+<span class="n">problem_id</span> <span class="o">=</span> <span class="s2">&quot;instances_ys_mss ID2&quot;</span>
 <span class="c1"># We load the values in the json dictionary</span>
 <span class="n">state_s</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;state_s&quot;</span><span class="p">]</span>
 <span class="n">period_s</span> <span class="o">=</span> <span class="n">problems</span><span class="p">[</span><span class="n">problem_id</span><span class="p">][</span><span class="s2">&quot;period_s&quot;</span><span class="p">]</span>
@@ -741,6 +762,13 @@ Check gradient of mc wrt u:   True
 <span class="c1"># We create new random throttles</span>
 <span class="n">nseg</span><span class="o">=</span><span class="mi">20</span>
 <span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">4e-2</span>
 </pre></div>
 </div>
 </div>
@@ -810,7 +838,7 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b1132d21f3d065533a8a1d91acffefdf8bd2ebf234878bb45c1878c2473ffb6d.png" src="../_images/b1132d21f3d065533a8a1d91acffefdf8bd2ebf234878bb45c1878c2473ffb6d.png" />
+<img alt="../_images/d597405880a4cfe68a8d4e65d22874d3b8c1e8fbdd88f1dadd5a1e811e2252ea.png" src="../_images/d597405880a4cfe68a8d4e65d22874d3b8c1e8fbdd88f1dadd5a1e811e2252ea.png" />
 </div>
 </div>
 </section>
@@ -905,16 +933,18 @@ Check gradient of mc wrt u:   True
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem</span>
 <span class="c1"># IMPORTANT: according to the problem selected the tof_bounds should be adjusted (e.g.[ 1,5] or [5,10])</span>
-<span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+<span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">]</span>
 <span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="n">tof_bounds</span><span class="o">=</span><span class="n">tof_bounds</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
 <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="c1"># ensures pagmo consider feasible constraint at this level (this is NOT changing SNOPT behaviour)</span>
 
 <span class="c1"># Algorithm</span>
-<span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<span class="c1">#snopt72 = &quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
 <span class="c1"># Activate screen output here to see what the SQP solver is doing</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span>
+<span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">3500</span><span class="p">)</span>
+<span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Minor iterations limit&quot;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major optimality tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major feasibility tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-7</span><span class="p">)</span> <span class="c1"># must be low else will not be met</span>
 <span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
@@ -941,12 +971,12 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.974205448534
-Transfer time:  2.96554791112
-Feasibility:  1.08541824494e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.702380219162
+Transfer time:  15.0
+Feasibility:  0.574999456059
 </pre></div>
 </div>
-<img alt="../_images/cddb919a71a844c36d940cd76dfe9b700eaf5fe9121b6772c36d06b278f87d9c.png" src="../_images/cddb919a71a844c36d940cd76dfe9b700eaf5fe9121b6772c36d06b278f87d9c.png" />
+<img alt="../_images/57bb39b8cbf4d9a1477428f260eb2b0b6d8533f6633a95ba345e0905fd4ecf03.png" src="../_images/57bb39b8cbf4d9a1477428f260eb2b0b6d8533f6633a95ba345e0905fd4ecf03.png" />
 </div>
 </div>
 </section>
@@ -1001,7 +1031,7 @@ Feasibility:  1.08541824494e-08
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem</span>
-<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="n">tof_bounds</span><span class="o">=</span><span class="n">tof_bounds</span><span class="p">)</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">p2p_in_cr3bp</span><span class="p">(</span><span class="n">state_s</span><span class="p">,</span> <span class="n">state_f</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="n">max_thrust</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu_cr3bp</span><span class="p">,</span> <span class="n">cut</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="n">tof_bounds</span><span class="o">=</span><span class="n">tof_bounds</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
 <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
 </pre></div>
@@ -1010,8 +1040,55 @@ Feasibility:  1.08541824494e-08
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.55276328450279788
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
+    <span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span> <span class="mf">0.97</span><span class="p">:</span>
+            <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9577693376520025, 2.7591078790100513e-07
+0.9522004564482348, 4.3857911616309804e-08
+0.9523170432472177, 1.2203780182075033e-08
+0.9669911466576542, 1.3130708277853673e-08
+0.9541984845512791, 4.949575519596202e-07
+0.9522698624434427, 6.180347676184902e-08
+0.9523341681149741, 2.8965476229862366e-08
+0.9523380938970615, 5.4430773066174426e-08
+0.952304012313531, 3.5039231854616343e-09
+0.6463524868386623, 6.0732262104787515e-09
+0.9522194438942301, 1.0034133455068918e-08
+0.95041198129228, 2.6799413340676307e-10
+0.9570591541651174, 1.6048735189261368e-09
+0.9523379340077337, 5.344843320803091e-08
+0.9672314455088733, 5.508248571390954e-07
+0.952337860926775, 2.7567865283998857e-07
+0.6463525119756856, 1.592713967428314e-07
+0.9515285857622272, 3.914017358962119e-08
+0.9523380446079853, 6.078633909452506e-09
+0.9522849129952831, 1.6800706801766615e-07
+0.948726077288913, 6.031807842010098e-12
+0.952330070448648, 1.555536459649651e-07
+0.9522912193286862, 1.3787207900912312e-08
+0.9585120919268082, 1.0462398184310548e-07
+0.9837407082269952, 2.4959347602709045e-07
 </pre></div>
 </div>
 </div>
@@ -1026,12 +1103,29 @@ Feasibility:  1.08541824494e-08
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.974242162253
-Transfer time:  3.07032612344
-Feasibility:  3.87682460857e-13
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.983740708227
+Transfer time:  15.0
+Feasibility:  2.51763032299e-07
 </pre></div>
 </div>
-<img alt="../_images/94ceb25eb2f06345cdcf3520e5f07452c283ebc8324721ac86baa985ad5bc71f.png" src="../_images/94ceb25eb2f06345cdcf3520e5f07452c283ebc8324721ac86baa985ad5bc71f.png" />
+<img alt="../_images/03f017a00a7d39f15ac37473ec6ae15290cbf57a9c453bdc1279b273ecbe8033.png" src="../_images/03f017a00a7d39f15ac37473ec6ae15290cbf57a9c453bdc1279b273ecbe8033.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_thrust</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">max_thrust</span>
+
+<span class="ne">NameError</span>: name &#39;max_thrust&#39; is not defined
+</pre></div>
+</div>
 </div>
 </div>
 </section>

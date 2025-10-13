@@ -47,8 +47,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_time';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)" href="pontryagin_equinoctial_mass.html" />
-    <link rel="prev" title="Low-thrust transfers via indirect methods I (mass-fixed time)" href="pontryagin_cartesian_mass.html" />
+    <link rel="next" title="Low-thrust transfers via indirect methods III (mass, fixed time, mee)" href="pontryagin_equinoctial_mass.html" />
+    <link rel="prev" title="Low-thrust transfers via indirect methods I (mass, fixed time)" href="pontryagin_cartesian_mass.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -210,9 +210,10 @@
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Low-thrust transfers via indirect methods II (time)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_mass.html">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pontryagin_equinoctial_time.html">Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="primer_vector.html">Primer Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="surrogate_primer_vector.html">Surrogate Primer Vector</a></li>
 
@@ -691,8 +692,8 @@ for analysis of specific cases, but in general they are used internally by the v
         <span class="n">MU</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
         <span class="n">MASS</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
         <span class="n">with_gradient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="c1"># lower tolerance for the Taylor integrator since the problem is easy</span>
-        <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-4</span>
+        <span class="n">taylor_tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="c1"># lower tolerance for the Taylor integrator since the problem is easy</span>
+        <span class="n">taylor_tolerance_var</span><span class="o">=</span><span class="mf">1e-6</span>
     <span class="p">)</span>
     <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">udp</span><span class="p">)</span>
     <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -800,9 +801,9 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
          For more information visit https://github.com/coin-or/Ipopt
 ******************************************************************************
 
-.........x
-Final mass is: 1049.4338724931717
-Total time to success: 5.219 seconds
+.x........
+Final mass is: 1049.4338611669273
+Total time to success: 6.934 seconds
 Number of successes: 9.0 over 10 trials (90.0 %)
 </pre></div>
 </div>
@@ -815,10 +816,10 @@ Number of successes: 9.0 over 10 trials (90.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x.xx.xx.x.
-Final mass is: 1049.4338725071425
-Total time to success: 0.180 seconds
-Number of successes: 4.0 over 10 trials (40.0 %)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...x.x.xx.
+Final mass is: 1049.4338612158242
+Total time to success: 0.214 seconds
+Number of successes: 6.0 over 10 trials (60.0 %)
 </pre></div>
 </div>
 </div>
@@ -843,7 +844,7 @@ Number of successes: 4.0 over 10 trials (40.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/854a1bf39e6ec84b3394f70a2f2b4f871ad9e750935a7047df16d48d09a1fb0b.png" src="../_images/854a1bf39e6ec84b3394f70a2f2b4f871ad9e750935a7047df16d48d09a1fb0b.png" />
+<img alt="../_images/d871e0acfd31617b9596a780d3a431aeb6f6aa397fc027ab33c767d6ac1fa072.png" src="../_images/d871e0acfd31617b9596a780d3a431aeb6f6aa397fc027ab33c767d6ac1fa072.png" />
 </div>
 </div>
 </section>
@@ -957,10 +958,10 @@ small values.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial solution found, starting homotopy...                                                                         
-. Success!! | Error: 2.36e-09 | CPU time: 1.67e-02 | T_max = 1.9425e-01 | Tof = 9.172453e+02 | mass = 949.2e+03
-Total CPU time: 1.16e+00
-mass 949.205127728
-time 917.245286538
+. Success!! | Error: 1.57e-08 | CPU time: 2.16e-02 | T_max = 1.9425e-01 | Tof = 9.172452e+02 | mass = 949.2e+03
+Total CPU time: 1.29e+00
+mass 949.205169027
+time 917.245217762
 </pre></div>
 </div>
 </div>
@@ -976,7 +977,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3117969d5104f512db0561b6d3ab4fbe8468a7599b783f65bd8a8b54e92047fc.png" src="../_images/3117969d5104f512db0561b6d3ab4fbe8468a7599b783f65bd8a8b54e92047fc.png" />
+<img alt="../_images/caca53f453b07272e072be417cbc60e139cc913a4a353ffbc89656a6e831be6e.png" src="../_images/caca53f453b07272e072be417cbc60e139cc913a4a353ffbc89656a6e831be6e.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -986,7 +987,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5dc57c873756ef9174a4a8ac152c02f0e3390c902dd56f16e4122bcddff6ad45.png" src="../_images/5dc57c873756ef9174a4a8ac152c02f0e3390c902dd56f16e4122bcddff6ad45.png" />
+<img alt="../_images/372261b72a1ae65dc86a26b821bf8b0bb4397415b2a71691401ac619ce311dfe.png" src="../_images/372261b72a1ae65dc86a26b821bf8b0bb4397415b2a71691401ac619ce311dfe.png" />
 </div>
 </div>
 </section>
@@ -1009,7 +1010,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Low-thrust transfers via indirect methods I (mass-fixed time)</p>
+        <p class="prev-next-title">Low-thrust transfers via indirect methods I (mass, fixed time)</p>
       </div>
     </a>
     <a class="right-next"
@@ -1017,7 +1018,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this.<
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Low-thrust transfers via indirect methods I (mass-fixed time-equinoctial elements)</p>
+        <p class="prev-next-title">Low-thrust transfers via indirect methods III (mass, fixed time, mee)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

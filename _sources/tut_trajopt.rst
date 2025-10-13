@@ -34,5 +34,6 @@ Trajectory Optimization
   notebooks/pontryagin_cartesian_mass
   notebooks/pontryagin_cartesian_time
   notebooks/pontryagin_equinoctial_mass
+  notebooks/pontryagin_equinoctial_time
   notebooks/primer_vector
   notebooks/surrogate_primer_vector
