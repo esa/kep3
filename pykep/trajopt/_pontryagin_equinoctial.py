@@ -485,15 +485,10 @@ class pontryagin_equinoctial_time:
 
         # Target elements are computed here once, but the target mean longitude will change
         self.target=target
-                    
+        self.n_rev = n_rev
+                   
         # We normalize units (only one parameter of the mee is dimensional)
         self.eq0[0] /= L
-        self.eqf[0] /= L
-
-        # If the number of revolutions is set we adjust the final value of L accordingly
-        self.n_rev = n_rev
-        if self.n_rev > 0:
-            self.eqf[5] += 2.0 * _np.pi * self.n_rev
 
         self.m0 = m0 / MASS
         self.tof_guess = tof_guess * _pk.DAY2SEC / TIME # nd
@@ -686,7 +681,11 @@ class pontryagin_equinoctial_time:
                 when=_pk.epoch(0), posvel=posvel0, mu_central_body=self.mu
             )
         )
-        posvelf = _pk.mee2ic(self.eqf, self.mu)
+        # Target elements are computed here once, but the target mean longitude will change
+        posvelf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
+        posvelf[0] = [it/self.L for it in posvelf[0]]
+        posvelf[1] = [it/self.L*self.TIME for it in posvelf[1]]
+
         pl2 = _pk.planet(
             _pk.udpla.keplerian(
                 when=_pk.epoch(0), posvel=posvelf, mu_central_body=self.mu
