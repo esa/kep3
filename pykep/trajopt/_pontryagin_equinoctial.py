@@ -46,7 +46,7 @@ class pontryagin_equinoctial_mass:
         taylor_tolerance=1e-16,
         taylor_tolerance_var=1e-8,
     ):
-        r"""pykep.trajopt.pontryagin_equinoctial(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
+        r"""pykep.trajopt.pontryagin_equinoctial_mass(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
         Args:
             *posvel0* (:class:`list`): the initial position and velocity of the spacecraft.
@@ -396,14 +396,15 @@ _plf = _pk.planet(
 )
 
 # This is untested (TODO: make a notebook? add lambda0?)
-class pontryagin_cartesian_time:
+class pontryagin_equinoctial_time:
     """
     This class is a pygmo (http://esa.github.io/pygmo/) UDP representing a single-shooting indirect method
-    for the minimum time, optimization of a low-thrust trajectory.
+    for the minimum time optimization of a low-thrust trajectory. The coordinates used for the dynamics
+    and hence the TPBVP are the modified equinoctial elements.
 
     The decision vector is::
 
-      x = [lx, ly, lz, lvx, lvy, lvz, lm, lJ, tof]
+      x = [lp, lf, lg, lh, lk, lL, lm, (l0), tf]
 
     .. note::
 
@@ -416,17 +417,19 @@ class pontryagin_cartesian_time:
         target=_plf,
         t0=_pk.epoch(0),
         tof_guess=250,
+        lambda0 = 1.0,
         T_max=0.6,
-        Isp=3000,
+        veff=3000*_pk.G0,
         m0=1500,
+        n_rev=-1,
         L=_pk.AU,
-        MU=_pk.MU_SUN,
+        MU= _pk.MU_SUN,
         MASS=1500,
         with_gradient=False,
         taylor_tolerance=1e-16,
-        taylor_tolerance_var=1e-8,
+        taylor_tolerance_var=1e-8
     ):
-        r"""pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
+        r"""pykep.trajopt.pontryagin_cartesian_time(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
         Args:
             *source* (:class:`list`): the initial planet.
@@ -436,73 +439,93 @@ class pontryagin_cartesian_time:
             *t0* (:class:`~pk.epoch`): the initial epoch.
 
             *tof_guess* (:class:`float`): a guess for the time of flight. Bound will be defined as tof_guess/2 and 2*tof_guess.
+            
+            *lambda0* (:class:`float` or None): multiplicative factor for the objective. If None, lambda0 is added to the decision vector and the constraint ||lambda||=1 is added so that all costates must be in [-1,1].
 
             *T_max* (:class:`float`): the maximum thrust of the spacecraft.
 
-            *Isp* (:class:`float`): the specific impulse of the spacecraft.
+            *veff* (:class:`float`): the effective velocity of the spacecraft propulsion system.
 
             *m0* (:class:`float`): the initial mass of the spacecraft.
+            
+            *n_rev* (:class:`int`): number of revolutions. If negative any number will be allowed.
 
             *L* (:class:`float`): units for length. Default is the astronomical unit (AU).
 
             *MU* (:class:`float`): units for the gravitational parameter of the central body. Default is the gravitational parameter of the Sun.
-
+            
             *MASS* (:class:`float`): units for mass. Default is 1500 kg.
 
             *with_gradient* (:class:`bool`): whether to use the gradient of the constraints or not.
-
+            
             *taylor_tolerance* (:class:`float`): the tolerance for the Taylor integrator.
-
+            
             *taylor_tolerance_var* (:class:`float`): the tolerance for the variational Taylor integrator.
         """
         # Non-dimensional units
         TIME = _np.sqrt(L**3 / MU)  # Unit for time (1 year)
         VEL = L / TIME  # Unit for velocity (1 AU/year)
         ACC = VEL / TIME  # Unit for acceleration (1 AU/year^2)
-
+        
         # Store user inputs
-        self.Isp = Isp
         self.t0 = t0
+        self.lambda0 = lambda0
 
         # We redefine the user inputs in non dimensional units.
         self.mu = source.get_mu_central_body() / MU
         self.c1 = T_max / (MASS * ACC)
-        self.c2 = (Isp * _pk.G0) / VEL
+        self.c2 = veff / VEL
         self.m0 = m0 / MASS
         self.tof_guess = tof_guess * _pk.DAY2SEC / TIME
-
-        # Initial position is computed once only upon construction.
+        
+        # Initial elements are computed once only upon construction.
         r0, v0 = source.eph(t0)
-        r0 = [it / L for it in r0]
-        v0 = [it / VEL for it in v0]
-        self.posvel0 = [r0, v0]
+        posvel0 = [r0, v0]
+        self.eq0 = _pk.ic2mee(posvel0, source.get_mu_central_body()) # we need the mu with SI dimensions
 
-        # Storing the planets
-        self.source = source
-        self.target = target
+        # Target elements are computed here once, but the target mean longitude will change
+        self.target=target
+        self.n_rev = n_rev
+                   
+        # We normalize units (only one parameter of the mee is dimensional)
+        self.eq0[0] /= L
 
-        # And the Taylor integrators
-        self.ta = _pk.ta.get_pc(taylor_tolerance, _pk.optimality_type.TIME)
-        self.ta_var = _pk.ta.get_pc_var(taylor_tolerance_var, _pk.optimality_type.TIME)
+        self.m0 = m0 / MASS
+        self.tof_guess = tof_guess * _pk.DAY2SEC / TIME # nd
+
+        self.ta = _pk.ta.get_peq(taylor_tolerance, _pk.optimality_type.TIME)
+        self.ta_var = _pk.ta.get_peq_var(taylor_tolerance_var, _pk.optimality_type.TIME)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
-
+        
         # Compiled functions
-        self.dyn_func = _pk.ta.get_pc_dyn_cfunc(_pk.optimality_type.TIME)
+        self.dyn_func = _pk.ta.get_peq_dyn_cfunc(_pk.optimality_type.TIME)
 
-        # Non dimensional units
+        # We store the units
         self.MASS = MASS
         self.L = L
         self.TIME = TIME
-        self.VEL = VEL
-        self.ACC = ACC
 
-        # Boolean
         self.with_gradient = with_gradient
 
     def get_bounds(self):
-        lb = [-1.0] * 6 + [0.0] * 2 + [self.tof_guess / 2]
-        ub = [1.0] * 8 + [self.tof_guess * 2]
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tf]
+        if self.lambda0 == None:
+            lb = [-1.0] * 6 + [0.0] * 2 + [self.tof_guess / 2.]
+            ub = [1.0] * 8 + [self.tof_guess * 2.]
+        else:
+            lb = [-1.0] * 6 + [0.0] + [self.tof_guess / 2.]
+            ub = [1.0] * 7 + [self.tof_guess * 2.]
         return [lb, ub]
+    
+    # small helper to wrap L to the next value larger than L0 and add nrev
+    def _wrap_L(self, Lf):
+        # We want to define the motion from small to large L (counterclockwise)
+        if Lf < self.eq0[5]:
+            Lf += 2.0 * _np.pi 
+        # If the number of revolutions is set we adjust the final value of L accordingly
+        if self.n_rev > 0:
+            Lf += 2.0 * _np.pi * self.n_rev
+        return Lf
 
     def set_ta_state(self, x):
         # Preparing the numerical integration parameters
@@ -512,147 +535,212 @@ class pontryagin_cartesian_time:
         self.ta.time = 0.0
 
         # And initial conditions
-        self.ta.state[:3] = self.posvel0[0]
-        self.ta.state[3:6] = self.posvel0[1]
+        self.ta.state[:6] = self.eq0
         self.ta.state[6] = self.m0
         self.ta.state[7:14] = x[:7]
 
     def set_ta_var_state(self, x):
-        # Preparing the variational numerical integration parameters
+        # Preparing the numerical integration parameters
         self.ta_var.pars[0] = self.mu
         self.ta_var.pars[1] = self.c1
         self.ta_var.pars[2] = self.c2
         self.ta_var.time = 0.0
 
         # And initial conditions
-        self.ta_var.state[:3] = self.posvel0[0]
-        self.ta_var.state[3:6] = self.posvel0[1]
+        self.ta_var.state[:6] = self.eq0
         self.ta_var.state[6] = self.m0
         self.ta_var.state[7:14] = x[:7]
         self.ta_var.state[14:] = self.ic_var
 
     def fitness(self, x):
-        # x = [lx, ly, lz, lvx, lvy, lvz, lm, lJ, tof]
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tf]
         # Single Shooting
-        self.set_ta_state(x[:8])
-        self.ta.propagate_until(x[8])
-
-        # Computing the target position at epoch
-        rf, vf = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
-        rf = [it / self.L for it in rf]
-        vf = [it / self.VEL for it in vf]
+        self.set_ta_state(x)
+        self.ta.propagate_until(x[-1])
+        
+        # Target elements are computed here once, but the target mean longitude will change
+        posvelf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
+        eqf = _pk.ic2mee(posvelf, self.target.get_mu_central_body())
+        # We normalize units (only one parameter of the mee is dimensional)
+        eqf[0] /= self.L
+        # We wrap the L value to the correct nrev
+        eqf[5] = self._wrap_L(eqf[5])
 
         # Assembling the constraints
-        ceq = [self.ta.state[0] - rf[0]]
-        ceq += [self.ta.state[1] - rf[1]]
-        ceq += [self.ta.state[2] - rf[2]]
-        ceq += [self.ta.state[3] - vf[0]]
-        ceq += [self.ta.state[4] - vf[1]]
-        ceq += [self.ta.state[5] - vf[2]]
+        ceq = [self.ta.state[0] - eqf[0]]
+        ceq += [self.ta.state[1] - eqf[1]]
+        ceq += [self.ta.state[2] - eqf[2]]
+        ceq += [self.ta.state[3] - eqf[3]]
+        ceq += [self.ta.state[4] - eqf[4]]
+        # If no number of revolutions has been selected we can use this form of the constraint to let the 
+        # optimizer fall into one. As of 2025 (end) I (Dario) think this option should be removed, as I no longer see its utility.
+        if self.n_rev < 0:
+            ceq += [
+                2.0 - 2.0 * _np.cos(self.ta.state[5] - eqf[5])
+            ]  # 2 - 2cos(alfa-beta) is fully differentiable and zero only if alfa=beta mod 2pi
+        else:
+            ceq += [self.ta.state[5] - eqf[5]]
         ceq += [self.ta.state[13]]  # lm = 0
-        ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
+        # Note that in a time optimal problem this is the only constraint where l0 appears, making its
+        # use ony affect normalization, not the dynamics.
+        if self.lambda0 == None:
+            ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
     def gradient(self, x):
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
         # Single Shooting of variational equations
-        self.set_ta_var_state(x[:8])
-        self.ta_var.propagate_until(x[8])
-        # Computing the target position, velocity and acceleration at epoch
-        # NOTE: if the planet is not keplerian the acceleration will be assumed as Keplerian
-        rf, vf = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
-        vf = [it / self.VEL for it in vf]
-        rf = [it / self.L for it in rf]
-        af = -self.mu / _np.linalg.norm(rf) ** 3 * _np.array(rf)
-        # Assembling the gradient
-        # Fitness (sparsity takes care of the fitness since it does not depend on the dv)
+        self.set_ta_var_state(x)
+        self.ta_var.propagate_until(x[-1])
+        
+        # When lambda is not selected we need to account for a different indexing
         retval = []
-        dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:2])
-        # Constraints
-        for i in range(3):
+        # We compute the dynamics along the optimal trajectory candidate dx/dt
+        dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:2]) # only 2 parameters
+        # We compute the dL/dt of the target body using the augmented dynamics and putting Tmax to 0, mass to 1.0 as its not used anyway (it all a work around, but not too unefficient)
+        posvelf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
+        eqf = _pk.ic2mee(posvelf, self.target.get_mu_central_body())
+        # We normalize units (only one parameter of the mee is dimensional)
+        eqf[0] /= self.L
+        # No need to wrap L here since only sin cos appear in the equation.
+        dLdt = self.dyn_func(list(eqf) + [1.0] + [0.1]*7, pars=[self.mu, 0.])[5]
+        # Accounts for lambda0 being or not in the decision vector (chromosome)
+        if self.lambda0 == None:
+            final_idx = 8
+        else:
+            final_idx = 7
+        
+        # Assembling the gradient
+        # Objective -> None (sparsity takes care of the objective: since it does not depend on the decision vector, the sparsity pattern will not contain [0,..])
+        
+        # Constraints (p,f,g,h,k)
+        for i in range(5):
             sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
-            retval.append(dyn[i] - vf[i])
-        for i in range(3, 6):
-            sl = self.ta_var.get_vslice(order=1, component=i)
-            retval.extend(list(self.ta_var.state[sl]))
-            retval.append(dyn[i] - af[i - 3])
-        # Constraint on mass costate
+            retval.extend(list(self.ta_var.state[sl])[:final_idx]) # ta_var has pars [lp,lf,lg,lh,lk,lL,lm, l0] even though l0 does not influence the dynamics.
+            # tof derivative
+            retval.append(dyn[i])
+            
+        # Constraint (L) (we must also account for the differently written constraint in case the number of revs is fixed or free)
+        sl = self.ta_var.get_vslice(order=1, component=5)
+        tmp = self.ta_var.state[sl]
+        if self.n_rev < 0.0:
+            tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
+        retval.extend(list(tmp)[:final_idx])
+        # tof derivative
+        tmp = dyn[5] - dLdt
+        if self.n_rev < 0.0:
+            tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
+        retval.append(tmp)
+        
+        # Constraint (lm)
         sl = self.ta_var.get_vslice(order=1, component=13)
-        retval.extend(list(self.ta_var.state[sl]))
+        retval.extend(list(self.ta_var.state[sl])[:final_idx])
+        # tof derivative
         retval.append(dyn[6])
-        # Norm constraint
-        for item in x[:-1]:
-            retval.extend([2 * item])
+        
+        # Constraint norm on lambdas (only if present)
+        if self.lambda0 == None:
+            for item in x[:-1]:
+                retval.extend([2 * item])
         return retval
 
     def gradient_sparsity(self):
-        # x = [lx,ly,lz,lvx,lvy,lvz,lm,l0,tof]
         retval = []
-        for i in range(1, 8):
-            for j in range(9):
-                retval.append((i, j))
-        # The norm constraint does not depend on tof
-        for i in range(8, 9):
+        if self.lambda0 == None:
+            # x = [lx, ly, lz, lvx, lvy, lvz, lm, l0, tof]
+            for i in range(1, 8):
+                for j in range(9):
+                    retval.append((i, j))
+            # norm constraint does not depend on tof
             for j in range(8):
-                retval.append((i, j))
+                retval.append((8, j))        
+        else:
+            # x = [lx, ly, lz, lvx, lvy, lvz, lm, tof]
+            for i in range(1, 8):
+                for j in range(8):
+                    retval.append((i, j))
         return retval
 
     def has_gradient(self):
         return self.with_gradient
 
     def get_nec(self):
-        return 8
+        if self.lambda0 == None:
+            return 8
+        else:
+            return 7
 
-    def plot(self, x, ax3D=None, N=100, **kwargs):
+    def plot(self, x, N=100, ax3D=None):
         """
         This function plots the trajectory encoded in the decision vector x.
-
+        x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
+        
         Args:
             *x* (:class:`list`): the decision vector.
-            *ax3D* (:class:`matplotlib.axes._axes.Axes`): the axis to use for the plot. If None, a new axis is created.
             *N* (:class:`int`): the number of points to use in the plot.
-            *\\*\\*kwargs*: Additional keyword arguments to pass to the trajectory plot.
+            *ax3D* (:class:`matplotlib.axes._axes.Axes`): the axis to use for the plot. If None, a new axis is created.
 
         Returns:
             *ax3D* (:class:`matplotlib.axes._axes.Axes`): the axis of the plot.
         """
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d.art3d import Line3DCollection
+        import matplotlib.colors as mcolors
 
         # Single Shooting
-        self.set_ta_state(x[:8])
-        t_grid = _np.linspace(0, x[8], N)
+        self.set_ta_state(x[:7])
+        t_grid = _np.linspace(0, x[-1], N)
         sol = self.ta.propagate_grid(t_grid)
         # We make the axis if needed
         if ax3D is None:
             ax3D = _pk.plot.make_3Daxis()
         # Adding the main body
         _pk.plot.add_sun(ax3D)
-        _pk.plot.add_planet_orbit(ax3D, self.source, c="gray", units=_pk.AU)
-        _pk.plot.add_planet_orbit(ax3D, self.target, c="gray", units=_pk.AU)
+        # Adding the osculating orbits to the initial conditions
+        posvel0 = _pk.mee2ic(self.eq0, self.mu)
+        pl1 = _pk.planet(
+            _pk.udpla.keplerian(
+                when=_pk.epoch(0), posvel=posvel0, mu_central_body=self.mu
+            )
+        )
+        # Target elements are computed here once, but the target mean longitude will change
+        posvelf = self.target.eph(self.t0 + x[-1] * self.TIME * _pk.SEC2DAY)
+        posvelf[0] = [it/self.L for it in posvelf[0]]
+        posvelf[1] = [it/self.L*self.TIME for it in posvelf[1]]
+
+        pl2 = _pk.planet(
+            _pk.udpla.keplerian(
+                when=_pk.epoch(0), posvel=posvelf, mu_central_body=self.mu
+            )
+        )
+        _pk.plot.add_planet_orbit(ax3D, pl1, c="gray", units=1)
+        _pk.plot.add_planet_orbit(ax3D, pl2, c="gray", units=1)
         # Plotting the trajectory
-        # Assuming sol[-1] is an array of shape (N, 3)
-        state = sol[-1]  # Extract (x, y, z) coordinates
-        xx, yy, zz = state[:, 0], state[:, 1], state[:, 2]
+        # Assuming sol[-1] is an array of shape (N, 6)
+        state = sol[-1]  # Extract equinoctial coordinates
+        xx = _np.zeros((state.shape[0],))
+        yy = _np.zeros((state.shape[0],))
+        zz = _np.zeros((state.shape[0],))
 
-        ax3D.plot(xx, yy, zz, "r")
+        for i, equinoctial in enumerate(state):
+            [[xx[i], yy[i], zz[i]], [_, _, _]] = _pk.mee2ic(equinoctial[:6], self.mu)
 
+        # Plot the trajectory (time optimal, always red)
+        ax3D.plot(xx, yy, zz, 'r')
+        
         # Plotting the boundary conditions
-        ax3D.scatter(self.posvel0[0][0], self.posvel0[0][1], self.posvel0[0][2])
-        rf, _ = self.target.eph(self.t0 + x[8] * self.TIME * _pk.SEC2DAY)
-        rf = [it / self.L for it in rf]
-        ax3D.scatter(rf[0], rf[1], rf[2])
+        ax3D.scatter(posvel0[0][0], posvel0[0][1], posvel0[0][2])
+        ax3D.scatter(posvelf[0][0], posvelf[0][1], posvelf[0][2])
         return ax3D
 
-    def plot_misc(self, x, N=100, **kwargs):
+    def plot_misc(self, x, N=100):
         """
-        This function plots the throttle, switching function and Hamiltonian
+        This function plots the throttle, thrust direction, switching function, mass costate and Hamiltonian
         of the trajectory encoded in the decision vector x.
 
         Args:
             *x* (:class:`list`): the decision vector.
             *N* (:class:`int`): the number of points to use in the plot.
-            *\\*\\*kwargs*: Additional keyword arguments to pass to the plt.subplots function.
 
         Returns:
             *axs* (:class:`list`): the list of axis of the plots.
@@ -660,49 +748,48 @@ class pontryagin_cartesian_time:
         from matplotlib import pyplot as plt
 
         # Single Shooting
-        self.set_ta_state(x[:8])
-        t_grid = _np.linspace(0, x[8], N)
+        self.set_ta_state(x[:7])
+        t_grid = _np.linspace(0, x[-1], N)
         sol = self.ta.propagate_grid(t_grid)
         # Retreive useful cfuncs
         # The Hamiltonian
-        H_func = _pk.ta.get_pc_H_cfunc(_pk.optimality_type.TIME)
-        # The switching function
-        SF_func = _pk.ta.get_pc_SF_cfunc(_pk.optimality_type.TIME)
+        H_func = _pk.ta.get_peq_H_cfunc(_pk.optimality_type.TIME)
+        # The magnitude of the throttle
+        u_func = _pk.ta.get_peq_u_cfunc(_pk.optimality_type.TIME)
         # The thrust direction
-        i_vers_func = _pk.ta.get_pc_i_vers_cfunc(_pk.optimality_type.TIME)
-
+        i_vers_func = _pk.ta.get_peq_i_vers_cfunc(_pk.optimality_type.TIME)
+        
         # Create axis
-        _, axs = plt.subplots(2, 2, **kwargs)
-        axs[0, 0].set_title("Mass")
-        axs[0, 0].plot(t_grid, self.MASS * sol[-1][:, 6].T)
-        # Plot thrust direction
-        thrust_dir = i_vers_func(_np.ascontiguousarray(sol[-1][:, 10:13].T))
-
+        _, axs = plt.subplots(2, 2, figsize=(10, 7))
+               
+        # Plot thrust direction (in equinoctial elements these depend on all the lambdas not only lv, and on par[0]
+        thrust_dir = i_vers_func(
+            _np.ascontiguousarray(sol[-1].T),
+            pars=_np.ascontiguousarray(_np.tile(self.ta.pars[0], (N, 1)).T),
+        )
         for i in range(3):
-            axs[0, 1].plot(t_grid, thrust_dir[i, :])
-        axs[0, 1].set_title("Thrust direction")
-
+            axs[0, 0].plot(t_grid, thrust_dir[i, :])
+        axs[0, 0].set_title("Thrust direction (R-T-N frame)")
+        
+        # Plot mass
+        axs[0, 1].set_title("Mass")
+        axs[0, 1].plot(t_grid, self.MASS * sol[-1][:, 6].T)
+        
+        # Plot mass costate
+        axs[1, 0].set_title("lm")
+        axs[1, 0].plot(sol[-1][:, 13].T)
+        
         # Plot Hamiltonian
-        all_pars = list(self.ta.pars) + [1.0, x[-2]]
+        all_pars = list(self.ta.pars) + [1., x[-2]]
         Ham = H_func(
             _np.ascontiguousarray(sol[-1].T),
             pars=_np.ascontiguousarray(_np.tile(all_pars, (N, 1)).T),
         )
-        axs[1, 0].set_title("Hamiltonian")
-        axs[1, 0].plot(t_grid, _np.squeeze(Ham))
-
-        # Plot switching function
-        SF = SF_func(
-            _np.ascontiguousarray(sol[-1].T),
-            pars=_np.ascontiguousarray(_np.tile(all_pars, (N, 1)).T),
-        )
-        axs[1, 1].set_title("Switching Function")
-        axs[1, 1].plot(t_grid, _np.squeeze(SF))
-        axs[1, 1].hlines(0, t_grid[0], t_grid[-1], "k")
+        axs[1, 1].set_title("Hamiltonian")
+        axs[1, 1].plot(t_grid, _np.squeeze(Ham))
 
         plt.tight_layout()
 
         return axs
-
 
 del _posvel0, _posvelf, _pl0, _plf

@@ -11,9 +11,6 @@ authors:
     orcid: 0000-0002-9846-8423
     equal-contrib: false
     affiliation: "1," # (Multiple affiliations must be quoted)
-  - name: Francesco Biscani
-    equal-contrib: false # (This is how you can denote equal contributions between multiple authors)
-    affiliation: 2
 affiliations:
  - name: European Space Agency's Advanced Concepts Team, The Netherlands
    index: 1
@@ -42,15 +39,15 @@ grown into a generic tool for the preliminary analysis of interplanetary traject
 Previous versions of the code were used internally to perform some preliminary analysis for the design of the 
 [Hera mission](https://www.heramission.space), the M-ARGO interplanetary cubesat concept,
 the preliminary analysis of the the initial concepts for the Titan and Enceladus Mission (TandEM) as well as the Laplace mission.
-At the core of the library are the necesarry building blocks to perform preliminary analysis of interplanetary trajectory design problems,
+At the core of the library are the necessary building blocks to perform a preliminary design of interplanetary trajectory design problems,
 with the aim to provide the general scientific community with a tool to prototype and test new ideas in the field of
-astrodynamics focussing on novel ideas rather than on on the implementation of the basic algorithms. Most
+astrodynamics focussing on novel ideas rather than on on the implementation of known algorithms. Most
 techniques implemented in the library are largely based on original research performed at the ACT, as well as on the state-of-the art
 algorithms available from the literature. A Lambert solver as well as low-thrust optimization algorithms (both based on direct and indirect methods)
 are available together with a number of approximate methods to estimate transfer costs. 
 The library interfaces to a number of open source projects providing relevant functionalities including [spicepy](https://spiceypy.readthedocs.io/en/stable/) for interfacing to JPL SPICE,
 [SGP4](https://pypi.org/project/sgp4/) to get standard Low Earth Orbit orbits, 
-[Heyoka](https://bluescarni.github.io/heyoka.py/) to perform efficient Taylor integration and [pygmo](https://esa.github.io/pygmo2/) to interface to state-of-the art optimization routines.
+[Heyoka](https://bluescarni.github.io/heyoka.py/) to perform efficient Taylor integration and [pygmo](https://esa.github.io/pygmo2/) to interface to state-of-the art optimization algorithms.
 
 # Mathematics
 
