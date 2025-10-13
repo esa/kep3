@@ -507,6 +507,9 @@ class pontryagin_equinoctial_time:
         self.ta = _pk.ta.get_peq(taylor_tolerance, _pk.optimality_type.TIME)
         self.ta_var = _pk.ta.get_peq_var(taylor_tolerance_var, _pk.optimality_type.TIME)
         self.ic_var = _deepcopy(self.ta_var.state[14:])
+        
+        # Compiled functions
+        self.dyn_func = _pk.ta.get_peq_dyn_cfunc(_pk.optimality_type.TIME)
 
         # We store the units
         self.MASS = MASS
@@ -561,8 +564,8 @@ class pontryagin_equinoctial_time:
         ceq += [self.ta.state[2] - self.eqf[2]]
         ceq += [self.ta.state[3] - self.eqf[3]]
         ceq += [self.ta.state[4] - self.eqf[4]]
-        # If no number of revolution has been selected we can use this form of the constraint to let the 
-        # optimizer fall into one. As of 2025 (end) I think this option should be removed, as I no longer see its utility.
+        # If no number of revolutions has been selected we can use this form of the constraint to let the 
+        # optimizer fall into one. As of 2025 (end) I (Dario) think this option should be removed, as I no longer see its utility.
         if self.n_rev < 0:
             ceq += [
                 2.0 - 2.0 * _np.cos(self.ta.state[5] - self.eqf[5])
@@ -576,36 +579,45 @@ class pontryagin_equinoctial_time:
             ceq += [sum([it * it for it in x[:8]]) - 1.0]  # |lambdas|^2 = 1
         return [1.0] + ceq
 
-    #def gradient(self, x):
-    #    # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
-    #    # Single Shooting of variational equations
-    #    self.set_ta_var_state(x)
-    #    self.ta_var.propagate_until(self.tof)
-    #    # Assembling the gradient
-    #    # Fitness (sparsity takes care of the fitness since it does not depend on the dv)
-    #    retval = []
-    #    if self.lambda0 == None:
-    #        final_idx = 8
-    #    else:
-    #        final_idx = 7
-    #    # Constraints (p,f,g,h,k)
-    #    for i in range(5):
-    #        sl = self.ta_var.get_vslice(order=1, component=i)
-    #        retval.extend(list(self.ta_var.state[sl])[:final_idx])
-    #    # Constraints (L) (we account for the differently written constraint in case the number of revs is fixed or free)
-    #    sl = self.ta_var.get_vslice(order=1, component=5)
-    #    tmp = self.ta_var.state[sl]
-    #    if self.n_rev < 0.0:
-    #        tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
-    #    retval.extend(list(tmp)[:final_idx])
-    #    # Constraint on mass
-    #    sl = self.ta_var.get_vslice(order=1, component=13)
-    #    retval.extend(list(self.ta_var.state[sl])[:final_idx])
-    #    if self.lambda0 == None:
-    #        # Norm constraint
-    #        for item in x:
-    #            retval.extend([2 * item])
-    #    return retval
+    def gradient(self, x):
+        # x = [lx, ly, lz, lvx, lvy, lvz, lm, (l0), tof]
+        # Single Shooting of variational equations
+        self.set_ta_var_state(x)
+        self.ta_var.propagate_until(x[-1])
+        # Assembling the gradient
+        # Nothing for the Fitness (sparsity takes care of the fitness: since it does not depend on the decision vector, the sparsity pattern will not contain [0,..])
+        
+        # When lambda is not selected we need to account for a different indexing
+        retval = []
+        dyn = self.dyn_func(self.ta_var.state[:14], pars=self.ta_var.pars[:3])
+        dLdt = 
+
+        if self.lambda0 == None:
+            final_idx = 8
+        else:
+            final_idx = 7
+            
+        
+
+        # Constraints (p,f,g,h,k)
+        for i in range(5):
+            sl = self.ta_var.get_vslice(order=1, component=i)
+            retval.extend(list(self.ta_var.state[sl])[:final_idx]) # ta_var has pars [p,f,g,h,k,L,l0] even though l0 does not influence the dynamics.
+            retval.extend()
+        # Constraints (L) (we account for the differently written constraint in case the number of revs is fixed or free)
+        sl = self.ta_var.get_vslice(order=1, component=5)
+        tmp = self.ta_var.state[sl]
+        if self.n_rev < 0.0:
+            tmp = 2 * _np.sin(self.ta_var.state[5] - self.eqf[5]) * tmp
+        retval.extend(list(tmp)[:final_idx])
+        # Constraint on mass
+        sl = self.ta_var.get_vslice(order=1, component=13)
+        retval.extend(list(self.ta_var.state[sl])[:final_idx])
+        if self.lambda0 == None:
+            # Norm constraint
+            for item in x:
+                retval.extend([2 * item])
+        return retval
 
     #def gradient_sparsity(self):
     #    retval = []
