@@ -88,6 +88,30 @@ class epoch_test(_ut.TestCase):
         self.assertTrue(ep1 == ep2 - 1)
         self.assertTrue(ep2 == ep1 + 1)
 
+    def test_pickling(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.epoch(1.)
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
+        
+
 class my_udpla:
     def eph(self, ep):
         return [[1.,0.,0.],[0.,1.,0.]]
@@ -101,6 +125,8 @@ class my_udpla_malformed1:
         return [[1.,0.,0.],[0.,1.,0.]]
     
 class my_udpla_with_optionals:
+    def __init__(self, period):
+        self.T = period
     def eph(self, ep):
         # Some weird return value just to make it not constant
         return [[ep,0.,0.],[0.,1.,0.]]
@@ -111,7 +137,9 @@ class my_udpla_with_optionals:
     def elements(self, ep, el_type ):
         return [1.,2.,3.,4.,5.,6.]
     def period(self, mjd2000):
-        return 3.14
+        return self.T
+    def get_name(self):
+        return f"{self.T}"
     
 class planet_test(_ut.TestCase):
     def test_planet_construction(self):
@@ -164,7 +192,7 @@ class planet_test(_ut.TestCase):
         import pykep as pk
         import numpy as np
         # Testing eph_v
-        udpla = my_udpla_with_optionals()
+        udpla = my_udpla_with_optionals(3.14)
         pla = pk.planet(udpla)
         self.assertTrue(pla.elements(0.) == [1.,2.,3.,4.,5.,6.])
         r0, v0 = pla.eph(0.)
@@ -178,6 +206,29 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla.elements() == [1.,2.,3.,4.,5.,6.])
         self.assertTrue(pla.elements(when = 0.) == [1.,2.,3.,4.,5.,6.])
         self.assertTrue(pla.elements(when = pk.epoch(0.)) == [1.,2.,3.,4.,5.,6.])
+
+    def test_pickling(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.planet(my_udpla_with_optionals(1.23))
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
 
 class py_udplas_test(_ut.TestCase):
     def test_tle(self):
@@ -395,6 +446,39 @@ class sims_flanagan_test(_ut.TestCase):
         a_grad[state_length:, state_length:state_length+throttle_length] = a_tc_grad
         self.assertTrue(np.allclose(num_grad, a_grad, atol=1e-8))
 
+    def test_pickling(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.leg.sims_flanagan()
+        data.cut = 0.5
+        data.throttles = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        data.rvs = np.array([[1, 0.1, -0.1], [0.2, 1.0, -0.2]])
+        data.ms = 1
+        data.rvf = np.array([[1.2, -0.1, 0.1], [-0.2, 1.023, -0.44]])
+        data.mf = 13 / 15
+        data.max_thrust = 1
+        data.mu = 1
+        data.veff = 1
+        data.tof = 1
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
+
 class sims_flanagan_hf_test(_ut.TestCase):
     def test_comparison_sf_and_sf_hf(self):
         import pykep as pk
@@ -489,6 +573,40 @@ class sims_flanagan_hf_test(_ut.TestCase):
         a_grad[0:state_length, state_length*2+throttle_length] = grad_final[:, throttle_length:throttle_length + 1].reshape(7,)
         a_grad[state_length:, state_length:state_length+throttle_length] = a_tc_grad
         self.assertTrue(np.allclose(num_grad, a_grad, atol=1e-8))
+
+    def test_pickling(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.leg.sims_flanagan_hf()
+        data.cut = 0.5
+        data.throttles = np.array([0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24,
+        0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3, 0.31, 0.32, 0.33, 0.34])
+        data.rvs = np.array([[1, 0.1, -0.1], [0.2, 1.0, -0.2]])
+        data.ms = 1
+        data.rvf = np.array([[1.2, -0.1, 0.1], [-0.2, 1.023, -0.44]])
+        data.mf = 13 / 15
+        data.max_thrust = 1
+        data.mu = 1
+        data.veff = 1
+        data.tof = 1
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
         
 class propagators_test(_ut.TestCase):
     def test_intermodule(self):
