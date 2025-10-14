@@ -502,7 +502,7 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
     <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
     <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
-    <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+    <span class="n">veff</span><span class="o">=</span><span class="mi">3000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">G0</span><span class="p">,</span>
     <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
     <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">],</span>
     <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
@@ -515,7 +515,7 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
     <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
     <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
-    <span class="n">isp</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+    <span class="n">veff</span><span class="o">=</span><span class="mi">3000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">G0</span><span class="p">,</span>
     <span class="n">tof_bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
     <span class="n">mf_bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">200.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">],</span>
     <span class="n">nseg</span><span class="o">=</span><span class="n">nseg</span><span class="p">,</span>
@@ -567,7 +567,7 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/42008612a1329165223a9fd1794d68c90873a5096831157c380fcab7c024af13.png" src="../_images/42008612a1329165223a9fd1794d68c90873a5096831157c380fcab7c024af13.png" />
+<img alt="../_images/46b78407d36040b186515a31a5205df207484c8ac4e4cb7f1ebb15053824a23c.png" src="../_images/46b78407d36040b186515a31a5205df207484c8ac4e4cb7f1ebb15053824a23c.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -609,14 +609,14 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 2000/2000 [04:06&lt;00:00,  8.13it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 2000/2000 [1:57:55&lt;00:00,  3.54s/it]    
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 5.6576e-02s
-No Gradient: 5.9454e-02s
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 2.7463e-01s
+No Gradient: 2.7796e-01s
 
-Gradient (n.fails): 208
-No Gradient (n.fails): 206
+Gradient (n.fails): 192
+No Gradient (n.fails): 189
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
