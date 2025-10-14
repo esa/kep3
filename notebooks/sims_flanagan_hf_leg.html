@@ -589,7 +589,7 @@ Parameters              : [0, 0, 0, 0, 0]
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fcfc7781ced17b4a45714af190b1fb7b155cca095bf1a5822f4ae47b8ece984d.png" src="../_images/fcfc7781ced17b4a45714af190b1fb7b155cca095bf1a5822f4ae47b8ece984d.png" />
+<img alt="../_images/11a62832160d4c8740b4c184b1ec12f8d9fa655b69cbeed1e1d42009a0ffa13c.png" src="../_images/11a62832160d4c8740b4c184b1ec12f8d9fa655b69cbeed1e1d42009a0ffa13c.png" />
 </div>
 </div>
 </section>
@@ -838,7 +838,7 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d597405880a4cfe68a8d4e65d22874d3b8c1e8fbdd88f1dadd5a1e811e2252ea.png" src="../_images/d597405880a4cfe68a8d4e65d22874d3b8c1e8fbdd88f1dadd5a1e811e2252ea.png" />
+<img alt="../_images/33d3d34f77e44770f1e618fb68870a53b05d15ea7f13b73fad7e523e3b256b55.png" src="../_images/33d3d34f77e44770f1e618fb68870a53b05d15ea7f13b73fad7e523e3b256b55.png" />
 </div>
 </div>
 </section>
@@ -939,8 +939,8 @@ Check gradient of mc wrt u:   True
 <span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="c1"># ensures pagmo consider feasible constraint at this level (this is NOT changing SNOPT behaviour)</span>
 
 <span class="c1"># Algorithm</span>
-<span class="c1">#snopt72 = &quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
-<span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
+<span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
+<span class="c1">#snopt72 = &quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
 <span class="c1"># Activate screen output here to see what the SQP solver is doing</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">3500</span><span class="p">)</span>
@@ -971,12 +971,12 @@ Check gradient of mc wrt u:   True
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.702380219162
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.9523380494819209
 Transfer time:  15.0
-Feasibility:  0.574999456059
+Feasibility:  2.9033599489943893e-08
 </pre></div>
 </div>
-<img alt="../_images/57bb39b8cbf4d9a1477428f260eb2b0b6d8533f6633a95ba345e0905fd4ecf03.png" src="../_images/57bb39b8cbf4d9a1477428f260eb2b0b6d8533f6633a95ba345e0905fd4ecf03.png" />
+<img alt="../_images/c2de67342abddc4dcd7b0f20ee7ae448cccd48c534fe04720c498d9798c5ff3e.png" src="../_images/c2de67342abddc4dcd7b0f20ee7ae448cccd48c534fe04720c498d9798c5ff3e.png" />
 </div>
 </div>
 </section>
@@ -1040,55 +1040,8 @@ Feasibility:  0.574999456059
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.55276328450279788
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
-    <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
-    <span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pop</span><span class="o">.</span><span class="n">champion_f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span> <span class="mf">0.97</span><span class="p">:</span>
-            <span class="k">break</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9577693376520025, 2.7591078790100513e-07
-0.9522004564482348, 4.3857911616309804e-08
-0.9523170432472177, 1.2203780182075033e-08
-0.9669911466576542, 1.3130708277853673e-08
-0.9541984845512791, 4.949575519596202e-07
-0.9522698624434427, 6.180347676184902e-08
-0.9523341681149741, 2.8965476229862366e-08
-0.9523380938970615, 5.4430773066174426e-08
-0.952304012313531, 3.5039231854616343e-09
-0.6463524868386623, 6.0732262104787515e-09
-0.9522194438942301, 1.0034133455068918e-08
-0.95041198129228, 2.6799413340676307e-10
-0.9570591541651174, 1.6048735189261368e-09
-0.9523379340077337, 5.344843320803091e-08
-0.9672314455088733, 5.508248571390954e-07
-0.952337860926775, 2.7567865283998857e-07
-0.6463525119756856, 1.592713967428314e-07
-0.9515285857622272, 3.914017358962119e-08
-0.9523380446079853, 6.078633909452506e-09
-0.9522849129952831, 1.6800706801766615e-07
-0.948726077288913, 6.031807842010098e-12
-0.952330070448648, 1.555536459649651e-07
-0.9522912193286862, 1.3787207900912312e-08
-0.9585120919268082, 1.0462398184310548e-07
-0.9837407082269952, 2.4959347602709045e-07
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1103,29 +1056,12 @@ Feasibility:  0.574999456059
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.983740708227
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final mass:  0.952336887905058
 Transfer time:  15.0
-Feasibility:  2.51763032299e-07
+Feasibility:  6.152208152684527e-08
 </pre></div>
 </div>
-<img alt="../_images/03f017a00a7d39f15ac37473ec6ae15290cbf57a9c453bdc1279b273ecbe8033.png" src="../_images/03f017a00a7d39f15ac37473ec6ae15290cbf57a9c453bdc1279b273ecbe8033.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_thrust</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">max_thrust</span>
-
-<span class="ne">NameError</span>: name &#39;max_thrust&#39; is not defined
-</pre></div>
-</div>
+<img alt="../_images/882bd11bf081ec9dfdf31e71a80706bd511eb4c80d6dd77011bc21c631540e84.png" src="../_images/882bd11bf081ec9dfdf31e71a80706bd511eb4c80d6dd77011bc21c631540e84.png" />
 </div>
 </div>
 </section>
