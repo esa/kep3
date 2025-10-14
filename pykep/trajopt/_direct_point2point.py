@@ -38,7 +38,7 @@ class direct_point2point:
         ms=1000,
         mu=_pk.MU_SUN,
         max_thrust=0.12,
-        isp=3000,
+        veff=3000*_pk.G0,
         tof_bounds=[80, 400],
         mf_bounds=[200.0, 1000.0],
         nseg=10,
@@ -87,7 +87,7 @@ class direct_point2point:
         self.leg.ms = ms
         self.leg.rvf = rvf
         self.leg.max_thrust = max_thrust
-        self.leg.isp = isp
+        self.leg.veff = veff
         self.leg.mu = mu
         self.leg.cut = cut
         
