@@ -226,6 +226,7 @@ PYBIND11_MODULE(core, m) // NOLINT
              [](kep3::epoch ep, double dt) { return ep - std::chrono::duration<double, std::ratio<86400>>(dt); })
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
 
+   
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{}, pykep::planet_docstring().c_str());
     // Expose extract.
