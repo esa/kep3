@@ -353,7 +353,7 @@ PYBIND11_MODULE(core, m) // NOLINT
                                "The Battin variable x along the time of flight curves.")
         .def_property_readonly("iters", &kep3::lambert_problem::get_iters, "The number of iterations made.")
         .def_property_readonly("Nmax", &kep3::lambert_problem::get_Nmax, "The maximum number of iterations allowed.")
-        .def_property_readonly("Nmax", &kep3::lambert_problem::get_cw, "The clockwise parameter.");
+        .def_property_readonly("cw", &kep3::lambert_problem::get_cw, "The clockwise parameter.");
 
     // Exposing Taylor adaptive propagators
     // Create submodule "ta_cxx"
