@@ -38,7 +38,7 @@ const std::array<double, 3> lambert_problem::default_r1 = {{0.0, 1.0, 0.0}};
 lambert_problem::lambert_problem(const std::array<double, 3> &r0_a, const std::array<double, 3> &r1_a,
                                  double tof, // NOLINT
                                  double mu, bool cw, unsigned multi_revs)
-    : m_r0(r0_a), m_r1(r1_a), m_tof(tof), m_mu(mu), m_has_converged(true), m_multi_revs(multi_revs)
+    : m_r0(r0_a), m_r1(r1_a), m_tof(tof), m_mu(mu), m_has_converged(true), m_multi_revs(multi_revs), m_cw(cw)
 {
     // 0 - Sanity checks
     if (tof <= 0) {
@@ -374,6 +374,16 @@ const double &lambert_problem::get_mu() const
 const std::vector<unsigned> &lambert_problem::get_iters() const
 {
     return m_iters;
+}
+
+/// Gets cw
+/**
+ *
+ * \return a bool indicating the clockwise option
+ */
+const bool &lambert_problem::get_cw() const
+{
+    return m_cw;
 }
 
 /// Gets N_max

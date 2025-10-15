@@ -92,6 +92,7 @@ TEST_CASE("methods")
     REQUIRE(kep3_tests::floating_point_error(lp.get_x()[0], -0.3826834323650896) < 1e-13);
     REQUIRE(lp.get_iters()[0] == 3u);
     REQUIRE(lp.get_Nmax() == 0u);
+    REQUIRE(lp.get_cw() == true);
 }
 
 TEST_CASE("serialization_test")
