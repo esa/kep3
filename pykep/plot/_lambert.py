@@ -40,30 +40,23 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
     v0 = lp.v0[sol]
     r1 = lp.r1
     mu = lp.mu
-    
-    #Compute the magnitudes of the vectors
-    norm_r1 = _np.linalg.norm(r0)
-    norm_r2 = _np.linalg.norm(r1)
-    
-    # Compute the dot product
-    dot_product = _np.dot(r0, r1)
-    
-    # Compute the angle using the dot product (gives the cosine of the angle)
-    cos_theta = dot_product / (norm_r1 * norm_r2)
-    
-    # Compute the angle in radians (clipped to avoid domain errors due to floating point precision)
-    theta = _np.arccos(_np.clip(cos_theta, -1.0, 1.0))
-      
-    # Assuming motion is in the xy-plane (i.e., third component z gives the direction)
-    if lp.cw:  # The motion is clockwise
-        theta = 2 * _np.pi - theta  # Adjust the angle to account for counterclockwise motion
-    
+
     # We define the integration grid
     if sol == 0:
+        # We have the problem of computing, in the direction of motion, 
+        # the true anomaly difference between the starting and the final point
+        # The folloiwng works in many tested geometries
+        h_unit = _np.cross(r0, v0)
+        h_unit /= _np.linalg.norm(_np.cross(r0, v0))
+        cross_r0_r1 = _np.cross(r0, r1)
+        dot_r0_r1 = _np.dot(r0, r1)
+        theta = _np.arctan2(_np.dot(h_unit, cross_r0_r1), dot_r0_r1) # in [-pi,pi]
+        if theta < 0:
+            theta += 2 * _np.pi # in [0 2pi]
         thetagrid = _np.linspace(0, theta, N)
     else:
         thetagrid = _np.linspace(0, 2 * _np.pi, N)
-
+        
     # Compute the posvel at all points
     res = _pk.plot.propagate_lagrangian_theta_v(
         rv=[r0, v0], thetas=thetagrid, mu=mu, stm=False
