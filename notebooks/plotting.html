@@ -595,26 +595,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">14</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_planet_orbit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">mars</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;indianred&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="c1"># Here we add the Lambert arc</span>
-<span class="ne">---&gt; </span><span class="mi">14</span> <span class="n">pk</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">add_lambert</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">sol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="c1"># Some cosmetics to customize the plot</span>
-<span class="g g-Whitespace">     </span><span class="mi">17</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-
-<span class="nn">File ~/local/lib/python3.13/site-packages/pykep/plot/_lambert.py:58,</span> in <span class="ni">add_lambert</span><span class="nt">(ax, lp, N, sol, units, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">cos_theta</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-<span class="nn">     57 # Assuming motion is</span> in <span class="ni">the xy-plane </span><span class="nt">(i.e., third component z gives the direction)</span>
-<span class="ne">---&gt; </span><span class="mi">58</span> <span class="k">if</span> <span class="n">lp</span><span class="o">.</span><span class="n">cw</span><span class="p">:</span>  <span class="c1"># The motion is clockwise</span>
-<span class="g g-Whitespace">     </span><span class="mi">59</span>     <span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span>  <span class="c1"># Adjust the angle to account for counterclockwise motion</span>
-<span class="g g-Whitespace">     </span><span class="mi">61</span> <span class="c1"># We define the integration grid</span>
-
-<span class="ne">AttributeError</span>: &#39;pykep.core.lambert_problem&#39; object has no attribute &#39;cw&#39;
-</pre></div>
-</div>
-<img alt="../_images/7600d717d701b75d23c22297518a5a4e95d32eb78f83570fb48e05ce35c56e3d.png" src="../_images/7600d717d701b75d23c22297518a5a4e95d32eb78f83570fb48e05ce35c56e3d.png" />
+<img alt="../_images/3e4b1ef971672ba8f65f286d6888458deccb1aff1273c0d51d2df87e509fdf5a.png" src="../_images/3e4b1ef971672ba8f65f286d6888458deccb1aff1273c0d51d2df87e509fdf5a.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -660,7 +641,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/653c11f657cbaaf060e43b548ed234663d7cfcdf41089918caf48c54e08a7d48.png" src="../_images/653c11f657cbaaf060e43b548ed234663d7cfcdf41089918caf48c54e08a7d48.png" />
+<img alt="../_images/8c51a64202979004f4fd54e37e44b7cda8e118136f3b27878f07d9cb67d8556e.png" src="../_images/8c51a64202979004f4fd54e37e44b7cda8e118136f3b27878f07d9cb67d8556e.png" />
 </div>
 </div>
 </section>
@@ -704,7 +685,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0449e362088fcf5ffb0d6863c949d19a96d0604459f761486382222d2ac17d11.png" src="../_images/0449e362088fcf5ffb0d6863c949d19a96d0604459f761486382222d2ac17d11.png" />
+<img alt="../_images/badbe81a2af70f247022fda289cb8151eead00e4dda9e0ae324e89819d89ce97.png" src="../_images/badbe81a2af70f247022fda289cb8151eead00e4dda9e0ae324e89819d89ce97.png" />
 </div>
 </div>
 </section>
