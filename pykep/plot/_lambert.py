@@ -41,7 +41,7 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
     r1 = lp.r1
     mu = lp.mu
     
-#   Compute the magnitudes of the vectors
+    #Compute the magnitudes of the vectors
     norm_r1 = _np.linalg.norm(r0)
     norm_r2 = _np.linalg.norm(r1)
     
@@ -53,12 +53,9 @@ def add_lambert(ax, lp, N: int = 60, sol: int = 0, units=_pk.AU, **kwargs):
     
     # Compute the angle in radians (clipped to avoid domain errors due to floating point precision)
     theta = _np.arccos(_np.clip(cos_theta, -1.0, 1.0))
-    
-    # Compute the cross product to determine the direction
-    cross_product = _np.cross(r0, r1)
-    
+      
     # Assuming motion is in the xy-plane (i.e., third component z gives the direction)
-    if cross_product[2] < 0:  # If the z-component is negative, the motion is clockwise
+    if lp.cw:  # The motion is clockwise
         theta = 2 * _np.pi - theta  # Adjust the angle to account for counterclockwise motion
     
     # We define the integration grid

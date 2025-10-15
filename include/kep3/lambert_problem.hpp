@@ -61,6 +61,7 @@ public:
     [[nodiscard]] const std::vector<double> &get_x() const;
     [[nodiscard]] const std::vector<unsigned> &get_iters() const;
     [[nodiscard]] unsigned get_Nmax() const;
+    [[nodiscard]] const bool &get_cw() const;
 
 private:
     unsigned householder(double, double &, unsigned, double, unsigned) const;
@@ -87,6 +88,7 @@ private:
         ar & m_Nmax;
         ar & m_has_converged;
         ar & m_multi_revs;
+        ar & m_cw;
     }
 
     std::array<double, 3> m_r0, m_r1;
@@ -100,6 +102,7 @@ private:
     unsigned m_Nmax;
     bool m_has_converged;
     unsigned m_multi_revs;
+    bool m_cw;
 };
 
 } // namespace kep3
