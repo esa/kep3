@@ -207,7 +207,7 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla.elements(when = 0.) == [1.,2.,3.,4.,5.,6.])
         self.assertTrue(pla.elements(when = pk.epoch(0.)) == [1.,2.,3.,4.,5.,6.])
 
-    def test_pickling(self):
+    def test_pickling_python(self):
         import pickle
         import io
         import pykep as pk
@@ -228,6 +228,29 @@ class planet_test(_ut.TestCase):
         loaded_data = pickle.load(buffer)
 
         # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
+
+    def test_pickling_cpp(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.planet(pk.udpla.jpl_lp("earth"))
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same 
         self.assertTrue(loaded_data.__repr__()==data.__repr__())
 
 class py_udplas_test(_ut.TestCase):
@@ -685,8 +708,8 @@ def run_test_suite():
     suite = _ut.TestSuite()
     
     suite.addTest(tl.loadTestsFromTestCase(anomaly_conversions_tests))
-    suite.addTest(tl.loadTestsFromTestCase(planet_test))
     suite.addTest(tl.loadTestsFromTestCase(epoch_test))
+    suite.addTest(tl.loadTestsFromTestCase(planet_test))
     suite.addTest(tl.loadTestsFromTestCase(propagate_test))
     suite.addTest(tl.loadTestsFromTestCase(sims_flanagan_test))
     suite.addTest(tl.loadTestsFromTestCase(sims_flanagan_hf_test))
