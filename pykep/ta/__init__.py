@@ -9,3 +9,4 @@ from ..core.ta_cxx import *
 
 # Import your pure Python extras
 from ._zero_hold_eq import zero_hold_eq_dyn, get_zero_hold_eq, get_zero_hold_eq_var
+from ._zoh_kep import zoh_kep_dyn, get_zoh_kep, get_zoh_kep_var
