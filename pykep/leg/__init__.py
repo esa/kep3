@@ -37,3 +37,5 @@ sims_flanagan_hf_alpha.__module__ = "pykep.leg"
 
 # Removing core from the list of imported symbols.
 del _core
+
+from ._zoh import zoh

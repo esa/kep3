@@ -1,19 +1,19 @@
-import pykep as _pk
+import pykep as pk
 from pykep.trajopt import mga_1dsm as _mga_1dsm
 
 # MESSENGER (FULL) (we need to modify the safe radius of the planets to match the wanted problem)
-_earth = _pk.udpla.jpl_lp("earth")
-_venus = _pk.udpla.jpl_lp("venus")
+_earth = pk.udpla.jpl_lp("earth")
+_venus = pk.udpla.jpl_lp("venus")
 _venus.safe_radius = 1.1 * _venus.radius
-_mercury = _pk.udpla.jpl_lp("mercury")
+_mercury = pk.udpla.jpl_lp("mercury")
 _mercury.safe_radius = 1.05 * _mercury.radius
-_seq_messenger = [_pk.planet(_earth),
-                _pk.planet(_venus),
-                _pk.planet(_venus),
-                _pk.planet(_mercury),
-                _pk.planet(_mercury),
-                _pk.planet(_mercury),
-                _pk.planet(_mercury)]
+_seq_messenger = [pk.planet(_earth),
+                pk.planet(_venus),
+                pk.planet(_venus),
+                pk.planet(_mercury),
+                pk.planet(_mercury),
+                pk.planet(_mercury),
+                pk.planet(_mercury)]
 
 class _messenger_udp(_mga_1dsm):
     """

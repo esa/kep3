@@ -1,38 +1,32 @@
 import heyoka as _hy
 import numpy as _np
-from copy import deepcopy as _deepcopy
-
 
 def zoh_kep_dyn():
     """
     The dynamics in Cartesian coordinates of a constant thrust mass-varying spacecraft
-    orbiting a main central body.
-    
-    We consider the motion of a spacecraft of mass :math:`m` with a position 
-    :math:`\\mathbf{r}` and velocity :math:`\\mathbf{v}` subject only to a main body
-    gravitational attraction in some inertial reference frame. The spacecraft also
-    has an ion thruster characterized by :math:`v_{eff} = I_{sp}g_0` and thrusting as
-    :math:`\mathbf T = T [i_x, i_y, i_z]`. 
-    
-    The dynamics are thus given by:
-    
+    orbiting a main central body with unitary gravitational parameter :math:`\\mu = 1`.
+    The electric propulsion is characterized by its effective
+    exhaust velocity :math:`v_{eff} = I_{sp} g_0`.
+
+    The dynamics are given by:
+
     .. math::
+        \\left\\{
         \\begin{array}{l}
-        \\dot{\\mathbf r} = \\mathbf v \\\\
-        \\dot{\\mathbf v} = -\\frac{1}{r^3} \\mathbf r + \\frac{T}{m} \\mathbf {\\hat i} \\\\
-        \\dot m = - c T 
+        \\dot{\\mathbf{r}} = \\mathbf{v} \\\\
+        \\dot{\\mathbf{v}} = -\\frac{\\mathbf{r}}{r^3} + \\frac{T}{m} \\mathbf{\\hat{i}} \\\\
+        \\dot{m} = -c T
         \\end{array}
-        
-    where, :math:`c = \frac 1{v_{eff}}`. 
-    The gravitational parameter is assumed as unitary, all other quantities to be 
-    scaled accordingly.
+        \\right.
+
+    where :math:`c = \\frac{1}{v_{eff}}`, :math:`\\mathbf{\\hat{i}} = [i_x, i_y, i_z]`.
+
+    The state is: :math:`[x, y, z, v_x, v_y, v_z, m]`
     
-    State in heyoka is :math:`[x,y,z,vx,vy,vz,m]`
-    Parameters in heyoka are: :math:`[T, ix, iy, iz] + [c]`
-    
+    The system parameters are (in this order): :math:`[T, i_x, i_y, i_z] + [c]`
+
     Returns:
         :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(p, dp), ...]
-
     """
     # Estalishing the state
     x, y, z, vx, vy, vz, m = _hy.make_vars("x", "y", "z", "vx", "vy", "vz", "m")
@@ -72,37 +66,35 @@ def zoh_kep_dyn():
 # the same tolerance.
 _ta_zoh_kep_cache = dict()
 
-
 def get_zoh_kep(tol: float):
     """
-    Returns a Taylor adaptive propagator (Heyoka) for the zoh_kep_dyn dynamics retreiving
-    one from a global cache.
+    Returns a Taylor adaptive propagator (Heyoka) for the :func:`~pykep.ta.zoh_kep_dyn` dynamics
+    retrieving one from a global cache if available.
 
-    This is the initial value problem of a constant thrust mass-varying spacecraft orbiting a primary.
+    This solves the initial value problem of a constant thrust mass-varying spacecraft.
     Thrust direction is fixed in the inertial frame.
 
-    If the requested propagator was never created this will create it, else it will
-    return the one from the global cache (not a copy, user will need to copy it
-    if needed).
-
-    The dynamics is that returned by :func:`~pykep.ta.zoh_kep_dyn`.
-
     Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
 
     Returns:
         :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
 
     Examples:
-    >>> import pykep as pk
-    >>> ta = pk.ta.zoh_kep_dyn(tol = 1e-16)
-    >>> ta.time = 0.
-    >>> ta.state[:] = [1.2,0.1,0.1,0.1,1.,0.123,1.]
-    >>> veff = 1.32
-    >>> controls = [0.022, 0.023, -0.21, 0.1]
-    >>> tof = 1.23
-    >>> ta.pars[:] = controls + [1 / veff]
-    >>> ta.propagate_until(tof)
+        Import and setup::
+
+            import pykep as pk
+            veff = 1.32
+            controls = [0.022, 0.023, -0.21, 0.1]
+            tof = 1.23
+
+        Create propagator and propagate::
+
+            ta = pk.ta.get_zoh_kep(tol=1e-16)
+            ta.time = 0.
+            ta.state[:] = [1.2, 0.1, 0.1, 0.1, 1., 0.123, 1.]
+            ta.pars[:] = controls + [1 / veff]
+            ta.propagate_until(tof)
     """
     # Lookup.
     if _ta_zoh_kep_cache.get(tol) is None:
@@ -120,35 +112,38 @@ def get_zoh_kep(tol: float):
 
 _ta_zoh_kep_var_cache = dict()
 
-
 def get_zoh_kep_var(tol: float):
     """Returns a (order 1) variational Taylor adaptive propagator (Heyoka)
-    for the zoh_kep dynamics retreiving one from a global cache if possible.
+    for the :func:`~pykep.ta.zoh_kep_dyn` dynamics retrieving one from
+    a global cache if available.
 
-    .. note:
-    Variations are only considered with repsect to initial conditions and the
-    thrust parameters :math:`[T, i_x, i_y, i_z]`.
-
-    The dynamics is that returned as expressions by :func:`~pykep.ta.zoh_kep_dyn`
-    and also used in the non variational version returend by :func:`~pykep.ta.get_zoh_kep`
+    .. note::
+       Variations are only considered with respect to initial conditions and the
+       thrust parameters :math:`[T, i_x, i_y, i_z]`.
 
     Args:
-        *tol* (:class:`float`): the tolerance of the variational Taylor adaptive propagator.
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator. 
 
     Returns:
-        :class:`hy::taylor_adaptive`: The variational Taylor adaptive propagator.
+        :class:`hy::taylor_adaptive`: The Taylor adaptive variational propagator.
 
     Examples:
-    >>> import pykep as pk
-    >>> veff = 1.32
-    >>> controls = [0.022, 0.023, -0.21, 0.1]
-    >>> tof = 1.23
-    >>> ta = pk.ta.get_zoh_kep_var(tol = 1e-16)
-    >>> ta.time = 0.
-    >>> ta.state[:7] = [1.2,0.1,0.1,0.1,1.,0.123,1.]
-    >>> ta.pars[:] = controls + [1 / veff]
-    >>> ta.propagate_until(tof)
+        Import and setup::
+
+            import pykep as pk
+            veff = 1.32
+            controls = [0.022, 0.023, -0.21, 0.1]
+            tof = 1.23
+
+        Create propagator and propagate::
+
+            ta = pk.ta.get_zoh_kep_var(tol=1e-16)
+            ta.time = 0.
+            ta.state[:7] = [1.2, 0.1, 0.1, 0.1, 1., 0.123, 1.]
+            ta.pars[:] = controls + [1 / veff]
+            ta.propagate_until(tof)
     """
+
     # Lookup.
     if _ta_zoh_kep_var_cache.get(tol) is None:
         # Cache miss, create new one.
@@ -168,4 +163,4 @@ def get_zoh_kep_var(tol: float):
         return new_ta
     else:
         # Cache hit, return existing.
-        return _ta_zoh_kep_var_cache[tol]
+        return _ta_zoh_kep_var_cache[tol] 

@@ -2090,16 +2090,16 @@ Returns:
 
 std::string get_bcp_docstring()
 {
-    return R"(ta.get_cbp(tol)
+    return R"(ta.get_bcp(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-If the requested propagator was never created, a call to this function will trigger its creation, else it will
-return the one from a global cache, thus avoiding jitting.
+Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) dynamics
+retrieving one from a global cache (making a copy).
 
-In `pykep`, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-is on the :math:`x` axis at time zero.
+If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).
 
-The specific dynamics used is that returned by :func:`~pykep.ta.cbp_dyn`.
+The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the :math:`x` axis at :math:`t=0`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
@@ -2108,56 +2108,71 @@ Returns:
     :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
 
 Examples:
-  >>> import pykep as pk
-  >>> ta = pk.ta.get_bcp(tol = 1e-16)
-  >>> ta.time = 0.
-  >>> ta.state[:] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
-  >>> mu = pk.CR3BP_MU
-  >>> mu_s = pk.BCP_MU_S
-  >>> rho_s = pk.BCP_RHO_S
-  >>> rho_p = pk.BCP_RHO_S
-  >>> tof = 5.7856656782589234
-  >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
-  >>> ta.propagate_until(tof)
+    Import and setup::
+
+        import pykep as pk
+        ta = pk.ta.get_bcp(tol=1e-16)
+        ta.time = 0.
+        ta.state[:] = [1.01238082345234, -0.0423523523454, 0.22634376321, 
+                      -0.1232623614, 0.123462698209365, 0.123667064622]
+        mu = pk.CR3BP_MU
+        mu_s = pk.BCP_MU_S
+        rho_s = pk.BCP_RHO_S
+        rho_p = pk.BCP_RHO_S
+        tof = 5.7856656782589234
+
+    Create propagator and propagate::
+
+        ta.pars[:] = [mu, mu_s, rho_s, rho_p]
+        ta.propagate_until(tof)
 )";
 }
 
+
 std::string get_bcp_var_docstring()
 {
-    return R"(ta.get_cbp_var(tol)
-    
-    Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-    If the requested propagator was never created, a call to this function will trigger its creation, else it will
-    return the one from a global cache, thus avoiding jitting.
-    
-    .. note:
-       Variations are only considered with respect to initial conditions.
-       
-    In `pykep`, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-    is on the :math:`x` axis at time zero.
+    return R"(ta.get_bcp_var(tol:float)
 
-    The specific dynamics used is that returned by :func:`~pykep.ta.cbp_dyn`.
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the 
+Bicircular Problem (BCP) dynamics retrieving one from a global cache (making a copy).
 
-    Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
+If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).
 
-    Returns:
-        :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+.. note::
+   Variations are only considered with respect to initial conditions.
 
-    Examples:
-      >>> import pykep as pk
-      >>> ta = pk.ta.get_bcp_var(tol = 1e-16)
-      >>> ta.time = 0.
-      >>> ta.state[:6] = [1.01238082345234, -0.0423523523454,  0.22634376321, -0.1232623614,    0.123462698209365, 0.123667064622]
-      >>> mu = pk.CR3BP_MU
-      >>> mu_s = pk.BCP_MU_S
-      >>> rho_s = pk.BCP_RHO_S
-      >>> rho_p = pk.BCP_RHO_S
-      >>> tof = 5.7856656782589234
-      >>> ta.pars[:] = [mu, mu_s, rho_s, rho_p]
-      >>> ta.propagate_until(tof)
-    )";
+The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the :math:`x` axis at :math:`t=0`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the variational Taylor adaptive propagator.
+
+Returns:
+    :class:`hy::taylor_adaptive`: The variational Taylor adaptive propagator.
+
+Examples:
+    Import and setup::
+
+        import pykep as pk
+        ta = pk.ta.get_bcp_var(tol=1e-16)
+        ta.time = 0.
+        ta.state[:6] = [1.01238082345234, -0.0423523523454, 0.22634376321, 
+                       -0.1232623614, 0.123462698209365, 0.123667064622]
+        mu = pk.CR3BP_MU
+        mu_s = pk.BCP_MU_S
+        rho_s = pk.BCP_RHO_S
+        rho_p = pk.BCP_RHO_S
+        tof = 5.7856656782589234
+
+    Create propagator and propagate::
+
+        ta.pars[:] = [mu, mu_s, rho_s, rho_p]
+        ta.propagate_until(tof)
+)";
 }
+
+
 std::string bcp_dyn_docstring()
 {
     return R"(cbp_dyn()

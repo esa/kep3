@@ -6,7 +6,7 @@
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import numpy as _np
-import pykep as _pk
+import pykep as pk
 import heyoka as _hy
 
 
@@ -29,7 +29,7 @@ class direct_cr3bp:
         pls=[[-0.1, 0.0, 0.0], [0.0, -0.1, 0.0]],
         plf=[[1, 0.0, 0.0], [0.0, +0.1, 0.0]],
         ms=1,
-        mu=_pk.MU_MOON/(_pk.MU_EARTH+_pk.MU_MOON),
+        mu=pk.MU_MOON/(pk.MU_EARTH+pk.MU_MOON),
         max_thrust=0.1,
         veff=30,
         t0_bounds=[0.0, 2*_np.pi],
@@ -44,8 +44,8 @@ class direct_cr3bp:
         v_scaling=1.0,
         with_gradient=True,
         high_fidelity=False,
-        tas = (_pk.ta.get_zero_hold_kep(1e-16),
-                       _pk.ta.get_zero_hold_kep_var(1e-16))
+        tas = (pk.ta.get_zero_hold_kep(1e-16),
+                       pk.ta.get_zero_hold_kep_var(1e-16))
     ):
         """direct_cr3bp(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
 
@@ -89,7 +89,7 @@ class direct_cr3bp:
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
         if high_fidelity:
-            self.leg = _pk.leg.sims_flanagan_hf(
+            self.leg = pk.leg.sims_flanagan_hf(
                 tas = tas
             )
         else:
@@ -378,7 +378,7 @@ class direct_cr3bp:
         sf = self.leg
         # Making the axis
         if ax is None:
-            ax = _pk.plot.make_3Daxis(figsize=(7, 7))
+            ax = pk.plot.make_3Daxis(figsize=(7, 7))
             
         rs, _ = sf.rvs
         rf, _ = sf.rvf
@@ -429,7 +429,7 @@ class direct_cr3bp:
 
         # Plotting the trajctory leg
         if self.high_fidelity:
-            ax = _pk.plot.add_sf_hf_leg(
+            ax = pk.plot.add_sf_hf_leg(
                 ax,
                 sf,
                 units=units,
