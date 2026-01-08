@@ -56,7 +56,7 @@ def zoh_eq_dyn():
         \\end{bmatrix}^T
 
     Returns:
-        list[tuple[hy.expression, hy.expression]]: The dynamics in form `[(p, dp), ...]`
+        :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(p, dp), ...]
     """
 
     # The state
@@ -128,9 +128,8 @@ def get_zoh_eq(tol: float):
         Import and setup::
 
             import pykep as pk
-            mu = 1.122
             veff = 1.32
-            thrust = [0.23, 0.21, 0.1]
+            controls = [0.022, 0.023, -0.21, 0.1]
             tof = 1.23
 
         Create propagator and propagate::
@@ -138,7 +137,7 @@ def get_zoh_eq(tol: float):
             ta = pk.ta.get_zoh_eq(tol=1e-16)
             ta.time = 0.
             ta.state[:] = [1.2, 0.1, 0.1, 0.1, 1., 0.123, 1.]
-            ta.pars[:] = [mu, veff] + thrust
+            ta.pars[:] = controls + [1 / veff]
             ta.propagate_until(tof)
     """
 
@@ -163,9 +162,8 @@ def get_zoh_eq_var(tol: float):
     :func:`~pykep.ta.zoh_eq_dyn` dynamics retrieving one from a global cache if available.
 
     .. note::
-       Variations are only considered w.r.t. initial conditions and constant thrust 
-       :math:`T_r, T_t, T_n`. Variations w.r.t. thrust differ from throttles 
-       :math:`\\mathbf{T} = T_{max} \\mathbf{u}` by factor :math:`T_{max}`.
+       Variations are only considered with respect to initial conditions and the
+       thrust parameters :math:`[T, i_x, i_y, i_z]`.
 
     Args:
         *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator. 
@@ -177,17 +175,16 @@ def get_zoh_eq_var(tol: float):
         Import and setup::
 
             import pykep as pk
-            mu = 1.
-            veff = 1.
-            thrust = [0., 0., 1e-22]
-            tof = 1.
+            veff = 1.32
+            controls = [0.022, 0.023, -0.21, 0.1]
+            tof = 1.23
 
         Create propagator and propagate::
 
             ta = pk.ta.get_zoh_eq_var(tol=1e-16)
             ta.time = 0.
             ta.state[:] = [1., 0., 0., 0., 1., 0., 1.]
-            ta.pars[:5] = [mu, veff] + thrust
+            ta.pars[:] = controls + [1 / veff]
             ta.propagate_until(tof)
     """
 

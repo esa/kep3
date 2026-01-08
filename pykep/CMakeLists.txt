@@ -9,7 +9,8 @@ set(PYKEP_PYTHON_FILES
     test.py 
     test_trajopt.py 
     test_utils.py 
-    test_sims_flanagan.py)
+    test_sims_flanagan.py
+    test_zoh.py)
 
 
 # Core module.

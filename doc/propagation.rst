@@ -25,7 +25,6 @@ Keplerian
 Taylor adaptive propagators
 -----------------------------
 
-
 In addition to the above mentioned propagators,
 Taylor adaptive integrators are offered in `pykep` wrapping some of the functionalities of
 `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` python package.
@@ -78,7 +77,7 @@ Introduced by Simo' et al. in his '97 paper :cite:p:`simo1995bicircular`.
     
 .. autofunction:: get_bcp_var
 
-.. autofunction:: bcp_dyn
+.. autofunction:: bcp_dyn 
 
 Zero Hold Keplerian Propagator in Cartesian coordinates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

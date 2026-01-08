@@ -6,19 +6,16 @@ def zoh_cr3bp_dyn():
     The dynamics of a fixed thrust mass-varying spacecraft orbiting two main bodies
     in circular relative motion (circular restricted three-body problem, CR3BP).
 
-    The state is: :math:`[x, y, z, v_x, v_y, v_z, m]`
-    The system parameters are (in this order): :math:`[T_x, T_y, T_z, v_{eff}, \\mu]`
-
     The dynamics are given by:
 
     .. math::
         \\left\\{
         \\begin{array}{l}
         \\dot{\\mathbf{r}} = \\mathbf{v} \\\\
-        \\dot{v}_x = 2v_y + x - (1-\\mu)\\frac{x + \\mu}{r_1^3} - \\mu\\frac{x + \\mu - 1}{r_2^3} + \\frac{T_x}{m} \\\\
-        \\dot{v}_y = -2v_x + y - (1-\\mu)\\frac{y}{r_1^3} - \\mu\\frac{y}{r_2^3} + \\frac{T_y}{m} \\\\
-        \\dot{v}_z = -(1-\\mu)\\frac{z}{r_1^3} - \\mu\\frac{z}{r_2^3} + \\frac{T_z}{m} \\\\
-        \\dot{m} = -\\frac{|\\mathbf{T}|}{v_{eff}}
+        \\dot{v}_x = 2v_y + x - (1-\\mu)\\frac{x + \\mu}{r_1^3} - \\mu\\frac{x + \\mu - 1}{r_2^3} + T\\frac{i_x}{m} \\\\
+        \\dot{v}_y = -2v_x + y - (1-\\mu)\\frac{y}{r_1^3} - \\mu\\frac{y}{r_2^3} + T\\frac{i_y}{m} \\\\
+        \\dot{v}_z = -(1-\\mu)\\frac{z}{r_1^3} - \\mu\\frac{z}{r_2^3} + T\\frac{i_z}{m} \\\\
+        \\dot{m} = -c T
         \\end{array}
         \\right.
 
@@ -26,7 +23,11 @@ def zoh_cr3bp_dyn():
     
     * :math:`r_1 = ||\\mathbf{r} - \\mathbf{r}_1||`, :math:`r_2 = ||\\mathbf{r} - \\mathbf{r}_2||`
     * :math:`\\mathbf{r}_1 = [-\\mu, 0, 0]`, :math:`\\mathbf{r}_2 = [1-\\mu, 0, 0]`
-    * :math:`v_{eff}` is the effective exhaust velocity
+    * :math:`c = \\frac{1}{v_{eff}}`
+    
+    The state is: :math:`[x, y, z, v_x, v_y, v_z, m]`
+    
+    The system parameters are (in this order): :math:`[T, i_x, i_y, i_z] + [c]`
 
     Returns:
         list[tuple[hy.expression, hy.expression]]: The dynamics in form `[(x, dx), ...]`

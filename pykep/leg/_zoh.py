@@ -1,7 +1,30 @@
 import numpy as _np
 import heyoka as _hy
 
+
 class zoh:
+    """
+    This class implements an interplanetary low-thrust transfer between a starting and final state
+    in the augmented state-space :math:`[\\mathbf{r}, \\mathbf{v}, m]`. The transfer is modelled
+    as a sequence of non-uniform segments along which a continuous and constant (zero-order hold)
+    control acts. The time intervals defining these segments are also provided in `tgrid`.
+
+    The formulation generalises :class:`pykep.leg.sims_flanagan` to arbitrary dynamics and non-uniform
+    time grids. The dynamics are assumed to be zero-order hold and must be provided as compatible
+    Taylor-adaptive integrators (`tas`). 
+    
+    .. note::
+       The requirements on the `tas` passed are: a) the first four *heyoka* parameters
+       must be :math:`T, i_x, i_y, i_z`, b) the system dimension must be 7.
+
+    A transfer is feasible when the state mismatch equality constraints are satisfied. In the
+    intended usage, throttle equality constraints are also enforced to ensure a proper thrust
+    representation as :math:`T \\hat{\\mathbf{i}}` with :math:`|\\hat{\\mathbf{i}}| = 1`.
+
+    .. math::
+       i_x^2 + i_y^2 + i_z^2 = 1, \\quad \\forall \\text{segments}
+    """
+
     def __init__(
         self,
         state0,
@@ -11,6 +34,51 @@ class zoh:
         cut,
         tas,
     ):
+        """
+        .. note::
+           The variational integrator `ta_var` must have state dimension 84 (7x7 STM + 7x4 control
+           sensitivity) and with the same dynamics as the nominal integrator `ta`. It is the user
+           that must ensure the suitability of the integrators.
+
+        Args:
+            *state0* (:class:`array-like`): Initial state :math:`[\\mathbf{r}_0, \\mathbf{v}_0, m_0]` (length 7)
+            
+            *controls* (:class:`array-like`): Control parameters :math:`[T, i_x, i_y, i_z] \\times n_\\text{seg}`
+            
+            *state1* (:class:`array-like`): Final state :math:`[\\mathbf{r}_1, \\mathbf{v}_1, m_1]` (length 7)
+            
+            *tgrid* (:class:`array-like`): Non-uniform time grid (length nseg+1)
+            
+            *cut* (:class:`float`): Forward/backward segment split ratio (0 ≤ cut ≤ 1)
+            
+            *tas* (:class:`tuple`): `(ta, ta_var)` Taylor-adaptive integrators
+
+                - `ta`: Nominal dynamics (state dim 7, pars ≥ 4)
+                
+                - `ta_var`: Variational dynamics (state dim 84, same pars)
+
+        Raises:
+            :class:`ValueError`: If state/parameter dimensions mismatch or input lengths are incompatible.
+
+        Examples:
+            Basic setup::
+                import numpy as np
+                import heyoka as hy
+
+                # Define states, controls, time grid
+                state0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0])
+                state1 = np.array([1.2, 0.1, 0.0, 0.0, 0.9, 0.1, 0.95])
+                controls = np.array([0.022, 0.7, 0.7, 0.1, 0.025, -0.3, 0.8, 0.4])
+                tgrid = np.array([0.0, 0.5, 1.0, 1.23])
+
+                # Get integrators
+                ta = pk.ta.get_zoh_eq_dyn(tol=1e-16)
+                ta_var = pk.ta.get_zoh_eq_var(tol=1e-16)
+
+                # Construct leg (50/50 split)
+                leg = zoh(state0, controls, state1, tgrid, cut=0.5, tas=(ta, ta_var))
+        """
+
         # We store the constructor args
         self.state0 = state0
         self.controls = controls
@@ -231,8 +299,9 @@ class zoh:
 
         return dmc_dx0, dmc_dx1, dmc_dcontrols, dmcdtgrid
 
-    def add_to_3Daxis(self, ax, N=100, scale=1.0, plot_time_grid=False):
+    def get_state_info(self, N=2):
         # Forward segments
+        state_fwd = []
         self.ta.time = self.tgrid[0]
         self.ta.state[:] = self.state0
         for i in range(self.nseg_fwd):
@@ -241,21 +310,10 @@ class zoh:
             # propagating
             plot_grid_fwd = _np.linspace(self.tgrid[i], self.tgrid[i + 1], N)
             sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
-            ax.plot(
-                sol_fwd[:, 0] * scale,
-                sol_fwd[:, 1] * scale,
-                sol_fwd[:, 2] * scale,
-                c="blue",
-            )
-            if plot_time_grid:
-                ax.scatter(
-                    sol_fwd[-1, 0] * scale,
-                    sol_fwd[-1, 1] * scale,
-                    sol_fwd[-1, 2] * scale,
-                    c="blue",
-                )
-
+            state_fwd.append(sol_fwd)
+        
         # Backward segments
+        state_bck = []
         self.ta.time = self.tgrid[-1]
         self.ta.state[:] = self.state1
         for i in range(self.nseg_bck):
@@ -267,31 +325,6 @@ class zoh:
             # propagating
             plot_grid_bck = _np.linspace(self.tgrid[-1 - i], self.tgrid[-2 - i], N)
             sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]
-            ax.plot(
-                sol_bck[:, 0] * scale,
-                sol_bck[:, 1] * scale,
-                sol_bck[:, 2] * scale,
-                c="darkorange",
-            )
-            if plot_time_grid:
-                ax.scatter(
-                    sol_bck[-1, 0] * scale,
-                    sol_bck[-1, 1] * scale,
-                    sol_bck[-1, 2] * scale,
-                    c="darkorange",
-                )
-
-        # Adding start and final position
-        ax.scatter(
-            self.state0[0] * scale,
-            self.state0[1] * scale,
-            self.state0[2] * scale,
-            c="blue",
-        )
-        ax.scatter(
-            self.state1[0] * scale,
-            self.state1[1] * scale,
-            self.state1[2] * scale,
-            c="darkorange",
-        )
-        return ax
+            state_bck.append(sol_bck)
+        
+        return state_fwd,state_bck
