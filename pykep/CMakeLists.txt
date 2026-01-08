@@ -12,7 +12,6 @@ set(PYKEP_PYTHON_FILES
     test_sims_flanagan.py
     test_zoh.py)
 
-
 # Core module.
 Python3_add_library(core MODULE WITH_SOABI 
     core.cpp
