@@ -36,6 +36,7 @@
 #include <kep3/ta/zero_hold_kep.hpp>
 #include <kep3/udpla/keplerian.hpp>
 #include <kep3/zero_hold_kep_problem.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
@@ -1095,3 +1096,5 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_bck,
                                                  pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 }
+
+TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::udpla::jpl_lp, kep3::detail::planet_iface)

@@ -1646,7 +1646,7 @@ Examples:
 
 std::string lambert_problem_docstring()
 {
-    return R"(__init__(r0 = [1,0,0], r1 = [0,1,0], tof = pi/2, mu = 1., cw = False, max_revs = 0)
+    return R"(__init__(r0 = [1,0,0], r1 = [0,1,0], tof = pi/2, mu = 1., cw = False, multi_revs = 0)
 
       Args:
           *r0* (1D array-like): Cartesian components of the first position vector [xs, ys, zs]. Defaults to [1,0,0].
@@ -1659,7 +1659,7 @@ std::string lambert_problem_docstring()
 
           *cw* (:class:`bool`): True for retrograde motion (clockwise). Defaults to False.
 
-          *max_revs* (:class:`float`): Maximum number of multiple revolutions to be computed. Defaults to 0.
+          *multi_revs* (:class:`float`): Maximum number of multiple revolutions to be computed. Defaults to 0.
 
       .. note::
 
