@@ -78,7 +78,7 @@ template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
 struct planet_iface_impl;
 
-struct kep3_DLL_PUBLIC_INLINE_CLASS planet_iface {
+struct kep3_DLL_PUBLIC planet_iface {
     virtual ~planet_iface();
 
     [[nodiscard]] virtual double get_mu_central_body() const = 0;
