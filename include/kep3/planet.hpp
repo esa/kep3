@@ -78,7 +78,7 @@ template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
 struct planet_iface_impl;
 
-struct kep3_DLL_PUBLIC planet_iface {
+struct kep3_DLL_PUBLIC_INLINE_CLASS planet_iface {
     virtual ~planet_iface();
 
     [[nodiscard]] virtual double get_mu_central_body() const = 0;
@@ -394,6 +394,6 @@ struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
 };
 
 // Keep exporting the null udpla under the iface (same as before).
-TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_KEY_AND_EXTERN_TEMPLATES(kep3::detail::null_udpla, kep3::detail::planet_iface)
 
 #endif // kep3_PLANET_H

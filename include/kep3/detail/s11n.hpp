@@ -59,4 +59,31 @@ struct tuple_s11n<0> {
 
 } // namespace kep3::detail
 
+
+// NOTE: These macros implement the “KEY in header / IMPLEMENT in one .cpp” pattern for Boost.Serialization when used
+// together with tanuki type-erasure wrappers in a shared-library build. The KEY+extern-template macro declares the
+// Boost export GUIDs for the wrapped concrete type and, crucially, adds `extern template` declarations for the
+// corresponding `tanuki::v1::holder<ud_type, iface_type, Sem>` specializations so that consuming TUs (tests/users)
+// do NOT implicitly instantiate those holders (and thus do not emit their own RTTI/vtables). The IMPLEMENT+instantiate
+// macro must be used exactly once in the library: it provides the matching explicit instantiation definitions for the
+// holders and emits the export/registration code so that the shared library “owns” a single, consistent type identity
+// for the polymorphic erased objects across the dylib/executable boundary (avoiding runtime “unregistered cast/class”
+// errors during serialization/deserialization). // [web:60][web:58][web:4]
+
+#define KEP3_S11N_EXPORT_KEY_AND_EXTERN_TEMPLATES(ud_type, iface_type)                         \
+    /* Export key (GUID) for both semantics */                                                            \
+    TANUKI_S11N_WRAP_EXPORT_KEY(ud_type, iface_type)                                                       \
+                                                                                                           \
+    /* Prevent consumers from instantiating holder specializations */                                      \
+    extern template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::value>;  \
+    extern template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::reference>;
+
 #endif
+
+#define KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(ud_type, iface_type)                       \
+    /* Provide the explicit instantiations matching the extern templates */                               \
+    template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::value>;        \
+    template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::reference>;    \
+                                                                                                          \
+    /* Export implementation (GUID registration) */                                                        \
+    TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, iface_type)

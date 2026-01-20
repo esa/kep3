@@ -223,4 +223,4 @@ std::string vsop2013::get_name() const
 } // namespace kep3::udpla
 
 // NOLINTNEXTLINE
-TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::udpla::vsop2013, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(kep3::udpla::vsop2013, kep3::detail::planet_iface)

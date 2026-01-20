@@ -236,4 +236,4 @@ std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
 } // namespace kep3::udpla
 
 // NOLINTNEXTLINE
-TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::udpla::jpl_lp, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(kep3::udpla::jpl_lp, kep3::detail::planet_iface)
