@@ -155,7 +155,7 @@ template <>
 inline py::tuple pickle_getstate_wrapper<kep3::planet>(const kep3::planet &pl)
 {
     // Use extract to get python_udpla pointer if it is stored
-    auto *p0 = value_ptr<pykep::python_udpla>(pl);
+    auto *p0 = pl.extract<pykep::python_udpla>();
 
     if (p0) {
         return py::make_tuple(p0->m_obj);

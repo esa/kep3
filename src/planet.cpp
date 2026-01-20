@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -14,8 +14,9 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
+#include <kep3/detail/s11n.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
@@ -91,13 +92,12 @@ double planet_iface::period(const epoch &ep) const
 
 } // namespace kep3::detail
 
-namespace kep3::detail
+namespace kep3
 {
-
 std::ostream &operator<<(std::ostream &os, const planet &p)
 {
     os << "Planet name: " << p.get_name();
-    os << "\nC++ class name: " << boost::core::demangle(value_type_index(p).name()) << '\n';
+    os << "\nC++ class name: " << boost::core::demangle(p.get_type_index().name()) << '\n';
     os << fmt::format("\nmu central body (-1 if not defined): {}\n", p.get_mu_central_body());
     os << fmt::format("mu body (-1 if not defined): {}\n", p.get_mu_self());
     os << fmt::format("radius body (-1 if not defined): {}\n", p.get_radius());
@@ -109,8 +109,7 @@ std::ostream &operator<<(std::ostream &os, const planet &p)
     }
     return os;
 }
-
-} // namespace kep3::detail
+} // namespace kep3
 
 // NOLINTNEXTLINE
-TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::detail::null_udpla, kep3::detail::planet_iface)
+//TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::detail::null_udpla, kep3::detail::planet_iface)

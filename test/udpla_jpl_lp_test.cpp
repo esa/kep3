@@ -197,6 +197,7 @@ TEST_CASE("serialization_test")
     // Store the string representation.
     std::stringstream ss;
     auto before = boost::lexical_cast<std::string>(udpla);
+
     // Now serialize
     {
         boost::archive::binary_oarchive oarchive(ss);
@@ -210,6 +211,7 @@ TEST_CASE("serialization_test")
         iarchive >> udpla2;
     }
     auto after = boost::lexical_cast<std::string>(udpla2);
+
     // Compare the string represetation
     REQUIRE(before == after);
 }

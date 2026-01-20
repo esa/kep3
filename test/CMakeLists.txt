@@ -1,3 +1,4 @@
+find_package(Pagmo REQUIRED)
 
 add_library(kep3_test STATIC catch_main.cpp)
 target_compile_options(kep3_test PRIVATE
@@ -7,7 +8,10 @@ target_compile_options(kep3_test PRIVATE
   "$<$<CONFIG:MinSizeRel>:${kep3_CXX_FLAGS_RELEASE}>"
 )
 
-find_package(Pagmo REQUIRED)
+# Setup the C++ standard.
+target_compile_features(kep3_test PRIVATE cxx_std_23)
+set_property(TARGET kep3_test PROPERTY CXX_EXTENSIONS NO)
+target_link_libraries(kep3_test PRIVATE kep3)
 
 function(ADD_kep3_TESTCASE arg1)
   add_executable(${arg1} ${arg1}.cpp)
@@ -20,8 +24,8 @@ function(ADD_kep3_TESTCASE arg1)
   )
 
   if (YACMA_COMPILER_IS_GNUCXX)
-      target_compile_options(kep3 PRIVATE -Wno-array-bounds)
-      target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+      target_compile_options(${arg1} PRIVATE -Wno-array-bounds)
+      target_compile_options(${arg1} PRIVATE -Wno-stringop-overflow)
   endif()
 
   # Setup the C++ standard.

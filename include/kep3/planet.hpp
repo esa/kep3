@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -11,6 +11,7 @@
 
 #include <string>
 #include <typeinfo>
+#include <exception>
 
 #include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -147,7 +148,7 @@ std::vector<double> default_eph_vectorization(const T *self, const std::vector<d
 // Planet interface implementation.
 template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
-struct planet_iface_impl : public Base {
+struct kep3_DLL_PUBLIC planet_iface_impl : public Base {
     KEP3_UDPLA_IMPLEMENT_GET(mu_central_body, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(mu_self, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(radius, double, -1)
@@ -226,7 +227,7 @@ private:
 };
 
 // Reference interface for the planet class.
-struct planet_ref_iface {
+struct kep3_DLL_PUBLIC planet_ref_iface {
     template <typename Wrap>
     struct impl {
         TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
@@ -259,29 +260,140 @@ struct planet_ref_iface {
 #endif
 
 // Definition of the planet class.
-using planet = tanuki::wrap<detail::planet_iface,
-                            tanuki::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
-
-#if defined(__GNUC__)
-
-#pragma GCC diagnostic pop
-
-#endif
-
-namespace detail
+class kep3_DLL_PUBLIC planet
 {
+    using wrap_t
+        = tanuki::wrap<detail::planet_iface,
+                       tanuki::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
 
-// Streaming operator for planet.
-kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const planet &);
+    wrap_t m_wrap;
 
-} // namespace detail
+private:
+    friend class boost::serialization::access;
 
+    template <class Archive>
+    void save(Archive &ar, const unsigned int /*version*/) const
+    {
+        ar & m_wrap;
+    }
+
+    template <class Archive>
+    void load(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & m_wrap;
+    }
+
+    BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+public:
+    planet() = default;
+
+    template <typename T>
+        requires(!std::same_as<planet, std::remove_cvref_t<T>>) && std::constructible_from<wrap_t, T &&>
+    explicit planet(T &&p) : m_wrap(std::forward<T>(p))
+    {
+    }
+
+    planet(const planet &) noexcept = default;
+    planet(planet &&) noexcept = default;
+    planet &operator=(const planet &) noexcept = default;
+    planet &operator=(planet &&) noexcept = default;
+    ~planet() = default;
+
+    [[nodiscard]] double get_mu_central_body() const
+    {
+        return m_wrap.get_mu_central_body();
+    }
+    [[nodiscard]] double get_mu_self() const
+    {
+        return m_wrap.get_mu_self();
+    }
+    [[nodiscard]] double get_radius() const
+    {
+        return m_wrap.get_radius();
+    }
+    [[nodiscard]] double get_safe_radius() const
+    {
+        return m_wrap.get_safe_radius();
+    }
+    [[nodiscard]] std::string get_name() const
+    {
+        return m_wrap.get_name();
+    }
+    [[nodiscard]] std::string get_extra_info() const
+    {
+        return m_wrap.get_extra_info();
+    }
+
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double mjd2000) const
+    {
+        return m_wrap.eph(mjd2000);
+    }
+    [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &mjd2000s) const
+    {
+        return m_wrap.eph_v(mjd2000s);
+    }
+    [[nodiscard]] double period(double mjd2000 = 0.) const
+    {
+        return m_wrap.period(mjd2000);
+    }
+    [[nodiscard]] std::array<double, 6> elements(double mjd2000 = 0.,
+                                                 kep3::elements_type el_t = kep3::elements_type::KEP_F) const
+    {
+        return m_wrap.elements(mjd2000, el_t);
+    }
+
+    [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &ep) const
+    {
+        return m_wrap.eph(ep);
+    }
+    [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep,
+                                                 kep3::elements_type el_t = kep3::elements_type::KEP_F) const
+    {
+        return m_wrap.elements(ep, el_t);
+    }
+    [[nodiscard]] double period(const epoch &ep) const
+    {
+        return m_wrap.period(ep);
+    }
+
+    template <typename T>
+    [[nodiscard]] T *extract()
+    {
+        return m_wrap.template extract<T>();
+    }
+
+    template <typename T>
+    [[nodiscard]] const T *extract() const
+    {
+        return value_ptr<T>(m_wrap);
+    }
+
+    [[nodiscard]] std::type_index get_type_index() const
+    {
+        return value_type_index(m_wrap);
+    }
+
+    // Optional: expose pointer
+    //[[nodiscard]] const void *get_ptr() const noexcept
+    //{
+    //    // Returns the address of the stored object if present, nullptr otherwise.
+    //    return value_ptr<void>(m_wrap);
+    //}
+
+};
+
+kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::planet &);
 } // namespace kep3
+
+// version 1: planet becomes a concrete class (was an alias)
+BOOST_CLASS_VERSION(kep3::planet, 1)
 
 template <>
 struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {
 };
 
-// Make a def-constructed planet serialisable.
+// Keep exporting the null udpla under the iface (same as before).
 TANUKI_S11N_WRAP_EXPORT_KEY(kep3::detail::null_udpla, kep3::detail::planet_iface)
+
 #endif // kep3_PLANET_H

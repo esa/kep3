@@ -189,7 +189,7 @@ target_compile_options(kep3 PRIVATE
 )
 
 # Ensure that C++20 is employed when both compiling and consuming kep3.
-target_compile_features(kep3 PUBLIC cxx_std_20)
+target_compile_features(kep3 PUBLIC cxx_std_23)
 # Enforce vanilla C++20 when compiling kep3.
 set_property(TARGET kep3 PROPERTY CXX_EXTENSIONS NO)
 
@@ -201,8 +201,8 @@ target_include_directories(kep3 PUBLIC
 # NOTE: need 1.69 for safe numerics.
 set(_kep3_MIN_BOOST_VERSION "1.69")
 
-find_package(Boost ${_kep3_MIN_BOOST_VERSION} CONFIG REQUIRED)
-target_link_libraries(kep3 PUBLIC Boost::boost)
+find_package(Boost ${_kep3_MIN_BOOST_VERSION} CONFIG REQUIRED COMPONENTS serialization)
+target_link_libraries(kep3 PUBLIC Boost::boost Boost::serialization)
 # NOTE: quench warnings from Boost when building the library.
 target_compile_definitions(kep3 PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
 
