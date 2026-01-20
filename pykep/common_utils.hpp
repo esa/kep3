@@ -155,7 +155,7 @@ template <>
 inline py::tuple pickle_getstate_wrapper<kep3::planet>(const kep3::planet &pl)
 {
     // Use extract to get python_udpla pointer if it is stored
-    auto *p0 = value_ptr<pykep::python_udpla>(pl);
+    auto *p0 = pl.extract<pykep::python_udpla>();
 
     if (p0) {
         return py::make_tuple(p0->m_obj);
@@ -180,13 +180,8 @@ inline kep3::planet pickle_setstate_wrapper<kep3::planet>(const py::tuple &state
 
     py::handle st = state[0];
 
-    if (py::isinstance<py::object>(st)) {
-        // If the state holds a Python object, reconstruct the python_udpla wrapper
-        pykep::python_udpla pyudpla(st.cast<py::object>());
-        return kep3::planet(pyudpla);
-    } 
-    else if (PyBytes_Check(st.ptr())) {
-        // Otherwise fallback to Boost deserialization for non-Python-backed udplas
+    if (PyBytes_Check(st.ptr())) {
+        // This is a C++-backed planet, use Boost deserialization
         auto *ptr = PyBytes_AsString(st.ptr());
         if (!ptr) {
             py_throw(PyExc_TypeError, "Deserialization requires bytes");
@@ -198,8 +193,12 @@ inline kep3::planet pickle_setstate_wrapper<kep3::planet>(const py::tuple &state
             ia >> pl;
         }
         return pl;
+    } else {
+        // This is a Python-backed planet, reconstruct via python_udpla
+        pykep::python_udpla pyudpla(st.cast<py::object>());
+        return kep3::planet(pyudpla);
     }
-
+    // Defensive: should not reach here
     throw std::runtime_error("Invalid pickle state for kep3::planet");
 }
 

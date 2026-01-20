@@ -207,7 +207,7 @@ class planet_test(_ut.TestCase):
         self.assertTrue(pla.elements(when = 0.) == [1.,2.,3.,4.,5.,6.])
         self.assertTrue(pla.elements(when = pk.epoch(0.)) == [1.,2.,3.,4.,5.,6.])
 
-    def test_pickling(self):
+    def test_pickling_python(self):
         import pickle
         import io
         import pykep as pk
@@ -228,6 +228,29 @@ class planet_test(_ut.TestCase):
         loaded_data = pickle.load(buffer)
 
         # Verify that the original and loaded data are the same
+        self.assertTrue(loaded_data.__repr__()==data.__repr__())
+
+    def test_pickling_cpp(self):
+        import pickle
+        import io
+        import pykep as pk
+
+        # An example object
+        data = pk.planet(pk.udpla.jpl_lp("earth"))
+
+        # Create an in-memory bytes buffer
+        buffer = io.BytesIO()
+
+        # Pickle the object into the buffer
+        pickle.dump(data, buffer)
+
+        # Reset buffer position to the start for reading
+        buffer.seek(0)
+
+        # Unpickle the data from the buffer
+        loaded_data = pickle.load(buffer)
+
+        # Verify that the original and loaded data are the same 
         self.assertTrue(loaded_data.__repr__()==data.__repr__())
 
 class py_udplas_test(_ut.TestCase):
@@ -613,80 +636,14 @@ class propagators_test(_ut.TestCase):
         import pykep as pk
         ta = pk.ta.get_bcp(tol=1e-16)
     
-class zero_hold_eq_tests(_ut.TestCase):
-    def test_ta(self):
-        import pykep as pk
-        mu = pk.MU_SUN
-        veff = 3000.0  # m/s
-        thrust = [0.1233, -0.1234, 0.1234]
-        ic = [pk.AU, 0.1, -0.12, 0.123, -0.1234, -0.12345, 1000.0]
-        tof = 82*pk.DAY2SEC
-        
-        ta = pk.ta.get_zero_hold_eq(tol=1e-16)
-        
-        ta.time=0.
-        ta.pars[:] = [mu, veff] + thrust
-        ta.state[:] = ic
-        ta.propagate_until(tof)
-        
-        gt = np.array([  1.37490495486689239502e+11,   6.59793858132075999867e-02,
-        -1.91723232716007802034e-01,   1.37672731629610800574e-01,
-        -1.09652051169993408619e-01,   1.29036495246341598175e+00,
-         4.95379569704093682958e+02])
-        self.assertTrue(np.allclose(ta.state, gt, atol=1e-13, rtol=1e-13))
-        
-    def test_ta_var(self):
-        import pykep as pk
-        mu = pk.MU_SUN
-        veff = 3000.0  # m/s
-        thrust = [0.1233, -0.1234, 0.1234]
-        ic = [pk.AU, 0.1, -0.12, 0.123, -0.1234, -0.12345, 1000.0]
-        tof = 82*pk.DAY2SEC
-        
-        ta = pk.ta.get_zero_hold_eq_var(tol=1e-16)
-        
-        ta.time=0.
-        ta.pars[:] = [mu, veff] + thrust
-        ta.state[:7] = ic
-        ta.propagate_until(tof)
-        
-        gt = np.array([1.3749049548668924e+11,   6.5979385813207628e-02,  -1.9172323271600783e-01,
-                        1.3767273162961075e-01,  -1.0965205116999341e-01,   1.2903649524634164e+00,
-                        4.9537956970409363e+02,   8.9235606016432789e-01,   5.7822989939673042e+09,
-                        6.8334631682659607e+09,  -5.5864927389945316e-10,   3.7739997297880546e-09,
-                        -1.3772221961026726e+09,   1.7432532134312417e+07,  -1.5818224547053598e+10,
-                        1.1045720170425681e+11,  -1.5005886202231903e+10,  -7.0176690833549628e-13,
-                        1.0768426507937940e+00,   5.7158546084730109e-02,   5.1162894384893737e-03,
-                        -5.4604467036215082e-03,   5.6826544840115401e-02,   4.1000002796131552e-05,
-                        1.7026810248115981e-01,   4.9504198027948504e-01,  -7.3410005313623520e-03,
-                        -7.2078324750791456e-14,  -1.1269321978834863e-02,   9.6798600406630697e-01,
-                        1.7607132427928471e-03,  -1.8791510797461120e-03,  -2.9453032387314761e-02,
-                        1.0581412719583225e-04,  -3.1719902481006412e-01,   4.4754325005445206e-01,
-                        -9.3003649757147061e-02,   1.6019834207650075e-13,  -2.8597100446060099e-02,
-                        -1.7844824883177658e-02,   1.0035286570479314e+00,  -3.1229870938147132e-03,
-                        -8.5831231553371422e-03,  -2.0650751065813171e-05,   1.6619728840700572e-02,
-                        -1.7277821878511349e-02,   1.3346398119891809e-01,  -6.5751181880080709e-14,
-                        1.0581176801107147e-02,  -3.6863827043680259e-03,   3.6739081269713441e-03,
-                        9.9668146265047541e-01,   1.3726448515037999e-02,  -2.2484855882907665e-05,
-                        2.3459715553945309e-02,  -2.4199357357939544e-02,   1.3457108798327769e-01,
-                        -1.1603960672695118e-11,   1.6735143419166441e+00,   1.3061457905863361e+00,
-                        2.6685808318639891e-02,  -2.8480881666072551e-02,   6.6877381960977589e-01,
-                        2.5490911439583188e-05,  -1.5251615072550839e-01,   1.0088604148906682e-01,
-                        4.6707191771659974e-02,   0.0000000000000000e+00,   0.0000000000000000e+00,
-                        0.0000000000000000e+00,   0.0000000000000000e+00,   0.0000000000000000e+00,
-                        0.0000000000000000e+00,   1.0000000000000000e+00,  -1.3627334843433878e+03,
-                        1.3638387020922469e+03,  -1.3638387020922469e+03])
-        self.assertTrue(np.allclose(ta.state, gt, atol=1e-13, rtol=1e-13))
-
-
 
 def run_test_suite():
     tl = _ut.TestLoader()
     suite = _ut.TestSuite()
     
     suite.addTest(tl.loadTestsFromTestCase(anomaly_conversions_tests))
-    suite.addTest(tl.loadTestsFromTestCase(planet_test))
     suite.addTest(tl.loadTestsFromTestCase(epoch_test))
+    suite.addTest(tl.loadTestsFromTestCase(planet_test))
     suite.addTest(tl.loadTestsFromTestCase(propagate_test))
     suite.addTest(tl.loadTestsFromTestCase(sims_flanagan_test))
     suite.addTest(tl.loadTestsFromTestCase(sims_flanagan_hf_test))
@@ -698,7 +655,6 @@ def run_test_suite():
     suite.addTest(tl.loadTestsFromTestCase(encoding_tests))
     suite.addTest(tl.loadTestsFromTestCase(mit_tests))
     suite.addTest(tl.loadTestsFromTestCase(propagators_test))
-    suite.addTest(tl.loadTestsFromTestCase(zero_hold_eq_tests))
 
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)

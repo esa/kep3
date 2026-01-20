@@ -20,6 +20,8 @@
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
 #include <kep3/planet.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
+
 
 #include "test_helpers.hpp"
 
@@ -216,7 +218,7 @@ TEST_CASE("construction")
         REQUIRE(pla.eph_v(std::vector<double>{1., 2.})
                 == std::vector<double>{eph1[0][0], eph1[0][1], eph1[0][2], eph1[1][0], eph1[1][1], eph1[1][2],
                                        eph2[0][0], eph2[0][1], eph2[0][2], eph2[1][0], eph2[1][1], eph2[1][2]});
-        REQUIRE(value_isa<null_udpla>(pla));
+        REQUIRE(pla.extract<null_udpla>());
     }
     {
         // Constructor from a simple udpla
@@ -303,30 +305,30 @@ TEST_CASE("construction")
     // Check copy semantics.
     auto p0 = planet();
     planet p1{p0};
-    REQUIRE(value_isa<null_udpla>(p0));
-    REQUIRE(value_isa<null_udpla>(p1));
+    REQUIRE(p0.extract<null_udpla>());
+    REQUIRE(p1.extract<null_udpla>());
     planet p2{simple_udpla{}};
     p2 = p1;
-    REQUIRE(value_isa<null_udpla>(p2));
+    REQUIRE(p2.extract<null_udpla>());
     //  Move semantics.
     planet p3{std::move(p0)};
-    REQUIRE(value_isa<null_udpla>(p3));
+    REQUIRE(p3.extract<null_udpla>());
     planet p4{simple_udpla{}};
     p4 = std::move(p2);
-    REQUIRE(value_isa<null_udpla>(p4));
+    REQUIRE(p4.extract<null_udpla>());
     //  Check we can revive moved-from objects.
     p0 = p4;
-    REQUIRE(value_isa<null_udpla>(p0));
+    REQUIRE(p0.extract<null_udpla>());
     p2 = std::move(p4);
-    REQUIRE(value_isa<null_udpla>(p2));
+    REQUIRE(p2.extract<null_udpla>());
 }
 
-TEST_CASE("planet_extract_is_test")
+TEST_CASE("planet_extract_test")
 {
     // We instantiate a planet
     planet pla{complete_udpla({1., 2., -1., 4.})};
 
-    auto *p0 = value_ptr<complete_udpla>(pla);
+    auto *p0 = pla.extract<complete_udpla>();
 
     // We check thet we can access to public data members
     REQUIRE(p0->m_mu_central_body == 1.);
@@ -334,12 +336,9 @@ TEST_CASE("planet_extract_is_test")
     REQUIRE(p0->m_radius == -1.);
     REQUIRE(p0->m_safe_radius == 4.);
 
-    // We check that a non successful cast returns a null pointer
-    REQUIRE(!value_ptr<simple_udpla>(pla));
-
     // We check the is method
-    REQUIRE(value_isa<complete_udpla>(pla));
-    REQUIRE(!value_isa<simple_udpla>(pla));
+    REQUIRE(pla.extract<complete_udpla>());
+    REQUIRE(!pla.extract<simple_udpla>());
 }
 
 TEST_CASE("generic_assignment")
@@ -386,7 +385,6 @@ TEST_CASE("serialization_test")
     }
     // Create a new planet object
     auto pla2 = planet{simple_udpla{}};
-    boost::lexical_cast<std::string>(pla2); // triggers the streaming operator
     {
         boost::archive::binary_iarchive iarchive(ss);
         iarchive >> pla2;
@@ -394,8 +392,64 @@ TEST_CASE("serialization_test")
     auto after = boost::lexical_cast<std::string>(pla2);
     REQUIRE(before == after);
     // Check explicitly that the properties of base_p where restored as well.
-    REQUIRE(value_ref<complete_udpla>(pla).m_mu_central_body == value_ref<complete_udpla>(pla2).m_mu_central_body);
-    REQUIRE(value_ref<complete_udpla>(pla).m_mu_self == value_ref<complete_udpla>(pla2).m_mu_self);
-    REQUIRE(value_ref<complete_udpla>(pla).m_radius == value_ref<complete_udpla>(pla2).m_radius);
-    REQUIRE(value_ref<complete_udpla>(pla).m_safe_radius == value_ref<complete_udpla>(pla2).m_safe_radius);
+    REQUIRE(pla.get_mu_central_body() == pla2.get_mu_central_body());
+    REQUIRE(pla.get_mu_self() == pla2.get_mu_self());
+    REQUIRE(pla.get_radius() == pla2.get_radius());
+    REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
+}
+
+TEST_CASE("serialization_test_2")
+{
+    // Instantiate a planet
+    planet pla{null_udpla{}};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(pla);
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << pla;
+    }
+    // Create a new planet object
+    auto pla2 = planet{simple_udpla{}};
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> pla2;
+    }
+    auto after = boost::lexical_cast<std::string>(pla2);
+    REQUIRE(before == after);
+    // Check explicitly that the properties of base_p where restored as well.
+    REQUIRE(pla.get_mu_central_body() == pla2.get_mu_central_body());
+    REQUIRE(pla.get_mu_self() == pla2.get_mu_self());
+    REQUIRE(pla.get_radius() == pla2.get_radius());
+    REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
+}
+
+TEST_CASE("serialization_test_3")
+{
+    // Instantiate a planet
+    planet pla{kep3::udpla::jpl_lp{"earth"}};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(pla);
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << pla;
+    }
+    // Create a new planet object
+    auto pla2 = planet{simple_udpla{}};
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> pla2;
+    }
+    auto after = boost::lexical_cast<std::string>(pla2);
+    REQUIRE(before == after);
+    // Check explicitly that the properties of base_p where restored as well.
+    REQUIRE(pla.get_mu_central_body() == pla2.get_mu_central_body());
+    REQUIRE(pla.get_mu_self() == pla2.get_mu_self());
+    REQUIRE(pla.get_radius() == pla2.get_radius());
+    REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
 }

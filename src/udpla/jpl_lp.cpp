@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -10,13 +10,15 @@
 #include <unordered_map>
 
 #include <boost/algorithm/string.hpp>
+
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/core_astro/convert_anomalies.hpp>
-#include <kep3/core_astro/mee2par2mee.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/core_astro/mee2par2mee.hpp>
+#include <kep3/detail/s11n.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/udpla/jpl_lp.hpp>
@@ -234,4 +236,4 @@ std::ostream &operator<<(std::ostream &os, const kep3::udpla::jpl_lp &udpla)
 } // namespace kep3::udpla
 
 // NOLINTNEXTLINE
-TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::udpla::jpl_lp, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(kep3::udpla::jpl_lp, kep3::detail::planet_iface)

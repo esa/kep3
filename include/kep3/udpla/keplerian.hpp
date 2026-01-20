@@ -86,6 +86,6 @@ template <>
 struct fmt::formatter<kep3::udpla::keplerian> : ostream_formatter {
 };
 
-TANUKI_S11N_WRAP_EXPORT_KEY(kep3::udpla::keplerian, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_KEY_AND_EXTERN_TEMPLATES(kep3::udpla::keplerian, kep3::detail::planet_iface)
 
 #endif // kep3_UDPLA_KEPLERIAN_H

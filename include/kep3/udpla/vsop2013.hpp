@@ -49,6 +49,6 @@ public:
 
 } // namespace kep3::udpla
 
-TANUKI_S11N_WRAP_EXPORT_KEY(kep3::udpla::vsop2013, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_KEY_AND_EXTERN_TEMPLATES(kep3::udpla::vsop2013, kep3::detail::planet_iface)
 
 #endif
