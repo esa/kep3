@@ -148,7 +148,7 @@ std::vector<double> default_eph_vectorization(const T *self, const std::vector<d
 // Planet interface implementation.
 template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
-struct kep3_DLL_PUBLIC planet_iface_impl : public Base {
+struct planet_iface_impl : public Base {
     KEP3_UDPLA_IMPLEMENT_GET(mu_central_body, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(mu_self, double, -1)
     KEP3_UDPLA_IMPLEMENT_GET(radius, double, -1)
