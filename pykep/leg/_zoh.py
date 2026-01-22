@@ -88,6 +88,7 @@ class zoh:
         # Store the tas
         self.ta = tas[0]
         self.ta_var = tas[1]
+
         # And save the non control parameter values for cfunc calls
         self.pars_no_control = self.ta.pars[4:].tolist()
 
@@ -106,14 +107,17 @@ class zoh:
             raise ValueError(
                 f"Attempting to construct a zoh_leg with a Taylor Adaptive integrator parameters dimension of {len(self.ta.pars)}, while >=4 is required"
             )
-        if len(self.ta_var.state) != 7 + 7 * 7 + 7 * 4:
-            raise ValueError(
-                f"Attempting to construct a zoh_leg with a variational Taylor Adaptive integrator state dimension of {len(self.ta_var.state)}, while 84 is required"
-            )
-        if len(self.ta_var.pars) != len(self.ta.pars):
-            raise ValueError(
-                f"While constructing a zoh_leg, the number of parameters in the variational version of the Taylor integrator and the non variational version were detected as different, while its required they are equal"
-            )
+        if self.ta_var: # we skip these lines if tno variational integrator is provided
+            if len(self.ta_var.state) != 7 + 7 * 7 + 7 * 4:
+                raise ValueError(
+                    f"Attempting to construct a zoh_leg with a variational Taylor Adaptive integrator state dimension of {len(self.ta_var.state)}, while 84 is required"
+                )
+            if len(self.ta_var.pars) != len(self.ta.pars):
+                raise ValueError(
+                    f"While constructing a zoh_leg, the number of parameters in the variational version of the Taylor integrator and the non variational version were detected as different, while its required they are equal"
+                )
+            # this assumes state of 7 and 4 pars
+            self.ic_var = (_np.hstack((_np.eye(7, 7), _np.zeros((7, 4))))).flatten()
 
         # On the rest
         if len(self.controls) % 4 > 0:
@@ -124,9 +128,6 @@ class zoh:
             raise ValueError(
                 "The t_grid and the controls have incompatible lenghts. It must be nseg*4 and nseg+1"
             )
-
-        # this assumes state of 7 and 4 pars
-        self.ic_var = (_np.hstack((_np.eye(7, 7), _np.zeros((7, 4))))).flatten()
 
         # We compile the function for the dynamics (this is used in the gradient computations)
         sys = self.ta.sys

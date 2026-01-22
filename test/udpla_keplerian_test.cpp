@@ -1,4 +1,4 @@
-// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com), 
+// Copyright © 2023–2025 Dario Izzo (dario.izzo@gmail.com),
 // Francesco Biscani (bluescarni@gmail.com)
 //
 // This file is part of the kep3 library.
@@ -14,11 +14,13 @@
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
+#include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
+#include <kep3/planet.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include "catch.hpp"
-#include "kep3/epoch.hpp"
+
 #include "test_helpers.hpp"
 
 using kep3::epoch;
@@ -184,4 +186,35 @@ TEST_CASE("serialization_test")
     auto after = boost::lexical_cast<std::string>(udpla2);
     // Compare the string represetation
     REQUIRE(before == after);
+}
+
+TEST_CASE("serialization_test_2")
+{
+    // Instantiate a planet with jpl_lp udpla
+    kep3::epoch ref_epoch{2423.4343, kep3::epoch::julian_type::MJD2000};
+    kep3::udpla::keplerian udpla{
+        ref_epoch, {{{0.33, 1.3, 0.12}, {0.01, 1.123, 0.2}}}, 1.12, "enterprise", {12.32, 44.6, 98.23}};
+    kep3::planet pla{udpla};
+
+    // Store the string representation.
+    std::stringstream ss;
+    auto before = boost::lexical_cast<std::string>(pla);
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << pla;
+    }
+    // Create a new planet object
+    auto pla2 = kep3::planet{kep3::detail::null_udpla{}};
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> pla2;
+    }
+    auto after = boost::lexical_cast<std::string>(pla2);
+    REQUIRE(before == after);
+    // Check explicitly that the properties of base_p where restored as well.
+    REQUIRE(pla.get_mu_central_body() == pla2.get_mu_central_body());
+    REQUIRE(pla.get_mu_self() == pla2.get_mu_self());
+    REQUIRE(pla.get_radius() == pla2.get_radius());
+    REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
 }

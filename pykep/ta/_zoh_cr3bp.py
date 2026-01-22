@@ -73,7 +73,9 @@ def zoh_cr3bp_dyn():
         - mu * z / _hy.pow(r_2, 3.0)
         + T_norm * i_z / m
     )
-    mdot = -c * T_norm
+    mdot = (
+        -c * T_norm * _hy.exp(-1.0 / m / 1e16)
+    )  # the added term regularizes the dynamics keeping it differentiable
 
     retval = [
         (x, xdot),

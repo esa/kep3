@@ -1,6 +1,7 @@
 import heyoka as _hy
 import numpy as _np
 
+
 def zoh_kep_dyn():
     """
     The dynamics in Cartesian coordinates of a constant thrust mass-varying spacecraft
@@ -48,7 +49,9 @@ def zoh_kep_dyn():
     vxdot = -1.0 * pow(r2, -1.5) * x + T * ix / m
     vydot = -1.0 * pow(r2, -1.5) * y + T * iy / m
     vzdot = -1.0 * pow(r2, -1.5) * z + T * iz / m
-    mdot = -c * T
+    mdot = (
+        -c * T * _hy.exp(-1.0 / m / 1e16)
+    )  # the added term regularizes the dynamics keeping it differentiable
     retval = [
         (x, xdot),
         (y, ydot),
@@ -66,6 +69,7 @@ def zoh_kep_dyn():
 # the same tolerance.
 _ta_zoh_kep_cache = dict()
 
+
 def get_zoh_kep(tol: float):
     """
     Returns a Taylor adaptive propagator (Heyoka) for the :func:`~pykep.ta.zoh_kep_dyn` dynamics
@@ -75,7 +79,7 @@ def get_zoh_kep(tol: float):
     Thrust direction is fixed in the inertial frame.
 
     Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
 
     Returns:
         :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
@@ -112,6 +116,7 @@ def get_zoh_kep(tol: float):
 
 _ta_zoh_kep_var_cache = dict()
 
+
 def get_zoh_kep_var(tol: float):
     """Returns a (order 1) variational Taylor adaptive propagator (Heyoka)
     for the :func:`~pykep.ta.zoh_kep_dyn` dynamics retrieving one from
@@ -122,7 +127,7 @@ def get_zoh_kep_var(tol: float):
        thrust parameters :math:`[T, i_x, i_y, i_z]`.
 
     Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator. 
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator.
 
     Returns:
         :class:`hy::taylor_adaptive`: The Taylor adaptive variational propagator.
@@ -163,4 +168,4 @@ def get_zoh_kep_var(tol: float):
         return new_ta
     else:
         # Cache hit, return existing.
-        return _ta_zoh_kep_var_cache[tol] 
+        return _ta_zoh_kep_var_cache[tol]

@@ -1,6 +1,7 @@
 import heyoka as _hy
 import numpy as _np
 
+
 def zoh_eq_dyn():
     """
     The dynamics in equinoctial elements of a constant thrust (RTN frame) mass-varying spacecraft
@@ -94,7 +95,9 @@ def zoh_eq_dyn():
 
     # Dynamics
     fx = _np.dot(B, T_vector) / m + D
-    fm = -c * T
+    fm = (
+        -c * T * _hy.exp(-1.0 / m / 1e16)
+    )  # the added term regularizes the dynamics keeping it differentiable
 
     # Assembling retval
     retval = []
@@ -119,7 +122,7 @@ def get_zoh_eq(tol: float):
     Thrust direction is fixed in the RTN frame.
 
     Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator.
 
     Returns:
         :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
@@ -157,8 +160,9 @@ def get_zoh_eq(tol: float):
 
 _ta_zoh_eq_var_cache = dict()
 
+
 def get_zoh_eq_var(tol: float):
-    """Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the 
+    """Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the
     :func:`~pykep.ta.zoh_eq_dyn` dynamics retrieving one from a global cache if available.
 
     .. note::
@@ -166,7 +170,7 @@ def get_zoh_eq_var(tol: float):
        thrust parameters :math:`[T, i_x, i_y, i_z]`.
 
     Args:
-        *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator. 
+        *tol* (:class:`float`): the tolerance of the Taylor adaptive variational propagator.
 
     Returns:
         :class:`hy::taylor_adaptive`: The Taylor adaptive variational propagator.
