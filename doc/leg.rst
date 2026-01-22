@@ -9,4 +9,4 @@ Interplanetary transfer legs
    :members:
 
 .. autoclass:: zoh
-   :members: 
+   :members: compute_mc_grad, compute_tc_grad, get_state_info 

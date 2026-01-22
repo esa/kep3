@@ -36,7 +36,7 @@ class zoh:
     ):
         """
         .. note::
-           The variational integrator `ta_var` must have state dimension 84 (7x7 STM + 7x4 control
+           The variational integrator `ta_var` can be ``None`` or must have state dimension 84 (7x7 STM + 7x4 control
            sensitivity) and with the same dynamics as the nominal integrator `ta`. It is the user
            that must ensure the suitability of the integrators.
 
@@ -61,22 +61,21 @@ class zoh:
             :class:`ValueError`: If state/parameter dimensions mismatch or input lengths are incompatible.
 
         Examples:
-            Basic setup::
-                import numpy as np
-                import heyoka as hy
-
-                # Define states, controls, time grid
-                state0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0])
-                state1 = np.array([1.2, 0.1, 0.0, 0.0, 0.9, 0.1, 0.95])
-                controls = np.array([0.022, 0.7, 0.7, 0.1, 0.025, -0.3, 0.8, 0.4])
-                tgrid = np.array([0.0, 0.5, 1.0, 1.23])
-
-                # Get integrators
-                ta = pk.ta.get_zoh_eq_dyn(tol=1e-16)
-                ta_var = pk.ta.get_zoh_eq_var(tol=1e-16)
-
-                # Construct leg (50/50 split)
-                leg = zoh(state0, controls, state1, tgrid, cut=0.5, tas=(ta, ta_var))
+        
+        .. code-block:: python 
+        
+           import numpy as np
+           import heyoka as hy
+           # Define states, controls, time grid
+           state0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0])
+           state1 = np.array([1.2, 0.1, 0.0, 0.0, 0.9, 0.1, 0.95])
+           controls = np.array([0.022, 0.7, 0.7, 0.1, 0.025, -0.3, 0.8, 0.4])
+           tgrid = np.array([0.0, 0.5, 1.0, 1.23])
+           # Get integrators
+           ta = pk.ta.get_zoh_eq_dyn(tol=1e-16)
+           ta_var = pk.ta.get_zoh_eq_var(tol=1e-16)
+           # Construct leg (50/50 split)
+           leg = zoh(state0, controls, state1, tgrid, cut=0.5, tas=(ta, ta_var))
         """
 
         # We store the constructor args
@@ -172,6 +171,16 @@ class zoh:
         return retval
 
     def compute_tc_grad(self):
+        """Computes the gradients of the throttles constraints. Introducing the control vector as
+        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}, ...]`, this method computes the following gradient:
+
+        .. math::
+        
+           \\frac{\\partial \\mathbf {tc}}{\\partial \\mathbf u} \\rightarrow (\\mathbf{nseg} \\times 4\\mathbf{nseg}) 
+
+        Returns:
+            :class:`tuple` [:class:`numpy.ndarray`]: The gradient. Size will be (nseg,4nseg).
+        """
         retval = _np.zeros((self.nseg, self.nseg * 4))
         for i in range(self.nseg):
             retval[i, 4 * i + 1] = 2 * self.controls[4 * i + 1]
@@ -180,6 +189,30 @@ class zoh:
         return retval
 
     def compute_mc_grad(self):
+        """
+        Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\\mathbf x_s = [\\mathbf r_s, \\mathbf v_s, m_s]`, the
+        final augmented state with :math:`\\mathbf x_f = [\\mathbf r_f, \\mathbf v_f, m_f]`, the time grid as :math:`T_{grid}` and the introducing the control vector
+        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}]` (note the time of flight at the end), this method computes the following gradients:
+
+        .. math::
+        
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_s}  \\rightarrow (7\\times7)
+
+        .. math::
+        
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_f}  \\rightarrow (7\\times7)
+
+        .. math::
+        
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf u}  \\rightarrow (7\\times(4\\mathbf{nseg}))
+        
+        .. math::
+        
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf T_{grid}}  \\rightarrow (7\\times(\\mathbf{nseg} + 1))
+
+        Returns:
+            :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The four gradients. sizes will be (7,7), (7,7) (7,4nseg) and (7,nseg+1)
+  """
         # We will return 4 matrices: dmc/dx0, dmc/dx1, dmc/dcontrol, dmc/dtgrid
         # STMs -> forward
         M_seg_fwd = []  # M10, M21, M32, ....
@@ -301,6 +334,51 @@ class zoh:
         return dmc_dx0, dmc_dx1, dmc_dcontrols, dmcdtgrid
 
     def get_state_info(self, N=2):
+        """
+        This method returns state histories sampled along each ZOH segment, for both the
+        forward and backward propagation parts of the leg. The sampling is performed by
+        calling :meth:`heyoka.taylor_adaptive.propagate_grid` on a uniformly-spaced grid
+        of *N* points within each segment.
+
+        Args:
+            *N* (:class:`int`): Number of sampling points per segment (including the segment
+            endpoints). The default (*N=2*) returns only the segment endpoints.
+
+        Returns:
+            :class:`tuple`: ``(state_fwd, state_bck)`` where:
+
+                - ``state_fwd`` (:class:`list`): List of length ``nseg_fwd``. Each entry contains
+                  the sampled 7D state history over the corresponding forward segment (from
+                  ``tgrid[i]`` to ``tgrid[i+1]``).
+
+                - ``state_bck`` (:class:`list`): List of length ``nseg_bck``. Each entry contains
+                  the sampled 7D state history over the corresponding backward segment (from
+                  ``tgrid[-1-i]`` to ``tgrid[-2-i]``).
+
+            .. note::
+               The backward propagation is carried out by integrating from the final time toward
+               earlier times; depending on the backend conventions, the returned grids may thus be
+               time-reversed with respect to a forward-time plot.
+
+            .. note::
+               This method uses the nominal integrator ``self.ta`` and overwrites its internal
+               ``time``, ``state`` and the first four parameters (``T, i_x, i_y, i_z``). If the
+               integrator state must be preserved, call this method on a dedicated copy.
+
+        Examples:
+
+        .. code-block:: python 
+         
+           ax = pk.plot.make_3Daxis()
+           fwd, bck = leg.get_state_info(N=100)
+           for segment in fwd:
+               ax.scatter(segment[0,0], segment[0,1], segment[0,2], c='blue')
+               ax.plot(segment[:,0], segment[:,1], segment[:,2], c='blue')
+           for segment in bck:
+               ax.scatter(segment[0,0], segment[0,1], segment[0,2], c='darkorange')
+               ax.plot(segment[:,0], segment[:,1], segment[:,2], c='darkorange')
+           ax.view_init(90, -90)
+        """
         # Forward segments
         state_fwd = []
         self.ta.time = self.tgrid[0]
