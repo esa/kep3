@@ -192,11 +192,8 @@
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -206,6 +203,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -871,12 +869,6 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 ******************************************************************************
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
@@ -892,16 +884,22 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1049.4338611857736
-Total time to success: 21.107 seconds
-Number of successes: 6 over 10 trials (60.0 %)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+Final mass is: 1049.4338611857268
+Total time to success: 21.195 seconds
+Number of successes: 5 over 10 trials (50.0 %)
 </pre></div>
 </div>
 </div>
@@ -916,16 +914,7 @@ Number of successes: 6 over 10 trials (60.0 %)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
@@ -937,10 +926,22 @@ Number of successes: 6 over 10 trials (60.0 %)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-Final mass is: 1049.4338611472533
-Total time to success: 4.705 seconds
-Number of successes: 7 over 10 trials (70.0 %)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+Final mass is: 1049.433861184502
+Total time to success: 4.278 seconds
+Number of successes: 8 over 10 trials (80.0 %)
 </pre></div>
 </div>
 </div>
@@ -953,7 +954,7 @@ Number of successes: 7 over 10 trials (70.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3c55edb76fb6c125929f5d31a516bfba042731d84c4d4991a3f2499cbb7a5d4a.png" src="../_images/3c55edb76fb6c125929f5d31a516bfba042731d84c4d4991a3f2499cbb7a5d4a.png" />
+<img alt="../_images/8748a07037a7da422724e156801551679aa607a8eb50586db5cf1e01690b4b71.png" src="../_images/8748a07037a7da422724e156801551679aa607a8eb50586db5cf1e01690b4b71.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -964,7 +965,7 @@ Number of successes: 7 over 10 trials (70.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0ede86a67727f27bb2fc77b2493efdc4192e50b675f72910882957967122c1ee.png" src="../_images/0ede86a67727f27bb2fc77b2493efdc4192e50b675f72910882957967122c1ee.png" />
+<img alt="../_images/a440634ba42a6802ca75f7335ce199261cb156c44942749820b32587aa361a04.png" src="../_images/a440634ba42a6802ca75f7335ce199261cb156c44942749820b32587aa361a04.png" />
 </div>
 </div>
 </section>

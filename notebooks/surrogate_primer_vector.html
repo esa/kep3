@@ -191,11 +191,8 @@
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -205,6 +202,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -678,10 +676,10 @@ Larger then one! -&gt; Trajectory can be improved
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f08ab002270&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f2138ec1400&gt;
 </pre></div>
 </div>
-<img alt="../_images/c04d324e1afff12a114f9068b83d4996cb467179249107f8999b6cd2edc9e09d.png" src="../_images/c04d324e1afff12a114f9068b83d4996cb467179249107f8999b6cd2edc9e09d.png" />
+<img alt="../_images/2dd2ecc32be062cf5f08ce7216f52364742cbb6fa2301066f9ad2b33d1fb2130.png" src="../_images/2dd2ecc32be062cf5f08ce7216f52364742cbb6fa2301066f9ad2b33d1fb2130.png" />
 </div>
 </div>
 <p>Revealing all areas where adding two impulses would improve the trajectory leaving all boundary conditions unchanged.</p>
@@ -773,8 +771,8 @@ Larger then one! -&gt; Trajectory can be improved
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.3054555432823701
-The best solution found has a DV of 3.05456e-01
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.33129835062124835
+The best solution found has a DV of 3.31298e-01
 </pre></div>
 </div>
 </div>
@@ -803,7 +801,7 @@ The best solution found has a DV of 3.05456e-01
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3b4a27502625b28c2c2329589e45538c6f94aece7ba31f10c75dfed1becc4f97.png" src="../_images/3b4a27502625b28c2c2329589e45538c6f94aece7ba31f10c75dfed1becc4f97.png" />
+<img alt="../_images/499cd1d019a5c2ed81af3b6c45b0c9d512f7ca48dad9599b0c3926f20cc69353.png" src="../_images/499cd1d019a5c2ed81af3b6c45b0c9d512f7ca48dad9599b0c3926f20cc69353.png" />
 </div>
 </div>
 <p>The <strong>surrogate primer vector</strong> correctly had us try to add impulses and, in this case, halved the needed <span class="math notranslate nohighlight">\(\Delta V\)</span>!</p>

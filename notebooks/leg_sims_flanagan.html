@@ -44,10 +44,10 @@
     <script src="../_static/scripts/sphinx-book-theme.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/sims_flanagan_leg';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/leg_sims_flanagan';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The Sims-Flanagan high-fidelity trajectory leg" href="sims_flanagan_hf_leg.html" />
+    <link rel="next" title="The Zero Order Hold trajectory leg" href="leg_zoh.html" />
     <link rel="prev" title="Approximators for low-thrust transfers" href="approximations.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -193,10 +193,7 @@
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -206,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -273,7 +271,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/sims_flanagan_leg.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/leg_sims_flanagan.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -321,7 +319,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/sims_flanagan_leg.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/leg_sims_flanagan.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -351,7 +349,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/sims_flanagan_leg.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/leg_sims_flanagan.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -528,7 +526,7 @@ and approximates the continuous thrust via a sequence of impulsive, equally-spac
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fcc64fede0da5868b9ce521b35f0e6c492e2d442d5d00b08cc8dfc9e502cba4a.png" src="../_images/fcc64fede0da5868b9ce521b35f0e6c492e2d442d5d00b08cc8dfc9e502cba4a.png" />
+<img alt="../_images/7ceb6b53544efbad2277ee6b5f32fd06788cecd6a29605e78fb019b595f827ab.png" src="../_images/7ceb6b53544efbad2277ee6b5f32fd06788cecd6a29605e78fb019b595f827ab.png" />
 </div>
 </div>
 </section>
@@ -554,11 +552,11 @@ and approximates the continuous thrust via a sequence of impulsive, equally-spac
       </div>
     </a>
     <a class="right-next"
-       href="sims_flanagan_hf_leg.html"
+       href="leg_zoh.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The Sims-Flanagan high-fidelity trajectory leg</p>
+        <p class="prev-next-title">The Zero Order Hold trajectory leg</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

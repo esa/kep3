@@ -8,5 +8,5 @@ Interplanetary transfer legs
 .. autoclass:: sims_flanagan
    :members:
 
-.. autoclass:: sims_flanagan_hf
-   :members: 
+.. autoclass:: zoh
+   :members: compute_mc_grad, compute_tc_grad, get_state_info 

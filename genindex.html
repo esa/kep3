@@ -189,11 +189,8 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -203,6 +200,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -466,29 +464,21 @@ document.write(`
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mc_grad">compute_mc_grad() (pykep.leg.sims_flanagan method)</a>
 
       <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_mc_grad">(pykep.leg.sims_flanagan_hf method)</a>
+        <li><a href="leg.html#pykep.leg.zoh.compute_mc_grad">(pykep.leg.zoh method)</a>
 </li>
       </ul></li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mismatch_constraints">compute_mismatch_constraints() (pykep.leg.sims_flanagan method)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_mismatch_constraints">(pykep.leg.sims_flanagan_hf method)</a>
 </li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_tc_grad">compute_tc_grad() (pykep.leg.sims_flanagan method)</a>
 
       <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_tc_grad">(pykep.leg.sims_flanagan_hf method)</a>
+        <li><a href="leg.html#pykep.leg.zoh.compute_tc_grad">(pykep.leg.zoh method)</a>
 </li>
       </ul></li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_throttle_constraints">compute_throttle_constraints() (pykep.leg.sims_flanagan method)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.compute_throttle_constraints">(pykep.leg.sims_flanagan_hf method)</a>
 </li>
-      </ul></li>
       <li><a href="propagation.html#pykep.ta.cr3bp_dyn">cr3bp_dyn() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.cr3bp_effective_potential_U">cr3bp_effective_potential_U() (in module pykep.ta)</a>
@@ -496,11 +486,7 @@ document.write(`
       <li><a href="propagation.html#pykep.ta.cr3bp_jacobi_C">cr3bp_jacobi_C() (in module pykep.ta)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.cut">cut (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.cut">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="lambert.html#pykep.lambert_problem.cw">cw (pykep.lambert_problem property)</a>
 </li>
   </ul></td>
@@ -685,19 +671,17 @@ document.write(`
       </ul></li>
       <li><a href="planet.html#pykep.planet.get_safe_radius">get_safe_radius() (pykep.planet method)</a>
 </li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan_hf.get_state_history">get_state_history() (pykep.leg.sims_flanagan_hf method)</a>
+      <li><a href="leg.html#pykep.leg.zoh.get_state_info">get_state_info() (pykep.leg.zoh method)</a>
 </li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp">get_zero_hold_cr3bp() (in module pykep.ta)</a>
+      <li><a href="propagation.html#id0">get_zoh_cr3bp() (in module pykep.ta)</a>, <a href="propagation.html#pykep.ta.get_zoh_cr3bp">[1]</a>
 </li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp_var">get_zero_hold_cr3bp_var() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.get_zoh_eq">get_zoh_eq() (in module pykep.ta)</a>
 </li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_eq">get_zero_hold_eq() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.get_zoh_eq_var">get_zoh_eq_var() (in module pykep.ta)</a>
 </li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_eq_var">get_zero_hold_eq_var() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.get_zoh_kep">get_zoh_kep() (in module pykep.ta)</a>
 </li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_kep">get_zero_hold_kep() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.get_zero_hold_kep_var">get_zero_hold_kep_var() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.get_zoh_kep_var">get_zoh_kep_var() (in module pykep.ta)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -796,11 +780,7 @@ document.write(`
       <li><a href="plot.html#pykep.plot.make_3Daxis">make_3Daxis() (in module pykep.plot)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.max_thrust">max_thrust (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.max_thrust">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="elements.html#pykep.mee2ic">mee2ic() (in module pykep)</a>
 </li>
       <li><a href="elements.html#pykep.mee2par">mee2par() (in module pykep)</a>
@@ -808,11 +788,7 @@ document.write(`
       <li><a href="gym.html#pykep.trajopt.gym.messenger">messenger (pykep.trajopt.gym attribute)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.mf">mf (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.mf">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="trajopt.html#pykep.trajopt.mga">mga (class in pykep.trajopt)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt.mga_1dsm">mga_1dsm (class in pykep.trajopt)</a>
@@ -834,19 +810,11 @@ document.write(`
       <li><a href="epoch.html#pykep.epoch.mjd2000">mjd2000 (pykep.epoch property)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.ms">ms (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.ms">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="lambert.html#pykep.lambert_problem.mu">mu (pykep.lambert_problem property)</a>
 
       <ul>
         <li><a href="leg.html#pykep.leg.sims_flanagan.mu">(pykep.leg.sims_flanagan property)</a>
-</li>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.mu">(pykep.leg.sims_flanagan_hf property)</a>
-</li>
-        <li><a href="propagation.html#pykep.zero_hold_kep_problem.mu">(pykep.zero_hold_kep_problem property)</a>
 </li>
       </ul></li>
       <li><a href="planet.html#pykep.planet.mu_central_body">mu_central_body (pykep.planet property)</a>
@@ -871,32 +839,20 @@ document.write(`
 </li>
       <li><a href="planet.html#pykep.planet.name">name (pykep.planet property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#pykep.utils.name2naifid">name2naifid() (in module pykep.utils)</a>
 </li>
       <li><a href="lambert.html#pykep.lambert_problem.Nmax">Nmax (pykep.lambert_problem property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="epoch.html#pykep.epoch.now">now() (pykep.epoch static method)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.nseg">nseg (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.nseg">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.nseg_bck">nseg_bck (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.nseg_bck">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.nseg_fwd">nseg_fwd (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.nseg_fwd">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="udpla.html#pykep.udpla.null_udpla">null_udpla (class in pykep.udpla)</a>
 </li>
   </ul></td>
@@ -977,13 +933,9 @@ document.write(`
 </li>
       <li><a href="trajopt.html#pykep.trajopt.primer_vector_surrogate">primer_vector_surrogate() (in module pykep.trajopt)</a>
 </li>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem.propagate">propagate() (pykep.zero_hold_kep_problem method)</a>
-</li>
       <li><a href="propagation.html#pykep.propagate_lagrangian">propagate_lagrangian() (in module pykep)</a>
 </li>
       <li><a href="propagation.html#pykep.propagate_lagrangian_grid">propagate_lagrangian_grid() (in module pykep)</a>
-</li>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem.propagate_var">propagate_var() (pykep.zero_hold_kep_problem method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1001,28 +953,16 @@ document.write(`
         <li><a href="udpla.html#pykep.udpla.jpl_lp.radius">(pykep.udpla.jpl_lp property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gym.html#pykep.trajopt.gym.rosetta">rosetta (pykep.trajopt.gym attribute)</a>
 </li>
       <li><a href="utils.html#pykep.utils.rotation_matrix">rotation_matrix() (in module pykep.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan.rvf">rvf (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.rvf">(pykep.leg.sims_flanagan_hf property)</a>
-</li>
-      </ul></li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan_hf.rvmf">rvmf (pykep.leg.sims_flanagan_hf property)</a>
-</li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan_hf.rvms">rvms (pykep.leg.sims_flanagan_hf property)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.rvs">rvs (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.rvs">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1037,11 +977,9 @@ document.write(`
       </ul></li>
       <li><a href="udpla.html#pykep.udpla.jpl_lp.set_safe_radius">set_safe_radius() (pykep.udpla.jpl_lp method)</a>
 </li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="leg.html#pykep.leg.sims_flanagan_hf">sims_flanagan_hf (class in pykep.leg)</a>
+      <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt._launchers.soyuzf">soyuzf() (pykep.trajopt._launchers method)</a>
 </li>
@@ -1056,27 +994,15 @@ document.write(`
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="leg.html#pykep.leg.sims_flanagan.throttles">throttles (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.throttles">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
-      </ul></li>
       <li><a href="udpla.html#pykep.udpla.tle">tle (class in pykep.udpla)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lambert.html#pykep.lambert_problem.tof">tof (pykep.lambert_problem property)</a>
 
       <ul>
         <li><a href="leg.html#pykep.leg.sims_flanagan.tof">(pykep.leg.sims_flanagan property)</a>
-</li>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.tof">(pykep.leg.sims_flanagan_hf property)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="leg.html#pykep.leg.sims_flanagan_hf.tol">tol (pykep.leg.sims_flanagan_hf property)</a>
-
-      <ul>
-        <li><a href="propagation.html#pykep.zero_hold_kep_problem.tol">(pykep.zero_hold_kep_problem property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1101,16 +1027,10 @@ document.write(`
 </li>
       <li><a href="lambert.html#pykep.lambert_problem.v1">v1 (pykep.lambert_problem property)</a>
 </li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan.veff">veff (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.veff">(pykep.leg.sims_flanagan_hf property)</a>
-</li>
-        <li><a href="propagation.html#pykep.zero_hold_kep_problem.veff">(pykep.zero_hold_kep_problem property)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.veff">veff (pykep.leg.sims_flanagan property)</a>
+</li>
       <li><a href="udpla.html#pykep.udpla.vsop2013">vsop2013 (class in pykep.udpla)</a>
 </li>
   </ul></td>
@@ -1127,19 +1047,19 @@ document.write(`
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.ta.zero_hold_cr3bp_dyn">zero_hold_cr3bp_dyn() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.zero_hold_eq_dyn">zero_hold_eq_dyn() (in module pykep.ta)</a>
-</li>
-      <li><a href="propagation.html#pykep.ta.zero_hold_kep_dyn">zero_hold_kep_dyn() (in module pykep.ta)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem">zero_hold_kep_problem (class in pykep)</a>
-</li>
       <li><a href="anomalies.html#pykep.zeta2f">zeta2f() (in module pykep)</a>
 </li>
       <li><a href="anomalies.html#pykep.zeta2f_v">zeta2f_v() (in module pykep)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.zoh">zoh (class in pykep.leg)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="propagation.html#pykep.ta.zoh_cr3bp_dyn">zoh_cr3bp_dyn() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.zoh_eq_dyn">zoh_eq_dyn() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.zoh_kep_dyn">zoh_kep_dyn() (in module pykep.ta)</a>
 </li>
   </ul></td>
 </tr></table>

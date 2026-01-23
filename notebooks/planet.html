@@ -190,11 +190,8 @@
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -204,6 +201,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -475,18 +473,34 @@ document.write(`
 <p>Let us print on screen this <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">pla</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Short repr: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pla</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Long repr: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pla</span><span class="o">.</span><span class="n">extra_info</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A Circular Orbit
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Short repr: 
+ A Circular Orbit
+Long repr: 
+ Keplerian planet elements: 
+Semi major axis: 1
+Semi major axis (AU): 6.684587122268445e-12
+Eccentricity: 0
+Inclination (deg.): 0
+Big Omega (deg.): 0
+Small omega (deg.): 0
+True anomly (deg.): 0
+Mean anomly (deg.): 0
+Elements reference epoch (MJD2000): 0
+Elements reference epoch (UTC): 2000-01-01T00:00:00.000000
+r at ref. = [1, 0, 0]
+v at ref. = [0, 1, 0]
 </pre></div>
 </div>
 </div>
 </div>
-<p>The textual representation of a planet is made of two parts.</p>
-<p>The first part is common to all objects of type <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> and reports the body name, its physical parameters and the name of the underlying c++ class of the udpla (for pythonic udplas, this will be always the same and eaul to kep3::python_udpla).</p>
+<p>The textual representation of a planet can be extracted in two parts.</p>
+<p>The first part is common to all objects of type <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> and reports the body name only.</p>
 <p>The second part is instead original with the udpla type, and is essentially whatever is returned by the <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface optional method <code class="docutils literal notranslate"><span class="pre">extra_info</span></code>. In this case, the udpla is a c++ based class exposed to python as :class:<code class="docutils literal notranslate"><span class="pre">pykep.udpla.keplerian</span></code> and its extra info report the orbital parameters as well as the Cartesian components of the body state at the reference epoch.</p>
 </section>
 

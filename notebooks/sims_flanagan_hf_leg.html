@@ -47,8 +47,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/sims_flanagan_hf_leg';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Inspecting the CR3BP and BCP" href="cr3bp_bcp.html" />
-    <link rel="prev" title="The Sims-Flanagan trajectory leg" href="sims_flanagan_leg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -110,6 +108,8 @@
     <div class="bd-container__inner bd-page-width">
       
       
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -184,19 +184,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -206,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -469,10 +467,10 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="the-sims-flanagan-high-fidelity-trajectory-leg">
 <h1>The Sims-Flanagan high-fidelity trajectory leg<a class="headerlink" href="#the-sims-flanagan-high-fidelity-trajectory-leg" title="Permalink to this heading">#</a></h1>
-<p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a>. The leg can be used to describe a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
+<p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code>. The leg can be used to describe a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
 and approximates the continuous thrust via a sequence of continuous, constant thrust arcs (zero-hold). The leg is defined by a starting position <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, an arrival position <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span> and a time of flight <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <p>A sequence of throttles <span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, u_{x2}, u_{y2}, u_{z2}, ... ]\)</span> define the direction and magnitude of the continuous throttle vector along each segment (i.e. trajectory parts of equal temporal length <span class="math notranslate nohighlight">\(\frac Tn\)</span>).</p>
-<p>In this tutorial we show the basic API to interface with the class <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a> efficiently.</p>
+<p>In this tutorial we show the basic API to interface with the class <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code> efficiently.</p>
 <p>We start with some imports:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -727,7 +725,7 @@ Check gradient of mc wrt u:   True
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="custom-dynamics">
 <h1>Custom dynamics<a class="headerlink" href="#custom-dynamics" title="Permalink to this heading">#</a></h1>
-<p>We can also build a <a class="reference internal" href="../leg.html#pykep.leg.sims_flanagan_hf" title="pykep.leg.sims_flanagan_hf"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code></a> leg using a custom (zero-hold) dynamics to propagate the various segments. The dynamics needs to be written taking care of a number of things:</p>
+<p>We can also build a <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code> leg using a custom (zero-hold) dynamics to propagate the various segments. The dynamics needs to be written taking care of a number of things:</p>
 <ul class="simple">
 <li><p>It must have, as parameters, <span class="math notranslate nohighlight">\(\mu, v_{eff}, T_1, T_2, T_3\)</span>, where these last three values represent the Cartesian component of a zero-hold thrust in some reference frame.</p></li>
 <li><p>It needs to have 7 dimensions with the last variable being the mass.</p></li>
@@ -1077,24 +1075,6 @@ Feasibility:  6.152208152684527e-08
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="sims_flanagan_leg.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">The Sims-Flanagan trajectory leg</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="cr3bp_bcp.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Inspecting the CR3BP and BCP</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               

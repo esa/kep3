@@ -22,19 +22,8 @@ Keplerian
 
 ---------------------------------------------------------
 
-Non-Keplerian 
----------------
-
-.. currentmodule:: pykep
-
-.. autoclass:: zero_hold_kep_problem
-    :members:  propagate, propagate_var, mu, veff, tol
-
----------------------------------------------------------
-
 Taylor adaptive propagators
 -----------------------------
-
 
 In addition to the above mentioned propagators,
 Taylor adaptive integrators are offered in `pykep` wrapping some of the functionalities of
@@ -79,53 +68,46 @@ Circular Restricted Three Body Problem
 
 .. autofunction:: cr3bp_effective_potential_U
 
-Bicircular Problem 
+Bicircular Problem
 ~~~~~~~~~~~~~~~~~~~~~
 
 Introduced by Simo' et al. in his '97 paper :cite:p:`simo1995bicircular`.
 
-.. currentmodule:: pykep.ta
-
-.. autofunction:: get_bcp
-
+.. autofunction:: get_bcp 
+    
 .. autofunction:: get_bcp_var
 
 .. autofunction:: bcp_dyn 
 
-zero_hold_kep
-~~~~~~~~~~~~~
-.. currentmodule:: pykep.ta
+Zero Hold Keplerian Propagator in Cartesian coordinates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: get_zero_hold_kep
+.. autofunction:: get_zoh_kep
 
-.. autofunction:: get_zero_hold_kep_var
+.. autofunction:: get_zoh_kep_var
 
-.. autofunction:: zero_hold_kep_dyn 
+.. autofunction:: zoh_kep_dyn 
 
-zero_hold_eq
-~~~~~~~~~~~~~~~
-.. currentmodule:: pykep.ta
+Zero Hold Keplerian Propagator in Equinoctial elements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: get_zero_hold_eq
+.. autofunction:: get_zoh_eq
 
-.. autofunction:: get_zero_hold_eq_var
+.. autofunction:: get_zoh_eq_var
 
-.. autofunction:: zero_hold_eq_dyn 
+.. autofunction:: zoh_eq_dyn 
 
-zero_hold_cr3bp
-~~~~~~~~~~~~~~~
-.. currentmodule:: pykep.ta
+Zero Hold CR3BP Propagator in in Cartesian coordinates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: get_zero_hold_cr3bp
+.. autofunction:: get_zoh_cr3bp
 
-.. autofunction:: get_zero_hold_cr3bp_var
+.. autofunction:: get_zoh_cr3bp
 
-.. autofunction:: zero_hold_cr3bp_dyn 
+.. autofunction:: zoh_cr3bp_dyn 
 
 Low-thrust Pontryagin Cartesian TPBVP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. currentmodule:: pykep.ta
 
 .. autofunction:: get_pc
 
@@ -136,12 +118,8 @@ Low-thrust Pontryagin Cartesian TPBVP
 Low-thrust Pontryagin Equinoctial TPBVP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. currentmodule:: pykep.ta
-
 .. autofunction:: get_peq
 
 .. autofunction:: get_peq_var
 
-.. autofunction:: peq_dyn
-
-
+.. autofunction:: peq_dyn 

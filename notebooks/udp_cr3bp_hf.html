@@ -192,11 +192,8 @@
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -206,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -649,7 +647,7 @@ FC [ 1.16487809  0.         -0.11145304] [ 0.         -0.20191923  0.        ] t
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-0.5, 0.5)
 </pre></div>
 </div>
-<img alt="../_images/c47c6e5306c84b382eb4c2f1ee416d15a60730b9b47f902e7547e257b3a5a40e.png" src="../_images/c47c6e5306c84b382eb4c2f1ee416d15a60730b9b47f902e7547e257b3a5a40e.png" />
+<img alt="../_images/59d2f7cd00aa1cf79248f9b446d3e1e2f6f8652a08b27ba8958f5947a8b4bc6d.png" src="../_images/59d2f7cd00aa1cf79248f9b446d3e1e2f6f8652a08b27ba8958f5947a8b4bc6d.png" />
 </div>
 </div>
 <section id="analytical-performances-of-the-gradient">
@@ -691,7 +689,7 @@ FC [ 1.16487809  0.         -0.11145304] [ 0.         -0.20191923  0.        ] t
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff_bool True
 shape(diff) (20, 39)
-‖diff‖: 6.36814357009e-06
+‖diff‖: 2.16881549237e-06
 </pre></div>
 </div>
 </div>

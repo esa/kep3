@@ -192,11 +192,8 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
-
-
-
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -206,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
@@ -419,17 +417,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_grid"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_grid()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian">Non-Keplerian</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.mu"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.mu</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.propagate"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.propagate()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.propagate_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.tol"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.tol</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.veff"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.veff</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-body-problem-kepler">Two Body Problem (Kepler)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_kep"><code class="docutils literal notranslate"><span class="pre">get_kep()</span></code></a></li>
@@ -451,22 +438,22 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.bcp_dyn"><code class="docutils literal notranslate"><span class="pre">bcp_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-kep">zero_hold_kep</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_kep"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_kep()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_kep_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_kep_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_kep_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-keplerian-propagator-in-cartesian-coordinates">Zero Hold Keplerian Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_kep"><code class="docutils literal notranslate"><span class="pre">get_zoh_kep()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_kep_var"><code class="docutils literal notranslate"><span class="pre">get_zoh_kep_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_kep_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_kep_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-eq">zero_hold_eq</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_eq"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_eq()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_eq_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_eq_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_eq_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-keplerian-propagator-in-equinoctial-elements">Zero Hold Keplerian Propagator in Equinoctial elements</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_eq"><code class="docutils literal notranslate"><span class="pre">get_zoh_eq()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_eq_var"><code class="docutils literal notranslate"><span class="pre">get_zoh_eq_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp">zero_hold_cr3bp</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_cr3bp()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_cr3bp_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_cr3bp_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">Zero Hold CR3BP Propagator in in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
@@ -515,7 +502,7 @@ seamlessly via variational equations.</p>
 <p><em>stm</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): r and v, that is the final position and velocity after the propagation. (if <em>stm</em> is False)
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (6,6)): (r,v) and the STM. (if <em>stm</em> is True)</p>
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (6,6)): (r,v) and the STM. (if <em>stm</em> is True)</p>
 </dd>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -562,144 +549,6 @@ and velocity after the propagation and the flattened stm (if requested).</p>
 </div>
 </dd>
 </dl>
-</dd></dl>
-
-</section>
-<hr class="docutils" />
-<section id="non-keplerian">
-<h2>Non-Keplerian<a class="headerlink" href="#non-keplerian" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">zero_hold_kep_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.zero_hold_kep_problem" title="Permalink to this definition">#</a></dt>
-<dd><p>Class representing the zero_hold_kep problem. In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body and
-described by the equations:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\left\{
-\begin{array}{l}
-    \dot{\mathbf r} = \mathbf v \\
-    \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
-    \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
-\end{array}\right.\end{split}\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Similar and connected functionality is provided by the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_kep()</span></code>,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_kep_var()</span></code>: and <a class="reference internal" href="#pykep.ta.zero_hold_kep_dyn" title="pykep.ta.zero_hold_kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_kep_dyn()</span></code></a>:.</p>
-</div>
-<dl>
-<dt>Args:</dt><dd><p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): central body gravitational parameter. Defaults to 1.</p>
-<p><em>veff</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): propulsion system effective velocity (Isp g0). Defaults to 1.</p>
-<p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): tolerance of the Taylor adaptive integration. Defaults to 1e-16.</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Units need to be consistent upon construction as well as later on when calling the propagate methods.</p>
-</div>
-<dl>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">3000.</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-14</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">zero_hold_kep_problem</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">rvm_state</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">],</span> <span class="n">tof</span> <span class="o">=</span> <span class="mf">7.32</span><span class="p">)</span>
-<span class="go">[0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem.mu">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#pykep.zero_hold_kep_problem.mu" title="Permalink to this definition">#</a></dt>
-<dd><p>The central body gravity parameter.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem.propagate">
-<span class="sig-name descname"><span class="pre">propagate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvm_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.zero_hold_kep_problem.propagate" title="Permalink to this definition">#</a></dt>
-<dd><p>zero_hold_kep problem numerical propagation. In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
-<p>The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
-<dl>
-<dt>Args:</dt><dd><p><em>rvm_state</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,)): position, velocity and mass flattened into a 7D list.</p>
-<p><em>thrust</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (3,)): thrust flattened into a 3D list.</p>
-<p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight.</p>
-</dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,) : position, velocity and mass after the numerical propagation, flattened into a 7D list.</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Units need to be consistent with the ones used upon constructing the instance.</p>
-</div>
-<dl>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">3000.</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-14</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">zero_hold_kep_problem</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">rvm_state</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">],</span> <span class="mf">7.32</span><span class="p">)</span>
-<span class="go">[0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem.propagate_var">
-<span class="sig-name descname"><span class="pre">propagate_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvm_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.zero_hold_kep_problem.propagate_var" title="Permalink to this definition">#</a></dt>
-<dd><p>zero_hold_kep problem numerical propagation via variational equations.</p>
-<p>In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
-<p>The propagation will be singular for vanishing masses (infinite acceleration) and raise an exception.</p>
-<p>It also computes the system State Transition Matrix:</p>
-<div class="math notranslate nohighlight">
-\[\mathbf M = \frac{d\mathbf x_f}{d\mathbf x_0}\]</div>
-<p>as well as the gradients of the final states with respect to the thrust direction.</p>
-<div class="math notranslate nohighlight">
-\[\mathbf U = \frac{d\mathbf x_f}{d\mathbf u}\]</div>
-<dl>
-<dt>Args:</dt><dd><p><em>rvm_state</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,)): position, velocity and mass flattened into a 7D list.</p>
-<p><em>thrust</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (3,)): thrust flattened into a 3D list.</p>
-<p><em>tof</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): time of flight.</p>
-</dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> (7,), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,7), <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (7,3)): position, velocity and mass (after propagation) flattened into a 7D list, the state transition matrix 
-and the gradient with respect to thrust.</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Units need to be consistent upon construction and later on when calling the propagate methods.</p>
-</div>
-<dl>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">3000.</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">G0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-14</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">zero_hold_kep_problem</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">],</span> <span class="mf">7.32</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem.tol">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tol</span></span><a class="headerlink" href="#pykep.zero_hold_kep_problem.tol" title="Permalink to this definition">#</a></dt>
-<dd><p>The Taylor integrator tolerance.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="pykep.zero_hold_kep_problem.veff">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">veff</span></span><a class="headerlink" href="#pykep.zero_hold_kep_problem.veff" title="Permalink to this definition">#</a></dt>
-<dd><p>The effective velocity (Isp g0)</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -911,57 +760,66 @@ The effective potential is defined as:</p>
 <p>Introduced by Simo’ et al. in his ‘97 paper <span id="id6">[<a class="reference internal" href="bibliography.html#id19" title="Carles Simó, Gerard Gómez, Àngel Jorba, and Josep Masdemont. The bicircular model near the triangular libration points of the rtbp. In From Newton to Chaos: modern techniques for understanding and coping with chaos in n-body dynamical systems, pages 343–370. Springer, 1995.">SimoGomezJM95</a>]</span>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_bcp">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp" title="Permalink to this definition">#</a></dt>
-<dd><p>ta.get_cbp(tol)</p>
-<p>Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-If the requested propagator was never created, a call to this function will trigger its creation, else it will
-return the one from a global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
-<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) dynamics
+retrieving one from a global cache (making a copy).</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<p>The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
+              <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 </dl>
-<p>ta.get_cbp(tol)</p>
-<p>Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-If the requested propagator was never created, a call to this function will trigger its creation, else it will
-return the one from a global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
-<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<p>ta.get_bcp(tol)</p>
+<p>Returns a Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) dynamics
+retrieving one from a global cache (making a copy).</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<p>The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
+              <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -970,65 +828,78 @@ is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time z
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_bcp_var">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp_var</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp_var" title="Permalink to this definition">#</a></dt>
-<dd><p>ta.get_cbp_var(tol)</p>
-<blockquote>
-<div><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-If the requested propagator was never created, a call to this function will trigger its creation, else it will
-return the one from a global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
-<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_bcp_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_bcp_var" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the 
+Bicircular Problem (BCP) dynamics retrieving one from a global cache (making a copy).</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions.</p>
+</div>
+<p>The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the variational Taylor adaptive propagator.</p>
 </dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The variational Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp_var</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
+               <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 </dl>
-</div></blockquote>
-<p>ta.get_cbp_var(tol)</p>
-<blockquote>
-<div><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Bicircular Problem (BCP) problem retreiving one from a global cache and making a copy.
-If the requested propagator was never created, a call to this function will trigger its creation, else it will
-return the one from a global cache, thus avoiding jitting.</p>
-<p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
-is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
-<p>The specific dynamics used is that returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">cbp_dyn()</span></code>.</p>
+<p>ta.get_bcp_var(tol:float)</p>
+<p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the 
+Bicircular Problem (BCP) dynamics retrieving one from a global cache (making a copy).</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions.</p>
+</div>
+<p>The BCP is defined in Cartesian coordinates (non-symplectic, non-Hamiltonian, time-dependent)
+with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 <dl>
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the variational Taylor adaptive propagator.</p>
 </dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The variational Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span>  <span class="mf">0.22634376321</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span>    <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_bcp_var</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
+               <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
+<span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">5.7856656782589234</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">mu_s</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">rho_p</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -1087,33 +958,33 @@ angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:
 </dd></dl>
 
 </section>
-<section id="zero-hold-kep">
-<h3>zero_hold_kep<a class="headerlink" href="#zero-hold-kep" title="Permalink to this heading">#</a></h3>
+<section id="zero-hold-keplerian-propagator-in-cartesian-coordinates">
+<h3>Zero Hold Keplerian Propagator in Cartesian coordinates<a class="headerlink" href="#zero-hold-keplerian-propagator-in-cartesian-coordinates" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_kep">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_kep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_kep" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics retreiving
-one from a global cache and making a copy.</p>
-<p>In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting a main body.</p>
-<p>If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_kep_dyn" title="pykep.ta.zero_hold_kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_kep_dyn()</span></code></a>.</p>
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_kep">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_kep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_kep" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_kep_dyn" title="pykep.ta.zoh_kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_kep_dyn()</span></code></a> dynamics
+retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a constant thrust mass-varying spacecraft.
+Thrust direction is fixed in the inertial frame.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_kep</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">]</span> <span class="o">+</span> <span class="n">thrust</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.32</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_kep</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -1121,28 +992,34 @@ return the one from the global cache, thus avoiding jitting.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_kep_var">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_kep_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_kep_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics
-retreiving one from a global cache and making a copy.</p>
-<p>In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a constant inertial thrust mass-varying spacecraft orbiting a main body.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_kep_dyn" title="pykep.ta.zero_hold_kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_kep_dyn()</span></code></a>: and also used in <a class="reference internal" href="#pykep.ta.get_zero_hold_kep" title="pykep.ta.get_zero_hold_kep"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_zero_hold_kep()</span></code></a></p>
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_kep_var">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_kep_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_kep_var" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka)
+for the <a class="reference internal" href="#pykep.ta.zoh_kep_dyn" title="pykep.ta.zoh_kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_kep_dyn()</span></code></a> dynamics retrieving one from
+a global cache if available.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions and the
+thrust parameters <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z]\)</span>.</p>
+</div>
 <dl>
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive variational propagator.</p>
 </dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive variational propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_kep_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1e-22</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">]</span> <span class="o">+</span> <span class="n">thrust</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.32</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_kep_var</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -1150,135 +1027,24 @@ this is the initial value problem of a constant inertial thrust mass-varying spa
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.zero_hold_kep_dyn">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zero_hold_kep_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zero_hold_kep_dyn" title="Permalink to this definition">#</a></dt>
-<dd><p>The dynamics of a constant inertial thrust mass-varying spacecraft orbiting a main body.</p>
+<dt class="sig sig-object py" id="pykep.ta.zoh_kep_dyn">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zoh_kep_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zoh_kep_dyn" title="Permalink to this definition">#</a></dt>
+<dd><p>The dynamics in Cartesian coordinates of a constant thrust mass-varying spacecraft
+orbiting a main central body with unitary gravitational parameter <span class="math notranslate nohighlight">\(\mu = 1\)</span>.
+The electric propulsion is characterized by its effective
+exhaust velocity <span class="math notranslate nohighlight">\(v_{eff} = I_{sp} g_0\)</span>.</p>
+<p>The dynamics are given by:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
 \begin{array}{l}
-    \dot{\mathbf r} = \mathbf v \\
-    \dot{\mathbf v} = -\frac{\mu}{r^3} \mathbf r + \frac{\mathbf T}{m} \\
-    \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
-\end{array}\right.\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu, v_{eff} = I_{sp}g_0\)</span> and <span class="math notranslate nohighlight">\(\mathbf T = [T_x, T_y, T_z]\)</span> are parameters.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="zero-hold-eq">
-<h3>zero_hold_eq<a class="headerlink" href="#zero-hold-eq" title="Permalink to this heading">#</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_eq">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_eq" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_eq dynamics retreiving
-one from a global cache and making a copy.</p>
-<p>This is the initial value problem of a constant thrust (RTN frame) mass-varying spacecraft orbiting a primary. 
-Thrust direction is fixed in the RTN frame.</p>
-<p>If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_eq_dyn" title="pykep.ta.zero_hold_eq_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_eq_dyn()</span></code></a>.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
-</dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
-</dd>
-</dl>
-<p>Examples:
-&gt;&gt;&gt; import pykep as pk
-&gt;&gt;&gt; ta = pk.ta.get_zero_hold_eq(tol = 1e-16)
-&gt;&gt;&gt; ta.time = 0.
-&gt;&gt;&gt; ta.state[:] = [1.2,0.1,0.1,0.1,1.,0.123,1.]
-&gt;&gt;&gt; mu = 1.122
-&gt;&gt;&gt; veff = 1.32
-&gt;&gt;&gt; thrust = [0.23, 0.21, 0.1]
-&gt;&gt;&gt; tof = 1.23
-&gt;&gt;&gt; ta.pars[:] = [mu, veff] + thrust
-&gt;&gt;&gt; ta.propagate_until(tof)</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_eq_var">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_eq_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_eq_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_eq dynamics retreiving
-one from a global cache and making a copy.</p>
-<p>This is the initial value problem of a constant thrust (RTN frame) mass-varying spacecraft orbiting a primary. 
-Thrust direction is fixed in the RTN frame.</p>
-<p>Variations are only considered with repsect to initial conditions and the constant thurst <span class="math notranslate nohighlight">\(T_r, T_t, T_n\)</span>.
-The variations with respect to the constant thrust differ from those with respect to
-the often introduced throttles <span class="math notranslate nohighlight">\(\mathbf T = T_{max} \mathbf u\)</span> by a factor <span class="math notranslate nohighlight">\(T_{max}\)</span>.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_eq_dyn" title="pykep.ta.zero_hold_eq_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_eq_dyn()</span></code></a>: and also used in <code class="xref py py-func docutils literal notranslate"><span class="pre">get_zero_hold_qe()</span></code></p>
-<dl class="simple">
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
-</dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
-</dd>
-</dl>
-<p>Examples:
-&gt;&gt;&gt; import pykep as pk
-&gt;&gt;&gt; ta = pk.ta.get_zero_hold_eq_var(tol = 1e-16)
-&gt;&gt;&gt; ta.time = 0.
-&gt;&gt;&gt; ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
-&gt;&gt;&gt; mu = 1.
-&gt;&gt;&gt; veff = 1.
-&gt;&gt;&gt; thrust = [0., 0., 1e-22]
-&gt;&gt;&gt; tof = 1.
-&gt;&gt;&gt; ta.pars[:5] = [mu, veff] + thrust
-&gt;&gt;&gt; ta.propagate_until(tof)</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.zero_hold_eq_dyn">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zero_hold_eq_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zero_hold_eq_dyn" title="Permalink to this definition">#</a></dt>
-<dd><p>The dynamics in equinoctial elements of a constant thrust (RTN frame) mass-varying spacecraft orbiting a main body.</p>
-<p>We consider the motion of a spacecraft of mass <span class="math notranslate nohighlight">\(m\)</span> with a position <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> and velocity <span class="math notranslate nohighlight">\(\mathbf{v}\)</span> subject only to the Sun’s
-gravitational attraction in some inertial reference frame. The spacecraft also has an ion thruster with a specific impulse <span class="math notranslate nohighlight">\(I_{sp}\)</span> thrusting as
-<span class="math notranslate nohighlight">\([T_r, T_t, T_n]\)</span>. We describe the spacecraft state via its mass <span class="math notranslate nohighlight">\(m\)</span> and the (prograde) modified equinoctial elements
-<span class="math notranslate nohighlight">\(\mathbf{x}=\left[p,f,g,h,k,L\right]^T\)</span>. The dynamics are given by:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{l}
-\dot p =  \frac 1m\sqrt{\frac p\mu} \frac{2p}{w} T_t  \\
-\dot f =  \frac 1m\sqrt{\frac p\mu} \left\{T_r \sin L + \left[ (1+w)\cos L + f \right] \frac{T_t}{w} - (h\sin L-k\cos L)\frac{g\cdot T_n}{w} \right\}  \\
-\dot g =  \frac 1m\sqrt{\frac p\mu} \left\{ - T_r\cos L + \left[ (1+w)\sin L + g \right] \frac{T_t}{w} + (h\sin L-k\cos L)\frac{f\cdot T_n}{w} \right\}  \\
-\dot h =  \frac 1m\sqrt{\frac p\mu} \frac{s^2T_n}{2w}\cos L  \\
-\dot k =  \frac 1m\sqrt{\frac p\mu} \frac{s^2T_n}{2w}\sin L  \\
-\dot L = \sqrt{\frac p\mu}\left\{\mu\left(\frac wp\right)^2 + \frac 1w\left(h\sin L-k\cos L\right)\frac{ T_n}m \right\} \\
-\dot m = - \frac{|\mathbf T|}{v_{eff}} \\
-\end{array}\end{split}\]</div>
-<p>where, <span class="math notranslate nohighlight">\(w = 1 + f\cos L + g\sin L\)</span>, <span class="math notranslate nohighlight">\(s^2 = 1 + h^2 + k^2\)</span> and <span class="math notranslate nohighlight">\([T_r, T_t, T_n]\)</span> are the radial, tangential and normal
-components of thrust direction. The gravitational parameter is denoted with <span class="math notranslate nohighlight">\(\mu\)</span> while <span class="math notranslate nohighlight">\(v_{eff} = I_{sp}g_0\)</span> is 
-the effective velocity of the thruster. We rewrite the above equations in a more compact form:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\left\{
-\begin{array}{l}
-\dot {\mathbf x} =  \mathbf B(\mathbf x)  \frac{\mathbf{T}}m  + \mathbf D(\mathbf x) \\
-\dot m = - \frac{|\mathbf T|}{v_{eff}} \\
+\dot{\mathbf{r}} = \mathbf{v} \\
+\dot{\mathbf{v}} = -\frac{\mathbf{r}}{r^3} + \frac{T}{m} \mathbf{\hat{i}} \\
+\dot{m} = -c T
 \end{array}
 \right.\end{split}\]</div>
-<p>where:</p>
-<div class="math notranslate nohighlight">
-\[\sqrt{\frac \mu p} \mathbf B(\mathbf x) = 
-\left[
-\begin{array}{ccc}
-0 &amp; \frac {2p}w &amp; 0 \
-\sin L &amp; [(1+w)\cos L + f]\frac 1w  &amp; - \frac gw (h\sin L-k\cos L)  \
-- \cos L &amp; [(1+w)\sin L + g]\frac 1w  &amp; \frac fw (h\sin L-k\cos L) \
-0 &amp; 0  &amp; \frac 1w \frac{s^2}{2}\cos L \
-0 &amp; 0  &amp; \frac 1w \frac{s^2}{2}\sin L \
-0 &amp; 0  &amp; \frac 1w (h\sin L - k\cos L) \
-\end{array}
-\right]\]</div>
-<p>and:</p>
-<div class="math notranslate nohighlight">
-\[\mathbf D(\mathbf x) = 
-\left[
-\begin{array}{cccccc}
-0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \sqrt{\frac{\mu}{p^3}}w^2
-\end{array}
-\right]^T\]</div>
-<p>and  <span class="math notranslate nohighlight">\([\mu, v_{eff}, T_x, T_y, T_z]\)</span> are parameters.</p>
+<p>where <span class="math notranslate nohighlight">\(c = \frac{1}{v_{eff}}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{\hat{i}} = [i_x, i_y, i_z]\)</span>.</p>
+<p>The state is: <span class="math notranslate nohighlight">\([x, y, z, v_x, v_y, v_z, m]\)</span></p>
+<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c]\)</span></p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(p, dp), …]</p>
 </dd>
@@ -1286,35 +1052,33 @@ the effective velocity of the thruster. We rewrite the above equations in a more
 </dd></dl>
 
 </section>
-<section id="zero-hold-cr3bp">
-<h3>zero_hold_cr3bp<a class="headerlink" href="#zero-hold-cr3bp" title="Permalink to this heading">#</a></h3>
+<section id="zero-hold-keplerian-propagator-in-equinoctial-elements">
+<h3>Zero Hold Keplerian Propagator in Equinoctial elements<a class="headerlink" href="#zero-hold-keplerian-propagator-in-equinoctial-elements" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_cr3bp">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_cr3bp" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp dynamics retreiving
-one from a global cache and making a copy.</p>
-<p>In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a constant thrust mass-varying spacecraft orbiting two main bodies
-in circular relative motion (the circular restricted three body problem, CR3BP). Thrust direction is
-fixed in the rotating frame.</p>
-<p>If the requested propagator was never created this will create it, else it will
-return the one from the global cache, thus avoiding jitting.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_cr3bp_dyn" title="pykep.ta.zero_hold_cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_cr3bp_dyn()</span></code></a>.</p>
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_eq">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_eq" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_eq_dyn" title="pykep.ta.zoh_eq_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a> dynamics
+retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a constant thrust (RTN frame) mass-varying spacecraft.
+Thrust direction is fixed in the RTN frame.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
 </dd>
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_cr3bp</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">]</span> <span class="o">+</span> <span class="n">thrust</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.32</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_eq</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -1322,30 +1086,33 @@ return the one from the global cache, thus avoiding jitting.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.get_zero_hold_cr3bp_var">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zero_hold_cr3bp_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zero_hold_cr3bp_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp
-dynamics retreiving one from a global cache and making a copy.</p>
-<p>In <cite>pykep</cite>, using a term well established in electrodynamics, 
-this is the initial value problem of a constant thrust mass-varying spacecraft orbiting two main bodies
-in circular relative motion (the circular restricted three body problem, CR3BP). Thrust direction is
-fixed in the rotating frame.</p>
-<p>The dynamics is that returned by <a class="reference internal" href="#pykep.ta.zero_hold_cr3bp_dyn" title="pykep.ta.zero_hold_cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zero_hold_cr3bp_dyn()</span></code></a>: and also used in <a class="reference internal" href="#pykep.ta.get_zero_hold_cr3bp" title="pykep.ta.get_zero_hold_cr3bp"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_zero_hold_cr3bp()</span></code></a></p>
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_eq_var">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_eq_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_eq_var" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the
+<a class="reference internal" href="#pykep.ta.zoh_eq_dyn" title="pykep.ta.zoh_eq_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a> dynamics retrieving one from a global cache if available.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions and the
+thrust parameters <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z]\)</span>.</p>
+</div>
 <dl>
-<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive variational propagator.</p>
 </dd>
-<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive variational propagator.</p>
 </dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zero_hold_cr3bp_var</span><span class="p">(</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1e-22</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span> <span class="n">veff</span><span class="p">]</span> <span class="o">+</span> <span class="n">thrust</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.32</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_eq_var</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -1353,22 +1120,153 @@ fixed in the rotating frame.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykep.ta.zero_hold_cr3bp_dyn">
-<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zero_hold_cr3bp_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zero_hold_cr3bp_dyn" title="Permalink to this definition">#</a></dt>
-<dd><p>The dynamics of a fixed thrust mass-varying spacecraft orbiting two main bodies
-in circular relative motion (the circular restricted three body problem, CR3BP).</p>
+<dt class="sig sig-object py" id="pykep.ta.zoh_eq_dyn">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zoh_eq_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zoh_eq_dyn" title="Permalink to this definition">#</a></dt>
+<dd><p>The dynamics in equinoctial elements of a constant thrust (RTN frame) mass-varying spacecraft
+orbiting a main central body with unitary gravitational parameter <span class="math notranslate nohighlight">\(\mu = 1\)</span>.
+The electric propulsion is characterized by its effective
+exhaust velocity <span class="math notranslate nohighlight">\(v_{eff} = I_{sp} g_0\)</span>.</p>
+<p>The dynamics are given by:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\{
 \begin{array}{l}
-    \dot{\mathbf r} = \mathbf v \\
-    \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} + \frac{T_x}{m}\\
-    \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} + \frac{T_y}{m}\\
-    \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} + \frac{T_z}{m}\\
-     \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
-\end{array}\right.\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu, v_{eff} = I_{sp}g_0\)</span> and <span class="math notranslate nohighlight">\(\mathbf T = [T_x, T_y, T_z]\)</span> are parameters.</p>
+\dot p =  \frac 1m\sqrt{p} \frac{2p}{w} T_t  \\
+\dot f =  \frac 1m\sqrt{p} \left\{T_r \sin L + \left[ (1+w)\cos L + f \right] \frac{T_t}{w} - (h\sin L-k\cos L)\frac{g\cdot T_n}{w} \right\}  \\
+\dot g =  \frac 1m\sqrt{p} \left\{ - T_r\cos L + \left[ (1+w)\sin L + g \right] \frac{T_t}{w} + (h\sin L-k\cos L)\frac{f\cdot T_n}{w} \right\}  \\
+\dot h =  \frac 1m\sqrt{p} \frac{s^2T_n}{2w}\cos L  \\
+\dot k =  \frac 1m\sqrt{p} \frac{s^2T_n}{2w}\sin L  \\
+\dot L = \sqrt{p}\left\{\left(\frac wp\right)^2 + \frac 1w\left(h\sin L-k\cos L\right)\frac{ T_n}m \right\} \\
+\dot m = - c T \\
+\end{array}
+\right.\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(c = \frac{1}{v_{eff}}\)</span>, <span class="math notranslate nohighlight">\(w = 1 + f\cos L + g\sin L\)</span>, <span class="math notranslate nohighlight">\(s^2 = 1 + h^2 + k^2\)</span>.</p>
+<p>The state is: <span class="math notranslate nohighlight">\([p,f,g,h,k,L,m]\)</span></p>
+<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c]\)</span></p>
+<p>In compact matrix form:</p>
+<div class="math notranslate nohighlight">
+\[\dot{\mathbf{x}} = \mathbf{B}(\mathbf{x}) \frac{\mathbf{T}}{m} + \mathbf{D}(\mathbf{x})\]</div>
+<p>with:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sqrt{\frac{p}{1}} \mathbf{B}(\mathbf{x}) = 
+\begin{bmatrix}
+0 &amp; \frac {2p}w &amp; 0 \\
+\sin L &amp; [(1+w)\cos L + f]\frac 1w  &amp; - \frac gw (h\sin L-k\cos L)  \\
+-\cos L &amp; [(1+w)\sin L + g]\frac 1w  &amp; \frac fw (h\sin L-k\cos L) \\
+0 &amp; 0  &amp; \frac 1w \frac{s^2}{2}\cos L \\
+0 &amp; 0  &amp; \frac 1w \frac{s^2}{2}\sin L \\
+0 &amp; 0  &amp; \frac 1w (h\sin L - k\cos L) 
+\end{bmatrix}\end{split}\]</div>
+<p>and:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{D}(\mathbf{x}) = 
+\begin{bmatrix}
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \sqrt{\frac{1}{p^3}}w^2
+\end{bmatrix}^T\]</div>
 <dl class="simple">
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(p, dp), …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">
+<h3>Zero Hold CR3BP Propagator in in Cartesian coordinates<a class="headerlink" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates" title="Permalink to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_cr3bp">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_cr3bp" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_cr3bp_dyn" title="pykep.ta.zoh_cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a>
+dynamics retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a constant thrust mass-varying spacecraft
+in the circular restricted three-body problem (CR3BP). Thrust direction is fixed
+in the rotating frame.</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_cr3bp</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_cr3bp_dyn" title="pykep.ta.zoh_cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a>
+dynamics retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a constant thrust mass-varying spacecraft
+in the circular restricted three-body problem (CR3BP). Thrust direction is fixed
+in the rotating frame.</p>
+<p>If the requested propagator was never created, this creates it; otherwise returns cached version
+(avoiding re-jitting).</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
+<span class="n">veff</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_cr3bp</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">veff</span><span class="p">,</span> <span class="n">mu</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.zoh_cr3bp_dyn">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zoh_cr3bp_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zoh_cr3bp_dyn" title="Permalink to this definition">#</a></dt>
+<dd><p>The dynamics of a fixed thrust mass-varying spacecraft orbiting two main bodies
+in circular relative motion (circular restricted three-body problem, CR3BP).</p>
+<p>The dynamics are given by:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\{
+\begin{array}{l}
+\dot{\mathbf{r}} = \mathbf{v} \\
+\dot{v}_x = 2v_y + x - (1-\mu)\frac{x + \mu}{r_1^3} - \mu\frac{x + \mu - 1}{r_2^3} + T\frac{i_x}{m} \\
+\dot{v}_y = -2v_x + y - (1-\mu)\frac{y}{r_1^3} - \mu\frac{y}{r_2^3} + T\frac{i_y}{m} \\
+\dot{v}_z = -(1-\mu)\frac{z}{r_1^3} - \mu\frac{z}{r_2^3} + T\frac{i_z}{m} \\
+\dot{m} = -c T
+\end{array}
+\right.\end{split}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r_1 = ||\mathbf{r} - \mathbf{r}_1||\)</span>, <span class="math notranslate nohighlight">\(r_2 = ||\mathbf{r} - \mathbf{r}_2||\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{r}_1 = [-\mu, 0, 0]\)</span>, <span class="math notranslate nohighlight">\(\mathbf{r}_2 = [1-\mu, 0, 0]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(c = \frac{1}{v_{eff}}\)</span></p></li>
+</ul>
+<p>The state is: <span class="math notranslate nohighlight">\([x, y, z, v_x, v_y, v_z, m]\)</span></p>
+<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c]\)</span></p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>list[tuple[hy.expression, hy.expression]]: The dynamics in form <cite>[(x, dx), …]</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1697,17 +1595,6 @@ are derived from the Hamiltonian, which depends on the chosen optimality:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.propagate_lagrangian_grid"><code class="docutils literal notranslate"><span class="pre">propagate_lagrangian_grid()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-keplerian">Non-Keplerian</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.mu"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.mu</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.propagate"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.propagate()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.propagate_var"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.propagate_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.tol"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.tol</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.zero_hold_kep_problem.veff"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_problem.veff</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taylor-adaptive-propagators">Taylor adaptive propagators</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-body-problem-kepler">Two Body Problem (Kepler)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_kep"><code class="docutils literal notranslate"><span class="pre">get_kep()</span></code></a></li>
@@ -1729,22 +1616,22 @@ are derived from the Hamiltonian, which depends on the chosen optimality:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.bcp_dyn"><code class="docutils literal notranslate"><span class="pre">bcp_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-kep">zero_hold_kep</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_kep"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_kep()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_kep_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_kep_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_kep_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_kep_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-keplerian-propagator-in-cartesian-coordinates">Zero Hold Keplerian Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_kep"><code class="docutils literal notranslate"><span class="pre">get_zoh_kep()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_kep_var"><code class="docutils literal notranslate"><span class="pre">get_zoh_kep_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_kep_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_kep_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-eq">zero_hold_eq</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_eq"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_eq()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_eq_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_eq_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_eq_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-keplerian-propagator-in-equinoctial-elements">Zero Hold Keplerian Propagator in Equinoctial elements</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_eq"><code class="docutils literal notranslate"><span class="pre">get_zoh_eq()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_eq_var"><code class="docutils literal notranslate"><span class="pre">get_zoh_eq_var()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp">zero_hold_cr3bp</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_cr3bp()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zero_hold_cr3bp_var"><code class="docutils literal notranslate"><span class="pre">get_zero_hold_cr3bp_var()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zero_hold_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zero_hold_cr3bp_dyn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">Zero Hold CR3BP Propagator in in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
