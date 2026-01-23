@@ -2,8 +2,15 @@
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/_version.py" @ONLY)   
 
 # The list of pykep's Python files.
-set(PYKEP_PYTHON_FILES __init__.py _patch_planet.py _version.py test.py test_trajopt.py test_utils.py)
-
+set(PYKEP_PYTHON_FILES 
+    __init__.py 
+    _patch_planet.py 
+    _version.py 
+    test.py 
+    test_trajopt.py 
+    test_utils.py 
+    test_leg_sims_flanagan.py
+    test_leg_zoh.py)
 
 # Core module.
 Python3_add_library(core MODULE WITH_SOABI 

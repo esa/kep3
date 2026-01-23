@@ -1,14 +1,14 @@
-import pykep as _pk
+import pykep as pk
 from pykep.trajopt import mga as _mga
 
 # CASSINI
 _seq_cassini1 = [
-    _pk.planet(_pk.udpla.jpl_lp("earth")),
-    _pk.planet(_pk.udpla.jpl_lp("venus")),
-    _pk.planet(_pk.udpla.jpl_lp("venus")),
-    _pk.planet(_pk.udpla.jpl_lp("earth")),
-    _pk.planet(_pk.udpla.jpl_lp("jupiter")),
-    _pk.planet(_pk.udpla.jpl_lp("saturn")),
+    pk.planet(pk.udpla.jpl_lp("earth")),
+    pk.planet(pk.udpla.jpl_lp("venus")),
+    pk.planet(pk.udpla.jpl_lp("venus")),
+    pk.planet(pk.udpla.jpl_lp("earth")),
+    pk.planet(pk.udpla.jpl_lp("jupiter")),
+    pk.planet(pk.udpla.jpl_lp("saturn")),
 ]
 
 

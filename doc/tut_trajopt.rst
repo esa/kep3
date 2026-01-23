@@ -28,6 +28,7 @@ Trajectory Optimization
 
   notebooks/udp_point2point
   notebooks/udp_pl2pl
+  notebooks/udp_pl2pl_alpha
   notebooks/udp_mga
   notebooks/udp_mga_1dsm
   notebooks/udp_pl2pl_N_impulses

@@ -6,7 +6,7 @@
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import numpy as _np
-import pykep as _pk
+import pykep as pk
 
 
 class direct_point2point:
@@ -28,24 +28,24 @@ class direct_point2point:
     def __init__(
         self,
         rvs=[
-            _np.array([1, 0.1, -0.1]) * _pk.AU,
-            _np.array([0.2, 1, -0.2]) * _pk.EARTH_VELOCITY,
+            _np.array([1, 0.1, -0.1]) * pk.AU,
+            _np.array([0.2, 1, -0.2]) * pk.EARTH_VELOCITY,
         ],
         rvf=[
-            _np.array([-1.2, -0.1, 0.1]) * _pk.AU,
-            _np.array([0.2, -1.023, 0.44]) * _pk.EARTH_VELOCITY,
+            _np.array([-1.2, -0.1, 0.1]) * pk.AU,
+            _np.array([0.2, -1.023, 0.44]) * pk.EARTH_VELOCITY,
         ],
         ms=1000,
-        mu=_pk.MU_SUN,
+        mu=pk.MU_SUN,
         max_thrust=0.12,
-        veff=3000*_pk.G0,
+        veff=3000*pk.G0,
         tof_bounds=[80, 400],
         mf_bounds=[200.0, 1000.0],
         nseg=10,
         cut=0.6,
         mass_scaling=1000,
-        r_scaling=_pk.AU,
-        v_scaling=_pk.EARTH_VELOCITY,
+        r_scaling=pk.AU,
+        v_scaling=pk.EARTH_VELOCITY,
         with_gradient=True,
     ):
         """
@@ -82,7 +82,7 @@ class direct_point2point:
 
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
-        self.leg = _pk.leg.sims_flanagan()
+        self.leg = pk.leg.sims_flanagan()
         self.leg.rvs = rvs
         self.leg.ms = ms
         self.leg.rvf = rvf
@@ -102,7 +102,7 @@ class direct_point2point:
     
     def _set_leg_from_x(self, x):
         # We set the data in the leg using the decision vector
-        self.leg.tof = x[-1] * _pk.DAY2SEC
+        self.leg.tof = x[-1] * pk.DAY2SEC
         self.leg.mf = x[0]
         self.leg.throttles = x[1:-1]
 
@@ -146,21 +146,21 @@ class direct_point2point:
             retval.append(mcg_xf[i, -1] / self.r_scaling)
             # Then the [throttles, tof]
             retval.extend(mcg_th_tof[i, :] / self.r_scaling)
-            retval[-1] *= _pk.DAY2SEC
+            retval[-1] *= pk.DAY2SEC
         # vel
         for i in range(3, 6):
             # First w.r.t. mf
             retval.append(mcg_xf[i, -1] / self.v_scaling)
             # Then the [throttles, tof]
             retval.extend(mcg_th_tof[i, :] / self.v_scaling)
-            retval[-1] *= _pk.DAY2SEC
+            retval[-1] *= pk.DAY2SEC
         # mass
         for i in range(6, 7):
             # First w.r.t. mf
             retval.append(mcg_xf[i, -1] / self.mass_scaling)
             # Then the [throttles, tof]
             retval.extend(mcg_th_tof[i, :] / self.mass_scaling)
-            retval[-1] *= _pk.DAY2SEC
+            retval[-1] *= pk.DAY2SEC
         # 3 -  The gradient of the throttle constraints
         for i in range(self.nseg):
             retval.extend(tcg_th[i, 3 * i : 3 * i + 3])
@@ -232,7 +232,7 @@ class direct_point2point:
         self,
         x,
         ax=None,
-        units=_pk.AU,
+        units=pk.AU,
         show_midpoints=False,
         show_gridpoints=False,
         show_throttles=False,
@@ -269,15 +269,15 @@ class direct_point2point:
         sf = self.leg
         # Making the axis
         if ax is None:
-            ax = _pk.plot.make_3Daxis(figsize=(7, 7))
+            ax = pk.plot.make_3Daxis(figsize=(7, 7))
 
         rs, _ = sf.rvs
         rf, _ = sf.rvf
-        ax.scatter(rs[0] / _pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
-        ax.scatter(rf[0] / _pk.AU, rf[1] / units, rf[2] / units, c="k", s=20)
+        ax.scatter(rs[0] / pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
+        ax.scatter(rf[0] / pk.AU, rf[1] / units, rf[2] / units, c="k", s=20)
 
         # Plotting the trajctory leg
-        ax = _pk.plot.add_sf_leg(
+        ax = pk.plot.add_sf_leg(
             ax,
             sf,
             units=units,

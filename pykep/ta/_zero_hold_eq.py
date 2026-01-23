@@ -155,10 +155,10 @@ def get_zero_hold_eq(tol: float):
             zero_hold_eq_dyn(), init_state, tol=tol, pars=[1.0, 1.0, 0.0, 0.0, 0.0]
         )
         _ta_zero_hold_eq_cache[tol] = new_ta
-        return _deepcopy(new_ta)
+        return new_ta
     else:
         # Cache hit, return existing.
-        return _deepcopy(_ta_zero_hold_eq_cache[tol])
+        return _ta_zero_hold_eq_cache[tol]
 
 
 _ta_zero_hold_eq_var_cache = dict()

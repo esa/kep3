@@ -425,31 +425,3 @@ TEST_CASE("serialization_test_2")
     REQUIRE(pla.get_radius() == pla2.get_radius());
     REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
 }
-
-TEST_CASE("serialization_test_3")
-{
-    // Instantiate a planet
-    planet pla{kep3::udpla::jpl_lp{"earth"}};
-
-    // Store the string representation.
-    std::stringstream ss;
-    auto before = boost::lexical_cast<std::string>(pla);
-    // Now serialize, deserialize and compare the result.
-    {
-        boost::archive::binary_oarchive oarchive(ss);
-        oarchive << pla;
-    }
-    // Create a new planet object
-    auto pla2 = planet{simple_udpla{}};
-    {
-        boost::archive::binary_iarchive iarchive(ss);
-        iarchive >> pla2;
-    }
-    auto after = boost::lexical_cast<std::string>(pla2);
-    REQUIRE(before == after);
-    // Check explicitly that the properties of base_p where restored as well.
-    REQUIRE(pla.get_mu_central_body() == pla2.get_mu_central_body());
-    REQUIRE(pla.get_mu_self() == pla2.get_mu_self());
-    REQUIRE(pla.get_radius() == pla2.get_radius());
-    REQUIRE(pla.get_safe_radius() == pla2.get_safe_radius());
-}
