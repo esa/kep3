@@ -45,9 +45,9 @@ def zoh_cr3bp_dyn():
     mu = _hy.par[5]
 
     # Distances to the bodies.
-    r_1 = _hy.sqrt(_hy.sum({_hy.pow(x + mu, 2.0), _hy.pow(y, 2.0), _hy.pow(z, 2.0)}))
+    r_1 = _hy.sqrt(_hy.sum([pow(x + mu, 2.0), pow(y, 2.0), pow(z, 2.0)]))
     r_2 = _hy.sqrt(
-        _hy.sum({_hy.pow(x - (1.0 - mu), 2.0), _hy.pow(y, 2.0), _hy.pow(z, 2.0)})
+        _hy.sum([pow(x - (1.0 - mu), 2.0), pow(y, 2.0), pow(z, 2.0)])
     )
 
     # The Equations of Motion.
@@ -57,20 +57,20 @@ def zoh_cr3bp_dyn():
     vxdot = (
         2.0 * vy
         + x
-        - (1.0 - mu) * (x + mu) / (_hy.pow(r_1, 3.0))
+        - (1.0 - mu) * (x + mu) / (pow(r_1, 3.0))
         - mu * (x + mu - 1.0) / pow(r_2, 3.0)
         + T_norm * i_x / m
     )
     vydot = (
         -2.0 * vx
         + y
-        - (1.0 - mu) * y / _hy.pow(r_1, 3.0)
-        - mu * y / _hy.pow(r_2, 3.0)
+        - (1.0 - mu) * y / pow(r_1, 3.0)
+        - mu * y / pow(r_2, 3.0)
         + T_norm * i_y / m
     )
     vzdot = (
-        -(1.0 - mu) * z / _hy.pow(r_1, 3.0)
-        - mu * z / _hy.pow(r_2, 3.0)
+        -(1.0 - mu) * z / pow(r_1, 3.0)
+        - mu * z / pow(r_2, 3.0)
         + T_norm * i_z / m
     )
     mdot = (
