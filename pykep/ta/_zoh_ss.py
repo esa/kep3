@@ -28,7 +28,7 @@ def zoh_ss_dyn():
     where the acceleration coming from the solar sail is:
      
     .. math::
-        \\mathbf a_{ss} = T \\cos\\alpha \\mathbf i_R + \\sin\\alpha\\sin\\beta \\mathbf i_T + sin\\alpha\\cos\\beta \\mathbf i_N
+        \\mathbf a_{ss} = T \\left( \\cos\\alpha \\mathbf i_R + \\sin\\alpha\\sin\\beta \\mathbf i_T + \\sin\\alpha\\cos\\beta \\mathbf i_N\\right)
          
     and:
     
@@ -83,17 +83,12 @@ def zoh_ss_dyn():
         (x, vx),
         (y, vy),
         (z, vz),
-        (vx, -1.0 * x / (r2 ** (3 / 2)) + ar * ir[0] + at * it[0] + ah * ih[0]),
-        (vy, -1.0 * y / (r2 ** (3 / 2)) + ar * ir[1] + at * it[1] + ah * ih[1]),
-        (
-            vz,
-            -(1.0).MU_ALTAIRA * z / (r2 ** (3 / 2))
-            + ar * ir[2]
-            + at * it[2]
-            + ah * ih[2],
-        ),
+        (vx, -1.0 * x / (r2 ** 1.5) + ar * ir[0] + at * it[0] + ah * ih[0]),
+        (vy, -1.0 * y / (r2 ** 1.5) + ar * ir[1] + at * it[1] + ah * ih[1]),
+        (vz, -1.0 * z / (r2 ** 1.5) + ar * ir[2] + at * it[2] + ah * ih[2]),
     )
     return dyn
+
 
 # We mimick in python the C++ global caching mechanism for taylor_adaptive
 # instances, so that we do not create multiple instances with
@@ -106,7 +101,7 @@ def get_zoh_ss(tol: float):
     Returns a Taylor adaptive propagator (Heyoka) for the :func:`~pykep.ta.zoh_ss_dyn` dynamics
     retrieving one from a global cache if available.
 
-    This solves the initial value problem of a solar sailing spacecraft under simple hypothesis 
+    This solves the initial value problem of a solar sailing spacecraft under simple hypothesis
     for the sail characteristics.
 
     Sail acceleration direction is fixed in the RTN frame.
@@ -138,7 +133,7 @@ def get_zoh_ss(tol: float):
         # Cache miss, create new one.
         init_state = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         new_ta = _hy.taylor_adaptive(
-            zoh_ss_dyn(), init_state, tol=tol, pars=[0.,0.,0.]
+            zoh_ss_dyn(), init_state, tol=tol, pars=[0.0, 0.0, 0.0]
         )
         _ta_zoh_ss_cache[tol] = new_ta
         return new_ta
@@ -148,6 +143,7 @@ def get_zoh_ss(tol: float):
 
 
 _ta_zoh_ss_var_cache = dict()
+
 
 def get_zoh_ss_var(tol: float):
     """Returns a (order 1) variational Taylor adaptive propagator (Heyoka)
@@ -187,7 +183,7 @@ def get_zoh_ss_var(tol: float):
         x, y, z, vx, vy, vz, m = _hy.make_vars("x", "y", "z", "vx", "vy", "vz")
         vsys = _hy.var_ode_sys(
             zoh_ss_dyn(),
-            [x, y, z, vx, vy, vz, m, _hy.par[0], _hy.par[1]],
+            [x, y, z, vx, vy, vz, _hy.par[0], _hy.par[1]],
             1,
         )
         new_ta = _hy.taylor_adaptive(
