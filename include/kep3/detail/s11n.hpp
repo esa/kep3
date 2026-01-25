@@ -78,8 +78,6 @@ struct tuple_s11n<0> {
     extern template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::value>;  \
     extern template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::reference>;
 
-#endif
-
 #define KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(ud_type, iface_type)                       \
     /* Provide the explicit instantiations matching the extern templates */                               \
     template class ::tanuki::holder<ud_type, iface_type, ::tanuki::wrap_semantics::value>;        \
@@ -87,3 +85,5 @@ struct tuple_s11n<0> {
                                                                                                           \
     /* Export implementation (GUID registration) */                                                        \
     TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, iface_type)
+
+#endif
