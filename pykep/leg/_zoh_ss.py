@@ -2,30 +2,26 @@ import numpy as _np
 import heyoka as _hy
 
 
-class zoh:
+class zoh_ss:
     """
-    This class implements an interplanetary low-thrust transfer between a starting and final state
-    in the augmented state-space :math:`[\\mathbf{r}, \\mathbf{v}, m]`. The transfer is modelled
-    as a sequence of non-uniform segments along which a continuous and constant (zero-order hold)
-    control acts. The time intervals defining these segments are also provided in `tgrid`.
-
-    The formulation generalises :class:`pykep.leg.sims_flanagan` to arbitrary dynamics and non-uniform
-    time grids. The dynamics are assumed to be zero-order hold and must be provided as compatible
-    Taylor-adaptive integrators (`tas`). 
+    This class implements a simple solar sailing interplanetary leg between a starting and final state
+    in the augmented state-space :math:`[\\mathbf{r}, \\mathbf{v}]`. The transfer is modelled
+    as a sequence of non-uniform segments along which the sail orientation is considered as fixed
+    in the RTN frame (zero-order hold). 
+    
+    The class is thus very similar to :class:`pykep.leg.zoh` but has different requirements on the dynamics
+    it allows since it represents a solar sail trajectory (i.e. no mass equation and two controls only)
     
     .. note::
-       The requirements on the `tas` passed are: a) the first four *heyoka* parameters
-       must be :math:`T, i_x, i_y, i_z`, b) the system dimension must be 7 c) for the variational 
-       integrator, variations on the state and the four parameters only are considered. These 
-       requirements are all fulfilled by :class:`pykep.ta.zoh_kep`, :class:`pykep.ta.zoh_eq`,
-       :class:`pykep.ta.zoh_cr3bp` and their variational versions.
+       The requirements on the `tas` passed are: a) the first two *heyoka* parameters
+       must be :math:`\\alpha, \\beta`, b) the system dimension must be 6.
+    
+    The time intervals defining these segments are also provided in `tgrid`.
+    
+    .. note::
+       The `tas` requirements are fulfilled by :class:`pykep.ta.zoh_ss` and :class:`pykep.ta.zoh_ss_var`.
 
-    A transfer is feasible when the state mismatch equality constraints are satisfied. In the
-    intended usage, throttle equality constraints are also enforced to ensure a proper thrust
-    representation as :math:`T \\hat{\\mathbf{i}}` with :math:`|\\hat{\\mathbf{i}}| = 1`.
-
-    .. math::
-       i_x^2 + i_y^2 + i_z^2 = 1, \\quad \\forall \\text{segments}
+    A transfer is feasible when the state mismatch equality constraints are satisfied. 
     """
 
     def __init__(
@@ -39,16 +35,16 @@ class zoh:
     ):
         """
         .. note::
-           The variational integrator `ta_var` can be ``None`` or must have state dimension 84 (7 + 7x7 STM + 7x4 control
+           The variational integrator `ta_var` can be ``None`` or must have state dimension 54 (6 + 6x6 STM + 6x2 control
            sensitivity) and with the same dynamics as the nominal integrator `ta`. It is the user
            that must ensure the suitability of the integrators.
 
         Args:
-            *state0* (:class:`array-like`): Initial state :math:`[\\mathbf{r}_0, \\mathbf{v}_0, m_0]` (length 7)
+            *state0* (:class:`array-like`): Initial state :math:`[\\mathbf{r}_0, \\mathbf{v}_0]` (length 6)
             
-            *controls* (:class:`array-like`): Control parameters :math:`[T, i_x, i_y, i_z] \\times n_\\text{seg}`
+            *controls* (:class:`array-like`): Sail orientation controls :math:`[\\alpha, \\beta] \\times n_\\text{seg}`
             
-            *state1* (:class:`array-like`): Final state :math:`[\\mathbf{r}_1, \\mathbf{v}_1, m_1]` (length 7)
+            *state1* (:class:`array-like`): Final state :math:`[\\mathbf{r}_1, \\mathbf{v}_1]` (length 6)
             
             *tgrid* (:class:`array-like`): Non-uniform time grid (length nseg+1)
             
@@ -56,9 +52,9 @@ class zoh:
             
             *tas* (:class:`tuple`): `(ta, ta_var)` Taylor-adaptive integrators
 
-                - `ta`: Nominal dynamics (state dim 7, pars ≥ 4)
+                - `ta`: Nominal dynamics (state dim 6, pars ≥ 2)
                 
-                - `ta_var`: Variational dynamics (state dim 84, same pars)
+                - `ta_var`: Variational dynamics (state dim 54, same pars)
 
         Raises:
             :class:`ValueError`: If state/parameter dimensions mismatch or input lengths are incompatible.
@@ -70,15 +66,18 @@ class zoh:
            import numpy as np
            import heyoka as hy
            # Define states, controls, time grid
-           state0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0])
-           state1 = np.array([1.2, 0.1, 0.0, 0.0, 0.9, 0.1, 0.95])
-           controls = np.array([0.022, 0.7, 0.7, 0.1, 0.025, -0.3, 0.8, 0.4, 0.015, -0.2, 0.8, 0.4])
+           state0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0])
+           state1 = np.array([1.2, 0.1, 0.0, 0.0, 0.9, 0.1])
+           controls = np.array([np.pi/2, 0.] * 3)
            tgrid = np.array([0.0, 0.5, 1.0, 1.23])
            # Get integrators
-           ta = pk.ta.get_zoh_eq(tol=1e-16)
-           ta_var = pk.ta.get_zoh_eq_var(tol=1e-16)
+           ta = pk.ta.get_zoh_ss(tol=1e-16)
+           ta_var = pk.ta.get_zoh_ss_var(tol=1e-16)
+           # Set their params
+           ta.pars[2] = 0.01
+           ta_var.pars[2] = 0.01
            # Construct leg (50/50 split)
-           leg = zoh(state0, controls, state1, tgrid, cut=0.5, tas=(ta, ta_var))
+           leg = zoh_ss(state0, controls, state1, tgrid, cut=0.5, tas=(ta, ta_var))
         """
 
         # We store the constructor args
@@ -92,43 +91,43 @@ class zoh:
         self.ta_var = tas[1]
 
         # And save the non control parameter values for cfunc calls
-        self.pars_no_control = self.ta.pars[4:].tolist()
+        self.pars_no_control = self.ta.pars[2:].tolist()
 
         # We compute convenient quantities
-        self.nseg = len(self.controls) // 4
+        self.nseg = len(self.controls) // 2
         self.nseg_fwd = int(self.nseg * cut)
         self.nseg_bck = self.nseg - self.nseg_fwd
 
         # Sanity checks
         # On the tas
-        if len(self.ta.state) != 7:
+        if len(self.ta.state) != 6:
             raise ValueError(
-                f"Attempting to construct a zoh_leg with a Taylor Adaptive integrator state dimension of {len(self.ta.state)}, while 7 is required"
+                f"Attempting to construct a zoh_leg_ss with a Taylor Adaptive integrator state dimension of {len(self.ta.state)}, while 6 is required"
             )
-        if len(self.ta.pars) <= 4:
+        if len(self.ta.pars) <= 2:
             raise ValueError(
-                f"Attempting to construct a zoh_leg with a Taylor Adaptive integrator parameters dimension of {len(self.ta.pars)}, while >=4 is required"
+                f"Attempting to construct a zoh_leg_ss with a Taylor Adaptive integrator parameters dimension of {len(self.ta.pars)}, while >=2 is required"
             )
-        if self.ta_var: # we skip these lines if tno variational integrator is provided
-            if len(self.ta_var.state) != 7 + 7 * 7 + 7 * 4:
+        if self.ta_var: # we skip these lines if no variational integrator is provided
+            if len(self.ta_var.state) != 6 + 6 * 6 + 6 * 2:
                 raise ValueError(
-                    f"Attempting to construct a zoh_leg with a variational Taylor Adaptive integrator state dimension of {len(self.ta_var.state)}, while 84 is required"
+                    f"Attempting to construct a zoh_leg_ss with a variational Taylor Adaptive integrator state dimension of {len(self.ta_var.state)}, while 54 is required"
                 )
             if len(self.ta_var.pars) != len(self.ta.pars):
                 raise ValueError(
-                    f"While constructing a zoh_leg, the number of parameters in the variational version of the Taylor integrator and the non variational version were detected as different, while its required they are equal"
+                    f"While constructing a zoh_leg_ss, the number of parameters in the variational version of the Taylor integrator and the non variational version were detected as different, while its required they are equal"
                 )
-            # this assumes state of 7 and 4 pars
-            self.ic_var = (_np.hstack((_np.eye(7, 7), _np.zeros((7, 4))))).flatten()
+            # this assumes state of 6 and 2 pars
+            self.ic_var = (_np.hstack((_np.eye(6, 6), _np.zeros((6, 2))))).flatten()
 
         # On the rest
-        if len(self.controls) % 4 > 0:
+        if len(self.controls) % 2 > 0:
             raise ValueError(
-                "In a zoh_leg controls must be multiple of 4: [T, ix, iy, iz] * nseg"
+                "In a zoh_leg_ss controls must be multiple of 2: [\\alpha, \\beta] * nseg"
             )
         if len(tgrid) != self.nseg + 1:
             raise ValueError(
-                "The t_grid and the controls have incompatible lenghts. It must be nseg*4 and nseg+1"
+                "The t_grid and the controls have incompatible lenghts. It must be nseg*2 and nseg+1"
             )
 
         # We compile the function for the dynamics (this is used in the gradient computations)
@@ -142,8 +141,8 @@ class zoh:
         self.ta.time = self.tgrid[0]
         self.ta.state[:] = self.state0
         for i in range(self.nseg_fwd):
-            # setting T, ix, iy, iz
-            self.ta.pars[0:4] = self.controls[4 * i : 4 * i + 4]
+            # setting alpha, beta
+            self.ta.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
             self.ta.propagate_until(self.tgrid[i + 1])
         state_fwd = self.ta.state.copy()
@@ -153,101 +152,71 @@ class zoh:
         self.ta.state[:] = self.state1
         for i in range(self.nseg_bck):
             # setting T, ix, iy, iz
-            self.ta.pars[0] = self.controls[-4 * i - 4]
-            self.ta.pars[1] = self.controls[-4 * i - 3]
-            self.ta.pars[2] = self.controls[-4 * i - 2]
-            self.ta.pars[3] = self.controls[-4 * i - 1]
+            self.ta.pars[0] = self.controls[-2 * i - 2]
+            self.ta.pars[1] = self.controls[-2 * i - 1]
             # propagating
             self.ta.propagate_until(self.tgrid[-2 - i])
         state_bck = self.ta.state
         return (state_fwd - state_bck).tolist()
 
-    def compute_throttle_constraints(self):
-        retval = [0] * self.nseg
-        for i in range(self.nseg):
-            retval[i] = (
-                self.controls[1 + 4 * i] ** 2
-                + self.controls[2 + 4 * i] ** 2
-                + self.controls[3 + 4 * i] ** 2
-                - 1
-            )
-        return retval
-
-    def compute_tc_grad(self):
-        """Computes the gradients of the throttles constraints. Introducing the control vector as
-        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}, ...]`, this method computes the following gradient:
-
-        .. math::
-        
-           \\frac{\\partial \\mathbf {tc}}{\\partial \\mathbf u} \\rightarrow (\\mathbf{nseg} \\times 4\\mathbf{nseg}) 
-
-        Returns:
-            :class:`tuple` [:class:`numpy.ndarray`]: The gradient. Size will be (nseg,4nseg).
-        """
-        retval = _np.zeros((self.nseg, self.nseg * 4))
-        for i in range(self.nseg):
-            retval[i, 4 * i + 1] = 2 * self.controls[4 * i + 1]
-            retval[i, 4 * i + 2] = 2 * self.controls[4 * i + 2]
-            retval[i, 4 * i + 3] = 2 * self.controls[4 * i + 3]
-        return retval
-
     def compute_mc_grad(self):
         """
-        Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\\mathbf x_s = [\\mathbf r_s, \\mathbf v_s, m_s]`, the
-        final augmented state with :math:`\\mathbf x_f = [\\mathbf r_f, \\mathbf v_f, m_f]`, the time grid as :math:`T_{grid}` and the introducing the control vector
-        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}]` (note the time of flight at the end), this method computes the following gradients:
+        Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\\mathbf x_s = [\\mathbf r_s, \\mathbf v_s]`, the
+        final augmented state with :math:`\\mathbf x_f = [\\mathbf r_f, \\mathbf v_f]`, the time grid as :math:`T_{grid}` and the introducing the control vector
+        :math:`\\mathbf u = [\\alpha_1, \\beta_1, \\alpha_2, \\beta_2, ...]]` (note the time of flight at the end), this method computes the following gradients:
 
         .. math::
         
-           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_s}  \\rightarrow (7\\times7)
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_s}  \\rightarrow (6\\times 6)
 
         .. math::
         
-           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_f}  \\rightarrow (7\\times7)
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf x_f}  \\rightarrow (6\\times 6)
 
         .. math::
         
-           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf u}  \\rightarrow (7\\times(4\\mathbf{nseg}))
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf u}  \\rightarrow (6\\times(2\\mathbf{nseg}))
         
         .. math::
         
-           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf T_{grid}}  \\rightarrow (7\\times(\\mathbf{nseg} + 1))
+           \\frac{\\partial \\mathbf {mc}}{\\partial \\mathbf T_{grid}}  \\rightarrow (6\\times(\\mathbf{nseg} + 1))
 
         Returns:
-            :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The four gradients. sizes will be (7,7), (7,7) (7,4nseg) and (7,nseg+1)
+            :class:`tuple` [:class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`, :class:`numpy.ndarray`]: The four gradients. 
+            sizes will be (6,6), (6,6) (6,2nseg) and (6,nseg+1)
   """
         # We will return 4 matrices: dmc/dx0, dmc/dx1, dmc/dcontrol, dmc/dtgrid
         # STMs -> forward
         M_seg_fwd = []  # M10, M21, M32, ....
         M_fwd = []  # Mf0, Mf1, Mf2, ...
         C_seg_fwd = []  # dx_(i+1)/dcontrols_i
-        C_fwd = _np.zeros((7, 4 * self.nseg_fwd))  # dx_f/dcontrols_i
+        C_fwd = _np.zeros((6, 2 * self.nseg_fwd))  # dx_f/dcontrols_i
         dyn_fwd = []
         self.ta_var.time = self.tgrid[0]
-        self.ta_var.state[:7] = self.state0
+        self.ta_var.state[:6] = self.state0
         for i in range(self.nseg_fwd):
-            self.ta_var.state[7:] = self.ic_var
+            self.ta_var.state[6:] = self.ic_var
             # setting T, ix, iy, iz
-            self.ta_var.pars[0:4] = self.controls[4 * i : 4 * i + 4]
+            self.ta_var.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
             self.ta_var.propagate_until(self.tgrid[i + 1])
             # extracting the segment STMs
-            M_seg_fwd.append(self.ta_var.state[7:].reshape(7, 11)[:, :7].copy())  # 7x7
+            M_seg_fwd.append(self.ta_var.state[6:].reshape(6, 8)[:, :6].copy())  # 6x6
             # extracting the control sensitivities in across the single segment
-            C_seg_fwd.append(self.ta_var.state[7:].reshape(7, 11)[:, 7:].copy())  # 7x4
+            C_seg_fwd.append(self.ta_var.state[6:].reshape(6, 8)[:, 6:].copy())  # 6x2
             # computing the dynamics for future usage
             dyn_fwd.append(
                 self.dyn_cfunc(
-                    self.ta_var.state[:7],
-                    pars=self.controls[4 * i : 4 * i + 4] + self.pars_no_control,
+                    self.ta_var.state[:6],
+                    pars=self.controls[2 * i : 2 * i + 2] + self.pars_no_control,
                 )
             )
         # We compute the STMs - Mf0, Mf1, Mf2, ...
-        cur = _np.eye(7)
+        cur = _np.eye(6)
         for M in reversed(M_seg_fwd):
             cur = cur @ M
             M_fwd.append(cur)
-        M_fwd = list(reversed(M_fwd)) + [_np.eye(7)]
+        M_fwd = list(reversed(M_fwd)) + [_np.eye(6)]
 
         # 1 - dmc/dx0
         dmc_dx0 = M_fwd[0]
@@ -255,11 +224,11 @@ class zoh:
         # 2 - dmc/dcontrols
         i = 0
         for M, C in zip(M_fwd[1:], C_seg_fwd):
-            C_fwd[:, 4 * i : 4 * i + 4] = M @ C
+            C_fwd[:, 2 * i : 2 * i + 2] = M @ C
             i += 1
 
         # 3 - dmc/dtgrid
-        dmcdtgrid = _np.zeros((7, self.nseg + 1))
+        dmcdtgrid = _np.zeros((6, self.nseg + 1))
         if self.nseg_fwd > 0:
             dmcdtgrid[:, 0] = -M_fwd[1] @ dyn_fwd[0]
             dmcdtgrid[:, i] = M_fwd[-1] @ dyn_fwd[-1]
@@ -273,39 +242,37 @@ class zoh:
         M_seg_bck = []  # M10, M21, M32, .... note: numbering reversed
         M_bck = []  # Mf0, Mf1, Mf2, .... note: numbering reversed
         C_seg_bck = []  # dxi/dcontrols
-        C_bck = _np.zeros((7, 4 * self.nseg_bck))
+        C_bck = _np.zeros((6, 2 * self.nseg_bck))
         dyn_bck = []
         self.ta_var.time = self.tgrid[-1]
-        self.ta_var.state[:7] = self.state1
+        self.ta_var.state[:6] = self.state1
         for i in range(self.nseg_bck):
-            self.ta_var.state[7:] = self.ic_var
+            self.ta_var.state[6:] = self.ic_var
             # setting T, ix, iy, iz
-            self.ta_var.pars[0] = self.controls[-4 * i - 4]
-            self.ta_var.pars[1] = self.controls[-4 * i - 3]
-            self.ta_var.pars[2] = self.controls[-4 * i - 2]
-            self.ta_var.pars[3] = self.controls[-4 * i - 1]
+            self.ta_var.pars[0] = self.controls[-2 * i - 2]
+            self.ta_var.pars[1] = self.controls[-2 * i - 1]
             # propagating
             self.ta_var.propagate_until(self.tgrid[-2 - i])
             # extracting the segment STMs
-            M_seg_bck.append(self.ta_var.state[7:].reshape(7, 11)[:, :7].copy())
+            M_seg_bck.append(self.ta_var.state[6:].reshape(6, 8)[:, :6].copy())
             # extracting the control sensitivities in across the single segment
-            C_seg_bck.append(self.ta_var.state[7:].reshape(7, 11)[:, 7:].copy())  # 7x4
+            C_seg_bck.append(self.ta_var.state[6:].reshape(6, 8)[:, 6:].copy())  # 6x2
             # computing the dynamics for future usage
             dyn_bck.append(
                 self.dyn_cfunc(
-                    self.ta_var.state[:7],
-                    pars=self.controls[-4 * i - 4 : -4 * i - 1]
-                    + [self.controls[-4 * i - 1]]
+                    self.ta_var.state[:6],
+                    pars=self.controls[-2 * i - 2 : -2 * i - 1]
+                    + [self.controls[-2 * i - 1]]
                     + self.pars_no_control,
                 )
             )
 
         # We compute the STMs - Mf0, Mf1, Mf2, ...
-        cur = _np.eye(7)
+        cur = _np.eye(6)
         for M in reversed(M_seg_bck):
             cur = cur @ M
             M_bck.append(cur)
-        M_bck = list(reversed(M_bck)) + [_np.eye(7)]
+        M_bck = list(reversed(M_bck)) + [_np.eye(6)]
 
         # 1 - dmc/dxf
         dmc_dx1 = -M_bck[0]  # mc = xfwd-x_bck hence the minus
@@ -314,7 +281,7 @@ class zoh:
         # NOTE: the controls are reversed in order and we need to account for it
         i = 0
         for M, C in zip(M_bck[1:], C_seg_bck):
-            C_bck[:, 4 * self.nseg_bck - 4 - 4 * i : 4 * self.nseg_bck - 4 * i] = M @ C
+            C_bck[:, 2 * self.nseg_bck - 2 - 2 * i : 2 * self.nseg_bck - 2 * i] = M @ C
             i += 1
 
         # 3 - dmc/dtgrid
@@ -331,7 +298,7 @@ class zoh:
                     M_seg_bck[i] @ dyn_bck[i - 1] - dyn_bck[i]
                 )
 
-        # dmc/dcontrols (7x4*nseg)
+        # dmc/dcontrols (6x2*nseg)
         dmc_dcontrols = _np.hstack((C_fwd, -C_bck))  # mc = xfwd-x_bck hence the minus
 
         return dmc_dx0, dmc_dx1, dmc_dcontrols, dmcdtgrid
@@ -351,11 +318,11 @@ class zoh:
             :class:`tuple`: ``(state_fwd, state_bck)`` where:
 
                 - ``state_fwd`` (:class:`list`): List of length ``nseg_fwd``. Each entry contains
-                  the sampled 7D state history over the corresponding forward segment (from
+                  the sampled 6D state history over the corresponding forward segment (from
                   ``tgrid[i]`` to ``tgrid[i+1]``).
 
                 - ``state_bck`` (:class:`list`): List of length ``nseg_bck``. Each entry contains
-                  the sampled 7D state history over the corresponding backward segment (from
+                  the sampled 6D state history over the corresponding backward segment (from
                   ``tgrid[-1-i]`` to ``tgrid[-2-i]``).
 
             .. note::
@@ -365,7 +332,7 @@ class zoh:
 
             .. note::
                This method uses the nominal integrator ``self.ta`` and overwrites its internal
-               ``time``, ``state`` and the first four parameters (``T, i_x, i_y, i_z``). If the
+               ``time``, ``state`` and the first two parameters (:math:`[\\alpha, \\beta]`). If the
                integrator state must be preserved, call this method on a dedicated copy.
 
         Examples:
@@ -387,8 +354,8 @@ class zoh:
         self.ta.time = self.tgrid[0]
         self.ta.state[:] = self.state0
         for i in range(self.nseg_fwd):
-            # setting T, ix, iy, iz
-            self.ta.pars[0:4] = self.controls[4 * i : 4 * i + 4]
+            # setting alpha, beta
+            self.ta.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
             plot_grid_fwd = _np.linspace(self.tgrid[i], self.tgrid[i + 1], N)
             sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
@@ -400,10 +367,8 @@ class zoh:
         self.ta.state[:] = self.state1
         for i in range(self.nseg_bck):
             # setting T, ix, iy, iz
-            self.ta.pars[0] = self.controls[-4 * i - 4]
-            self.ta.pars[1] = self.controls[-4 * i - 3]
-            self.ta.pars[2] = self.controls[-4 * i - 2]
-            self.ta.pars[3] = self.controls[-4 * i - 1]
+            self.ta.pars[0] = self.controls[-2 * i - 2]
+            self.ta.pars[1] = self.controls[-2 * i - 1]
             # propagating
             plot_grid_bck = _np.linspace(self.tgrid[-1 - i], self.tgrid[-2 - i], N)
             sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]

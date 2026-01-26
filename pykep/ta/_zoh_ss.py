@@ -180,7 +180,7 @@ def get_zoh_ss_var(tol: float):
     # Lookup.
     if _ta_zoh_ss_var_cache.get(tol) is None:
         # Cache miss, create new one.
-        x, y, z, vx, vy, vz, m = _hy.make_vars("x", "y", "z", "vx", "vy", "vz")
+        x, y, z, vx, vy, vz = _hy.make_vars("x", "y", "z", "vx", "vy", "vz")
         vsys = _hy.var_ode_sys(
             zoh_ss_dyn(),
             [x, y, z, vx, vy, vz, _hy.par[0], _hy.par[1]],
