@@ -54,7 +54,7 @@ private:
     }
 };
 
-tanuki_kep3_S11N_WRAP_EXPORT(simple_udpla, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_WRAP(simple_udpla, kep3::detail::planet_iface)
 
 struct simple_udpla_mu {
     simple_udpla_mu() = default;
@@ -85,7 +85,7 @@ private:
     }
 };
 
-tanuki_kep3_S11N_WRAP_EXPORT(simple_udpla_mu, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_WRAP(simple_udpla_mu, kep3::detail::planet_iface)
 
 struct simple_udpla_mu_h {
     simple_udpla_mu_h() = default;
@@ -116,7 +116,7 @@ private:
     }
 };
 
-tanuki_kep3_S11N_WRAP_EXPORT(simple_udpla_mu_h, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_WRAP(simple_udpla_mu_h, kep3::detail::planet_iface)
 
 struct complete_udpla {
     explicit complete_udpla(std::array<double, 4> physical_properties = {-1., -1., -1., -1.})
@@ -191,7 +191,7 @@ private:
     }
 };
 
-tanuki_kep3_S11N_WRAP_EXPORT(complete_udpla, kep3::detail::planet_iface)
+KEP3_S11N_EXPORT_WRAP(complete_udpla, kep3::detail::planet_iface)
 
 TEST_CASE("construction")
 {

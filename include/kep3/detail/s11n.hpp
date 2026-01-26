@@ -86,4 +86,8 @@ struct tuple_s11n<0> {
     /* Export implementation (GUID registration) */                                                        \
     tanuki_kep3_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, iface_type)
 
+#define KEP3_S11N_EXPORT_WRAP(ud_type, iface_type)                                      \
+    KEP3_S11N_EXPORT_KEY_AND_EXTERN_TEMPLATES(ud_type, iface_type)                      \
+    KEP3_S11N_EXPORT_IMPLEMENT_AND_INSTANTIATE(ud_type, iface_type)
+
 #endif
