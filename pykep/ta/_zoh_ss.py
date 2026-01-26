@@ -58,7 +58,7 @@ def zoh_ss_dyn():
     # The controls
     alpha, beta = _hy.par[0], _hy.par[1]  # Sail angles
     # Auxiliary expressions
-    r2 = x**2 + y**2 + z**2.0  # r^2
+    r2 = x**2 + y**2 + z**2  # r^2
     h = _np.array(
         [y * vz - z * vy, z * vx - x * vz, x * vy - y * vx]
     )  # angular momentum vector
@@ -73,7 +73,7 @@ def zoh_ss_dyn():
     )  # t unit vector
     T = (
         _hy.par[2] * (1.0 / r2) * _hy.cos(alpha) ** 2
-    )  # sail acceleration magnitude 2C*A/M (C at 1LU)
+    )  # sail acceleration magnitude 2C*A/M (C at 1 LU)
     # sail acceleration directions in the r,t,h frame
     ar = _hy.cos(alpha) * T
     at = _hy.sin(alpha) * _hy.sin(beta) * T

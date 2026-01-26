@@ -21,7 +21,6 @@ def compute_throttle_constraints_n(leg, controls):
 # The actual tests.
 class leg_zoh_test(_ut.TestCase):
     def test_zoh_mc_ballistic(self):
-        """We test the mismatch constraints on randomly generated ballistic arcs"""
         import numpy as np
         import pykep as pk
 
@@ -75,7 +74,6 @@ class leg_zoh_test(_ut.TestCase):
             self.assertTrue(np.array([np.max(i) < 1e-12 for i in mc]).all())
 
     def test_zoh_mc_thrust(self):
-        """We test the mismatch constraints on a single thrust arc"""
         # The integrator (Keplerian Propagation in Cartesian)
         tol = 1e-12
         ta = pk.ta.get_zoh_kep(tol)
@@ -139,8 +137,6 @@ class leg_zoh_test(_ut.TestCase):
         self.assertTrue(np.array([np.max(i) < 1e-12 for i in diff]).all())
         
     def test_compute_mc_grad(self):
-        """We test the gradients of the mismatch constraints against numerical differentiation
-        """
         # The integrators (Keplerian Propagation in Cartesian)
         tol=1e-14
         tol_var = 1e-10
