@@ -1096,5 +1096,3 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_bck,
                                                  pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 }
-
-TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(kep3::udpla::jpl_lp, kep3::detail::planet_iface)
