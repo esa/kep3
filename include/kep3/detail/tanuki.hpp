@@ -9,10 +9,10 @@
 #ifndef KEP3_DETAIL_TANUKI_HPP
 #define KEP3_DETAIL_TANUKI_HPP
 
-#define TANUKI_WITH_BOOST_S11N
+#define tanuki_kep3_WITH_BOOST_S11N
 
 #include <kep3/detail/tanuki_impl.hpp>
 
-#undef TANUKI_WITH_BOOST_S11N
+#undef tanuki_kep3_WITH_BOOST_S11N
 
 #endif

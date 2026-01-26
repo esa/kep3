@@ -9,9 +9,9 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
-#include <exception>
 #include <string>
 #include <typeinfo>
+#include <exception>
 
 #include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -20,10 +20,11 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
-#include <kep3/detail/tanuki.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
+
+#include <kep3/detail/tanuki.hpp>
 
 namespace kep3
 {
@@ -229,16 +230,16 @@ private:
 struct kep3_DLL_PUBLIC planet_ref_iface {
     template <typename Wrap>
     struct impl {
-        TANUKI_REF_IFACE_MEMFUN(get_mu_central_body)
-        TANUKI_REF_IFACE_MEMFUN(get_mu_self)
-        TANUKI_REF_IFACE_MEMFUN(get_radius)
-        TANUKI_REF_IFACE_MEMFUN(get_safe_radius)
-        TANUKI_REF_IFACE_MEMFUN(get_name)
-        TANUKI_REF_IFACE_MEMFUN(get_extra_info)
-        TANUKI_REF_IFACE_MEMFUN(eph)
-        TANUKI_REF_IFACE_MEMFUN(eph_v)
-        TANUKI_REF_IFACE_MEMFUN(period)
-        TANUKI_REF_IFACE_MEMFUN(elements)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_mu_central_body)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_mu_self)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_radius)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_safe_radius)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_name)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_extra_info)
+        tanuki_kep3_REF_IFACE_MEMFUN(eph)
+        tanuki_kep3_REF_IFACE_MEMFUN(eph_v)
+        tanuki_kep3_REF_IFACE_MEMFUN(period)
+        tanuki_kep3_REF_IFACE_MEMFUN(elements)
 
         // Implement the extract functionality.
         template <typename T>
@@ -262,8 +263,8 @@ struct kep3_DLL_PUBLIC planet_ref_iface {
 class kep3_DLL_PUBLIC planet
 {
     using wrap_t
-        = tanuki::wrap<detail::planet_iface,
-                       tanuki::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
+        = tanuki_kep3::wrap<detail::planet_iface,
+                       tanuki_kep3::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
 
     wrap_t m_wrap;
 
@@ -379,6 +380,7 @@ public:
     //    // Returns the address of the stored object if present, nullptr otherwise.
     //    return value_ptr<void>(m_wrap);
     //}
+
 };
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::planet &);

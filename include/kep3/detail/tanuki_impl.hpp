@@ -1,13 +1,13 @@
 // Copyright 2023, 2024 Francesco Biscani (bluescarni@gmail.com)
 //
-// This file is part of the tanuki library.
+// This file is part of the tanuki_kep3 library.
 //
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef TANUKI_TANUKI_HPP
-#define TANUKI_TANUKI_HPP
+#ifndef tanuki_kep3_tanuki_kep3_HPP
+#define tanuki_kep3_tanuki_kep3_HPP
 
 #include <algorithm>
 #include <cassert>
@@ -32,7 +32,7 @@
 
 #endif
 
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
 
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -54,25 +54,25 @@
 #endif
 
 // Versioning.
-#define TANUKI_VERSION_MAJOR 1
-#define TANUKI_VERSION_MINOR 0
-#define TANUKI_VERSION_PATCH 0
-#define TANUKI_ABI_VERSION 1
+#define tanuki_kep3_VERSION_MAJOR 1
+#define tanuki_kep3_VERSION_MINOR 0
+#define tanuki_kep3_VERSION_PATCH 0
+#define tanuki_kep3_ABI_VERSION 1
 
 // NOTE: indirection to allow token pasting/stringification:
 // https://stackoverflow.com/questions/24991208/expand-a-macro-in-a-macro
-#define TANUKI_VERSION_STRING_U(maj, min, pat) #maj "." #min "." #pat
-#define TANUKI_VERSION_STRING_(maj, min, pat) TANUKI_VERSION_STRING_U(maj, min, pat)
-#define TANUKI_VERSION_STRING TANUKI_VERSION_STRING_(TANUKI_VERSION_MAJOR, TANUKI_VERSION_MINOR, TANUKI_VERSION_PATCH)
+#define tanuki_kep3_VERSION_STRING_U(maj, min, pat) #maj "." #min "." #pat
+#define tanuki_kep3_VERSION_STRING_(maj, min, pat) tanuki_kep3_VERSION_STRING_U(maj, min, pat)
+#define tanuki_kep3_VERSION_STRING tanuki_kep3_VERSION_STRING_(tanuki_kep3_VERSION_MAJOR, tanuki_kep3_VERSION_MINOR, tanuki_kep3_VERSION_PATCH)
 
 // No unique address setup.
 #if defined(_MSC_VER)
 
-#define TANUKI_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
+#define tanuki_kep3_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
 
 #else
 
-#define TANUKI_NO_UNIQUE_ADDRESS [[no_unique_address]]
+#define tanuki_kep3_NO_UNIQUE_ADDRESS [[no_unique_address]]
 
 #endif
 
@@ -84,32 +84,32 @@
     || (__clang_major__ >= 18 && __cplusplus >= 202302L && !defined(__apple_build_version__))                          \
     || (_MSC_VER >= 1932 && _MSVC_LANG > 202002L)
 
-#define TANUKI_HAVE_EXPLICIT_THIS
+#define tanuki_kep3_HAVE_EXPLICIT_THIS
 
 #endif
 
 // ABI tag setup.
 #if defined(__GNUC__) || defined(__clang__)
 
-#define TANUKI_ABI_TAG_ATTR __attribute__((abi_tag))
+#define tanuki_kep3_ABI_TAG_ATTR __attribute__((abi_tag))
 
 #else
 
-#define TANUKI_ABI_TAG_ATTR
+#define tanuki_kep3_ABI_TAG_ATTR
 
 #endif
 
-#define TANUKI_BEGIN_NAMESPACE_U(abiver)                                                                               \
-    namespace tanuki                                                                                                   \
+#define tanuki_kep3_BEGIN_NAMESPACE_U(abiver)                                                                               \
+    namespace tanuki_kep3                                                                                                   \
     {                                                                                                                  \
-    inline namespace v##abiver TANUKI_ABI_TAG_ATTR                                                                     \
+    inline namespace v##abiver tanuki_kep3_ABI_TAG_ATTR                                                                     \
     {
 
-#define TANUKI_BEGIN_NAMESPACE_(abiver) TANUKI_BEGIN_NAMESPACE_U(abiver)
+#define tanuki_kep3_BEGIN_NAMESPACE_(abiver) tanuki_kep3_BEGIN_NAMESPACE_U(abiver)
 
-#define TANUKI_BEGIN_NAMESPACE TANUKI_BEGIN_NAMESPACE_(TANUKI_ABI_VERSION)
+#define tanuki_kep3_BEGIN_NAMESPACE tanuki_kep3_BEGIN_NAMESPACE_(tanuki_kep3_ABI_VERSION)
 
-#define TANUKI_END_NAMESPACE                                                                                           \
+#define tanuki_kep3_END_NAMESPACE                                                                                           \
     }                                                                                                                  \
     }
 
@@ -139,19 +139,19 @@
 // - otherwise, we do not implement any visibility attribute.
 #if defined(_WIN32) || defined(__CYGWIN__)
 
-#define TANUKI_VISIBLE
+#define tanuki_kep3_VISIBLE
 
 #elif defined(__clang__) || defined(__GNUC__) || defined(__INTEL_COMPILER)
 
-#define TANUKI_VISIBLE __attribute__((visibility("default")))
+#define tanuki_kep3_VISIBLE __attribute__((visibility("default")))
 
 #else
 
-#define TANUKI_VISIBLE
+#define tanuki_kep3_VISIBLE
 
 #endif
 
-TANUKI_BEGIN_NAMESPACE
+tanuki_kep3_BEGIN_NAMESPACE
 
 // Helper to demangle a type name.
 inline std::string demangle(const char *s)
@@ -180,12 +180,12 @@ inline std::string demangle(const char *s)
 // NOTE: this needs to be marked as visibile because
 // the value_iface class depends on it. If we do not, we have
 // the usual s11n-related visibility issues on OSX.
-enum class TANUKI_VISIBLE wrap_semantics { value, reference };
+enum class tanuki_kep3_VISIBLE wrap_semantics { value, reference };
 
 namespace detail
 {
 
-#if defined(TANUKI_HAVE_EXPLICIT_THIS)
+#if defined(tanuki_kep3_HAVE_EXPLICIT_THIS)
 
 // Implementation of std::forward_like(), at this time still missing
 // in some compilers. See:
@@ -261,7 +261,7 @@ struct value_iface_base {
 // (we do not want to disable it for reference semantics
 // since we need it for correct shared_ptr s11n).
 template <typename IFace, wrap_semantics Sem>
-struct TANUKI_VISIBLE value_iface : public IFace, value_iface_base {
+struct tanuki_kep3_VISIBLE value_iface : public IFace, value_iface_base {
     value_iface() = default;
     value_iface(const value_iface &) = delete;
     value_iface(value_iface &&) noexcept = delete;
@@ -275,19 +275,19 @@ struct TANUKI_VISIBLE value_iface : public IFace, value_iface_base {
 
     // LCOV_EXCL_START
     // Access to the value and its type.
-    [[nodiscard]] virtual void *_tanuki_value_ptr() noexcept
+    [[nodiscard]] virtual void *_tanuki_kep3_value_ptr() noexcept
     {
         unreachable();
         assert(false);
         return {};
     }
-    [[nodiscard]] virtual std::type_index _tanuki_value_type_index() const noexcept
+    [[nodiscard]] virtual std::type_index _tanuki_kep3_value_type_index() const noexcept
     {
         unreachable();
         assert(false);
         return typeid(void);
     }
-    [[nodiscard]] virtual bool _tanuki_value_is_reference() const noexcept
+    [[nodiscard]] virtual bool _tanuki_kep3_value_is_reference() const noexcept
     {
         unreachable();
         assert(false);
@@ -295,58 +295,58 @@ struct TANUKI_VISIBLE value_iface : public IFace, value_iface_base {
     }
 
     // Methods to implement virtual copy/move primitives for the holder class.
-    [[nodiscard]] virtual value_iface *_tanuki_clone_holder() const
+    [[nodiscard]] virtual value_iface *_tanuki_kep3_clone_holder() const
     {
         unreachable();
         assert(false);
         return {};
     }
-    [[nodiscard]] virtual std::shared_ptr<value_iface> _tanuki_shared_clone_holder() const
+    [[nodiscard]] virtual std::shared_ptr<value_iface> _tanuki_kep3_shared_clone_holder() const
     {
         unreachable();
         assert(false);
         return {};
     }
-    [[nodiscard]] virtual value_iface *_tanuki_copy_init_holder(void *) const
+    [[nodiscard]] virtual value_iface *_tanuki_kep3_copy_init_holder(void *) const
     {
         unreachable();
         assert(false);
         return {};
     }
-    [[nodiscard]] virtual value_iface *_tanuki_move_init_holder(void *) && noexcept
+    [[nodiscard]] virtual value_iface *_tanuki_kep3_move_init_holder(void *) && noexcept
     {
         unreachable();
         assert(false);
         return {};
     }
-    virtual void _tanuki_copy_assign_value_to(value_iface *) const
+    virtual void _tanuki_kep3_copy_assign_value_to(value_iface *) const
     {
         unreachable();
         assert(false);
     }
-    virtual void _tanuki_move_assign_value_to(value_iface *) && noexcept
+    virtual void _tanuki_kep3_move_assign_value_to(value_iface *) && noexcept
     {
         unreachable();
         assert(false);
     }
-    virtual void _tanuki_copy_assign_value_from(const void *)
+    virtual void _tanuki_kep3_copy_assign_value_from(const void *)
     {
         unreachable();
         assert(false);
     }
-    virtual void _tanuki_move_assign_value_from(void *) noexcept
+    virtual void _tanuki_kep3_move_assign_value_from(void *) noexcept
     {
         unreachable();
         assert(false);
     }
-    virtual void _tanuki_swap_value(value_iface *) noexcept
+    virtual void _tanuki_kep3_swap_value(value_iface *) noexcept
     {
         unreachable();
         assert(false);
     }
     // LCOV_EXCL_STOP
 
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
 
 private:
     // Serialization.
@@ -380,7 +380,7 @@ concept noncv_rvalue_reference
 
 // Composite interface.
 template <typename IFace0, typename IFace1, typename... IFaceN>
-struct TANUKI_VISIBLE composite_iface : public IFace0, public IFace1, public IFaceN... {
+struct tanuki_kep3_VISIBLE composite_iface : public IFace0, public IFace1, public IFaceN... {
 };
 
 // Concept to detect any wrap instance.
@@ -564,8 +564,8 @@ concept iface_has_impl = requires() {
 // NOTE: this class has several conceptual requirements which
 // are checked in the generic ctors of the wrap class.
 template <typename T, typename IFace, wrap_semantics Sem>
-struct TANUKI_VISIBLE holder final : public detail::impl_from_iface<IFace, holder<T, IFace, Sem>, T, Sem> {
-    TANUKI_NO_UNIQUE_ADDRESS T m_value;
+struct tanuki_kep3_VISIBLE holder final : public detail::impl_from_iface<IFace, holder<T, IFace, Sem>, T, Sem> {
+    tanuki_kep3_NO_UNIQUE_ADDRESS T m_value;
 
     // Make sure we don't end up accidentally copying/moving
     // this class.
@@ -617,22 +617,22 @@ struct TANUKI_VISIBLE holder final : public detail::impl_from_iface<IFace, holde
     // NOTE: mark everything else as private so that it is going to be
     // unreachable from the interface implementation.
 private:
-    [[nodiscard]] std::type_index _tanuki_value_type_index() const noexcept final
+    [[nodiscard]] std::type_index _tanuki_kep3_value_type_index() const noexcept final
     {
         return typeid(T);
     }
-    [[nodiscard]] void *_tanuki_value_ptr() noexcept final
+    [[nodiscard]] void *_tanuki_kep3_value_ptr() noexcept final
     {
         return std::addressof(m_value);
     }
 
-    [[nodiscard]] bool _tanuki_value_is_reference() const noexcept final
+    [[nodiscard]] bool _tanuki_kep3_value_is_reference() const noexcept final
     {
         return detail::is_reference_wrapper_v<T>;
     }
 
     // Clone this, and cast the result to the value interface.
-    [[nodiscard]] detail::value_iface<IFace, Sem> *_tanuki_clone_holder() const final
+    [[nodiscard]] detail::value_iface<IFace, Sem> *_tanuki_kep3_clone_holder() const final
     {
         // NOTE: don't use std::copy_constructible as that requires
         // the ability to move-construct.
@@ -644,7 +644,7 @@ private:
         }
     }
     // Same as above, but return a shared ptr.
-    [[nodiscard]] std::shared_ptr<detail::value_iface<IFace, Sem>> _tanuki_shared_clone_holder() const final
+    [[nodiscard]] std::shared_ptr<detail::value_iface<IFace, Sem>> _tanuki_kep3_shared_clone_holder() const final
     {
         if constexpr (std::is_copy_constructible_v<T>) {
             return std::make_shared<holder>(m_value);
@@ -654,10 +654,10 @@ private:
     }
     // Copy-init a new holder from this into the storage beginning at ptr.
     // Then cast the result to the value interface and return.
-    [[nodiscard]] detail::value_iface<IFace, Sem> *_tanuki_copy_init_holder(void *ptr) const final
+    [[nodiscard]] detail::value_iface<IFace, Sem> *_tanuki_kep3_copy_init_holder(void *ptr) const final
     {
         if constexpr (std::is_copy_constructible_v<T>) {
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
             assert(boost::alignment::is_aligned(ptr, alignof(T)));
 #endif
 
@@ -671,10 +671,10 @@ private:
     // Then cast the result to the value interface and return.
     [[nodiscard]] detail::value_iface<IFace, Sem> *
     // NOLINTNEXTLINE(bugprone-exception-escape)
-    _tanuki_move_init_holder(void *ptr) && noexcept final
+    _tanuki_kep3_move_init_holder(void *ptr) && noexcept final
     {
         if constexpr (std::is_move_constructible_v<T>) {
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
             assert(boost::alignment::is_aligned(ptr, alignof(T)));
 #endif
 
@@ -685,7 +685,7 @@ private:
         }
     }
     // Copy-assign m_value into the m_value of v_iface.
-    void _tanuki_copy_assign_value_to(detail::value_iface<IFace, Sem> *v_iface) const final
+    void _tanuki_kep3_copy_assign_value_to(detail::value_iface<IFace, Sem> *v_iface) const final
     {
         if constexpr (std::is_copy_assignable_v<T>) {
             // NOTE: I don't think it is necessary to invoke launder here,
@@ -693,25 +693,25 @@ private:
             // copy_assign_value_to() is called only when assigning holders containing
             // the same T, the conversion chain should boil down to T * -> void * -> T *, which
             // does not require laundering.
-            assert(typeid(T) == v_iface->_tanuki_value_type_index());
-            *static_cast<T *>(v_iface->_tanuki_value_ptr()) = m_value;
+            assert(typeid(T) == v_iface->_tanuki_kep3_value_type_index());
+            *static_cast<T *>(v_iface->_tanuki_kep3_value_ptr()) = m_value;
         } else {
             throw std::invalid_argument("Attempting to copy-assign a non-copyable value type");
         }
     }
     // Move-assign m_value into the m_value of v_iface.
     // NOLINTNEXTLINE(bugprone-exception-escape)
-    void _tanuki_move_assign_value_to(detail::value_iface<IFace, Sem> *v_iface) && noexcept final
+    void _tanuki_kep3_move_assign_value_to(detail::value_iface<IFace, Sem> *v_iface) && noexcept final
     {
         if constexpr (std::is_move_assignable_v<T>) {
-            assert(typeid(T) == v_iface->_tanuki_value_type_index());
-            *static_cast<T *>(v_iface->_tanuki_value_ptr()) = std::move(m_value);
+            assert(typeid(T) == v_iface->_tanuki_kep3_value_type_index());
+            *static_cast<T *>(v_iface->_tanuki_kep3_value_ptr()) = std::move(m_value);
         } else {
             throw std::invalid_argument("Attempting to move-assign a non-movable value type"); // LCOV_EXCL_LINE
         }
     }
     // Copy-assign the object of type T assumed to be stored in ptr into m_value.
-    void _tanuki_copy_assign_value_from(const void *ptr) final
+    void _tanuki_kep3_copy_assign_value_from(const void *ptr) final
     {
         if constexpr (std::is_copy_assignable_v<T>) {
             m_value = *static_cast<const T *>(ptr);
@@ -720,7 +720,7 @@ private:
         }
     }
     // NOLINTNEXTLINE(bugprone-exception-escape)
-    void _tanuki_move_assign_value_from(void *ptr) noexcept final
+    void _tanuki_kep3_move_assign_value_from(void *ptr) noexcept final
     {
         if constexpr (std::is_move_assignable_v<T>) {
             m_value = std::move(*static_cast<T *>(ptr));
@@ -730,19 +730,19 @@ private:
     }
     // Swap m_value with the m_value of v_iface.
     // NOLINTNEXTLINE(bugprone-exception-escape)
-    void _tanuki_swap_value(detail::value_iface<IFace, Sem> *v_iface) noexcept final
+    void _tanuki_kep3_swap_value(detail::value_iface<IFace, Sem> *v_iface) noexcept final
     {
         if constexpr (std::swappable<T>) {
-            assert(typeid(T) == v_iface->_tanuki_value_type_index());
+            assert(typeid(T) == v_iface->_tanuki_kep3_value_type_index());
 
             using std::swap;
-            swap(m_value, *static_cast<T *>(v_iface->_tanuki_value_ptr()));
+            swap(m_value, *static_cast<T *>(v_iface->_tanuki_kep3_value_ptr()));
         } else {
             throw std::invalid_argument("Attempting to swap a non-swappable value type"); // LCOV_EXCL_LINE
         }
     }
 
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
 
     // Serialization.
     friend class boost::serialization::access;
@@ -798,7 +798,7 @@ namespace detail
 // Implementation of storage for the wrap class. This will be used
 // to store an instance of the holder type.
 template <typename IFace, std::size_t StaticStorageSize, std::size_t StaticStorageAlignment, wrap_semantics Sem>
-struct TANUKI_VISIBLE wrap_storage {
+struct tanuki_kep3_VISIBLE wrap_storage {
     static_assert(StaticStorageSize > 0u);
     static_assert(Sem == wrap_semantics::value);
 
@@ -812,12 +812,12 @@ struct TANUKI_VISIBLE wrap_storage {
 };
 
 template <typename IFace, std::size_t StaticStorageAlignment>
-struct TANUKI_VISIBLE wrap_storage<IFace, 0, StaticStorageAlignment, wrap_semantics::value> {
+struct tanuki_kep3_VISIBLE wrap_storage<IFace, 0, StaticStorageAlignment, wrap_semantics::value> {
     value_iface<IFace, wrap_semantics::value> *m_pv_iface;
 };
 
 template <typename IFace, std::size_t StaticStorageSize, std::size_t StaticStorageAlignment>
-struct TANUKI_VISIBLE wrap_storage<IFace, StaticStorageSize, StaticStorageAlignment, wrap_semantics::reference> {
+struct tanuki_kep3_VISIBLE wrap_storage<IFace, StaticStorageSize, StaticStorageAlignment, wrap_semantics::reference> {
     std::shared_ptr<value_iface<IFace, wrap_semantics::reference>> m_pv_iface;
 };
 
@@ -848,7 +848,7 @@ template <typename T, typename IFace>
 inline constexpr auto holder_align = alignof(holder<T, IFace, wrap_semantics::value>);
 
 // Default implementation of the reference interface.
-struct TANUKI_VISIBLE no_ref_iface {
+struct tanuki_kep3_VISIBLE no_ref_iface {
     template <typename>
     struct impl {
     };
@@ -856,7 +856,7 @@ struct TANUKI_VISIBLE no_ref_iface {
 
 // Composite reference interface.
 template <typename IFace0, typename IFace1, typename... IFaceN>
-struct TANUKI_VISIBLE composite_ref_iface {
+struct tanuki_kep3_VISIBLE composite_ref_iface {
     template <typename Wrap>
     struct impl : public IFace0::template impl<Wrap>,
                   public IFace1::template impl<Wrap>,
@@ -908,7 +908,7 @@ concept with_impl_tt = single_tt_id<T::template impl>;
 // in C++20 we need to make sure the impl typedef exists.
 template <typename RefIFace>
 concept valid_ref_iface = std::is_class_v<RefIFace> && std::same_as<RefIFace, std::remove_cv_t<RefIFace>>
-#if !defined(TANUKI_HAVE_EXPLICIT_THIS)
+#if !defined(tanuki_kep3_HAVE_EXPLICIT_THIS)
                           && detail::with_impl_tt<RefIFace>
 #endif
     ;
@@ -918,7 +918,7 @@ concept valid_ref_iface = std::is_class_v<RefIFace> && std::same_as<RefIFace, st
 // for valid value types.
 template <typename DefaultValueType = void, typename RefIFace = no_ref_iface>
     requires(std::same_as<DefaultValueType, void> || valid_value_type<DefaultValueType>) && valid_ref_iface<RefIFace>
-struct TANUKI_VISIBLE config final : detail::config_base {
+struct tanuki_kep3_VISIBLE config final : detail::config_base {
     using default_value_type = DefaultValueType;
 
     // Size of the static storage.
@@ -965,7 +965,7 @@ concept valid_config =
     (Cfg.semantics == wrap_semantics::value || Cfg.semantics == wrap_semantics::reference);
 
 // Helpers to ease the definition of a reference interface.
-#define TANUKI_REF_IFACE_MEMFUN(name)                                                                                  \
+#define tanuki_kep3_REF_IFACE_MEMFUN(name)                                                                                  \
     template <typename JustWrap = Wrap, typename... MemFunArgs>                                                        \
     auto name(MemFunArgs &&...args) & noexcept(                                                                        \
         noexcept(iface_ptr(*static_cast<JustWrap *>(this)) -> name(std::forward<MemFunArgs>(args)...)))                \
@@ -996,19 +996,19 @@ concept valid_config =
         return std::move(*iface_ptr(*static_cast<const Wrap *>(this))).name(std::forward<MemFunArgs>(args)...);        \
     }
 
-#if defined(TANUKI_HAVE_EXPLICIT_THIS)
+#if defined(tanuki_kep3_HAVE_EXPLICIT_THIS)
 
 // NOTE: this is the C++23 version of the macro,
 // leveraging the "explicit this" feature.
-#define TANUKI_REF_IFACE_MEMFUN2(name)                                                                                 \
+#define tanuki_kep3_REF_IFACE_MEMFUN2(name)                                                                                 \
     template <typename Wrap, typename... MemFunArgs>                                                                   \
     auto name(this Wrap &&self, MemFunArgs &&...args) noexcept(                                                        \
-        noexcept(tanuki::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                              \
+        noexcept(tanuki_kep3::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                              \
                      .name(std::forward<MemFunArgs>(args)...)))                                                        \
-        -> decltype(tanuki::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                           \
+        -> decltype(tanuki_kep3::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                           \
                         .name(std::forward<MemFunArgs>(args)...))                                                      \
     {                                                                                                                  \
-        return tanuki::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                                \
+        return tanuki_kep3::detail::forward_like<Wrap>(*iface_ptr(std::forward<Wrap>(self)))                                \
             .name(std::forward<MemFunArgs>(args)...);                                                                  \
     }
 
@@ -1124,7 +1124,7 @@ struct get_ref_iface<T, Wrap> {
     using type = typename T::template impl<Wrap>;
 };
 
-#if defined(TANUKI_HAVE_EXPLICIT_THIS)
+#if defined(tanuki_kep3_HAVE_EXPLICIT_THIS)
 
 template <typename T, typename Wrap>
     requires(!with_impl_tt<T>)
@@ -1142,7 +1142,7 @@ using get_ref_iface_t = typename get_ref_iface<cfg_ref_t<Cfg>, Wrap>::type;
 // The wrap class.
 template <typename IFace, auto Cfg = default_config>
     requires valid_config<Cfg>
-class TANUKI_VISIBLE wrap : private detail::wrap_storage<IFace, Cfg.static_size, Cfg.static_align, Cfg.semantics>,
+class tanuki_kep3_VISIBLE wrap : private detail::wrap_storage<IFace, Cfg.static_size, Cfg.static_align, Cfg.semantics>,
                             // NOTE: the reference interface is not supposed to hold any data: it will always
                             // be def-inited (even when copying/moving a wrap object), its assignment operators
                             // will never be invoked, it will never be swapped, etc. This needs to be documented.
@@ -1214,7 +1214,7 @@ class TANUKI_VISIBLE wrap : private detail::wrap_storage<IFace, Cfg.static_size,
         }
     }
 
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
 
     // Serialisation.
     // NOTE: serialisation support has certain prerequisites:
@@ -1293,12 +1293,12 @@ class TANUKI_VISIBLE wrap : private detail::wrap_storage<IFace, Cfg.static_size,
 
                 if (st) {
                     // Move-init the value from pv_iface.
-                    this->m_pv_iface = std::move(*pv_iface)._tanuki_move_init_holder(this->static_storage);
+                    this->m_pv_iface = std::move(*pv_iface)._tanuki_kep3_move_init_holder(this->static_storage);
 
                     // NOTE: when we loaded the serialised pointer, the value contained in the holder
-                    // was deserialised into the address pv_iface->_tanuki_value_ptr() (i.e., somewhere
+                    // was deserialised into the address pv_iface->_tanuki_kep3_value_ptr() (i.e., somewhere
                     // in dynamically-allocated memory). However we now have moved the value
-                    // into this->m_pv_iface->_tanuki_value_ptr() via _tanuki_move_init_holder().
+                    // into this->m_pv_iface->_tanuki_kep3_value_ptr() via _tanuki_kep3_move_init_holder().
                     // Inform the archive of the new address of the value, so that the address tracking
                     // machinery keeps on working. See:
                     // https://www.boost.org/doc/libs/1_82_0/libs/serialization/doc/special.html#objecttracking
@@ -1306,7 +1306,7 @@ class TANUKI_VISIBLE wrap : private detail::wrap_storage<IFace, Cfg.static_size,
                     // NOTE: wrap this into a noexcept lambda so that we ensure we cannot end up
                     // with a wrap in an intermediate invalid state.
                     [&]() noexcept {
-                        ar.reset_object_address(this->m_pv_iface->_tanuki_value_ptr(), pv_iface->_tanuki_value_ptr());
+                        ar.reset_object_address(this->m_pv_iface->_tanuki_kep3_value_ptr(), pv_iface->_tanuki_kep3_value_ptr());
                     }();
 
                     // Clean up pv_iface.
@@ -1438,14 +1438,14 @@ public:
         if constexpr (Cfg.semantics == wrap_semantics::value) {
             if constexpr (Cfg.static_size == 0u) {
                 // Static storage disabled.
-                this->m_pv_iface = other.m_pv_iface->_tanuki_clone_holder();
+                this->m_pv_iface = other.m_pv_iface->_tanuki_kep3_clone_holder();
             } else {
                 if (other.stype()) {
                     // Other has static storage.
-                    this->m_pv_iface = other.m_pv_iface->_tanuki_copy_init_holder(this->static_storage);
+                    this->m_pv_iface = other.m_pv_iface->_tanuki_kep3_copy_init_holder(this->static_storage);
                 } else {
                     // Other has dynamic storage.
-                    this->m_pv_iface = other.m_pv_iface->_tanuki_clone_holder();
+                    this->m_pv_iface = other.m_pv_iface->_tanuki_kep3_clone_holder();
                 }
             }
         } else {
@@ -1470,7 +1470,7 @@ private:
 
             if (other.stype()) {
                 // Other has static storage.
-                this->m_pv_iface = std::move(*pv_iface)._tanuki_move_init_holder(this->static_storage);
+                this->m_pv_iface = std::move(*pv_iface)._tanuki_kep3_move_init_holder(this->static_storage);
             } else {
                 // Other has dynamic storage.
                 this->m_pv_iface = pv_iface;
@@ -1554,7 +1554,7 @@ public:
 
                 if (stype()) {
                     // For static storage, directly move assign the internal value.
-                    std::move(*other.m_pv_iface)._tanuki_move_assign_value_to(this->m_pv_iface);
+                    std::move(*other.m_pv_iface)._tanuki_kep3_move_assign_value_to(this->m_pv_iface);
                 } else {
                     // For dynamic storage, swap the pointer.
                     std::swap(this->m_pv_iface, other.m_pv_iface);
@@ -1594,7 +1594,7 @@ public:
             }
 
             // Assign the internal value.
-            other.m_pv_iface->_tanuki_copy_assign_value_to(this->m_pv_iface);
+            other.m_pv_iface->_tanuki_kep3_copy_assign_value_to(this->m_pv_iface);
         } else {
             this->m_pv_iface = other.m_pv_iface;
         }
@@ -1668,13 +1668,13 @@ public:
                 // Thus, we need to create a temporary pointer to the function and use its address
                 // in copy/move_assign_value_from() instead.
                 auto *fptr = std::addressof(x);
-                this->m_pv_iface->_tanuki_copy_assign_value_from(&fptr);
+                this->m_pv_iface->_tanuki_kep3_copy_assign_value_from(&fptr);
             } else {
                 // The internal types are the same, do directly copy/move assignment.
                 if constexpr (detail::noncv_rvalue_reference<T &&>) {
-                    this->m_pv_iface->_tanuki_move_assign_value_from(std::addressof(x));
+                    this->m_pv_iface->_tanuki_kep3_move_assign_value_from(std::addressof(x));
                 } else {
-                    this->m_pv_iface->_tanuki_copy_assign_value_from(std::addressof(x));
+                    this->m_pv_iface->_tanuki_kep3_copy_assign_value_from(std::addressof(x));
                 }
             }
         } else {
@@ -1746,7 +1746,7 @@ public:
 
     [[nodiscard]] friend std::type_index value_type_index(const wrap &w) noexcept
     {
-        return w.m_pv_iface->_tanuki_value_type_index();
+        return w.m_pv_iface->_tanuki_kep3_value_type_index();
     }
 
     [[nodiscard]] friend const IFace *iface_ptr(const wrap &w) noexcept
@@ -1835,7 +1835,7 @@ public:
 
                 if (w1.stype()) {
                     // For static storage, directly swap the internal values.
-                    w2.m_pv_iface->_tanuki_swap_value(w1.m_pv_iface);
+                    w2.m_pv_iface->_tanuki_kep3_swap_value(w1.m_pv_iface);
                 } else {
                     // For dynamic storage, swap the pointers.
                     std::swap(w1.m_pv_iface, w2.m_pv_iface);
@@ -1857,16 +1857,16 @@ public:
 
     [[nodiscard]] friend const void *raw_value_ptr(const wrap &w) noexcept
     {
-        return w.m_pv_iface->_tanuki_value_ptr();
+        return w.m_pv_iface->_tanuki_kep3_value_ptr();
     }
     [[nodiscard]] friend void *raw_value_ptr(wrap &w) noexcept
     {
-        return w.m_pv_iface->_tanuki_value_ptr();
+        return w.m_pv_iface->_tanuki_kep3_value_ptr();
     }
 
     [[nodiscard]] friend bool contains_reference(const wrap &w) noexcept
     {
-        return w.m_pv_iface->_tanuki_value_is_reference();
+        return w.m_pv_iface->_tanuki_kep3_value_is_reference();
     }
 
     // Specific functions for reference semantics.
@@ -1876,7 +1876,7 @@ public:
         requires(Cfg.semantics == wrap_semantics::reference)
     {
         wrap retval(invalid_wrap);
-        retval.m_pv_iface = w.m_pv_iface->_tanuki_shared_clone_holder();
+        retval.m_pv_iface = w.m_pv_iface->_tanuki_kep3_shared_clone_holder();
         return retval;
     }
 
@@ -2045,7 +2045,7 @@ struct cfg_from_wrap<wrap<IFace, Cfg>> {
 template <any_wrap W>
 inline constexpr auto wrap_cfg = detail::cfg_from_wrap<W>::cfg;
 
-TANUKI_END_NAMESPACE
+tanuki_kep3_END_NAMESPACE
 
 #if defined(__GNUC__)
 
@@ -2053,7 +2053,7 @@ TANUKI_END_NAMESPACE
 
 #endif
 
-#if defined(TANUKI_WITH_BOOST_S11N)
+#if defined(tanuki_kep3_WITH_BOOST_S11N)
 
 namespace boost::serialization
 {
@@ -2063,12 +2063,12 @@ namespace boost::serialization
 // deserialising into a function-local pointer which is then copied
 // into the wrap storage.
 template <typename IFace>
-struct tracking_level<tanuki::detail::value_iface<IFace, tanuki::wrap_semantics::value>> {
+struct tracking_level<tanuki_kep3::detail::value_iface<IFace, tanuki_kep3::wrap_semantics::value>> {
     using tag = mpl::integral_c_tag;
     using type = mpl::int_<track_never>;
     BOOST_STATIC_CONSTANT(int, value = tracking_level::type::value);
     BOOST_STATIC_ASSERT(
-        (mpl::greater<implementation_level<tanuki::detail::value_iface<IFace, tanuki::wrap_semantics::value>>,
+        (mpl::greater<implementation_level<tanuki_kep3::detail::value_iface<IFace, tanuki_kep3::wrap_semantics::value>>,
                       mpl::int_<primitive_type>>::value));
 };
 
@@ -2080,76 +2080,76 @@ struct tracking_level<tanuki::detail::value_iface<IFace, tanuki::wrap_semantics:
 // to pass in arguments containing commas without additional mucking around.
 // NOTE: in these macros we are always exporting/implementing both semantics
 // variants.
-#define TANUKI_S11N_WRAP_EXPORT_KEY(ud_type, ...)                                                                      \
+#define tanuki_kep3_S11N_WRAP_EXPORT_KEY(ud_type, ...)                                                                      \
     namespace boost::serialization                                                                                     \
     {                                                                                                                  \
-    template <tanuki::wrap_semantics Sem>                                                                              \
-    struct guid_defined<tanuki::holder<ud_type, __VA_ARGS__, Sem>> : boost::mpl::true_ {                               \
+    template <tanuki_kep3::wrap_semantics Sem>                                                                              \
+    struct guid_defined<tanuki_kep3::holder<ud_type, __VA_ARGS__, Sem>> : boost::mpl::true_ {                               \
     };                                                                                                                 \
     template <>                                                                                                        \
-    inline const char *guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>>()                     \
+    inline const char *guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>>()                     \
     {                                                                                                                  \
-        return "tanuki::wrap<" #__VA_ARGS__ ">@" #ud_type "#val";                                                      \
+        return "tanuki_kep3::wrap<" #__VA_ARGS__ ">@" #ud_type "#val";                                                      \
     }                                                                                                                  \
     template <>                                                                                                        \
-    inline const char *guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>>()                 \
+    inline const char *guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>>()                 \
     {                                                                                                                  \
-        return "tanuki::wrap<" #__VA_ARGS__ ">@" #ud_type "#ref";                                                      \
+        return "tanuki_kep3::wrap<" #__VA_ARGS__ ">@" #ud_type "#ref";                                                      \
     }                                                                                                                  \
     }
 
-#define TANUKI_S11N_WRAP_EXPORT_KEY2(ud_type, gid, ...)                                                                \
+#define tanuki_kep3_S11N_WRAP_EXPORT_KEY2(ud_type, gid, ...)                                                                \
     namespace boost::serialization                                                                                     \
     {                                                                                                                  \
-    template <tanuki::wrap_semantics Sem>                                                                              \
-    struct guid_defined<tanuki::holder<ud_type, __VA_ARGS__, Sem>> : boost::mpl::true_ {                               \
+    template <tanuki_kep3::wrap_semantics Sem>                                                                              \
+    struct guid_defined<tanuki_kep3::holder<ud_type, __VA_ARGS__, Sem>> : boost::mpl::true_ {                               \
     };                                                                                                                 \
     template <>                                                                                                        \
-    inline const char *guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>>()                     \
+    inline const char *guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>>()                     \
     {                                                                                                                  \
         return gid "#val";                                                                                             \
     }                                                                                                                  \
     template <>                                                                                                        \
-    inline const char *guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>>()                 \
+    inline const char *guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>>()                 \
     {                                                                                                                  \
         return gid "#ref";                                                                                             \
     }                                                                                                                  \
     }
 
-#define TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, ...)                                                                \
+#define tanuki_kep3_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, ...)                                                                \
     namespace boost::archive::detail::extra_detail                                                                     \
     {                                                                                                                  \
     template <>                                                                                                        \
-    struct init_guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>> {                            \
-        static guid_initializer<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>> const &g;         \
+    struct init_guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>> {                            \
+        static guid_initializer<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>> const &g;         \
     };                                                                                                                 \
     template <>                                                                                                        \
-    struct init_guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>> {                        \
-        static guid_initializer<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>> const &g;     \
+    struct init_guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>> {                        \
+        static guid_initializer<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>> const &g;     \
     };                                                                                                                 \
-    guid_initializer<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>> const                        \
-        &init_guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>>::g                             \
+    guid_initializer<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>> const                        \
+        &init_guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>>::g                             \
         = ::boost::serialization::singleton<guid_initializer<                                                          \
-            tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::value>>>::get_mutable_instance()              \
+            tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::value>>>::get_mutable_instance()              \
               .export_guid();                                                                                          \
-    guid_initializer<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>> const                    \
-        &init_guid<tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>>::g                         \
+    guid_initializer<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>> const                    \
+        &init_guid<tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>>::g                         \
         = ::boost::serialization::singleton<guid_initializer<                                                          \
-            tanuki::holder<ud_type, __VA_ARGS__, tanuki::wrap_semantics::reference>>>::get_mutable_instance()          \
+            tanuki_kep3::holder<ud_type, __VA_ARGS__, tanuki_kep3::wrap_semantics::reference>>>::get_mutable_instance()          \
               .export_guid();                                                                                          \
     }
 
-#define TANUKI_S11N_WRAP_EXPORT(ud_type, ...)                                                                          \
-    TANUKI_S11N_WRAP_EXPORT_KEY(ud_type, __VA_ARGS__)                                                                  \
-    TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, __VA_ARGS__)
+#define tanuki_kep3_S11N_WRAP_EXPORT(ud_type, ...)                                                                          \
+    tanuki_kep3_S11N_WRAP_EXPORT_KEY(ud_type, __VA_ARGS__)                                                                  \
+    tanuki_kep3_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, __VA_ARGS__)
 
-#define TANUKI_S11N_WRAP_EXPORT2(ud_type, gid, ...)                                                                    \
-    TANUKI_S11N_WRAP_EXPORT_KEY2(ud_type, gid, __VA_ARGS__)                                                            \
-    TANUKI_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, __VA_ARGS__)
+#define tanuki_kep3_S11N_WRAP_EXPORT2(ud_type, gid, ...)                                                                    \
+    tanuki_kep3_S11N_WRAP_EXPORT_KEY2(ud_type, gid, __VA_ARGS__)                                                            \
+    tanuki_kep3_S11N_WRAP_EXPORT_IMPLEMENT(ud_type, __VA_ARGS__)
 
 #endif
 
-#undef TANUKI_ABI_TAG_ATTR
-#undef TANUKI_VISIBLE
+#undef tanuki_kep3_ABI_TAG_ATTR
+#undef tanuki_kep3_VISIBLE
 
 #endif
