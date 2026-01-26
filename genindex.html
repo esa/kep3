@@ -188,12 +188,14 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh_ss.html">The Zero Order Hold - Solar Sail</a></li>
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -466,11 +468,13 @@ document.write(`
       <ul>
         <li><a href="leg.html#pykep.leg.zoh.compute_mc_grad">(pykep.leg.zoh method)</a>
 </li>
-      </ul></li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mismatch_constraints">compute_mismatch_constraints() (pykep.leg.sims_flanagan method)</a>
+        <li><a href="leg.html#pykep.leg.zoh_ss.compute_mc_grad">(pykep.leg.zoh_ss method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.compute_mismatch_constraints">compute_mismatch_constraints() (pykep.leg.sims_flanagan method)</a>
+</li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.compute_tc_grad">compute_tc_grad() (pykep.leg.sims_flanagan method)</a>
 
       <ul>
@@ -672,7 +676,11 @@ document.write(`
       <li><a href="planet.html#pykep.planet.get_safe_radius">get_safe_radius() (pykep.planet method)</a>
 </li>
       <li><a href="leg.html#pykep.leg.zoh.get_state_info">get_state_info() (pykep.leg.zoh method)</a>
+
+      <ul>
+        <li><a href="leg.html#pykep.leg.zoh_ss.get_state_info">(pykep.leg.zoh_ss method)</a>
 </li>
+      </ul></li>
       <li><a href="propagation.html#id0">get_zoh_cr3bp() (in module pykep.ta)</a>, <a href="propagation.html#pykep.ta.get_zoh_cr3bp">[1]</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_zoh_eq">get_zoh_eq() (in module pykep.ta)</a>
@@ -682,6 +690,8 @@ document.write(`
       <li><a href="propagation.html#pykep.ta.get_zoh_kep">get_zoh_kep() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_zoh_kep_var">get_zoh_kep_var() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#id7">get_zoh_ss() (in module pykep.ta)</a>, <a href="propagation.html#pykep.ta.get_zoh_ss">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1053,13 +1063,17 @@ document.write(`
 </li>
       <li><a href="leg.html#pykep.leg.zoh">zoh (class in pykep.leg)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="propagation.html#pykep.ta.zoh_cr3bp_dyn">zoh_cr3bp_dyn() (in module pykep.ta)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="propagation.html#pykep.ta.zoh_eq_dyn">zoh_eq_dyn() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.zoh_kep_dyn">zoh_kep_dyn() (in module pykep.ta)</a>
+</li>
+      <li><a href="leg.html#pykep.leg.zoh_ss">zoh_ss (class in pykep.leg)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.zoh_ss_dyn">zoh_ss_dyn() (in module pykep.ta)</a>
 </li>
   </ul></td>
 </tr></table>

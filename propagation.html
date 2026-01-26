@@ -191,12 +191,14 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/leg_zoh_ss.html">The Zero Order Hold - Solar Sail</a></li>
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
 </details></li>
@@ -450,10 +452,16 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">Zero Hold CR3BP Propagator in in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-cartesian-coordinates">Zero Hold CR3BP Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-solar-sail-propagator-in-cartesian-coordinates">Zero Hold Solar Sail Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_ss"><code class="docutils literal notranslate"><span class="pre">get_zoh_ss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">get_zoh_ss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_ss_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_ss_dyn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
@@ -561,8 +569,10 @@ Taylor adaptive integrators are offered in <cite>pykep</cite> wrapping some of t
 Their variational version is also offered (at order one) as to be able to produce stms and, where needed,
 other useful quantities. Higher order variational equations can also be obtained directly using the available dynamics and
 using <a class="reference external" href="https://bluescarni.github.io/heyoka.py/index.html">Heyoka</a> <span id="id5">[<a class="reference internal" href="bibliography.html#id5" title="Francesco Biscani and Dario Izzo. Revisiting high-order taylor methods for astrodynamics and celestial mechanics. Monthly Notices of the Royal Astronomical Society, 504(2):2614–2628, 2021.">BI21</a>]</span> syntax.</p>
-<p>Some ot the Taylor integrators are “zero hold” versions of a given dynamics, meaning that they
-consider a constant thrust vector in some frame and include the mass variation due to said thrust.</p>
+<p>Some of the Taylor integrators are “zero hold” versions of a given dynamics, meaning that they
+consider a constant thrust vector in some frame and include the mass variation due to said thrust.
+These are intended to be used to build “zero hold” trajectory legs and direct methods to optimally
+control the spacecarft.</p>
 <p>Some of the Taylor adaptive integrators are associated to OCPs (Optimal Control Problems) of
 relevance to interplanetary flight. In particular they are born when applying Pontryagin
 principle to dynamics of interests and result in two point boundary value problems (TPBVP).
@@ -1169,8 +1179,8 @@ exhaust velocity <span class="math notranslate nohighlight">\(v_{eff} = I_{sp} g
 </dd></dl>
 
 </section>
-<section id="zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">
-<h3>Zero Hold CR3BP Propagator in in Cartesian coordinates<a class="headerlink" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates" title="Permalink to this heading">#</a></h3>
+<section id="zero-hold-cr3bp-propagator-in-cartesian-coordinates">
+<h3>Zero Hold CR3BP Propagator in Cartesian coordinates<a class="headerlink" href="#zero-hold-cr3bp-propagator-in-cartesian-coordinates" title="Permalink to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_zoh_cr3bp">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_cr3bp" title="Permalink to this definition">#</a></dt>
@@ -1267,6 +1277,117 @@ in circular relative motion (circular restricted three-body problem, CR3BP).</p>
 <p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c]\)</span></p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p>list[tuple[hy.expression, hy.expression]]: The dynamics in form <cite>[(x, dx), …]</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="zero-hold-solar-sail-propagator-in-cartesian-coordinates">
+<h3>Zero Hold Solar Sail Propagator in Cartesian coordinates<a class="headerlink" href="#zero-hold-solar-sail-propagator-in-cartesian-coordinates" title="Permalink to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.get_zoh_ss">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_ss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_zoh_ss" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_ss_dyn" title="pykep.ta.zoh_ss_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_ss_dyn()</span></code></a> dynamics
+retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a solar sailing spacecraft under simple hypothesis
+for the sail characteristics.</p>
+<p>Sail acceleration direction is fixed in the RTN frame.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">sail_c</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_ss</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="n">sail_c</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_zoh_ss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the <a class="reference internal" href="#pykep.ta.zoh_ss_dyn" title="pykep.ta.zoh_ss_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_ss_dyn()</span></code></a> dynamics
+retrieving one from a global cache if available.</p>
+<p>This solves the initial value problem of a solar sailing spacecraft under simple hypothesis
+for the sail characteristics.</p>
+<p>Sail acceleration direction is fixed in the RTN frame.</p>
+<dl>
+<dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">hy::taylor_adaptive</span></code>: The Taylor adaptive propagator.</p>
+</dd>
+<dt>Examples:</dt><dd><p>Import and setup:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
+<span class="n">sail_c</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">controls</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.022</span><span class="p">,</span> <span class="mf">0.023</span><span class="p">]</span>
+<span class="n">tof</span> <span class="o">=</span> <span class="mf">1.23</span>
+</pre></div>
+</div>
+<p>Create propagator and propagate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ta</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">ta</span><span class="o">.</span><span class="n">get_zoh_ss</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">)</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">pars</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">controls</span> <span class="o">+</span> <span class="p">[</span><span class="n">sail_c</span><span class="p">]</span>
+<span class="n">ta</span><span class="o">.</span><span class="n">propagate_until</span><span class="p">(</span><span class="n">tof</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.ta.zoh_ss_dyn">
+<span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">zoh_ss_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.zoh_ss_dyn" title="Permalink to this definition">#</a></dt>
+<dd><p>The dynamics in Cartesian coordinates of a spacecraft equipped with a solar sail
+orbiting a main central body with unitary gravitational parameter <span class="math notranslate nohighlight">\(\mu = 1\)</span>.
+The body is assumed to be a star with flux <span class="math notranslate nohighlight">\(C\)</span> at a reference distance <cite>R = 1</cite>.
+These conventions define naturally the nondimenional units of the system, which in the solar system,
+for example, are <span class="math notranslate nohighlight">\(MU = \mu_{Sun}\)</span> and <span class="math notranslate nohighlight">\(L = 1 AU\)</span> (so that C is the flux at 1AU).</p>
+<p>The sail attitude is controlled through two angles (<span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(\beta\)</span>),
+defining the direction of the sail acceleration: they are commonly named cone and clock angle.
+The angles are assumed to be fixed, hence creating an acceleration having constant direction in
+the RTN reference frame <span class="math notranslate nohighlight">\([\mathbf i_R, \mathbf i_T, \mathbf i_N]\)</span>.</p>
+<p>The dynamics are given in non dimensional units (:matby:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\{
+\begin{array}{l}
+\dot{\mathbf{r}} = \mathbf{v} \\
+\dot{\mathbf{v}} = -\frac{\mathbf{r}}{r^3} + \mathbf a_{ss} \\
+\end{array}
+\right.\end{split}\]</div>
+<p>where the acceleration coming from the solar sail is:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf a_{ss} = T \left( \cos\alpha \mathbf i_R + \sin\alpha\sin\beta \mathbf i_T + \sin\alpha\cos\beta \mathbf i_N\right)\]</div>
+<p>and:</p>
+<div class="math notranslate nohighlight">
+\[T = c (1. / r^2) \cos^2\alpha\]</div>
+<p>The constant <span class="math notranslate nohighlight">\(c\)</span> (in acceleration units) contains all physical parameters defining the sailcraft and is defined as
+<span class="math notranslate nohighlight">\(c = 2 \frac{CA}M\)</span>, where <span class="math notranslate nohighlight">\(C\)</span> is central star flux at the reference unitary distance, A the sail area and M its mass.</p>
+<p>The cone angle must be constrained in <span class="math notranslate nohighlight">\(\alpha \in [-\frac{\pi}2, \frac{\pi}2]\)</span> for the dynamics
+to be feasible (outside these bound the corresponding sail acceleration is unfeasible)</p>
+<p>The state is: <span class="math notranslate nohighlight">\([x, y, z, v_x, v_y, v_z]\)</span></p>
+<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([\alpha, \beta] + [c]\)</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>with respect to other Zero Order Hold integrators the <a href="#id8"><span class="problematic" id="id9">``</span></a>zoh_ss``has a smaller dimension (no mass equation) and only two
+controls. It CANNOT thus be used as Taylor integrator in <a class="reference internal" href="leg.html#pykep.leg.zoh" title="pykep.leg.zoh"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh()</span></code></a> as it does not meet its requirements.
+A dedicated leg, <a class="reference internal" href="leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-func docutils literal notranslate"><span class="pre">zoh_ss()</span></code></a> is instead to be used.</p>
+</div>
+<dl class="simple">
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(p, dp), …]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1628,10 +1749,16 @@ are derived from the Hamiltonian, which depends on the chosen optimality:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_eq_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_eq_dyn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-in-cartesian-coordinates">Zero Hold CR3BP Propagator in in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-cr3bp-propagator-in-cartesian-coordinates">Zero Hold CR3BP Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_cr3bp"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">get_zoh_cr3bp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_cr3bp_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_cr3bp_dyn()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-hold-solar-sail-propagator-in-cartesian-coordinates">Zero Hold Solar Sail Propagator in Cartesian coordinates</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.get_zoh_ss"><code class="docutils literal notranslate"><span class="pre">get_zoh_ss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">get_zoh_ss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.ta.zoh_ss_dyn"><code class="docutils literal notranslate"><span class="pre">zoh_ss_dyn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-thrust-pontryagin-cartesian-tpbvp">Low-thrust Pontryagin Cartesian TPBVP</a><ul class="nav section-nav flex-column">
