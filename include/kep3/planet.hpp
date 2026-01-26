@@ -9,9 +9,9 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
+#include <exception>
 #include <string>
 #include <typeinfo>
-#include <exception>
 
 #include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -20,11 +20,10 @@
 
 #include <kep3/core_astro/constants.hpp>
 #include <kep3/detail/s11n.hpp>
+#include <kep3/detail/tanuki.hpp>
 #include <kep3/detail/visibility.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
-
-#include <heyoka/detail/tanuki.hpp>
 
 namespace kep3
 {
@@ -380,7 +379,6 @@ public:
     //    // Returns the address of the stored object if present, nullptr otherwise.
     //    return value_ptr<void>(m_wrap);
     //}
-
 };
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::planet &);
