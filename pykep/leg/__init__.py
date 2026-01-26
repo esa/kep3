@@ -39,3 +39,4 @@ sims_flanagan_hf_alpha.__module__ = "pykep.leg"
 del _core
 
 from ._zoh import zoh
+from ._zoh_ss import zoh_ss

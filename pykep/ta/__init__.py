@@ -11,3 +11,4 @@ from ..core.ta_cxx import *
 from ._zoh_kep import zoh_kep_dyn, get_zoh_kep, get_zoh_kep_var
 from ._zoh_eq import zoh_eq_dyn, get_zoh_eq, get_zoh_eq_var
 from ._zoh_cr3bp import zoh_cr3bp_dyn, get_zoh_cr3bp, get_zoh_cr3bp_var
+from ._zoh_ss import zoh_ss_dyn, get_zoh_ss, get_zoh_ss_var

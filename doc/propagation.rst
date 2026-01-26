@@ -32,8 +32,10 @@ Their variational version is also offered (at order one) as to be able to produc
 other useful quantities. Higher order variational equations can also be obtained directly using the available dynamics and 
 using `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` syntax.
 
-Some ot the Taylor integrators are "zero hold" versions of a given dynamics, meaning that they
+Some of the Taylor integrators are "zero hold" versions of a given dynamics, meaning that they
 consider a constant thrust vector in some frame and include the mass variation due to said thrust.
+These are intended to be used to build "zero hold" trajectory legs and direct methods to optimally
+control the spacecarft.
 
 Some of the Taylor adaptive integrators are associated to OCPs (Optimal Control Problems) of
 relevance to interplanetary flight. In particular they are born when applying Pontryagin 
@@ -97,7 +99,7 @@ Zero Hold Keplerian Propagator in Equinoctial elements
 
 .. autofunction:: zoh_eq_dyn 
 
-Zero Hold CR3BP Propagator in in Cartesian coordinates
+Zero Hold CR3BP Propagator in Cartesian coordinates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: get_zoh_cr3bp
@@ -105,6 +107,15 @@ Zero Hold CR3BP Propagator in in Cartesian coordinates
 .. autofunction:: get_zoh_cr3bp
 
 .. autofunction:: zoh_cr3bp_dyn 
+
+Zero Hold Solar Sail Propagator in Cartesian coordinates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: get_zoh_ss
+
+.. autofunction:: get_zoh_ss
+
+.. autofunction:: zoh_ss_dyn 
 
 Low-thrust Pontryagin Cartesian TPBVP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
