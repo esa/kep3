@@ -80,6 +80,11 @@ std::array<std::array<double, 3>, 2> planet_iface::eph(const epoch &ep) const
     return eph(ep.mjd2000());
 }
 
+std::array<double, 3> planet_iface::acc(const epoch &ep) const
+{
+    return acc(ep.mjd2000());
+}
+
 std::array<double, 6> planet_iface::elements(const epoch &ep, kep3::elements_type el_type) const
 {
     return elements(ep.mjd2000(), el_type);
