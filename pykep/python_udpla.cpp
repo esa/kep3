@@ -68,6 +68,31 @@ python_udpla::python_udpla(py::object obj) : m_obj(std::move(obj))
     }
 }
 
+[[nodiscard]] std::array<double, 3> python_udpla::acc(double mjd2000) const
+{
+    auto udpla_acc = pykep::callable_attribute(m_obj, "acc");
+    if (udpla_acc.is_none()) {
+        pykep::py_throw(PyExc_NotImplementedError, ("the acc() method has been invoked, but it is not implemented "
+                                                    "in the user-defined Python planet '"
+                                                    + pykep::str(m_obj) + "' of type '" + pykep::str(pykep::type(m_obj))
+                                                    + "': the method is either not present or not callable")
+                                                       .c_str());
+    }
+    return py::cast<std::array<double, 3>>(udpla_acc(mjd2000));
+}
+
+[[nodiscard]] std::vector<double> python_udpla::acc_v(const std::vector<double> &mjd2000s) const
+{
+    auto udpla_acc_v = pykep::callable_attribute(m_obj, "acc_v");
+    if (!udpla_acc_v.is_none()) {
+        auto ret = py::cast<py::array_t<double>>(udpla_acc_v(mjd2000s));
+        auto retval = py::cast<std::vector<double>>(ret.attr("flatten")());
+        return retval;
+    } else {
+        return kep3::detail::default_acc_vectorization(this, mjd2000s);
+    }
+}
+
 [[nodiscard]] std::string python_udpla::get_name() const
 {
     return getter_wrapper<std::string>(m_obj, "get_name", pykep::str(pykep::type(m_obj)));

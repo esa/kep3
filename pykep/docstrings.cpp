@@ -1507,6 +1507,60 @@ Returns:
 )";
 }
 
+std::string planet_acc_docstring()
+{
+    return R"(acc(when = 0.)
+
+
+The planet acceleration, i.e. its inertial acceleration vector at a given epoch.
+
+
+In order to be able to construct a :class:`~pykep.planet` object, the user must provide his own UDPLA (User-Defined-Planet).
+This is a class that must implement the method:
+
+.. code-block::
+
+   def acc(self, mjd2000: float):
+      ...
+      return [float, float, float]
+
+.. note::
+   In the udpla, the signature for acc demands a float as epoch (mjd2000). The planet, instead, constructed from the same udpla, will also allow :class:`~pykep.epoch`.
+
+
+Args:
+    *when* (:class:`float` or :class:`~pykep.epoch`): the epoch at which compute the acceleration. When a :class:`float` is passed mjd2000 is assumed.
+
+Returns:
+    :class:`list` [:class:`float`, :class:`float`, :class:`float`]: the acceleration vector at the requested epoch.
+
+)";
+}
+
+std::string planet_acc_v_docstring()
+{
+    return R"(acc_v(mjd2000s)
+
+The planet acceleration (vectorized version over many epochs).
+
+This method is the vectorized version of its companion :func:`~pykep.planet.acc` and, in its default implementation, it just
+calls it in a loop. This behaviour can be changed by the user (for efficiency purposes) who can provide a more efficient version
+in his UDPLA by coding a method having the signature:
+
+.. code-block::
+
+   def acc_v(self, mjd2000s):
+      ...
+      return np.array((len(mjd2000s), 3))
+
+Args:
+    *mjd2000s* (:class:`numpy.ndarray` or :class:`list`): the Modified Julian Dates at which to compute the accelerations.
+
+Returns:
+    :class:`list` [:class:`list`]: a, that is the acceleration vectors at the requested epochs.
+)";
+}
+
 std::string planet_period_docstring()
 {
     return R"(period(when = 0.)

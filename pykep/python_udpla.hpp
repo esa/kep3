@@ -31,6 +31,8 @@ struct python_udpla {
 
     // Optional methods
     [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &) const;
+    [[nodiscard]] std::array<double, 3> acc(double) const;
+    [[nodiscard]] std::vector<double> acc_v(const std::vector<double> &) const;
     [[nodiscard]] std::string get_name() const;
     [[nodiscard]] std::string get_extra_info() const;
     [[nodiscard]] double get_mu_central_body() const;
