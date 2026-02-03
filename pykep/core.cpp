@@ -252,7 +252,13 @@ PYBIND11_MODULE(core, m) // NOLINT
             return std::visit([&](const auto &v) { return pl.eph(v); }, when);
         },
         py::arg("when"), pykep::planet_eph_docstring().c_str());
-    // Vectorized version. Note that the udpla method flattens everything but planet returns a non flat array.
+    planet_class.def(
+        "acc",
+        [](const kep3::planet &pl, const std::variant<double, kep3::epoch> &when) {
+            return std::visit([&](const auto &v) { return pl.acc(v); }, when);
+        },
+        py::arg("when"), pykep::planet_acc_docstring().c_str());
+    // Vectorized versions. Note that the udpla method flattens everything but planet returns a non flat array.
     planet_class.def(
         "eph_v",
         [](const kep3::planet &pl, const std::vector<double> &eps) {
@@ -276,6 +282,30 @@ PYBIND11_MODULE(core, m) // NOLINT
                                        ptr->data(), std::move(vec_caps));
         },
         py::arg("when"), pykep::planet_eph_v_docstring().c_str());
+
+planet_class.def(
+        "acc_v",
+        [](const kep3::planet &pl, const std::vector<double> &mjd2000s) {
+            std::vector<double> res = pl.acc_v(mjd2000s);
+            // We create a capsule for the py::array_t to manage ownership change.
+            auto vec_ptr = std::make_unique<std::vector<double>>(std::move(res));
+
+            py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                const std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+            });
+
+            // NOTE: at this point, the capsule has been created successfully (including
+            // the registration of the destructor). We can thus release ownership from vec_ptr,
+            // as now the capsule is responsible for destroying its contents. If the capsule constructor
+            // throws, the destructor function is not registered/invoked, and the destructor
+            // of vec_ptr will take care of cleaning up.
+            auto *ptr = vec_ptr.release();
+
+            return py::array_t<double>(py::array::ShapeContainer{boost::numeric_cast<py::ssize_t>(mjd2000s.size()),
+                                                                 static_cast<py::ssize_t>(3)}, // shape
+                                       ptr->data(), std::move(vec_caps));
+        },
+        py::arg("when"), pykep::planet_acc_v_docstring().c_str());
 
 #define PYKEP3_EXPOSE_PLANET_GETTER(name)                                                                              \
     planet_class.def(                                                                                                  \

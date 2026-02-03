@@ -137,33 +137,33 @@ kep3::epoch keplerian::get_ref_epoch() const
     return m_ref_epoch;
 }
 
-std::array<double, 6> keplerian::elements(double, kep3::elements_type el_type) const
-{
-    std::array<double, 6> retval{};
-    switch (el_type) {
-        case kep3::elements_type::KEP_F:
-            retval = m_kep_f_elements;
-            break;
-        case kep3::elements_type::KEP_M:
-            if (!m_ellipse) {
-                throw std::logic_error("Mean anomaly is only available for ellipses.");
-            }
-            retval = m_kep_f_elements;
-            retval[5] = kep3::f2m(retval[5], retval[1]);
-            break;
-        case kep3::elements_type::MEE:
-            retval = m_kep_f_elements;
-            retval = kep3::par2mee(retval, false);
-            break;
-        case kep3::elements_type::MEE_R:
-            retval = m_kep_f_elements;
-            retval = kep3::par2mee(retval, true);
-            break;
-        default:
-            throw std::logic_error("You should not go here!");
-    }
-    return retval;
-}
+//std::array<double, 6> keplerian::elements(double, kep3::elements_type el_type) const
+//{
+//    std::array<double, 6> retval{};
+//    switch (el_type) {
+//        case kep3::elements_type::KEP_F:
+//            retval = m_kep_f_elements;
+//            break;
+//        case kep3::elements_type::KEP_M:
+//            if (!m_ellipse) {
+//                throw std::logic_error("Mean anomaly is only available for ellipses.");
+//            }
+//            retval = m_kep_f_elements;
+//            retval[5] = kep3::f2m(retval[5], retval[1]);
+//            break;
+//        case kep3::elements_type::MEE:
+//            retval = m_kep_f_elements;
+//            retval = kep3::par2mee(retval, false);
+//            break;
+//        case kep3::elements_type::MEE_R:
+//            retval = m_kep_f_elements;
+//            retval = kep3::par2mee(retval, true);
+//            break;
+//        default:
+//            throw std::logic_error("You should not go here!");
+//    }
+//    return retval;
+//}
 
 std::string keplerian::get_extra_info() const
 {

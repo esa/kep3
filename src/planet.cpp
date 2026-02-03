@@ -16,6 +16,7 @@
 #include <kep3/core_astro/convert_anomalies.hpp>
 #include <kep3/core_astro/ic2par2ic.hpp>
 #include <kep3/core_astro/mee2par2mee.hpp>
+#include <kep3/core_astro/ic2mee2ic.hpp>
 #include <kep3/detail/s11n.hpp>
 #include <kep3/epoch.hpp>
 #include <kep3/exceptions.hpp>
@@ -42,21 +43,23 @@ double period_from_energy(const std::array<double, 3> &r, const std::array<doubl
 std::array<double, 6> elements_from_posvel(const std::array<std::array<double, 3>, 2> &pos_vel, double mu,
                                            kep3::elements_type el_type)
 {
-    std::array<double, 6> retval = kep3::ic2par(pos_vel, mu);
+    std::array<double, 6> retval;
     switch (el_type) {
         case kep3::elements_type::KEP_F:
+            retval = kep3::ic2par(pos_vel, mu);
             break;
         case kep3::elements_type::KEP_M:
+            retval = kep3::ic2par(pos_vel, mu);
             if (retval[0] < 1) {
                 throw std::logic_error("Mean anomaly is only available for ellipses.");
             }
             retval[5] = kep3::f2m(retval[5], retval[1]);
             break;
         case kep3::elements_type::MEE:
-            retval = kep3::par2mee(retval, false);
+            retval = kep3::ic2mee(pos_vel, mu, false);
             break;
         case kep3::elements_type::MEE_R:
-            retval = kep3::par2mee(retval, true);
+            retval = kep3::ic2mee(pos_vel, mu, true);
             break;
         // LCOV_EXCL_START
         default:
@@ -78,6 +81,11 @@ planet_iface::~planet_iface() = default;
 std::array<std::array<double, 3>, 2> planet_iface::eph(const epoch &ep) const
 {
     return eph(ep.mjd2000());
+}
+
+std::array<double, 3> planet_iface::acc(const epoch &ep) const
+{
+    return acc(ep.mjd2000());
 }
 
 std::array<double, 6> planet_iface::elements(const epoch &ep, kep3::elements_type el_type) const

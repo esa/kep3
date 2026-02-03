@@ -9,9 +9,10 @@
 #ifndef kep3_PLANET_H
 #define kep3_PLANET_H
 
+#include <cmath>
+#include <exception>
 #include <string>
 #include <typeinfo>
-#include <exception>
 
 #include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -54,8 +55,18 @@ concept udpla_has_eph = requires(const T &p, double mjd2000) {
 };
 
 template <typename T>
-concept udpla_has_eph_v = requires(const T &p, const std::vector<double> &mjd2000) {
-    { p.eph_v(mjd2000) } -> std::same_as<std::vector<double>>;
+concept udpla_has_eph_v = requires(const T &p, const std::vector<double> &mjd2000s) {
+    { p.eph_v(mjd2000s) } -> std::same_as<std::vector<double>>;
+};
+
+template <typename T>
+concept udpla_has_acc = requires(const T &p, double mjd2000) {
+    { p.acc(mjd2000) } -> std::same_as<std::array<double, 3>>;
+};
+
+template <typename T>
+concept udpla_has_acc_v = requires(const T &p, const std::vector<double> &mjd2000s) {
+    { p.acc_v(mjd2000s) } -> std::same_as<std::vector<double>>;
 };
 
 template <typename T>
@@ -90,6 +101,11 @@ struct kep3_DLL_PUBLIC planet_iface {
 
     [[nodiscard]] virtual std::array<std::array<double, 3>, 2> eph(double) const = 0;
     [[nodiscard]] virtual std::vector<double> eph_v(const std::vector<double> &) const = 0;
+    // If implemented returns the acceleration vector at mjd2000
+    [[nodiscard]] virtual std::array<double, 3> acc(double) const = 0;
+    [[nodiscard]] virtual std::vector<double> acc_v(const std::vector<double> &) const = 0;
+
+
     // NOLINTNEXTLINE(google-default-arguments)
     [[nodiscard]] virtual double period(double = 0.) const = 0;
     // NOLINTNEXTLINE(google-default-arguments)
@@ -99,6 +115,7 @@ struct kep3_DLL_PUBLIC planet_iface {
 
     // Methods that are non virtual, not implementable by the user in udplas, but visible in kep3::planet
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(const epoch &) const;
+    [[nodiscard]] std::array<double, 3> acc(const epoch &) const;
 
     [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &,
                                                  kep3::elements_type = kep3::elements_type::KEP_F) const;
@@ -145,6 +162,22 @@ std::vector<double> default_eph_vectorization(const T *self, const std::vector<d
     return retval;
 }
 
+template <typename T>
+std::vector<double> default_acc_vectorization(const T *self, const std::vector<double> &mjd2000s)
+{
+    // We simply call a for loop.
+    const auto size = mjd2000s.size();
+    std::vector<double> retval(size * 3);
+    for (decltype(mjd2000s.size()) i = 0u; i < size; ++i) {
+        auto value = self->acc(mjd2000s[i]);
+        retval[3*i] = value[0];
+        retval[3*i + 1] = value[1];
+        retval[3*i + 2] = value[2];
+
+    }
+    return retval;
+}
+
 // Planet interface implementation.
 template <typename Base, typename Holder, typename T>
     requires any_udpla<T>
@@ -167,6 +200,38 @@ struct planet_iface_impl : public Base {
             return getval<Holder>(this).eph_v(mjd2000s);
         } else {
             return default_eph_vectorization(this, mjd2000s);
+        }
+    }
+
+    [[nodiscard]] std::array<double, 3> acc(double mjd2000) const final
+    {
+        if constexpr (udpla_has_acc<T>) {
+            // User has correctly implemented the method acc, return the user implementation
+            return getval<Holder>(this).acc(mjd2000);
+        } else {
+            // User did not implement the method acc but the udpla has a central body, return the Keplerian acceleration
+            // NOTE: this violates the actual ephemerides as it may not be dv/dt, but in most cases will be a good
+            // enough approximation, and is actually correct for keplerian motion.
+            if constexpr (udpla_has_get_mu_central_body<T>) {
+                auto mu = getval<Holder>(this).get_mu_central_body();
+                const auto &[pos, vel] = getval<Holder>(this).eph(mjd2000);
+                double r3 = std::pow(pos[0] * pos[0] + pos[1] * pos[1] + pos[2] * pos[2], 1.5);
+                return {-mu / r3 * pos[0], -mu / r3 * pos[1], -mu / r3 * pos[2]};
+                //  User did not implement the method acc and the udpla does not have a central body ... nothing we can
+                //  do
+            } else {
+                throw not_implemented_error(fmt::format("The acc method has not been implemented correctly (if at all) "
+                                                        "in the User Defined planet (UDPLA)"));
+            }
+        }
+    }
+
+    [[nodiscard]] std::vector<double> acc_v(const std::vector<double> &mjd2000s) const final
+    {
+        if constexpr (udpla_has_acc_v<T>) {
+            return getval<Holder>(this).acc_v(mjd2000s);
+        } else {
+            return default_acc_vectorization(this, mjd2000s);
         }
     }
 
@@ -230,20 +295,22 @@ private:
 struct kep3_DLL_PUBLIC planet_ref_iface {
     template <typename Wrap>
     struct impl {
-        tanuki_kep3_REF_IFACE_MEMFUN(get_mu_central_body)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_mu_central_body) 
         tanuki_kep3_REF_IFACE_MEMFUN(get_mu_self)
-        tanuki_kep3_REF_IFACE_MEMFUN(get_radius)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_radius) 
         tanuki_kep3_REF_IFACE_MEMFUN(get_safe_radius)
-        tanuki_kep3_REF_IFACE_MEMFUN(get_name)
+        tanuki_kep3_REF_IFACE_MEMFUN(get_name) 
         tanuki_kep3_REF_IFACE_MEMFUN(get_extra_info)
-        tanuki_kep3_REF_IFACE_MEMFUN(eph)
+        tanuki_kep3_REF_IFACE_MEMFUN(eph) 
         tanuki_kep3_REF_IFACE_MEMFUN(eph_v)
+        tanuki_kep3_REF_IFACE_MEMFUN(acc) 
+        tanuki_kep3_REF_IFACE_MEMFUN(acc_v) 
         tanuki_kep3_REF_IFACE_MEMFUN(period)
         tanuki_kep3_REF_IFACE_MEMFUN(elements)
 
-        // Implement the extract functionality.
-        template <typename T>
-        T *extract()
+            // Implement the extract functionality.
+            template <typename T>
+            T *extract()
         {
             return value_ptr<T>(*static_cast<Wrap *>(this));
         }
@@ -263,8 +330,8 @@ struct kep3_DLL_PUBLIC planet_ref_iface {
 class kep3_DLL_PUBLIC planet
 {
     using wrap_t
-        = tanuki_kep3::wrap<detail::planet_iface,
-                       tanuki_kep3::config<detail::null_udpla, detail::planet_ref_iface>{.pointer_interface = false}>;
+        = tanuki_kep3::wrap<detail::planet_iface, tanuki_kep3::config<detail::null_udpla, detail::planet_ref_iface>{
+                                                      .pointer_interface = false}>;
 
     wrap_t m_wrap;
 
@@ -324,7 +391,6 @@ public:
     {
         return m_wrap.get_extra_info();
     }
-
     [[nodiscard]] std::array<std::array<double, 3>, 2> eph(double mjd2000) const
     {
         return m_wrap.eph(mjd2000);
@@ -332,6 +398,14 @@ public:
     [[nodiscard]] std::vector<double> eph_v(const std::vector<double> &mjd2000s) const
     {
         return m_wrap.eph_v(mjd2000s);
+    }
+    [[nodiscard]] std::array<double, 3> acc(double mjd2000) const
+    {
+        return m_wrap.acc(mjd2000);
+    }
+    [[nodiscard]] std::vector<double> acc_v(const std::vector<double> &mjd2000s) const
+    {
+        return m_wrap.acc_v(mjd2000s);
     }
     [[nodiscard]] double period(double mjd2000 = 0.) const
     {
@@ -347,6 +421,12 @@ public:
     {
         return m_wrap.eph(ep);
     }
+
+    [[nodiscard]] std::array<double, 3> acc(const epoch &ep) const
+    {
+        return m_wrap.acc(ep);
+    }
+
     [[nodiscard]] std::array<double, 6> elements(const kep3::epoch &ep,
                                                  kep3::elements_type el_t = kep3::elements_type::KEP_F) const
     {
@@ -373,21 +453,13 @@ public:
     {
         return value_type_index(m_wrap);
     }
-
-    // Optional: expose pointer
-    //[[nodiscard]] const void *get_ptr() const noexcept
-    //{
-    //    // Returns the address of the stored object if present, nullptr otherwise.
-    //    return value_ptr<void>(m_wrap);
-    //}
-
 };
 
 kep3_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const kep3::planet &);
 } // namespace kep3
 
-// version 1: planet becomes a concrete class (was an alias)
-BOOST_CLASS_VERSION(kep3::planet, 1)
+// version 2: planet has an acc optional method
+BOOST_CLASS_VERSION(kep3::planet, 2)
 
 template <>
 struct fmt::formatter<kep3::planet> : fmt::ostream_formatter {

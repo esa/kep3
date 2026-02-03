@@ -118,41 +118,42 @@ TEST_CASE("elements")
     // Non singular elements
     std::array<std::array<double, 3>, 2> pos_vel{{{1., 0.1, 0.1}, {0.1, 1., 0.1}}};
     keplerian udpla{ref_epoch, pos_vel};
+    kep3::planet pla{udpla};
     // Test on various element types
     {
-        auto par = udpla.elements(0., kep3::elements_type::KEP_F);
+        auto par = pla.elements(ref_epoch.mjd2000(), kep3::elements_type::KEP_F);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(0., kep3::elements_type::KEP_M);
+        auto par = pla.elements(ref_epoch.mjd2000(), kep3::elements_type::KEP_M);
         par[5] = kep3::m2f(par[5], par[1]);
         auto [r, v] = kep3::par2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(0., kep3::elements_type::MEE);
+        auto par = pla.elements(ref_epoch.mjd2000(), kep3::elements_type::MEE);
         auto [r, v] = kep3::mee2ic(par, 1.);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        auto par = udpla.elements(0., kep3::elements_type::MEE_R);
+        auto par = pla.elements(ref_epoch.mjd2000(), kep3::elements_type::MEE_R);
         auto [r, v] = kep3::mee2ic(par, 1., true);
         REQUIRE(kep3_tests::floating_point_error_vector(r, pos_vel[0]) < 1e-13);
         REQUIRE(kep3_tests::floating_point_error_vector(v, pos_vel[1]) < 1e-13);
     }
     {
-        REQUIRE_THROWS_AS(udpla.elements(0., kep3::elements_type::POSVEL), std::logic_error);
+        REQUIRE_THROWS_AS(pla.elements(ref_epoch.mjd2000(), kep3::elements_type::POSVEL), std::logic_error);
     }
     // We test on hyperbolas
     std::array<std::array<double, 3>, 2> pos_vel_h{{{1., 0.1, 0.1}, {0.1, 3., 0.1}}};
     keplerian udpla_h{kep3::epoch(ref_epoch), pos_vel_h, kep3::MU_SUN};
 
     {
-        REQUIRE_THROWS_AS(udpla_h.elements(0., kep3::elements_type::POSVEL), std::logic_error);
+        REQUIRE_THROWS_AS(pla.elements(ref_epoch.mjd2000(), kep3::elements_type::POSVEL), std::logic_error);
     }
 }
 
