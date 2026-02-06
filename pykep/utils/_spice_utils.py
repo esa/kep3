@@ -1,5 +1,6 @@
 import spiceypy as pyspice
 import pykep as pk
+from pathlib import Path
 
 def spice_version():
     """Retrieves the installed version of the NAIF spice toolkit.
@@ -36,6 +37,56 @@ def inspect_spice_kernel(path):
         :class:`list`: the NAIF ids of the objects found in the kernels.
     """
     return list(pyspice.spkobj(path))
+
+def extract_coverage_window(path, naifid, window_n = 0):
+    """Extracts the *n*-th SPK coverage window for a given NAIF ID and returns it as PyKEP epochs.
+
+    The SPK coverage start/end times returned by SPICE are ET (TDB) seconds past J2000. Here we map them to a **uniform**
+    seconds-from-2000-01-01T00:00:00 (UTC-labeled origin) representation, so that the resulting PyKEP epoch is strictly
+    1:1 with ET everywhere (this is not “UTC elapsed seconds” with leap seconds).
+
+    The offset constant 43135.816087188054 [s] is ET0 = str2et("2000-01-01 00:00:00 UTC"), i.e. the ET value
+    of the UTC-labeled origin of pykep mjd2000; thus mjd2000_days = (et - ET0) / 86400, implemented
+    as (et + 43135.816087188054) * SEC2DAY.
+
+    Args:
+        path (:class:`string`): The path (or paths) of the kernel where the ephemerides are defined in windows.
+        naifid (:class:`int`): The NAIF id.
+        window_n (:class:`int`): The window to consider (in case ephs are defined in multiple windows of validity)
+    
+    Returns:
+        :class:`pk.epoch`, :class:`pk.epoch`: Starting and final epoch of the *n*-th window
+    """
+    cover = pyspice.spkcov(path, naifid)
+    start, end = pyspice.wnfetd(cover, window_n)
+    start_mjd2000 = (start + 43135.816087188054) * pk.SEC2DAY # magic number is str2et("2000-01-01 00:00:00 UTC")
+    end_mjd2000 = (end + 43135.816087188054) * pk.SEC2DAY # magic number is str2et("2000-01-01 00:00:00 UTC")
+    #(we add/remove 1e-6 seconds as spice has better precision on the time representation and we want to avoid to go out of bunds)
+    return pk.epoch(start_mjd2000)+1e-10, pk.epoch(end_mjd2000)-1e-10 
+
+def epoch2utc(pykep_epoch):
+    """Converts a PyKEP epoch (mjd2000) into a SPICE-formatted UTC calendar string.
+
+    The input epoch is assumed to be a uniform time variable expressed as days since the UTC-labeled origin
+    2000-01-01 00:00:00 (i.e. strictly 1:1 with SPICE ET everywhere; it is not “UTC elapsed seconds” with leap seconds).
+
+    The constant 43135.816087188054 [s] is ET0 = str2et("2000-01-01 00:00:00 UTC"). We first reconstruct the ET value
+    via et = mjd2000*86400 - ET0, then use SPICE et2utc to obtain the UTC calendar representation. A leapseconds kernel
+    is loaded to enable correct ET↔UTC conversion.
+
+    Args:
+        pykep_epoch (:class:`pk.epoch`): PyKEP epoch whose .mjd2000 is days since 2000-01-01 00:00:00 (UTC-labeled origin).
+
+    Returns:
+        :class:`string`: UTC calendar string corresponding to the input epoch.
+    """
+    # We load the leapsecond kernel to allow exact conversions between 
+    pk_path = Path(pk.__path__[0])
+    kernel_leap = str(pk_path / "data" / "naif0012.tls")
+    pk.utils.load_spice_kernels(kernel_leap)
+    # We convert mjd2000 to et
+    et = -43135.816087188054 + pykep_epoch.mjd2000 * pk.DAY2SEC
+    return pyspice.et2utc(et, "C", 6)
 
 def name2naifid(name):
     """Retreives the NAIF id of some planet/comet/spacecraft 

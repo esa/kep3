@@ -36,10 +36,16 @@ class spice:
         # We check if the various names are supported by NAIF.
         # If not the conversions will fail and rise and exception.
         # This may be too restrictive and maybe lifted in the future.
-        self.naifid = pk.utils.name2naifid(body)
+        if type(body) == str:
+            self.naifid = pk.utils.name2naifid(body)
+        elif type(body) == int:
+            self.naifid = body
+        else:
+            raise ValueError("body must be either a string or an integer (NAIF id)")
+        
         self.frame_naifid = pk.utils.framename2naifid(ref_frame)
         self.obs_naifid = pk.utils.name2naifid(obs)
-        # Store the strings
+        # Store the inputs
         self.body = body
         self.ref_frame = ref_frame
         self.obs = obs
@@ -49,6 +55,12 @@ class spice:
         self.mu_self = -1
         self.radius = -1
         self.safe_radius = -1
+        
+    def __del__(self):
+        """Destructor.
+       Unloads the kernel from memory as not needed anymore.
+        """
+        pk.utils.unload_spice_kernels(self.kernel_leap)
 
     def eph(self, mjd2000):
         """Mandatory method of the :class:`~pykep.planet` interface.
@@ -59,13 +71,13 @@ class spice:
         Returns:
             :class:`list` [:class:`list`, :class:`list`]: the planet ephemerides.
         """
-        spice_epoch = (mjd2000-0.5)*pk.DAY2SEC
-        rv, _ = pyspice.spkezr(self.body, spice_epoch, self.ref_frame, "NONE", self.obs)
+        et = -43135.816087188054 + mjd2000 * pk.DAY2SEC # magic number is str2et("2000-01-01 00:00:00 UTC")
+        rv, _ = pyspice.spkez(self.naifid, et, self.ref_frame, "NONE", self.obs_naifid)
         return [rv[:3] * 1000, rv[3:] * 1000]
     
     def eph_v(self, mjd2000s):
-        spice_epochs = (np.array(mjd2000s) - 0.5)*pk.DAY2SEC
-        rvs, _ = pyspice.spkezr(self.body, spice_epochs, self.ref_frame, "NONE", self.obs)
+        ets = -43135.816087188054 + mjd2000s * pk.DAY2SEC # magic number is str2et("2000-01-01 00:00:00 UTC")
+        rvs, _ = pyspice.spkez(self.naifid, ets, self.ref_frame, "NONE", self.obs_naifid)
         return np.array(rvs) * 1000
 
     def get_name(self):
@@ -74,7 +86,7 @@ class spice:
         Returns:
             :class:`str`: The body name
         """
-        return self.body + " - SPICE"
+        return str(self.body) + " - SPICE"
     
     def get_extra_info(self):
         """Optional method of the :class:`~pykep.planet` interface.
@@ -82,7 +94,7 @@ class spice:
         Returns:
             :class:`str`: Extra info on the udpla
         """
-        return "Body: " + self.body + "\nObserver: " + self.obs + "\nReference Frame: " + self.ref_frame 
+        return "Observer: " + self.obs + "\nReference Frame: " + self.ref_frame 
     
 
 class de440s(spice):
