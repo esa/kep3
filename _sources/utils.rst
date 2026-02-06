@@ -18,6 +18,10 @@ Spice Utils
 
 .. autofunction:: name2naifid
 
+.. autofunction:: extract_coverage_window
+
+.. autofunction:: epoch2utc
+
 .. autofunction:: framename2naifid
 
 .. autofunction:: rotation_matrix

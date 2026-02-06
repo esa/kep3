@@ -185,7 +185,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -405,6 +408,10 @@ document.write(`
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="planet.html#pykep.planet.acc">acc() (pykep.planet method)</a>
+</li>
+      <li><a href="planet.html#pykep.planet.acc_v">acc_v() (pykep.planet method)</a>
+</li>
       <li><a href="plot.html#pykep.plot.add_ballistic_arc">add_ballistic_arc() (in module pykep.plot)</a>
 </li>
       <li><a href="plot.html#pykep.plot.add_lambert">add_lambert() (in module pykep.plot)</a>
@@ -415,10 +422,10 @@ document.write(`
 </li>
       <li><a href="plot.html#pykep.plot.add_planets">add_planets() (in module pykep.plot)</a>
 </li>
-      <li><a href="plot.html#pykep.plot.add_sf_hf_leg">add_sf_hf_leg() (in module pykep.plot)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="plot.html#pykep.plot.add_sf_hf_leg">add_sf_hf_leg() (in module pykep.plot)</a>
+</li>
       <li><a href="plot.html#pykep.plot.add_sf_leg">add_sf_leg() (in module pykep.plot)</a>
 </li>
       <li><a href="plot.html#pykep.plot.add_solar_system">add_solar_system() (in module pykep.plot)</a>
@@ -563,6 +570,8 @@ document.write(`
 </li>
       <li><a href="epoch.html#pykep.epoch.string_format">epoch.string_format (class in pykep)</a>
 </li>
+      <li><a href="utils.html#pykep.utils.epoch2utc">epoch2utc() (in module pykep.utils)</a>
+</li>
       <li><a href="utils.html#pykep.eta2direct">eta2direct() (in module pykep)</a>
 </li>
       <li><a href="gym.html#pykep.trajopt.gym.eve_mga1dsm">eve_mga1dsm (pykep.trajopt.gym attribute)</a>
@@ -574,6 +583,8 @@ document.write(`
       <li><a href="planet.html#pykep.planet.extra_info">extra_info (pykep.planet property)</a>
 </li>
       <li><a href="planet.html#pykep.planet.extract">extract() (pykep.planet method)</a>
+</li>
+      <li><a href="utils.html#pykep.utils.extract_coverage_window">extract_coverage_window() (in module pykep.utils)</a>
 </li>
   </ul></td>
 </tr></table>

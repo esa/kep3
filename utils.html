@@ -186,7 +186,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -419,6 +422,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.unload_spice_kernels"><code class="docutils literal notranslate"><span class="pre">unload_spice_kernels()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.inspect_spice_kernel"><code class="docutils literal notranslate"><span class="pre">inspect_spice_kernel()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.name2naifid"><code class="docutils literal notranslate"><span class="pre">name2naifid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.extract_coverage_window"><code class="docutils literal notranslate"><span class="pre">extract_coverage_window()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.epoch2utc"><code class="docutils literal notranslate"><span class="pre">epoch2utc()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.framename2naifid"><code class="docutils literal notranslate"><span class="pre">framename2naifid()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.rotation_matrix"><code class="docutils literal notranslate"><span class="pre">rotation_matrix()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.naifid2name"><code class="docutils literal notranslate"><span class="pre">naifid2name()</span></code></a></li>
@@ -505,6 +510,43 @@ This is useful to understand the possibile queries to make for a certain kernel.
 <dt>Args:</dt><dd><p>name (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>): The name of the planet/comet/spacecraft to be found</p>
 </dd>
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> the NAIF id of the the planet/comet/spacecraft</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.utils.extract_coverage_window">
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">extract_coverage_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naifid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.extract_coverage_window" title="Permalink to this definition">#</a></dt>
+<dd><p>Extracts the <em>n</em>-th SPK coverage window for a given NAIF ID and returns it as PyKEP epochs.</p>
+<p>The SPK coverage start/end times returned by SPICE are ET (TDB) seconds past J2000. Here we map them to a <strong>uniform</strong>
+seconds-from-2000-01-01T00:00:00 (UTC-labeled origin) representation, so that the resulting PyKEP epoch is strictly
+1:1 with ET everywhere (this is not “UTC elapsed seconds” with leap seconds).</p>
+<p>The offset constant 43135.816087188054 [s] is ET0 = str2et(“2000-01-01 00:00:00 UTC”), i.e. the ET value
+of the UTC-labeled origin of pykep mjd2000; thus mjd2000_days = (et - ET0) / 86400, implemented
+as (et + 43135.816087188054) * SEC2DAY.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>path (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>): The path (or paths) of the kernel where the ephemerides are defined in windows.
+naifid (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The NAIF id.
+window_n (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The window to consider (in case ephs are defined in multiple windows of validity)</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pk.epoch</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pk.epoch</span></code>: Starting and final epoch of the <em>n</em>-th window</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.utils.epoch2utc">
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">epoch2utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pykep_epoch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.epoch2utc" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts a PyKEP epoch (mjd2000) into a SPICE-formatted UTC calendar string.</p>
+<p>The input epoch is assumed to be a uniform time variable expressed as days since the UTC-labeled origin
+2000-01-01 00:00:00 (i.e. strictly 1:1 with SPICE ET everywhere; it is not “UTC elapsed seconds” with leap seconds).</p>
+<p>The constant 43135.816087188054 [s] is ET0 = str2et(“2000-01-01 00:00:00 UTC”). We first reconstruct the ET value
+via et = mjd2000*86400 - ET0, then use SPICE et2utc to obtain the UTC calendar representation. A leapseconds kernel
+is loaded to enable correct ET↔UTC conversion.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>pykep_epoch (<code class="xref py py-class docutils literal notranslate"><span class="pre">pk.epoch</span></code>): PyKEP epoch whose .mjd2000 is days since 2000-01-01 00:00:00 (UTC-labeled origin).</p>
+</dd>
+<dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>: UTC calendar string corresponding to the input epoch.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -702,6 +744,8 @@ at any epoch, but will only be matching the original ones at <em>t0</em>.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.unload_spice_kernels"><code class="docutils literal notranslate"><span class="pre">unload_spice_kernels()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.inspect_spice_kernel"><code class="docutils literal notranslate"><span class="pre">inspect_spice_kernel()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.name2naifid"><code class="docutils literal notranslate"><span class="pre">name2naifid()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.extract_coverage_window"><code class="docutils literal notranslate"><span class="pre">extract_coverage_window()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.epoch2utc"><code class="docutils literal notranslate"><span class="pre">epoch2utc()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.framename2naifid"><code class="docutils literal notranslate"><span class="pre">framename2naifid()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.rotation_matrix"><code class="docutils literal notranslate"><span class="pre">rotation_matrix()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.naifid2name"><code class="docutils literal notranslate"><span class="pre">naifid2name()</span></code></a></li>

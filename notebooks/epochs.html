@@ -45,7 +45,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/epochs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Ephemerides" href="planet.html" />
+    <link rel="next" title="Planets and User Defined Planets (UDPLAs)" href="planet.html" />
     <link rel="prev" title="The various anomalies in pykep" href="anomalies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -186,7 +186,10 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -475,7 +478,7 @@ document.write(`
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The date in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> <strong>does not</strong> account for leap seconds. If the user wishes to use the exact ISO 8601 representation of some epoch, also including leap seconds, he will have to account for the offset himself. As of of 2023 this may account to maximum 28 seconds. <a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">More info</a> on leap seconds.</p>
+<p>The date in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> <strong>does not</strong> account for leap seconds. If the user wishes to use the exact ISO 8601 representation of some epoch, also including leap seconds, he will have to account for the offset himself. As of of 2023 this may account to maximum 28 seconds. <a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">More info</a> on leap seconds. The <a class="reference internal" href="../utils.html#pykep.utils.epoch2utc" title="pykep.utils.epoch2utc"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.utils.epoch2utc()</span></code></a> utility helps in the conversion.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -543,7 +546,7 @@ document.write(`
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">pykep</span></code> supports the following Julian Dates MJD2000 (the default), MJD and JD. (see <a class="reference internal" href="../epoch.html#pykep.epoch.julian_type" title="pykep.epoch.julian_type"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.epoch.julian_type</span></code></a>)</p>
 </div>
-<p>We may also request an epoch corresponding to the current UTC time:</p>
+<p>We may also request an epoch corresponding to the current time (ignoring local timezone, UTC style):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
@@ -552,7 +555,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2026-01-26T17:56:21.915213
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2026-02-06T10:09:50.757239
 </pre></div>
 </div>
 </div>
@@ -567,6 +570,19 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2023-10-28T00:01:02.120000
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can get the actual <strong>UTC</strong> accounting the leap seconds as:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">epoch2utc</span><span class="p">(</span><span class="n">ep</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;2023 OCT 28 00:00:57.121451&#39;
 </pre></div>
 </div>
 </div>
@@ -748,7 +764,7 @@ True
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Ephemerides</p>
+        <p class="prev-next-title">Planets and User Defined Planets (UDPLAs)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -188,7 +188,10 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -567,7 +570,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.9788164057739786e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.8127442852233153e-08
 </pre></div>
 </div>
 </div>
@@ -582,7 +585,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.2356471065883743e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.247178946295639e-07
 </pre></div>
 </div>
 </div>
@@ -597,7 +600,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.3976478395466611e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.1216053683324488e-07
 </pre></div>
 </div>
 </div>
@@ -611,7 +614,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.8558275317431304e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.3184017729121263e-07
 </pre></div>
 </div>
 </div>
@@ -634,7 +637,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/feca9fcb2ba4ceb21ceef901c791ced5f7a1810fd53e47498cd619ab222110a5.png" src="../_images/feca9fcb2ba4ceb21ceef901c791ced5f7a1810fd53e47498cd619ab222110a5.png" />
+<img alt="../_images/44925b4657594105acb9d4e7c254f76a1242f0b297e0fffd5b588d52cf373e83.png" src="../_images/44925b4657594105acb9d4e7c254f76a1242f0b297e0fffd5b588d52cf373e83.png" />
 </div>
 </div>
 <p>Also in <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a> we can use our custom dynamics (for example equinoctial elements, or change the sail characterization), passing the corresponding integrators via the <em>tas</em> argument in the constructor.</p>

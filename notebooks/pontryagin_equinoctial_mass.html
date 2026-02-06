@@ -188,7 +188,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -896,7 +899,7 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
@@ -914,12 +917,12 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1259.9008822026422
-Hamiltonian at the final point is: [-0.03600518] 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+Final mass is: 1259.9008822022615
+Hamiltonian at the final point is: [-0.03600519] 
 
-Total time to success: 7.376 seconds
-Number of successes: 10 over 10 trials (100.0 %)
+Total time to success: 7.736 seconds
+Number of successes: 8 over 10 trials (80.0 %)
 </pre></div>
 </div>
 </div>
@@ -931,30 +934,30 @@ Number of successes: 10 over 10 trials (100.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>xx
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>xx
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1259.900882160591
+Final mass is: 1259.9008821684215
 Hamiltonian at the final point is: [-0.03600518] 
 
-Total time to success: 1.634 seconds
-Number of successes: 5 over 10 trials (50.0 %)
+Total time to success: 1.838 seconds
+Number of successes: 4 over 10 trials (40.0 %)
 </pre></div>
 </div>
 </div>
@@ -967,7 +970,7 @@ Number of successes: 5 over 10 trials (50.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1f1b8078f6b24ca622d065ed495f211210f58d5ecd0063d1a6fe96ad1ac1e4ad.png" src="../_images/1f1b8078f6b24ca622d065ed495f211210f58d5ecd0063d1a6fe96ad1ac1e4ad.png" />
+<img alt="../_images/4ca99d4da7179f629721a3a3290564fdf10522ca50e99d93c250fc3c159cc90a.png" src="../_images/4ca99d4da7179f629721a3a3290564fdf10522ca50e99d93c250fc3c159cc90a.png" />
 </div>
 </div>
 <p>Thrust arcs are indicated with a red color, ballistic with blue.</p>
@@ -978,7 +981,7 @@ Number of successes: 5 over 10 trials (50.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/162b97f594d69023960b3b84437283ce0a59764788c94284371583c6cc29ea1e.png" src="../_images/162b97f594d69023960b3b84437283ce0a59764788c94284371583c6cc29ea1e.png" />
+<img alt="../_images/1824af6224c015f9836f8e71c909dfaa3bb58fd95ed7ead9ed4e1ffe5fbf6ce1.png" src="../_images/1824af6224c015f9836f8e71c909dfaa3bb58fd95ed7ead9ed4e1ffe5fbf6ce1.png" />
 </div>
 </div>
 </section>

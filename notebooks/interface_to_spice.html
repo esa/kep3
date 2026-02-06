@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Lagrange Propagation" href="propagate_lagrangian.html" />
-    <link rel="prev" title="Ephemerides" href="planet.html" />
+    <link rel="prev" title="Planets and User Defined Planets (UDPLAs)" href="planet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -186,7 +186,10 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planet.html">Ephemerides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
+
+
+
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
@@ -443,7 +446,6 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-de-440-jpl-ephemerides">The DE 440 JPL Ephemerides</a></li>
 </ul>
             </nav>
@@ -466,6 +468,36 @@ to observations, simulations or historical data and encapsulated into <a class="
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pykep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pk</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">UTC</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">UTC</span><span class="o">.</span><span class="n">mjd2000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2000-01-02T00:00:00.000000
+2000-01-02 00:00:00+00:00
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">UTC2</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">UTC2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2000-01-02T00:00:00.000000
 </pre></div>
 </div>
 </div>
@@ -521,15 +553,15 @@ to observations, simulations or historical data and encapsulated into <a class="
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udpla</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">udpla</span><span class="o">.</span><span class="n">spice</span><span class="p">(</span><span class="s2">&quot;JUPITER BARYCENTER&quot;</span><span class="p">,</span> <span class="s2">&quot;ECLIPJ2000&quot;</span><span class="p">,</span> <span class="s2">&quot;SSB&quot;</span><span class="p">)</span>
 <span class="n">jupiter</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">planet</span><span class="p">(</span><span class="n">udpla</span><span class="p">)</span>
-<span class="n">when</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s2">&quot;2023-01-02&quot;</span><span class="p">)</span>
+<span class="n">when</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s2">&quot;2025-01-02&quot;</span><span class="p">)</span>
 <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">jupiter</span><span class="o">.</span><span class="n">eph</span><span class="p">(</span><span class="n">when</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Position (m): </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="se">\n</span><span class="s2">Velocity (m/s): </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [722180808588.1804, 157535374702.5074, -16810696007.16372]
-Velocity (m/s): [-2933.2858571285688, 13378.581606366935, 10.115066760074676]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156004760068.32562, 743270809056.2997, -6573215599.203884]
+Velocity (m/s): [-12935.996273349603, 3306.509066262011, 275.7323039161468]
 </pre></div>
 </div>
 </div>
@@ -537,20 +569,48 @@ Velocity (m/s): [-2933.2858571285688, 13378.581606366935, 10.115066760074676]
 <p>And inspect it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">jupiter</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;name: &quot;</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extra info:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">jupiter</span><span class="o">.</span><span class="n">extra_info</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>JUPITER BARYCENTER - SPICE
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>name:  JUPITER BARYCENTER - SPICE
+extra info:
+ Observer: SSB
+Reference Frame: ECLIPJ2000
 </pre></div>
 </div>
 </div>
 </div>
 <p>Note how many physical parameters of the body are not defined, as for this particular UDPLA (the <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>), the ephemerides computations are interpolated from tables and hence do not require any physical parameters. The user can always define them if needed.</p>
-<section id="id1">
-<h2><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-</section>
+<p>Any SPICE provided ephemerides have a validity window. Querying the body <em>eph</em> method outside of such window will generate an error which can be annoying. Fortunately we can extract such window</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep_s</span><span class="p">,</span> <span class="n">ep_f</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">extract_coverage_window</span><span class="p">(</span><span class="n">de440s_kernel</span><span class="p">,</span> <span class="n">udpla</span><span class="o">.</span><span class="n">naifid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Our Jupiter spice udpla only exists from: &quot;</span><span class="p">,</span> <span class="n">ep_s</span><span class="p">,</span> <span class="s2">&quot; to: &quot;</span><span class="p">,</span> <span class="n">ep_f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Our Jupiter spice udpla only exists from:  1849-12-25T23:58:55.816095  to:  2150-01-21T23:58:55.816078
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">pykep</span></code> epoch system is a continuos time representation <strong>not UTC</strong> as it ignores leapseconds. The formatted epoch looks like a <strong>UTC</strong> but <strong>IT IS NOT</strong>. You can recover the actual <strong>UTC</strong> as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">epoch2utc</span><span class="p">(</span><span class="n">ep_s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;1849 DEC 25 23:59:18.816184&#39;
+</pre></div>
+</div>
+</div>
+</div>
 <section id="the-de-440-jpl-ephemerides">
 <h2>The DE 440 JPL Ephemerides<a class="headerlink" href="#the-de-440-jpl-ephemerides" title="Permalink to this heading">#</a></h2>
 <p>What we have presented above is valid in general and works with any SPICE kernel, be it a comet, a rover a spacecraft. Clearly the backdraw is that we have to first download and position the correct kernel file and then load it into memory for it to work.</p>
@@ -574,8 +634,15 @@ Velocity (m/s): [-2933.2858571285688, 13378.581606366935, 10.115066760074676]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156005590351.0843, 743270596831.1477, -6573233296.777874]
-Velocity (m/s): [-12935.993235030832, 3306.5234815642566, 275.73217606979927]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Exception ignored while calling deallocator &lt;function spice.__del__ at 0x7f55e03a3ed0&gt;:
+Traceback (most recent call last):
+  File &quot;/home/runner/local/lib/python3.14/site-packages/pykep/udpla/_spice.py&quot;, line 63, in __del__
+    pk.utils.unload_spice_kernels(self.kernel_leap)
+AttributeError: &#39;spice&#39; object has no attribute &#39;kernel_leap&#39;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156004760068.32562, 743270809056.2997, -6573215599.203884]
+Velocity (m/s): [-12935.996273349603, 3306.509066262011, 275.7323039161468]
 </pre></div>
 </div>
 </div>
@@ -598,7 +665,7 @@ We then perform the transformation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [  1.56005590e+11   6.84552122e+11   2.89625240e+11]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [  1.56004760e+11   6.84552310e+11   2.89625341e+11]
 </pre></div>
 </div>
 </div>
@@ -614,7 +681,7 @@ We then perform the transformation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156005590351.0843, 684552121902.1022, 289625240455.7204]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156004760068.32562, 684552309575.1816, 289625341111.2445]
 </pre></div>
 </div>
 </div>
@@ -639,7 +706,7 @@ We then perform the transformation.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Ephemerides</p>
+        <p class="prev-next-title">Planets and User Defined Planets (UDPLAs)</p>
       </div>
     </a>
     <a class="right-next"
@@ -667,7 +734,6 @@ We then perform the transformation.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-de-440-jpl-ephemerides">The DE 440 JPL Ephemerides</a></li>
 </ul>
   </nav></div>
