@@ -75,6 +75,9 @@ from .utils import *
 # Patch the planet class.
 from . import _patch_planet
 
+# Patch the epoch class.
+from . import _patch_epoch
+
 # Import the plot module
 from . import plot
 

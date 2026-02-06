@@ -55,12 +55,6 @@ class spice:
         self.mu_self = -1
         self.radius = -1
         self.safe_radius = -1
-        
-    def __del__(self):
-        """Destructor.
-       Unloads the kernel from memory as not needed anymore.
-        """
-        pk.utils.unload_spice_kernels(self.kernel_leap)
 
     def eph(self, mjd2000):
         """Mandatory method of the :class:`~pykep.planet` interface.
