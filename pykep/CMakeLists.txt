@@ -5,6 +5,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOU
 set(PYKEP_PYTHON_FILES 
     __init__.py 
     _patch_planet.py 
+    _patch_epoch.py 
     _version.py 
     test.py 
     test_trajopt.py 
