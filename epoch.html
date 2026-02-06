@@ -422,6 +422,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd2000"><code class="docutils literal notranslate"><span class="pre">epoch.mjd2000</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.now"><code class="docutils literal notranslate"><span class="pre">epoch.now()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.string_format"><code class="docutils literal notranslate"><span class="pre">epoch.string_format</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.to_datetime"><code class="docutils literal notranslate"><span class="pre">epoch.to_datetime()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -541,6 +542,32 @@ also including leap seconds, he will have to account for the offset himself. As 
 <p>ISO : ISO 8601 format for dates.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pykep.epoch.to_datetime">
+<span class="sig-name descname"><span class="pre">to_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.to_datetime" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">epoch</span></code> to a timezone-aware Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC.</p>
+<p>This method is added to the class via monkey-patching:</p>
+<ul>
+<li><p>It interprets <code class="docutils literal notranslate"><span class="pre">self.mjd2000</span></code> as a day count relative to the MJD2000
+reference epoch (2000-01-01 00:00:00) in UTC.</p></li>
+<li><p>It converts days to seconds by multiplying by 86400.</p></li>
+<li><p>It returns an <em>aware</em> <code class="docutils literal notranslate"><span class="pre">datetime</span></code> (<code class="docutils literal notranslate"><span class="pre">tzinfo=timezone.utc</span></code>) computed as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mjd2000</span> <span class="o">*</span> <span class="mi">86400</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<dl class="simple">
+<dt>Notes:</dt><dd><p>This is a civil-time conversion that assumes the MJD2000 epoch and the
+stored day count are meant to be interpreted in UTC. If your underlying
+time scale is TT/TAI (or you require leap-second-aware conversions), use
+an astronomy time library (e.g., Astropy) instead of naive arithmetic.</p>
+</dd>
+<dt>Returns:</dt><dd><p>datetime: A timezone-aware <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC corresponding to this epoch.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -597,6 +624,7 @@ also including leap seconds, he will have to account for the offset himself. As 
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.mjd2000"><code class="docutils literal notranslate"><span class="pre">epoch.mjd2000</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.now"><code class="docutils literal notranslate"><span class="pre">epoch.now()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.string_format"><code class="docutils literal notranslate"><span class="pre">epoch.string_format</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.epoch.to_datetime"><code class="docutils literal notranslate"><span class="pre">epoch.to_datetime()</span></code></a></li>
 </ul>
 </li>
 </ul>

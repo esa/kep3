@@ -42,6 +42,8 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/interface_to_spice';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -472,36 +474,6 @@ to observations, simulations or historical data and encapsulated into <a class="
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">UTC</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
-<span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">UTC</span><span class="o">.</span><span class="n">mjd2000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">DAY2SEC</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2000-01-02T00:00:00.000000
-2000-01-02 00:00:00+00:00
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">UTC2</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-<span class="n">UTC2</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2000-01-02T00:00:00.000000
-</pre></div>
-</div>
-</div>
-</div>
 <p>Let us compute the position of the barycenter of the Jupiter system with respect to the Solar system barycenter. We do this using the JPL DE440 ephemerides which, released in 2022, are considered to be the most accurate ones.</p>
 <p>First we must download the binary <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> file that contains the corresponding data. In the case of the DE440 ephemerides <code class="docutils literal notranslate"><span class="pre">pykep</span></code> actually includes such a file in its distribution (for convenience). We may thus, for this case, skip this step and get the file path directly:</p>
 <div class="cell docutils container">
@@ -583,8 +555,8 @@ Reference Frame: ECLIPJ2000
 </div>
 </div>
 </div>
-<p>Note how many physical parameters of the body are not defined, as for this particular UDPLA (the <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>), the ephemerides computations are interpolated from tables and hence do not require any physical parameters. The user can always define them if needed.</p>
-<p>Any SPICE provided ephemerides have a validity window. Querying the body <em>eph</em> method outside of such window will generate an error which can be annoying. Fortunately we can extract such window</p>
+<p>Note that physical parameters of the body are not defined (<span class="math notranslate nohighlight">\(\mu\)</span>, etc..), as for this particular UDPLA (the <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.udpla.spice</span></code></a>), the ephemerides computations are interpolated from tables and hence do not require any physical parameters. The user can always define them if needed.</p>
+<p>Any SPICE provided ephemerides have a validity window. Querying the body <em>eph</em> method outside of such window will generate an error which can be annoying. Fortunately we can extract such window:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep_s</span><span class="p">,</span> <span class="n">ep_f</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">extract_coverage_window</span><span class="p">(</span><span class="n">de440s_kernel</span><span class="p">,</span> <span class="n">udpla</span><span class="o">.</span><span class="n">naifid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -598,7 +570,7 @@ Reference Frame: ECLIPJ2000
 </div>
 </div>
 </div>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">pykep</span></code> epoch system is a continuos time representation <strong>not UTC</strong> as it ignores leapseconds. The formatted epoch looks like a <strong>UTC</strong> but <strong>IT IS NOT</strong>. You can recover the actual <strong>UTC</strong> as follows:</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">pykep</span></code> epoch system is a continuous time representation <strong>not UTC</strong> as it ignores leapseconds. The formatted epoch looks like a <strong>UTC</strong> but <strong>IT IS NOT</strong>. You can recover the actual <strong>UTC</strong> as follows:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pk</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">epoch2utc</span><span class="p">(</span><span class="n">ep_s</span><span class="p">)</span>
@@ -634,13 +606,6 @@ Reference Frame: ECLIPJ2000
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Exception ignored while calling deallocator &lt;function spice.__del__ at 0x7f55e03a3ed0&gt;:
-Traceback (most recent call last):
-  File &quot;/home/runner/local/lib/python3.14/site-packages/pykep/udpla/_spice.py&quot;, line 63, in __del__
-    pk.utils.unload_spice_kernels(self.kernel_leap)
-AttributeError: &#39;spice&#39; object has no attribute &#39;kernel_leap&#39;
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Position (m): [156004760068.32562, 743270809056.2997, -6573215599.203884]
 Velocity (m/s): [-12935.996273349603, 3306.509066262011, 275.7323039161468]
 </pre></div>
