@@ -18,4 +18,3 @@ Interplanetary transfer legs
 .. autoclass:: zoh_ss
    :members: compute_mc_grad, get_state_info 
 
------------------------------------------------------

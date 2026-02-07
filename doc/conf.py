@@ -98,3 +98,10 @@ linkcheck_user_agent = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/122.0.0.0 Safari/537.36"
 )
+
+# Limit warnings as per update 6->8
+suppress_warnings = [
+    "RemovedInSphinx10Warning",
+    "mystnb.*",
+    "myst.header"
+]

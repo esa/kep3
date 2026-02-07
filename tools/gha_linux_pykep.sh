@@ -19,7 +19,7 @@ source activate $deps_dir
 conda list
 
 # Install additional packages for Python compiling and docs building (19/11/2023 sphinx 7 not working)
-conda install numpy "sphinx<7" sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
+conda install numpy "sphinx<9" sphinx-book-theme sphinxcontrib-bibtex myst-nb matplotlib pybind11 sgp4 spiceypy 
 
 # We build and install pykep (and the kep3 library)
 mkdir build
