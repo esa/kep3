@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>CR3BP low-thrust (with variable time segments) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_cr3bp_hf_alpha';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -465,7 +469,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="cr3bp-low-thrust-with-variable-time-segments">
-<h1>CR3BP low-thrust (with variable time segments)<a class="headerlink" href="#cr3bp-low-thrust-with-variable-time-segments" title="Permalink to this heading">#</a></h1>
+<h1>CR3BP low-thrust (with variable time segments)<a class="headerlink" href="#cr3bp-low-thrust-with-variable-time-segments" title="Link to this heading">#</a></h1>
 <p>In this tutorial we show the use of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_nd_alpha</span></code> to find a low-thrust (zero-order hold continuous thrust) trajectory connecting two orbits in the circular restricted 3-body problem (CR3BP).</p>
 <p>The decision vector for this class, compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
 <div class="math notranslate nohighlight">
@@ -649,7 +653,7 @@ FC [ 1.16487809  0.         -0.11145304] [ 0.         -0.20191923  0.        ] 3
 </div>
 </div>
 <section id="solving-the-low-thrust-transfer">
-<h2>Solving the low-thrust transfer<a class="headerlink" href="#solving-the-low-thrust-transfer" title="Permalink to this heading">#</a></h2>
+<h2>Solving the low-thrust transfer<a class="headerlink" href="#solving-the-low-thrust-transfer" title="Link to this heading">#</a></h2>
 <p>We define (again) the optimization problem, and set a tolerance for <em>pagmo</em> to be able to judge the relative value of two individuals.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -738,34 +742,33 @@ FC [ 1.16487809  0.         -0.11145304] [ 0.         -0.20191923  0.        ] 3
 Testing Nseg 10
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>---------------------------------------------------------------------------
-ValueError                                Traceback (most recent call last)
-Cell In[9], line 17
-     13 time_start = time.time()
-     15 pop_g = pg.population(prob, 1)
----&gt; 17 pop_g = algo.evolve(pop_g)
-     19 time_end = time.time()
-     20 average_time.append(time_end - time_start)
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">line</span> <span class="mi">17</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">17</span> <span class="n">pop_g</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_g</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">average_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">)</span>
 
-ValueError: 
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
-what: 
-An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
-reasons:
+<span class="ne">ValueError</span>: 
+<span class="ne">function</span>: evolve_version
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
+<span class="ne">what</span>: 
+<span class="n">An</span> <span class="n">error</span> <span class="n">occurred</span> <span class="k">while</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span> <span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">typically</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span>
+<span class="ne">reasons</span>:
 
-- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
-a valid shared library?)
- - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
-at run-time.
+<span class="o">-</span> <span class="n">The</span> <span class="n">file</span> <span class="n">declared</span> <span class="n">to</span> <span class="n">be</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">dario</span><span class="o">.</span><span class="n">izzo</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">libsnopt7_c</span><span class="o">.</span><span class="n">dylib</span><span class="p">,</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">library</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">necessary</span> <span class="n">C</span> <span class="n">interface</span> <span class="n">symbols</span> <span class="p">(</span><span class="ow">is</span> <span class="n">the</span> <span class="n">file</span> <span class="n">path</span> <span class="n">really</span> <span class="n">pointing</span> <span class="n">to</span>
+<span class="n">a</span> <span class="n">valid</span> <span class="n">shared</span> <span class="n">library</span><span class="err">?</span><span class="p">)</span>
+ <span class="o">-</span> <span class="n">The</span> <span class="n">library</span> <span class="ow">is</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">it</span> <span class="n">does</span> <span class="n">contain</span> <span class="n">the</span> <span class="n">C</span> <span class="n">interface</span> <span class="n">symbols</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">needs</span> <span class="n">linking</span> <span class="n">to</span> <span class="n">some</span> <span class="n">additional</span> <span class="n">libraries</span> <span class="n">that</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">found</span>
+<span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span>
 
-We report the exact text of the original exception thrown:
+<span class="n">We</span> <span class="n">report</span> <span class="n">the</span> <span class="n">exact</span> <span class="n">text</span> <span class="n">of</span> <span class="n">the</span> <span class="n">original</span> <span class="n">exception</span> <span class="n">thrown</span><span class="p">:</span>
 
  
-function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
-what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
-
+<span class="ne">function</span>: evolve_version
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
+<span class="ne">what</span>: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
 </pre></div>
 </div>
 </div>
@@ -795,7 +798,7 @@ what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/lib
 </div>
 </div>
 <section id="convert-from-constant-segments-to-alpha-encoding">
-<h3>Convert from constant segments to alpha encoding<a class="headerlink" href="#convert-from-constant-segments-to-alpha-encoding" title="Permalink to this heading">#</a></h3>
+<h3>Convert from constant segments to alpha encoding<a class="headerlink" href="#convert-from-constant-segments-to-alpha-encoding" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add constant segements</span>
@@ -854,7 +857,7 @@ best_alpha:  [0.0, 0.98290563934824993, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0, 0.90
 </section>
 </section>
 <section id="we-solve-the-problem-again-with-variable-time-segments-using-alpha-encoding">
-<h2>We solve the problem again with variable time segments (using alpha-encoding)<a class="headerlink" href="#we-solve-the-problem-again-with-variable-time-segments-using-alpha-encoding" title="Permalink to this heading">#</a></h2>
+<h2>We solve the problem again with variable time segments (using alpha-encoding)<a class="headerlink" href="#we-solve-the-problem-again-with-variable-time-segments-using-alpha-encoding" title="Link to this heading">#</a></h2>
 <p>We solve the problem from random initial guess ten times and only save the result if a feasible solution is found (as defined by the criterias above)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

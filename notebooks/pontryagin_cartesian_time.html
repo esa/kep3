@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Low-thrust transfers via indirect methods II (time) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_time';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -465,7 +469,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-ii-time">
-<h1>Low-thrust transfers via indirect methods II (time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-ii-time" title="Permalink to this heading">#</a></h1>
+<h1>Low-thrust transfers via indirect methods II (time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-ii-time" title="Link to this heading">#</a></h1>
 <p>In this notebook we show how to solve the <strong>minimum time</strong> Optimal Control Problem (OCP) for a low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle (PMP). The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
@@ -485,7 +489,7 @@ document.write(`
 </div>
 </div>
 <section id="manual-construction-of-the-tpbvp">
-<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Permalink to this heading">#</a></h2>
+<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Link to this heading">#</a></h2>
 <p>We consider the dynamics of a spacecraft moving around a massive primary and equipped with a low-thrust propulsion system capable of delivering a constant thrust <span class="math notranslate nohighlight">\(T_{max}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -649,7 +653,7 @@ H(\mathbf x, \mathbf \lambda) = \mathcal H(\mathbf x, \mathbf \lambda, \mathbf u
 </div>
 </section>
 <section id="constructing-the-tpbvp-using-pykep">
-<h2>Constructing the TPBVP using <code class="docutils literal notranslate"><span class="pre">pykep</span></code><a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Permalink to this heading">#</a></h2>
+<h2>Constructing the TPBVP using <code class="docutils literal notranslate"><span class="pre">pykep</span></code><a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Link to this heading">#</a></h2>
 <p>For the specific case outlined above <code class="docutils literal notranslate"><span class="pre">pykep</span></code> offers a convenient series of pre-assembled functions and objects which basically construct the same objects as above. These can turn out to be useful
 for analysis of specific cases, but in general they are used internally by the various UDP provided in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> hence the user in most cases does not need to care.</p>
 <div class="cell docutils container">
@@ -674,7 +678,7 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 </section>
 <section id="solving-in-single-shooting">
-<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
+<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Link to this heading">#</a></h2>
 <p>We use, as a test case, a simple transfer between the Earth and Mars. We start with a relatively high value of the thrust <span class="math notranslate nohighlight">\(T_{max}\)</span></p>
 <p>Later, we will use a continuation technique to decrease <span class="math notranslate nohighlight">\(T_{max}\)</span> to lower values.</p>
 <p>We instantiate a single shooting problem for this case using the UDP (User Defined Problem in the <code class="docutils literal notranslate"><span class="pre">pygmo</span></code> jargon) provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code>:</p>
@@ -852,11 +856,11 @@ Number of successes: 6.0 over 10 trials (60.0 %)
 </div>
 </section>
 <section id="homotopy">
-<h2>Homotopy<a class="headerlink" href="#homotopy" title="Permalink to this heading">#</a></h2>
+<h2>Homotopy<a class="headerlink" href="#homotopy" title="Link to this heading">#</a></h2>
 <p>We now try to use a continuation techniaue on the maximal thrust as to increase the number of revolutions and go towards a very-low-thrust trajectory.</p>
 </section>
 <section id="exponential-homotopy-on-t-max">
-<h2>Exponential homotopy on <span class="math notranslate nohighlight">\(T_{max}\)</span><a class="headerlink" href="#exponential-homotopy-on-t-max" title="Permalink to this heading">#</a></h2>
+<h2>Exponential homotopy on <span class="math notranslate nohighlight">\(T_{max}\)</span><a class="headerlink" href="#exponential-homotopy-on-t-max" title="Link to this heading">#</a></h2>
 <p>Here we decrease the <span class="math notranslate nohighlight">\(T_{max}\)</span> parameter exponentially and use as predictor for the new decision vector corresponding to each successive new value of <span class="math notranslate nohighlight">\(T_{max}\)</span>, the previous decision vector. This method forces the step size on the epsilon exponential decrease to
 small values.</p>
 <p>The following code block implements an exponential homotopy over <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p>

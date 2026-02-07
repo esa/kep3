@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Surrogate Primer Vector &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/surrogate_primer_vector';</script>
@@ -193,6 +192,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -462,7 +466,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="surrogate-primer-vector">
-<h1>Surrogate Primer Vector<a class="headerlink" href="#surrogate-primer-vector" title="Permalink to this heading">#</a></h1>
+<h1>Surrogate Primer Vector<a class="headerlink" href="#surrogate-primer-vector" title="Link to this heading">#</a></h1>
 <p>In this notebook we extend the theory outlined in the notebook on the <a class="reference internal" href="primer_vector.html"><span class="std std-doc">primer vector</span></a> to the case where we are adding simultaneously two impulses
 to a trajectory where we can control one single existing impulse (as opposed to the original case where one adds only one impulse in a trajectory where two can be controlled).</p>
 <p>While the developments are similar, please note that the index <span class="math notranslate nohighlight">\(k\)</span> was before reserved to indicate the only node (of three, ijk) where no finite impulse was given. In this developments it indicates, instead, the only node (of three, ijk) where a finite impulse is given.</p>
@@ -470,7 +474,7 @@ to a trajectory where we can control one single existing impulse (as opposed to 
 <p class="admonition-title">Note</p>
 <p>The developments as well as the test case used are taken from the work from Bauregard, Acciarini and Izzo <span id="id1">[<a class="reference internal" href="../bibliography.html#id14" title="Laurent Beauregard, Dario Izzo, and Giacomo Acciarini. Breaking traditions: introducing a surrogate Primer Vector in non Keplerian dynamics. arXiv preprint arXiv:2405.18903, 2024.">BIA24</a>]</span>.
 The developments are shown in details as they can be extended to more generic cases that use different dynamics and number of impulses. The user must in that case provide the state ransition matrices and DVs on a time grid as constructed below.</p>
-<h2 class="rubric" id="theory-and-notation">Theory and notation</h2>
+<p class="rubric" id="theory-and-notation">Theory and notation</p>
 <p>a) Consider the following definition of the State Transition Matrix, <span class="math notranslate nohighlight">\(\mathbf M_{fs}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -681,7 +685,7 @@ Larger then one! -&gt; Trajectory can be improved
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7ffa720f6cf0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fd580122e40&gt;
 </pre></div>
 </div>
 <img alt="../_images/c04d324e1afff12a114f9068b83d4996cb467179249107f8999b6cd2edc9e09d.png" src="../_images/c04d324e1afff12a114f9068b83d4996cb467179249107f8999b6cd2edc9e09d.png" />
@@ -690,7 +694,7 @@ Larger then one! -&gt; Trajectory can be improved
 <p>Revealing all areas where adding two impulses would improve the trajectory leaving all boundary conditions unchanged.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="but-is-it-true">
-<h1>But is it true?<a class="headerlink" href="#but-is-it-true" title="Permalink to this heading">#</a></h1>
+<h1>But is it true?<a class="headerlink" href="#but-is-it-true" title="Link to this heading">#</a></h1>
 <p>Where we check that the transfer can indeed be improved using three impulses, and reaching identical conditions (initial-final) as the ones of our original trajectory (and in the same transfer time)</p>
 <p>We thus build [on the fly] an optimization problem aimed at placing three impulses optimally between the initial and the end state.</p>
 <div class="cell docutils container">
@@ -776,7 +780,7 @@ Larger then one! -&gt; Trajectory can be improved
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-start:
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.3105383299928997
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 0.31053832730807596
 The best solution found has a DV of 3.10538e-01
 </pre></div>
 </div>
@@ -806,7 +810,7 @@ The best solution found has a DV of 3.10538e-01
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/48ce77424b334b831470603119261606f12f3ea60aa774ee8c72223d39184672.png" src="../_images/48ce77424b334b831470603119261606f12f3ea60aa774ee8c72223d39184672.png" />
+<img alt="../_images/cd9ffb784641bb84f33c38a88b52e3bbd9b66c8cc175653b65cfc3c19116f440.png" src="../_images/cd9ffb784641bb84f33c38a88b52e3bbd9b66c8cc175653b65cfc3c19116f440.png" />
 </div>
 </div>
 <p>The <strong>surrogate primer vector</strong> correctly had us try to add impulses and, in this case, halved the needed <span class="math notranslate nohighlight">\(\Delta V\)</span>!</p>

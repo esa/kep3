@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Orbital Elements &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'elements';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -436,7 +440,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="orbital-elements">
-<span id="elements"></span><h1>Orbital Elements<a class="headerlink" href="#orbital-elements" title="Permalink to this heading">#</a></h1>
+<span id="elements"></span><h1>Orbital Elements<a class="headerlink" href="#orbital-elements" title="Link to this heading">#</a></h1>
 <p>In <cite>pykep</cite> the default osculating orbital elements used are the classical set <span class="math notranslate nohighlight">\([a, e, i, \Omega, \omega, f]\)</span>
 (<span class="math notranslate nohighlight">\(f\)</span> is the True Anomaly) together with the Cartesian position and velocity <span class="math notranslate nohighlight">\([\mathbf r, \mathbf v]\)</span>. Support is given also for
 the set <span class="math notranslate nohighlight">\([a, e, i, \Omega, \omega, M]\)</span> (<span class="math notranslate nohighlight">\(M\)</span> is the Mean Anomaly) is supported as well as
@@ -463,7 +467,7 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 <hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.el_type">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">el_type</span></span><a class="headerlink" href="#pykep.el_type" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">el_type</span></span><a class="headerlink" href="#pykep.el_type" title="Link to this definition">#</a></dt>
 <dd><p>Members:</p>
 <blockquote>
 <div><p>KEP_M : Keplerian Elements <span class="math notranslate nohighlight">\([a,e,i,\Omega,\omega,M]\)</span> (Mean anomaly)</p>
@@ -476,7 +480,7 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ic2par">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2par" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2par" title="Link to this definition">#</a></dt>
 <dd><p>Converts Cartesian state vectors (position and velocity) to Keplerian osculating orbital elements.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>posvel</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]): A list containing two 3D vectors: the position vector [x, y, z] in units L and the velocity vector [vx, vy, vz] in units L/T.</p>
@@ -510,7 +514,7 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.par2ic">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2ic" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2ic" title="Link to this definition">#</a></dt>
 <dd><p>Converts Keplerian osculating orbital elements to Cartesian state vectors (position and velocity).</p>
 <dl>
 <dt>Args:</dt><dd><p><em>par</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): A list of six Keplerian orbital elements:</p>
@@ -560,7 +564,7 @@ orbital elements where <span class="math notranslate nohighlight">\(a(1-e) &lt; 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ic2mee">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2mee" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">ic2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ic2mee" title="Link to this definition">#</a></dt>
 <dd><p>Converts Cartesian state vectors (position and velocity) to equinoctial orbital elements.</p>
 <p>Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
 near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
@@ -598,7 +602,7 @@ retrograde equinoctial elements. These last are not singular for inclinations of
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mee2ic">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2ic" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2ic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2ic" title="Link to this definition">#</a></dt>
 <dd><p>Converts equinoctial orbital elements to Cartesian state vectors (position and velocity).</p>
 <p>Equinoctial elements provide a non-singular representation of orbital motion, especially useful for
 near-circular or near-equatorial orbits. The retrograde flag allows switching between the standard and
@@ -642,7 +646,7 @@ retrograde equinoctial frames. These last are not singular for inclinations of p
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mee2par">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2par" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mee2par</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eq_elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mee2par" title="Link to this definition">#</a></dt>
 <dd><p>Converts equinoctial orbital elements to classical Keplerian elements.</p>
 <p>This function transforms the non-singular equinoctial elements into classical orbital elements, which are 
 more intuitive but can be singular for certain inclinations or eccentricities. The retrograde flag selects
@@ -686,7 +690,7 @@ the appropriate transformation for orbits with inclination near pi.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.par2mee">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2mee" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">par2mee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">par</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrogade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.par2mee" title="Link to this definition">#</a></dt>
 <dd><p>Converts classical Keplerian orbital elements to equinoctial elements.</p>
 <p>This function provides a non-singular representation of orbits by transforming Keplerian elements into 
 equinoctial elements. The retrograde flag allows conversion to a frame that remains non-singular for 

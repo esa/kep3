@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Low-thrust transfers via indirect methods I (mass, fixed time) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_cartesian_mass';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -466,7 +470,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-i-mass-fixed-time">
-<h1>Low-thrust transfers via indirect methods I (mass, fixed time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass-fixed-time" title="Permalink to this heading">#</a></h1>
+<h1>Low-thrust transfers via indirect methods I (mass, fixed time)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-i-mass-fixed-time" title="Link to this heading">#</a></h1>
 <p>In this notebook we show how to solve the minimum mass Optimal Control Problem (OCP) for a fixed time low-thrust interplanetary transfer employing an indirect method.</p>
 <p>Indirect methods are follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle. The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics, the low-thrust minimum time problem. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
@@ -485,7 +489,7 @@ document.write(`
 </div>
 </div>
 <section id="manual-construction-of-the-tpbvp">
-<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Permalink to this heading">#</a></h2>
+<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Link to this heading">#</a></h2>
 <p>We consider the dynamics:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -637,7 +641,7 @@ document.write(`
 </div>
 </section>
 <section id="constructing-the-tpbvp-using-pykep">
-<h2>Constructing the TPBVP using pykep<a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Permalink to this heading">#</a></h2>
+<h2>Constructing the TPBVP using pykep<a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Link to this heading">#</a></h2>
 <p>For the specific case outlined above pykep offers a convenient series of pre-assembled functions and objects which basically construct the same objects as above. These can turn out to be useful
 for analysis of specific cases, but in general they are used internally by the various UDP provided in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> hence the user in most cases does not need to care.</p>
 <div class="cell docutils container">
@@ -662,7 +666,7 @@ for analysis of specific cases, but in general they are used internally by the v
 </div>
 </section>
 <section id="solving-in-single-shooting">
-<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
+<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Link to this heading">#</a></h2>
 <p>All the code above was merely used for explanatory purposes. Now we scratch all of that and use the dedicated <code class="docutils literal notranslate"><span class="pre">pykep</span></code> clsses.</p>
 <p>We use, as a test case, a simple transfer between two orbits at 1AU. The transfer is simple enough to allow fast convergence and to directly go for a mass optimal trajectory, without using continuation, so that we can directly start using a value <span class="math notranslate nohighlight">\(\epsilon &lt;&lt; 1\)</span>.</p>
 <p>Later, we will also study a case where we need a continuation technique to bring <span class="math notranslate nohighlight">\(\epsilon\)</span> to low values.</p>
@@ -846,7 +850,7 @@ Number of successes: 18 over 40 trials (45.0 %)
 </div>
 </section>
 <section id="homotopy">
-<h2>Homotopy<a class="headerlink" href="#homotopy" title="Permalink to this heading">#</a></h2>
+<h2>Homotopy<a class="headerlink" href="#homotopy" title="Link to this heading">#</a></h2>
 <p>The case above was an easy solve for our single shooting technique. In may cases, especially when multiple revolutions appear or intricate switching functions describe the optimal solution, this will not be the case.
 In that case homotopy (continuation) methods can help to find a solution.</p>
 <p>Here we show how to implement such methods. We use, as test case, a more complex case (coming from an Earth-Mars transfer) where solving directly for mass optimality (e.g. <span class="math notranslate nohighlight">\(\epsilon = 1e-4\)</span> would not work).</p>
@@ -871,7 +875,7 @@ In that case homotopy (continuation) methods can help to find a solution.</p>
 </div>
 </section>
 <section id="exponential-homotopy-on-epsilon">
-<h2>Exponential homotopy on <span class="math notranslate nohighlight">\(\epsilon\)</span><a class="headerlink" href="#exponential-homotopy-on-epsilon" title="Permalink to this heading">#</a></h2>
+<h2>Exponential homotopy on <span class="math notranslate nohighlight">\(\epsilon\)</span><a class="headerlink" href="#exponential-homotopy-on-epsilon" title="Link to this heading">#</a></h2>
 <p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor for the new decision vector corresponding to each successive new value of <span class="math notranslate nohighlight">\(\epsilon\)</span>, the previous decision vector. This method forces the step size on the epsilon exponential decrease to
 small values.</p>
 <div class="cell docutils container">
@@ -1029,7 +1033,7 @@ the initial guess (the predictor used) is poor, so that we are stuck with this (
 </div>
 </section>
 <section id="continuation-along-the-tangent-direction">
-<h2>Continuation along the tangent direction<a class="headerlink" href="#continuation-along-the-tangent-direction" title="Permalink to this heading">#</a></h2>
+<h2>Continuation along the tangent direction<a class="headerlink" href="#continuation-along-the-tangent-direction" title="Link to this heading">#</a></h2>
 <p>Here we decrease the <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter exponentially and use as predictor the tangent vector along the solution curve.
 In our case the details are as follows.
 Assume the final constraints of TPBVB to be indicated with:</p>

@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Approximators for low-thrust transfers &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/approximations';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -464,7 +468,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="approximators-for-low-thrust-transfers">
-<h1>Approximators for low-thrust transfers<a class="headerlink" href="#approximators-for-low-thrust-transfers" title="Permalink to this heading">#</a></h1>
+<h1>Approximators for low-thrust transfers<a class="headerlink" href="#approximators-for-low-thrust-transfers" title="Link to this heading">#</a></h1>
 <p>Before computing a full low-thrust transfer is often convenent to compute approximations that are computationally less heavy and help anyway to establish the worth of a given transfer opportunity. The main purpose of these is to avoid computing eventually the low-thrust transfer altogether, and thus prune out uninteresting cases.</p>
 <p>In the old-school one would use Edelbaum, Lambert as well as Hohmann <span class="math notranslate nohighlight">\(\Delta V\)</span> and transfer times <span class="math notranslate nohighlight">\(T\)</span> as to produce quick estimates for these quantities, maybe incomprating some gravity loss coefficident set to an arbitrary value (argauble learned from experience). In the last decade, also thanks to the many <a class="reference external" href="https://sophia.estec.esa.int/gtoc_portal/">GTOC competitions</a> new concpets and approximations have been developed that are much more informative and precise. In <em>pykep</em> we implemented a few, mainly from our own work and developments and that have since been embraced by the larger trajectory design community.</p>
 <p>In this notebook we give some examples of their usage.</p>
@@ -527,7 +531,7 @@ speed up the plot creation.</p>
 </div>
 </div>
 <section id="the-orbital-metric">
-<h2>The Orbital Metric<a class="headerlink" href="#the-orbital-metric" title="Permalink to this heading">#</a></h2>
+<h2>The Orbital Metric<a class="headerlink" href="#the-orbital-metric" title="Link to this heading">#</a></h2>
 <p>Consider now the problem of selecting what transfer some spacecarft could make when sitting at some asteroid (say id = 24) at epoch <span class="math notranslate nohighlight">\(t_0\)</span>. To answer the question we could:</p>
 <ul class="simple">
 <li><p>Solve all low-thrust transfers to all possible targets (ehm, … well sure going to take some time, what if we then need to change the id or <span class="math notranslate nohighlight">\(t_0\)</span> and need to do this multiple times?). This option is rather slow and still leaves open the question on whether to look for time optimal or mass optimal transfers.</p></li>
@@ -588,7 +592,7 @@ speed up the plot creation.</p>
 </div>
 </section>
 <section id="the-maximum-initial-mass-approximations-mima-s">
-<h2>The Maximum Initial Mass Approximations - MIMA(s)<a class="headerlink" href="#the-maximum-initial-mass-approximations-mima-s" title="Permalink to this heading">#</a></h2>
+<h2>The Maximum Initial Mass Approximations - MIMA(s)<a class="headerlink" href="#the-maximum-initial-mass-approximations-mima-s" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Tmax</span> <span class="o">=</span> <span class="mf">0.6</span>
@@ -658,7 +662,7 @@ idx: 55344: mima: 838.49574444, mima2: 808.47917624, lambert_estimate: 1322.6546
 <p>The cost of running MIMA for one asteroid is compatible (only marginally faster) to the cost of running the orbital metric on all asteroid couples. Thus its typicaly considered as a refinement step to the ranking of targets provided by the orbital metric.</p>
 </section>
 <section id="the-mim-not-approximated">
-<h2>The MIM (not approximated)<a class="headerlink" href="#the-mim-not-approximated" title="Permalink to this heading">#</a></h2>
+<h2>The MIM (not approximated)<a class="headerlink" href="#the-mim-not-approximated" title="Link to this heading">#</a></h2>
 <p>In order to have a clear picture on the error introduced by using the aproximations above, we can actually compute (spending more computational resources) the ground truth, the actual MIM.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -704,7 +708,7 @@ idx: 55344: mim: 815.63354491
 </div>
 </section>
 <section id="the-minimum-transfer-time-not-approximated">
-<h2>The minimum transfer time (not approximated)<a class="headerlink" href="#the-minimum-transfer-time-not-approximated" title="Permalink to this heading">#</a></h2>
+<h2>The minimum transfer time (not approximated)<a class="headerlink" href="#the-minimum-transfer-time-not-approximated" title="Link to this heading">#</a></h2>
 <p>Another important information to help select the target for a low-thrust transfer is the minimum transfer time (assuming an initial mass).
 This can be computed exactly at the cost of extra CPU time, but it is valuable information and helps to understand the worth
 of using some approximate method before emmploying it in a large scale computation.</p>

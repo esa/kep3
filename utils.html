@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Utils &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'utils';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -192,6 +191,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -455,13 +459,13 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="utils">
-<span id="id1"></span><h1>Utils<a class="headerlink" href="#utils" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1>Utils<a class="headerlink" href="#utils" title="Link to this heading">#</a></h1>
 </section>
 <section id="spice-utils">
-<h1>Spice Utils<a class="headerlink" href="#spice-utils" title="Permalink to this heading">#</a></h1>
+<h1>Spice Utils<a class="headerlink" href="#spice-utils" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.spice_version">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">spice_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.spice_version" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">spice_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.spice_version" title="Link to this definition">#</a></dt>
 <dd><p>Retrieves the installed version of the NAIF spice toolkit.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>: SPICE toolbox version installed in the system.</p>
@@ -471,7 +475,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.load_spice_kernels">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">load_spice_kernels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.load_spice_kernels" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">load_spice_kernels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.load_spice_kernels" title="Link to this definition">#</a></dt>
 <dd><p>Loads one or more kernels for use with the NAIF spice toolkit.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>paths (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The path (or paths) of the kernels to load</p>
@@ -481,7 +485,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.unload_spice_kernels">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">unload_spice_kernels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.unload_spice_kernels" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">unload_spice_kernels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.unload_spice_kernels" title="Link to this definition">#</a></dt>
 <dd><p>Unloads from memory one or more kernels for use with the NAIF spice toolkit.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>paths (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The path (or paths) of the kernels to load</p>
@@ -491,7 +495,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.inspect_spice_kernel">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">inspect_spice_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.inspect_spice_kernel" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">inspect_spice_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.inspect_spice_kernel" title="Link to this definition">#</a></dt>
 <dd><p>Detects the objects contained in a specific kernel.
 This is useful to understand the possibile queries to make for a certain kernel.</p>
 <dl class="simple">
@@ -504,7 +508,7 @@ This is useful to understand the possibile queries to make for a certain kernel.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.name2naifid">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">name2naifid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.name2naifid" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">name2naifid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.name2naifid" title="Link to this definition">#</a></dt>
 <dd><p>Retreives the NAIF id of some planet/comet/spacecraft</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>name (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>): The name of the planet/comet/spacecraft to be found</p>
@@ -516,7 +520,7 @@ This is useful to understand the possibile queries to make for a certain kernel.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.extract_coverage_window">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">extract_coverage_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naifid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.extract_coverage_window" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">extract_coverage_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naifid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.extract_coverage_window" title="Link to this definition">#</a></dt>
 <dd><p>Extracts the <em>n</em>-th SPK coverage window for a given NAIF ID and returns it as PyKEP epochs.</p>
 <p>The SPK coverage start/end times returned by SPICE are ET (TDB) seconds past J2000. Here we map them to a <strong>uniform</strong>
 seconds-from-2000-01-01T00:00:00 (UTC-labeled origin) representation, so that the resulting PyKEP epoch is strictly
@@ -536,7 +540,7 @@ window_n (<a class="reference external" href="https://docs.python.org/3/library/
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.epoch2utc">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">epoch2utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pykep_epoch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.epoch2utc" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">epoch2utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pykep_epoch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.epoch2utc" title="Link to this definition">#</a></dt>
 <dd><p>Converts a PyKEP epoch (mjd2000) into a SPICE-formatted UTC calendar string.</p>
 <p>The input epoch is assumed to be a uniform time variable expressed as days since the UTC-labeled origin
 2000-01-01 00:00:00 (i.e. strictly 1:1 with SPICE ET everywhere; it is not “UTC elapsed seconds” with leap seconds).</p>
@@ -553,7 +557,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.framename2naifid">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">framename2naifid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.framename2naifid" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">framename2naifid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.framename2naifid" title="Link to this definition">#</a></dt>
 <dd><p>Retreives the NAIF id of some reference frame</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>name (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>): The name of the reference frame to be found</p>
@@ -565,7 +569,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.rotation_matrix">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep=2000-01-01T00:00:00.000000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.rotation_matrix" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep=2000-01-01T00:00:00.000000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.rotation_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Rotation matrix between frames at epoch.</p>
 <dl>
 <dt>Args:</dt><dd><p>origin (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>): The name of the origin reference frame.</p>
@@ -579,7 +583,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.naifid2name">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">naifid2name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">naifid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.naifid2name" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">naifid2name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">naifid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.naifid2name" title="Link to this definition">#</a></dt>
 <dd><p>Retreives the planet/comet/spacecraft name from its NAIF id.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>name (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The NAIF id.</p>
@@ -591,10 +595,10 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 </section>
 <section id="encoding-utils">
-<h1>Encoding Utils<a class="headerlink" href="#encoding-utils" title="Permalink to this heading">#</a></h1>
+<h1>Encoding Utils<a class="headerlink" href="#encoding-utils" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.alpha2direct">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">alpha2direct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alphas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.alpha2direct" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">alpha2direct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alphas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.alpha2direct" title="Link to this definition">#</a></dt>
 <dd><p>Converts from alpha encoded to transfer times.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>alphas</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): a sequence of transfer times encoded using the alpha encoding.</p>
@@ -607,7 +611,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.direct2alpha">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">direct2alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tofs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.direct2alpha" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">direct2alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tofs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.direct2alpha" title="Link to this definition">#</a></dt>
 <dd><p>Converts from transfer times to alpha encoded.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>tofs</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): a sequence of transfer times.</p>
@@ -619,7 +623,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.eta2direct">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">eta2direct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.eta2direct" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">eta2direct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.eta2direct" title="Link to this definition">#</a></dt>
 <dd><p>Converts from eta encoded to transfer times.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>etas</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): a sequence of transfer times encoded using the eta encoding.</p>
@@ -632,7 +636,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.direct2eta">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">direct2eta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tofs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.direct2eta" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">direct2eta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tofs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.direct2eta" title="Link to this definition">#</a></dt>
 <dd><blockquote>
 <div><p>Converts from transfer times to eta encoded.</p>
 </div></blockquote>
@@ -647,7 +651,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.uvV2cartesian">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">uvV2cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uvV</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.uvV2cartesian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">uvV2cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uvV</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.uvV2cartesian" title="Link to this definition">#</a></dt>
 <dd><p>This function converts the uvV encoding of a vector to cartesian coordinates</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>uvV</em> (<code class="docutils literal notranslate"><span class="pre">array-like</span></code>): a sequence of 3 floats representing the vector in uvV encoding.</p>
@@ -659,7 +663,7 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.cartesian2uvV">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">cartesian2uvV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.cartesian2uvV" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">cartesian2uvV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.cartesian2uvV" title="Link to this definition">#</a></dt>
 <dd><p>This function converts the cartesian coordinates of a vector to uvV encoding</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>V</em> (<code class="docutils literal notranslate"><span class="pre">array-like</span></code>): a sequence of 3 floats representing the vector in cartesian coordinates.</p>
@@ -671,10 +675,10 @@ is loaded to enable correct ET↔UTC conversion.</p>
 
 </section>
 <section id="miscellanea">
-<h1>Miscellanea<a class="headerlink" href="#miscellanea" title="Permalink to this heading">#</a></h1>
+<h1>Miscellanea<a class="headerlink" href="#miscellanea" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.utils.planet_to_keplerian">
-<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">planet_to_keplerian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pla</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.core.epoch"><span class="pre">epoch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.planet_to_keplerian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">planet_to_keplerian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pla</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="epoch.html#pykep.epoch" title="pykep.core.epoch"><span class="pre">epoch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.planet_to_keplerian" title="Link to this definition">#</a></dt>
 <dd><p>Transforms a planet to its Keplerian version</p>
 <p>The <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> returned will be Keplerian, with elements identical to
 the osculating elements at <em>t0</em> of the input planet. Hence its ephemerides can be computed

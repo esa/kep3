@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Epochs and Julian Dates &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/epochs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -192,6 +191,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -462,7 +466,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="epochs-and-julian-dates">
-<h1>Epochs and Julian Dates<a class="headerlink" href="#epochs-and-julian-dates" title="Permalink to this heading">#</a></h1>
+<h1>Epochs and Julian Dates<a class="headerlink" href="#epochs-and-julian-dates" title="Link to this heading">#</a></h1>
 <p>The representation of an epoch, that is of a specific point in time, be it in the future or in the past, can be rather confusing. In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> we opted to offer the dedicated class <a class="reference internal" href="../epoch.html#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a> that takes care to offer a simple interface and, under the hoods, interfaces seamlessly both to the c++ <code class="docutils literal notranslate"><span class="pre">std::chrono</span></code>  library and the python <a class="reference external" href="https://docs.python.org/3/library/datetime.html#module-datetime" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">datetime</span></code></a> module.</p>
 <p>Let us briefly show its interface.</p>
 <p>An <code class="docutils literal notranslate"><span class="pre">epoch</span></code> may be created in one of four ways:</p>
@@ -493,7 +497,7 @@ document.write(`
 </div>
 </div>
 <section id="julian-dates">
-<h2>Julian dates<a class="headerlink" href="#julian-dates" title="Permalink to this heading">#</a></h2>
+<h2>Julian dates<a class="headerlink" href="#julian-dates" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ep</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
@@ -555,7 +559,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2026-02-06T12:56:36.528534
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2026-02-07T08:56:40.500890
 </pre></div>
 </div>
 </div>
@@ -616,7 +620,7 @@ document.write(`
 </div>
 </section>
 <section id="datetime-interoperability">
-<h2>Datetime interoperability<a class="headerlink" href="#datetime-interoperability" title="Permalink to this heading">#</a></h2>
+<h2>Datetime interoperability<a class="headerlink" href="#datetime-interoperability" title="Link to this heading">#</a></h2>
 <p>If we have a datetime object from python builtin datetime library we can construct an epoch with it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -647,7 +651,7 @@ document.write(`
 </div>
 </section>
 <section id="the-epoch-math">
-<h2>The epoch math<a class="headerlink" href="#the-epoch-math" title="Permalink to this heading">#</a></h2>
+<h2>The epoch math<a class="headerlink" href="#the-epoch-math" title="Link to this heading">#</a></h2>
 <p>Additions and subtractions are allowed between epochs and floats or <code class="docutils literal notranslate"><span class="pre">datetime.timedelta</span></code>.
 When using floats days are always assumed.</p>
 <div class="cell docutils container">
@@ -695,7 +699,7 @@ True
 </div>
 </section>
 <section id="leap-seconds-and-gregorian-dates">
-<h2>Leap seconds and Gregorian dates.<a class="headerlink" href="#leap-seconds-and-gregorian-dates" title="Permalink to this heading">#</a></h2>
+<h2>Leap seconds and Gregorian dates.<a class="headerlink" href="#leap-seconds-and-gregorian-dates" title="Link to this heading">#</a></h2>
 <p>An everlasting source of confusion arises whenever leap-seconds (post 1972) and pre-Gregorian dates (before 1580) are considered. These are both variations to the Gregorian calendar that account for the historical attempts to try and establish a calendar that makes some sense. A clearly impossible, yet commendable, effort since the Earth orbital period and its rotation period are not commensurable.</p>
 <p>For peace of mind, <code class="docutils literal notranslate"><span class="pre">pykep</span></code> ignores both and uses the “proleptic Gregorian calendar”. It is up to the user to make corrections when reading or using calendar dates. Lets see a few examples. Say we want to instantiate an epoch corresponding to the calendar date “1999-02-01T10:23:22”. We would obviously like to write:</p>
 <div class="cell docutils container">

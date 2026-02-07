@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>User defined planets (UDPLAs) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'udpla';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -192,6 +191,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -457,16 +461,16 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="user-defined-planets-udplas">
-<span id="udpla"></span><h1>User defined planets (UDPLAs)<a class="headerlink" href="#user-defined-planets-udplas" title="Permalink to this heading">#</a></h1>
+<span id="udpla"></span><h1>User defined planets (UDPLAs)<a class="headerlink" href="#user-defined-planets-udplas" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.null_udpla">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">null_udpla</span></span><a class="headerlink" href="#pykep.udpla.null_udpla" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">null_udpla</span></span><a class="headerlink" href="#pykep.udpla.null_udpla" title="Link to this definition">#</a></dt>
 <dd><p>A moot udpla used as default to construct a planet.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.keplerian">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">keplerian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_central_body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unkown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">added_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[-1,</span> <span class="pre">-1,</span> <span class="pre">-1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">KEP_F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.keplerian" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">keplerian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_central_body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unkown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">added_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[-1,</span> <span class="pre">-1,</span> <span class="pre">-1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">KEP_F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.keplerian" title="Link to this definition">#</a></dt>
 <dd><p>keplerian udpla</p>
 <p>Constructs a Keplerian udpla from its orbital elements at epoch.</p>
 <dl>
@@ -510,7 +514,7 @@ document.write(`
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.jpl_lp">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">jpl_lp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">jpl_lp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'earth'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp" title="Link to this definition">#</a></dt>
 <dd><p>Low precision ephemerides from JPL for the solar system planets</p>
 <p>Constructs a solar system planet with ephemerides computed using a low-precision (non Keplerian)
 model from JPL (<a class="reference external" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">https://ssd.jpl.nasa.gov/planets/approx_pos.html</a>).</p>
@@ -526,26 +530,26 @@ model from JPL (<a class="reference external" href="https://ssd.jpl.nasa.gov/pla
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.jpl_lp.get_radius">
-<span class="sig-name descname"><span class="pre">get_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.get_radius" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.get_radius" title="Link to this definition">#</a></dt>
 <dd><p>The planet’s radius.
 The planet’s radius.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pykep.udpla.jpl_lp.radius">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.radius" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.radius" title="Link to this definition">#</a></dt>
 <dd><p>The planet’s radius.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pykep.udpla.jpl_lp.safe_radius">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">safe_radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.safe_radius" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">safe_radius</span></span><a class="headerlink" href="#pykep.udpla.jpl_lp.safe_radius" title="Link to this definition">#</a></dt>
 <dd><p>The planet’s safe radius. Mostly used to constraint fly-by distances.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.jpl_lp.set_safe_radius">
-<span class="sig-name descname"><span class="pre">set_safe_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.set_safe_radius" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_safe_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.jpl_lp.set_safe_radius" title="Link to this definition">#</a></dt>
 <dd><p>Set the planet’s safe radius. Mostly used to constraint fly-by distances.</p>
 </dd></dl>
 
@@ -553,7 +557,7 @@ The planet’s radius.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.vsop2013">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">vsop2013</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mercury'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.vsop2013" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">vsop2013</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mercury'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.vsop2013" title="Link to this definition">#</a></dt>
 <dd><p>Analytical planetary ephemerides from the VSOP2013 theory</p>
 <p>Constructs a solar system planet with ephemerides computed using the VSOP2013 analytical
 theory (<a class="reference external" href="https://en.wikipedia.org/wiki/VSOP_model">https://en.wikipedia.org/wiki/VSOP_model</a>).</p>
@@ -572,7 +576,7 @@ theory (<a class="reference external" href="https://en.wikipedia.org/wiki/VSOP_m
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.tle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">tle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">tle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle" title="Link to this definition">#</a></dt>
 <dd><p>This User Defined Planet (UDPLA) represents a satellite orbiting the Earth and defined in the TLE format
 and propagated using the SGP4 propagator.</p>
 <dl>
@@ -597,7 +601,7 @@ and propagated using the SGP4 propagator.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.tle.eph">
-<span class="sig-name descname"><span class="pre">eph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.eph" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.eph" title="Link to this definition">#</a></dt>
 <dd><p>Mandatory method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>mjd2000</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): Modified Julian Date 2000.</p>
@@ -609,7 +613,7 @@ and propagated using the SGP4 propagator.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.tle.eph_v">
-<span class="sig-name descname"><span class="pre">eph_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.eph_v" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eph_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.eph_v" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>mjd2000s</em> (array-like (1,)): Modified Julian Dates 2000.</p>
@@ -621,7 +625,7 @@ and propagated using the SGP4 propagator.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.tle.get_extra_info">
-<span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_extra_info" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_extra_info" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: Extra info on the udpla</p>
@@ -631,7 +635,7 @@ and propagated using the SGP4 propagator.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.tle.get_mu_central_body">
-<span class="sig-name descname"><span class="pre">get_mu_central_body</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_mu_central_body" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_mu_central_body</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_mu_central_body" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>: the graviational parameter of the Earth.</p>
@@ -641,7 +645,7 @@ and propagated using the SGP4 propagator.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.tle.get_name">
-<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_name" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.tle.get_name" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: The body name</p>
@@ -653,7 +657,7 @@ and propagated using the SGP4 propagator.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.spice">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">spice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">spice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice" title="Link to this definition">#</a></dt>
 <dd><p>This User Defined Planet (UDPLA) represents a planet/object/spacecraft as defined by a pre-loaded
 SPICE kernel. The interface to the NAIF SPICE code is provided via the third-party python package called
 spiceypy: <a class="reference external" href="https://spiceypy.readthedocs.io/en/stable/">https://spiceypy.readthedocs.io/en/stable/</a></p>
@@ -673,7 +677,7 @@ fail rising an exception.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.spice.eph">
-<span class="sig-name descname"><span class="pre">eph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.eph" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mjd2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.eph" title="Link to this definition">#</a></dt>
 <dd><p>Mandatory method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p><em>mjd2000</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): Modified Julian Date 2000</p>
@@ -685,7 +689,7 @@ fail rising an exception.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.spice.get_extra_info">
-<span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.get_extra_info" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.get_extra_info" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: Extra info on the udpla</p>
@@ -695,7 +699,7 @@ fail rising an exception.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.spice.get_name">
-<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.get_name" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.spice.get_name" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: The body name</p>
@@ -707,7 +711,7 @@ fail rising an exception.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.udpla.de440s">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">de440s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EARTH</span> <span class="pre">BARYCENTER'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ECLIPJ2000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SSB'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.udpla.</span></span><span class="sig-name descname"><span class="pre">de440s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EARTH</span> <span class="pre">BARYCENTER'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ECLIPJ2000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SSB'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s" title="Link to this definition">#</a></dt>
 <dd><p>This User Defined Planet (UDPLA) represents a solar system planet as described by JPL 440s ephemerides.
 The correct spice kernel is preloaded upon instantiation of the class as its shipped with the pykep module.</p>
 <dl>
@@ -718,7 +722,7 @@ The correct spice kernel is preloaded upon instantiation of the class as its shi
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.de440s.body_list">
-<span class="sig-name descname"><span class="pre">body_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.body_list" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">body_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.body_list" title="Link to this definition">#</a></dt>
 <dd><p>The list of bodies contained in the de440s ephemerides. 
 This is a static method and can be queried before constructing the object.</p>
 <dl class="simple">
@@ -729,7 +733,7 @@ This is a static method and can be queried before constructing the object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.de440s.get_name">
-<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.get_name" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.get_name" title="Link to this definition">#</a></dt>
 <dd><p>Optional method of the <a class="reference internal" href="planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: The body name</p>
@@ -739,7 +743,7 @@ This is a static method and can be queried before constructing the object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.udpla.de440s.kernel_file">
-<span class="sig-name descname"><span class="pre">kernel_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.kernel_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">kernel_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.udpla.de440s.kernel_file" title="Link to this definition">#</a></dt>
 <dd><p>The full path for the kernel file “de440s.bsp” shipped in <cite>pykep</cite></p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>: The full file name.</p>

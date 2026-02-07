@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Various approximations for orbital transfers &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'approximations';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -449,7 +453,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="various-approximations-for-orbital-transfers">
-<span id="approximations"></span><h1>Various approximations for orbital transfers<a class="headerlink" href="#various-approximations-for-orbital-transfers" title="Permalink to this heading">#</a></h1>
+<span id="approximations"></span><h1>Various approximations for orbital transfers<a class="headerlink" href="#various-approximations-for-orbital-transfers" title="Link to this heading">#</a></h1>
 <p>Computing the exact optimal transfer between orbits is often more expensive than allowed in
 preliminary phases of the mission design. For this reason, <strong>pykep</strong> offers a number of approximations
 that can be used as surrogates of the actual complete computation. These can be used to quickly pre-screen
@@ -458,12 +462,12 @@ Many of these approximations have been used and developed during the various edi
 [GTOC competition](<a class="reference external" href="https://sophia.estec.esa.int/gtoc_portal/">https://sophia.estec.esa.int/gtoc_portal/</a>) and can
 be found in our papers, e.g. <span id="id1">[<a class="reference internal" href="bibliography.html#id15" title="Daniel Hennes, Dario Izzo, and Damon Landau. Fast approximators for optimal low-thrust hops between main belt asteroids. In 2016 IEEE Symposium Series on Computational Intelligence (SSCI), 1–7. IEEE, 2016.">HIL16</a>]</span>, <span id="id2">[<a class="reference internal" href="bibliography.html#id16" title="Dario Izzo, Marcus Märtens, Laurent Beauregard, Max Bannach, Giacomo Acciarini, Emmanuel Blazquez, Alexander Hadjiivanov, Jai Grover, Gernot Heißel, Yuri Shimane, and others. Asteroid mining: ACT&amp;Friends’ results for the GTOC12 problem. Astrodynamics, 9(1):19–40, 2025.">IMartensB+25</a>]</span>.</p>
 <section id="basic-transfers">
-<h2>Basic transfers<a class="headerlink" href="#basic-transfers" title="Permalink to this heading">#</a></h2>
+<h2>Basic transfers<a class="headerlink" href="#basic-transfers" title="Link to this heading">#</a></h2>
 <p>Sometimes basic ideal transfers models can be used to get some bounds or information on the possible
 difficulty of a certain orbital geometry.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.hohmann">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">hohmann</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.hohmann" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">hohmann</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.hohmann" title="Link to this definition">#</a></dt>
 <dd><p>Computes the delta v and transfer time required for a Hohmann transfer between two circular orbits.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>r1</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): radius of the first orbit</p>
@@ -492,7 +496,7 @@ difficulty of a certain orbital geometry.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.bielliptic">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">bielliptic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.bielliptic" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">bielliptic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.bielliptic" title="Link to this definition">#</a></dt>
 <dd><p>Computes the delta v and transfer time required for a bielliptic transfer between two circular orbits.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>r1</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): radius of the first orbit</p>
@@ -524,7 +528,7 @@ difficulty of a certain orbital geometry.</p>
 
 </section>
 <section id="maximum-initial-mass-approximation-mima">
-<h2>Maximum initial mass approximation (MIMA)<a class="headerlink" href="#maximum-initial-mass-approximation-mima" title="Permalink to this heading">#</a></h2>
+<h2>Maximum initial mass approximation (MIMA)<a class="headerlink" href="#maximum-initial-mass-approximation-mima" title="Link to this heading">#</a></h2>
 <p>If we are computing the low-thrust transfer between two arbitrary orbits and we know the starting and final time of arrival,
 these approximations can be used to compute the maximum initial mass (MIM) that will result in a feasible transfer.
 In other words if our spacecraft is fat (heavier than the MIM), the transfer will not be feasible.
@@ -532,7 +536,7 @@ In general the best way to approximate the MIM is via neural method and machine 
 but that requires learning from a vast database of precomputed trajectories and sometimes we do not have that luxury.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mim_from_hop">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mim_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MASS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mim_from_hop" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mim_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MASS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mim_from_hop" title="Link to this definition">#</a></dt>
 <dd><p>The Maximum Initial Mass from a hop transfer. A hop transfer is fixed time randevouz between two planets.
 This function is slower then its approximations <a class="reference internal" href="#pykep.mima_from_hop" title="pykep.mima_from_hop"><code class="xref py py-class docutils literal notranslate"><span class="pre">mima_from_hop</span></code></a> and <a class="reference internal" href="#pykep.mima2_from_hop" title="pykep.mima2_from_hop"><code class="xref py py-class docutils literal notranslate"><span class="pre">mima2_from_hop</span></code></a>,
 if succesfull, returns the exact solution to the problem. Behind the scene Potryagin Maximum Principle
@@ -569,7 +573,7 @@ return None.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mima">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dv1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dv1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima" title="Link to this definition">#</a></dt>
 <dd><p>The Maximum Initial Mass Approximation.</p>
 <p>Izzo, D., Hennes, D., Simões, L. F., &amp; Märtens, M. (2016). Designing complex interplanetary trajectories
 for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, 151-176.
@@ -603,7 +607,7 @@ that transfer in low-thrust.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mima_from_hop">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima_from_hop" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima_from_hop" title="Link to this definition">#</a></dt>
 <dd><p>The Maximum Initial Mass Approximation from a hop transfer. A hop transfer is fixed time randevouz between two planets.</p>
 <p>Izzo, D., Hennes, D., Simões, L. F., &amp; Märtens, M. (2016). Designing complex interplanetary trajectories
 for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, 151-176.
@@ -637,7 +641,7 @@ for the global trajectory optimization competitions. Space Engineering: Modeling
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mima2">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima2" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posvel1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima2" title="Link to this definition">#</a></dt>
 <dd><p>More accurate approximation of mima.</p>
 <p>Having computed a two-impulse transfer, this approximation allows to compute
 the maximum initial mass that a spacecraft can have as to be able to perform
@@ -661,7 +665,7 @@ that transfer in low-thrust.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.mima2_from_hop">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima2_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima2_from_hop" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">mima2_from_hop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.mima2_from_hop" title="Link to this definition">#</a></dt>
 <dd><p>More accurate approximation of mima from a hop transfer. A hop transfer is fixed time transfer between two planets.</p>
 <p>Izzo, D., … &amp; Yam, C. H. (2025). Asteroid mining: ACT&amp;Friends’ results for the GTOC12 problem. Astrodynamics, 9(1),
 19-40.  (<a class="reference external" href="https://arxiv.org/pdf/2410.20839">https://arxiv.org/pdf/2410.20839</a>)</p>
@@ -694,10 +698,10 @@ that transfer in low-thrust.</p>
 
 </section>
 <section id="phasing-indicators">
-<h2>Phasing indicators<a class="headerlink" href="#phasing-indicators" title="Permalink to this heading">#</a></h2>
+<h2>Phasing indicators<a class="headerlink" href="#phasing-indicators" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.utils.knn">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">knn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29784.69183430911</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.knn" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">knn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29784.69183430911</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.knn" title="Link to this definition">#</a></dt>
 <dd><p>The class finds the k-nearest neighbours to a given planet
 at some epoch from a list of planets.
 The idea being that under some definition of “closeness”
@@ -737,7 +741,7 @@ The distance returned will thus be in m/s.</p></li>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.utils.knn.find_neighbours">
-<span class="sig-name descname"><span class="pre">find_neighbours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_planet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'knn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.knn.find_neighbours" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">find_neighbours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_planet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'knn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.knn.find_neighbours" title="Link to this definition">#</a></dt>
 <dd><p>Finds the neighbours of a given planet at a given epoch. The user may query for the
 k-nearest neighbours or for all neighbours within a given distance.</p>
 <dl>

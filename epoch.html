@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Epoch class &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'epoch';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -192,6 +191,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -437,7 +441,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="epoch-class">
-<span id="epoch"></span><h1>Epoch class<a class="headerlink" href="#epoch-class" title="Permalink to this heading">#</a></h1>
+<span id="epoch"></span><h1>Epoch class<a class="headerlink" href="#epoch-class" title="Link to this heading">#</a></h1>
 <p>The representation of an epoch, that is of a specific point in time, be it in the future or in the past, can be rather confusing.
 In <cite>pykep</cite> we opted to offer a dedicated class called <a class="reference internal" href="#pykep.epoch" title="pykep.epoch"><code class="xref py py-class docutils literal notranslate"><span class="pre">epoch</span></code></a> to offer a simple interface and, under the hoods, interfacing
 seamlessly both to the c++ <a class="reference external" href="https://en.cppreference.com/w/cpp/header/chrono">std::chrono</a>
@@ -456,7 +460,7 @@ also including leap seconds, he will have to account for the offset himself. As 
 <hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.epoch">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">julian_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MJD2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">julian_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MJD2000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch" title="Link to this definition">#</a></dt>
 <dd><p>Represents a specific point in time.</p>
 <blockquote>
 <div><p>Constructs an epoch from a Julian Date.</p>
@@ -504,13 +508,13 @@ also including leap seconds, he will have to account for the offset himself. As 
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="pykep.epoch.jd">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jd</span></span><a class="headerlink" href="#pykep.epoch.jd" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jd</span></span><a class="headerlink" href="#pykep.epoch.jd" title="Link to this definition">#</a></dt>
 <dd><p>The Julian Date</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.epoch.julian_type">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">julian_type</span></span><a class="headerlink" href="#pykep.epoch.julian_type" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">julian_type</span></span><a class="headerlink" href="#pykep.epoch.julian_type" title="Link to this definition">#</a></dt>
 <dd><p>Members:</p>
 <p>MJD2000 : Modified Julian Date 2000.</p>
 <p>MJD : Modified Julian Date.</p>
@@ -519,32 +523,32 @@ also including leap seconds, he will have to account for the offset himself. As 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pykep.epoch.mjd">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mjd</span></span><a class="headerlink" href="#pykep.epoch.mjd" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mjd</span></span><a class="headerlink" href="#pykep.epoch.mjd" title="Link to this definition">#</a></dt>
 <dd><p>The Modified Julian Date</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pykep.epoch.mjd2000">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mjd2000</span></span><a class="headerlink" href="#pykep.epoch.mjd2000" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mjd2000</span></span><a class="headerlink" href="#pykep.epoch.mjd2000" title="Link to this definition">#</a></dt>
 <dd><p>The Modified Julian Date 2000</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.epoch.now">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.now" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.now" title="Link to this definition">#</a></dt>
 <dd><p>Returns a pykep.epoch with the current UTC date.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.epoch.string_format">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">string_format</span></span><a class="headerlink" href="#pykep.epoch.string_format" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">string_format</span></span><a class="headerlink" href="#pykep.epoch.string_format" title="Link to this definition">#</a></dt>
 <dd><p>Members:</p>
 <p>ISO : ISO 8601 format for dates.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.epoch.to_datetime">
-<span class="sig-name descname"><span class="pre">to_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.to_datetime" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.epoch.to_datetime" title="Link to this definition">#</a></dt>
 <dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">epoch</span></code> to a timezone-aware Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC.</p>
 <p>This method is added to the class via monkey-patching:</p>
 <ul>

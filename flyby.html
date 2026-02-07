@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Fly-by routines &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'flyby';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -435,17 +439,17 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="fly-by-routines">
-<span id="flyby"></span><h1>Fly-by routines<a class="headerlink" href="#fly-by-routines" title="Permalink to this heading">#</a></h1>
+<span id="flyby"></span><h1>Fly-by routines<a class="headerlink" href="#fly-by-routines" title="Link to this heading">#</a></h1>
 <p>The gravity assist technique, widely used in the Pioneer and Voyager missions, was developed by Michael Andrew Minovitch when he was a UCLA
 graduate student working as intern at NASA’s Jet Propulsion Laboratory. Many authors later refined the technique which, avoiding to solve
 directly the full three body problem, is based on patching the planetocentric hyperbola with incoming and outgoing (elliptic) trajectories.
 In <cite>pykep</cite> we offer the basic routines that allow to use this technqiue in the context of trajectory optimization and patched conics propagations.</p>
 <hr class="docutils" />
 <section id="minovitch-fly-by">
-<h2>Minovitch fly-by<a class="headerlink" href="#minovitch-fly-by" title="Permalink to this heading">#</a></h2>
+<h2>Minovitch fly-by<a class="headerlink" href="#minovitch-fly-by" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.fb_con">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_con</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_rel_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_rel_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe_radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_con" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_con</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_rel_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_rel_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe_radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_con" title="Link to this definition">#</a></dt>
 <dd><p>Alternative signature: fb_con(v_rel_in, v_rel_out, planet)</p>
 <p>Computes the constraint violation during a fly-by modelled as an instantaneous rotation of the incoming and outgoing relative velocities (Mivovitch).
 The two must be identical in magnitude (equality constraint) and the angle <span class="math notranslate nohighlight">\(\alpha\)</span> between them must be less than the 
@@ -481,7 +485,7 @@ low-thrust legs are patched at the fly-by planets by forcing satisfaction for th
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.fb_dv">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_dv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_rel_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_rel_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe_radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_dv" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_dv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_rel_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_rel_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe_radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_dv" title="Link to this definition">#</a></dt>
 <dd><p>Alternative signature: fb_dv(v_rel_in, v_rel_out, planet)</p>
 <p>Computes the <span class="math notranslate nohighlight">\(\Delta V\)</span> necessary to perform a fly-by modelled as an instantaneous rotation of the incoming and outgoing
 relative velocities (Mivovitch). If planetary gravity is not enough to patch the incoming and outcoming conditions
@@ -511,7 +515,7 @@ Lambert arcs are patched at the fly-by planets by applying a hopefully vanishing
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.fb_vout">
-<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_vout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_pla</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_vout" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykep.</span></span><span class="sig-name descname"><span class="pre">fb_vout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_pla</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.fb_vout" title="Link to this definition">#</a></dt>
 <dd><p>Propagates incoming conditions through a planetary encounter (fly-by) assuming an instantaneous rotation of magnitude <span class="math notranslate nohighlight">\(\delta\)</span> of 
 the incoming and outgoing relative velocities (Mivovitch). The planetocentric hyperbola (hence the angle <span class="math notranslate nohighlight">\(\delta\)</span>) is fully
 determined by the incoming condition <span class="math notranslate nohighlight">\(v_{\infty} = \mathbf v_{in} - \mathbf v_{pla}\)</span> as well as by its pericenter <span class="math notranslate nohighlight">\(r_p\)</span>

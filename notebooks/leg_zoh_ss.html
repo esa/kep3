@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>The Zero Order Hold - Solar Sail &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/leg_zoh_ss';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -463,7 +467,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="the-zero-order-hold-solar-sail">
-<h1>The Zero Order Hold - Solar Sail<a class="headerlink" href="#the-zero-order-hold-solar-sail" title="Permalink to this heading">#</a></h1>
+<h1>The Zero Order Hold - Solar Sail<a class="headerlink" href="#the-zero-order-hold-solar-sail" title="Link to this heading">#</a></h1>
 <p>The Zero Order Hold (ZOH) Solar Sail trajectory leg is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a>. Closely resembling
 <a class="reference internal" href="../leg.html#pykep.leg.zoh" title="pykep.leg.zoh"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh</span></code></a>, illustrated in the <a class="reference internal" href="leg_zoh.html"><span class="std std-doc">The Zero Order Hold trajectory leg</span></a> notebook, this class allow to consider
 solar sailing dynamics, characterized by a 6D state and 2D control.</p>
@@ -508,7 +512,7 @@ solar sailing dynamics, characterized by a 6D state and 2D control.</p>
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="test-the-zero-hold-solar-sail-leg">
-<h1>1 - Test the zero hold solar sail leg<a class="headerlink" href="#test-the-zero-hold-solar-sail-leg" title="Permalink to this heading">#</a></h1>
+<h1>1 - Test the zero hold solar sail leg<a class="headerlink" href="#test-the-zero-hold-solar-sail-leg" title="Link to this heading">#</a></h1>
 <p>We compute the gradient of the mismatch constraints numerically and using the analytical ones provided by <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a>. We check that they are indeed the same,
 and in the process we learn how to instantiate and use the class.</p>
 <p>We need a small helper to get the numerical gradients easily:</p>
@@ -570,7 +574,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.1166279816253439e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0737249680382827e-07
 </pre></div>
 </div>
 </div>
@@ -585,7 +589,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.5526474894492453e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.3726928656212043e-07
 </pre></div>
 </div>
 </div>
@@ -600,7 +604,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.3766533585397248e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.186551480700172e-07
 </pre></div>
 </div>
 </div>
@@ -614,7 +618,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.1803653078240067e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2899751772157304e-07
 </pre></div>
 </div>
 </div>
@@ -637,7 +641,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1b801aafd27db9744c1460241b1845aacaffb857e08ece72fa0bd939fc0f0e4d.png" src="../_images/1b801aafd27db9744c1460241b1845aacaffb857e08ece72fa0bd939fc0f0e4d.png" />
+<img alt="../_images/0874da092092b98b7e53446570d1bcfb1a83551a2489737ae288d9746eafc267.png" src="../_images/0874da092092b98b7e53446570d1bcfb1a83551a2489737ae288d9746eafc267.png" />
 </div>
 </div>
 <p>Also in <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a> we can use our custom dynamics (for example equinoctial elements, or change the sail characterization), passing the corresponding integrators via the <em>tas</em> argument in the constructor.</p>

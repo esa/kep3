@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>The Sims-Flanagan high-fidelity trajectory leg &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/sims_flanagan_hf_leg';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -471,7 +475,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="the-sims-flanagan-high-fidelity-trajectory-leg">
-<h1>The Sims-Flanagan high-fidelity trajectory leg<a class="headerlink" href="#the-sims-flanagan-high-fidelity-trajectory-leg" title="Permalink to this heading">#</a></h1>
+<h1>The Sims-Flanagan high-fidelity trajectory leg<a class="headerlink" href="#the-sims-flanagan-high-fidelity-trajectory-leg" title="Link to this heading">#</a></h1>
 <p>The Sims-Flanagan trajectory leg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Jon A. Sims and Steve N. Flanagan. Preliminary design of low-thrust interplanetary missions. Paper AAS 99-338, AAS/AIAA Astrodynamics Specialist Conference, Girdwood, Alaska, August 16-18, 1999, 1997.">SF97</a>]</span> is implemented in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> in the class <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code>. The leg can be used to describe a low-thrust leg with low-fidelity as it assumes Keplerian dynamics
 and approximates the continuous thrust via a sequence of continuous, constant thrust arcs (zero-hold). The leg is defined by a starting position <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, an arrival position <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span> and a time of flight <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <p>A sequence of throttles <span class="math notranslate nohighlight">\(\mathbf u = [u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, u_{x2}, u_{y2}, u_{z2}, ... ]\)</span> define the direction and magnitude of the continuous throttle vector along each segment (i.e. trajectory parts of equal temporal length <span class="math notranslate nohighlight">\(\frac Tn\)</span>).</p>
@@ -597,7 +601,7 @@ Parameters              : [0, 0, 0, 0, 0]
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="the-gradients">
-<h1>The gradients<a class="headerlink" href="#the-gradients" title="Permalink to this heading">#</a></h1>
+<h1>The gradients<a class="headerlink" href="#the-gradients" title="Link to this heading">#</a></h1>
 <p>The main function of this leg is to serve as a fwd-bck shooting blosk in larger optimization problems. The efficent autodiff computation of the gradients of the mismatch and throttle constraints are thus provided for convenience. Indicating the mismatch constraints with <span class="math notranslate nohighlight">\(\mathbf{mc}\)</span> and the throttle constraints with <span class="math notranslate nohighlight">\(\mathbf{tc}\)</span> we seek the following quntities:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -638,10 +642,10 @@ dtcdu shape:  (10, 30)
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="gradient-correctness">
-<h1>Gradient correctness<a class="headerlink" href="#gradient-correctness" title="Permalink to this heading">#</a></h1>
+<h1>Gradient correctness<a class="headerlink" href="#gradient-correctness" title="Link to this heading">#</a></h1>
 <p>We check the gradient correctness against numerical differentiation.</p>
 <section id="first-the-mismatch-constraints">
-<h2>First the mismatch constraints<a class="headerlink" href="#first-the-mismatch-constraints" title="Permalink to this heading">#</a></h2>
+<h2>First the mismatch constraints<a class="headerlink" href="#first-the-mismatch-constraints" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># These functions are to be used in an estimate_gradient_h call</span>
@@ -694,7 +698,7 @@ Check gradient of mc wrt u:   True
 </div>
 </section>
 <section id="then-the-throttle-constraints">
-<h2>Then the throttle constraints<a class="headerlink" href="#then-the-throttle-constraints" title="Permalink to this heading">#</a></h2>
+<h2>Then the throttle constraints<a class="headerlink" href="#then-the-throttle-constraints" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">tc_from_u</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
@@ -729,7 +733,7 @@ Check gradient of mc wrt u:   True
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="custom-dynamics">
-<h1>Custom dynamics<a class="headerlink" href="#custom-dynamics" title="Permalink to this heading">#</a></h1>
+<h1>Custom dynamics<a class="headerlink" href="#custom-dynamics" title="Link to this heading">#</a></h1>
 <p>We can also build a <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.sims_flanagan_hf</span></code> leg using a custom (zero-hold) dynamics to propagate the various segments. The dynamics needs to be written taking care of a number of things:</p>
 <ul class="simple">
 <li><p>It must have, as parameters, <span class="math notranslate nohighlight">\(\mu, v_{eff}, T_1, T_2, T_3\)</span>, where these last three values represent the Cartesian component of a zero-hold thrust in some reference frame.</p></li>
@@ -846,7 +850,7 @@ Check gradient of mc wrt u:   True
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="embedding-the-leg-into-an-optimization-problem">
-<h1>Embedding the leg into an optimization problem<a class="headerlink" href="#embedding-the-leg-into-an-optimization-problem" title="Permalink to this heading">#</a></h1>
+<h1>Embedding the leg into an optimization problem<a class="headerlink" href="#embedding-the-leg-into-an-optimization-problem" title="Link to this heading">#</a></h1>
 <p>We are now going to use the leg we instantiated above in an optimization problem (a pagmo UDP) looking for a sequence of throttles and a time of flight able to “close” the trajectory. Our decision vector will thus be:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -984,7 +988,7 @@ Feasibility:  2.9033599489943893e-08
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="adding-the-gradients">
-<h1>Adding the gradients<a class="headerlink" href="#adding-the-gradients" title="Permalink to this heading">#</a></h1>
+<h1>Adding the gradients<a class="headerlink" href="#adding-the-gradients" title="Link to this heading">#</a></h1>
 <p>The UDP we wrote above does not have any gradient information, as one can verify printing on screen the pagmo problem object. This means that solvers, when called to solve that problem, will not have access to the gradient and must compute it numerically if they need it (SQP methods such as SNOPT do ned it).</p>
 <p>The {class}`pykep.leg.sims_flanagan_hf, as explained above, has the possibility to return various gradients which can be used to assemble the final gradients of the problem fitness. Lets see how</p>
 <div class="cell docutils container">

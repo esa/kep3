@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Trajectory Optimization Gym &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script src="_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'gym';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="notebooks/interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -452,17 +456,17 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="trajectory-optimization-gym">
-<span id="gym"></span><h1>Trajectory Optimization Gym<a class="headerlink" href="#trajectory-optimization-gym" title="Permalink to this heading">#</a></h1>
+<span id="gym"></span><h1>Trajectory Optimization Gym<a class="headerlink" href="#trajectory-optimization-gym" title="Link to this heading">#</a></h1>
 <p>A number of interplanetary trajectory problems are provided in <cite>pykep</cite> in the form of
 User Defined Problems (UDP) compatible with the <a class="reference external" href="https://esa.github.io/pygmo2/">pygmo</a> <span id="id1">[<a class="reference internal" href="bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> python package.
 All of the problems are instantiated upon import of the <cite>pykep</cite> module and can be used directly. The collection of all
 problems is called the “pykep gym” and hopes to become an established benchmark set to test the performances of evolutionary
 and traditional optimisation techniques on trajectory design problems.</p>
 <section id="mga-problems">
-<h2>MGA problems<a class="headerlink" href="#mga-problems" title="Permalink to this heading">#</a></h2>
+<h2>MGA problems<a class="headerlink" href="#mga-problems" title="Link to this heading">#</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.cassini1">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA</span> <span class="pre">direct</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P1)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA</span> <span class="pre">direct</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P1)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is an MGA problem inspired to the Cassini spacecraft interplanetary transfer to Saturn.
@@ -473,7 +477,7 @@ accumulated during the mission, including the launch <span class="math notransla
 and the various <span class="math notranslate nohighlight">\(\Delta V\)</span> one needs to give at the planets and upon arrival to perform the final orbit injection.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.cassini1_a">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA</span> <span class="pre">alpha</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P2)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1_a" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA</span> <span class="pre">alpha</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P2)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1_a" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is the same MGA problem as <a class="reference internal" href="#pykep.trajopt.gym.cassini1" title="pykep.trajopt.gym.cassini1"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1</span></code></a>, but with using
@@ -486,7 +490,7 @@ for multi-objective optimization problems where the total time of flight is a se
 on the pareto front.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.cassini1_n">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1_n</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini1</span> <span class="pre">MGA</span> <span class="pre">eta</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P3)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1_n" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini1_n</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini1</span> <span class="pre">MGA</span> <span class="pre">eta</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P3)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini1_n" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is the same MGA problem as <a class="reference internal" href="#pykep.trajopt.gym.cassini1" title="pykep.trajopt.gym.cassini1"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1</span></code></a>, but with using
@@ -495,10 +499,10 @@ the times of flight but an equivalent set called the eta encoding. This encoding
 when bounds on the times of flight are not known a priori. It creates a less evolvable problem, albeit a less biased one.</p>
 </section>
 <section id="mga-1dsm-problems">
-<h2>MGA-1DSM problems<a class="headerlink" href="#mga-1dsm-problems" title="Permalink to this heading">#</a></h2>
+<h2>MGA-1DSM problems<a class="headerlink" href="#mga-1dsm-problems" title="Link to this heading">#</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.cassini2">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA-1DSM</span> <span class="pre">direct</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P11)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini2" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">cassini2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Cassini</span> <span class="pre">MGA-1DSM</span> <span class="pre">direct</span> <span class="pre">tof</span> <span class="pre">encoding</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P11)</span></em><a class="headerlink" href="#pykep.trajopt.gym.cassini2" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem inspired to the Cassini spacecraft interplanetary transfer to Saturn.
@@ -506,7 +510,7 @@ It is fundamentally similar to <a class="reference internal" href="#pykep.trajop
 of each trajectory leg, and does not account for the launch <span class="math notranslate nohighlight">\(\Delta V\)</span> which is bounded instead to a maximum value.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.rosetta">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">rosetta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Rosetta</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P10)</span></em><a class="headerlink" href="#pykep.trajopt.gym.rosetta" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">rosetta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Rosetta</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P10)</span></em><a class="headerlink" href="#pykep.trajopt.gym.rosetta" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem inspired to the Rosetta spacecraft interplanetary transfer to comet 67P/Churyumov-Gerasimenko.
@@ -516,7 +520,7 @@ As objective function we use the total <span class="math notranslate nohighlight
 maneuvers and fly-bys. The launch <span class="math notranslate nohighlight">\(\Delta V\)</span> is not accounted for, as it is bounded to a maximum value.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.eve_mga1dsm">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem useful to test the performance of evolutionary algorithms on a simpe trajectory problem.
@@ -525,7 +529,7 @@ position and velocity exactly. As objective function we use the total <span clas
 maneuvers and fly-bys. The launch <span class="math notranslate nohighlight">\(\Delta V\)</span> is not accounted for, as it is bounded to a maximum value.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.eve_mga1dsm_a">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm_a" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm_a" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is the same MGA-1DSM problem as <code class="xref py py-class docutils literal notranslate"><span class="pre">eve_mga_1dsm</span></code>, but with using
@@ -533,7 +537,7 @@ a different encoding of the decision variables. In this case, the decision varia
 the times of flight but an equivalent set called the alpha encoding (see <a class="reference internal" href="#pykep.trajopt.gym.cassini1_a" title="pykep.trajopt.gym.cassini1_a"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1_a</span></code></a>).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.eve_mga1dsm_n">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm_n</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm_n" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">eve_mga1dsm_n</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Venus-Earth</span> <span class="pre">mga-1dsm</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P7-9)</span></em><a class="headerlink" href="#pykep.trajopt.gym.eve_mga1dsm_n" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is the same MGA-1DSM problem as <code class="xref py py-class docutils literal notranslate"><span class="pre">eve_mga_1dsm</span></code>, but with using
@@ -541,7 +545,7 @@ a different encoding of the decision variables. In this case, the decision varia
 the times of flight but an equivalent set called the eta encoding (see <a class="reference internal" href="#pykep.trajopt.gym.cassini1_n" title="pykep.trajopt.gym.cassini1_n"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1_n</span></code></a>).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.juice">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">juice</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Juice</span> <span class="pre">(Trajectory</span> <span class="pre">Optimization</span> <span class="pre">Gym</span> <span class="pre">P13-14)</span></em><a class="headerlink" href="#pykep.trajopt.gym.juice" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">juice</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Juice</span> <span class="pre">(Trajectory</span> <span class="pre">Optimization</span> <span class="pre">Gym</span> <span class="pre">P13-14)</span></em><a class="headerlink" href="#pykep.trajopt.gym.juice" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem inspired to the JUICE spacecraft interplanetary transfer to Jupiter.
@@ -555,7 +559,7 @@ planetary objects and possible habitats, explore Jupiter’s complex environment
 Jupiter system as an archetype for gas giants across the Universe.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.juice_mo">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">juice_mo</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Juice</span> <span class="pre">(Trajectory</span> <span class="pre">Optimization</span> <span class="pre">Gym</span> <span class="pre">P13-14)</span></em><a class="headerlink" href="#pykep.trajopt.gym.juice_mo" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">juice_mo</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Juice</span> <span class="pre">(Trajectory</span> <span class="pre">Optimization</span> <span class="pre">Gym</span> <span class="pre">P13-14)</span></em><a class="headerlink" href="#pykep.trajopt.gym.juice_mo" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This is the same MGA-1DSM problem as <a class="reference internal" href="#pykep.trajopt.gym.juice" title="pykep.trajopt.gym.juice"><code class="xref py py-class docutils literal notranslate"><span class="pre">juice</span></code></a>, but with using
@@ -564,7 +568,7 @@ The problem is also muulti-objective, with the total time of flight as a second 
 alpha encoding to control the total time of flight (at the cost of evolvability).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.messenger">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">messenger</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MGA_1DSM</span> <span class="pre">Trajectory</span></em><a class="headerlink" href="#pykep.trajopt.gym.messenger" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">messenger</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MGA_1DSM</span> <span class="pre">Trajectory</span></em><a class="headerlink" href="#pykep.trajopt.gym.messenger" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <p>This an MGA-1DSM problem inspired by the messenger mission that orbited the planet Mercury between 2011 and 2015, studying Mercury’s chemical composition,
@@ -578,20 +582,20 @@ Finding a global optimization approach able to find a good trajectory in complet
 use of additional problem knowledge is challenging but possible, but limiting the number of fitness call is difficult.</p>
 </section>
 <section id="multiple-impulse-problem">
-<h2>Multiple impulse problem<a class="headerlink" href="#multiple-impulse-problem" title="Permalink to this heading">#</a></h2>
+<h2>Multiple impulse problem<a class="headerlink" href="#multiple-impulse-problem" title="Link to this heading">#</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.em3imp">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em3imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">3</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P4)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em3imp" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em3imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">3</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P4)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em3imp" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.em5imp">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em5imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">5</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P5)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em5imp" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em5imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">5</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P5)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em5imp" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.em7imp">
-<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em7imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">7</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P6)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em7imp" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gym.</span></span><span class="sig-name descname"><span class="pre">em7imp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Earth-Mars</span> <span class="pre">7</span> <span class="pre">impulses</span> <span class="pre">(Trajectory</span> <span class="pre">Optimisation</span> <span class="pre">Gym</span> <span class="pre">P6)</span></em><a class="headerlink" href="#pykep.trajopt.gym.em7imp" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </section>

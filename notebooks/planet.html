@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Planets and User Defined Planets (UDPLAs) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/planet';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -465,7 +469,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="planets-and-user-defined-planets-udplas">
-<h1>Planets and User Defined Planets (UDPLAs)<a class="headerlink" href="#planets-and-user-defined-planets-udplas" title="Permalink to this heading">#</a></h1>
+<h1>Planets and User Defined Planets (UDPLAs)<a class="headerlink" href="#planets-and-user-defined-planets-udplas" title="Link to this heading">#</a></h1>
 <p>The ephemerides of a body are the position end velocity Cartesian vectors of a moving object. In <code class="docutils literal notranslate"><span class="pre">pykep</span></code> the class <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> offers a common interface to access various ephemerides, regardless on how they are computed. Whether the underlying computations are simply Keplerian, or based on more advanced trajectory propagations, interpolations or predictions, a unified interface is offered by this type-erasing class.</p>
 <p>The user can code his own python class following the mandatory interface of a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> and his own coded objects will be treated uniformly as any other planet in <code class="docutils literal notranslate"><span class="pre">pykep</span></code>. These User Defined Planets (or UPLAs) can implement heterogeneous techniques and interface to any third-party API, but once they are used to construct a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>, they will appear as any other <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> in <code class="docutils literal notranslate"><span class="pre">pykep</span></code>.</p>
 <p>For convenience, a number of already coded UDPLAs are offered so that, to start with, users can compute the positions of planet, satellites comets and spacecraft without the need to code their own UDPLA.</p>
@@ -479,7 +483,7 @@ document.write(`
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="udplas-in-pykep">
-<h1>UDPLAs in pykep<a class="headerlink" href="#udplas-in-pykep" title="Permalink to this heading">#</a></h1>
+<h1>UDPLAs in pykep<a class="headerlink" href="#udplas-in-pykep" title="Link to this heading">#</a></h1>
 <p>Let us start to use the UDPLA <a class="reference internal" href="../udpla.html#pykep.udpla.keplerian" title="pykep.udpla.keplerian"><code class="xref py py-class docutils literal notranslate"><span class="pre">keplerian</span></code></a> which describes the motion of an object in a Keplerian orbit. All UDPLAs provided by <code class="docutils literal notranslate"><span class="pre">pykep</span></code> are in the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">udpla</span></code></p>
 <p><a class="reference external" href="https://naif.jpl.nasa.gov/naif/aboutspice.html">SPICE</a> kernels can be used to create the UDPLA <a class="reference internal" href="../udpla.html#pykep.udpla.spice" title="pykep.udpla.spice"><code class="xref py py-class docutils literal notranslate"><span class="pre">spice</span></code></a>, without needing to download kernels, the <a class="reference external" href="https://ssd.jpl.nasa.gov/planets/orbits.html">DE440</a> ephemerides are conveniently provided in <a class="reference internal" href="../udpla.html#pykep.udpla.de440s" title="pykep.udpla.de440s"><code class="xref py py-class docutils literal notranslate"><span class="pre">de440s</span></code></a>. For <a class="reference external" href="https://en.wikipedia.org/wiki/Two-line_element_set">TLEs</a> the UDPLA <a class="reference internal" href="../udpla.html#pykep.udpla.tle" title="pykep.udpla.tle"><code class="xref py py-class docutils literal notranslate"><span class="pre">tle</span></code></a> can be used to build a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a>.</p>
 <div class="cell docutils container">
@@ -545,7 +549,7 @@ v at ref. = [0, 1, 0]
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="custom-udplas-a-tutorial">
-<h1>Custom UDPLAs: a tutorial<a class="headerlink" href="#custom-udplas-a-tutorial" title="Permalink to this heading">#</a></h1>
+<h1>Custom UDPLAs: a tutorial<a class="headerlink" href="#custom-udplas-a-tutorial" title="Link to this heading">#</a></h1>
 <p>Lets see how users can define their own custom udplas and thus leverage the common <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> interface.
 A minimal version includes the method <em>eph</em> only. Here we will code a very simple and strange object moving in a rectilinear constant motion
 along the x-axis. Its a ficticious object and it only serves the purpose of this tutorial.</p>
@@ -667,7 +671,7 @@ call to *elements* makes use of the user provided mu: [0.0, nan, nan, nan, nan, 
 <p>Note the <em>nans</em> deriving from the impossibility to define osculating equinoctial elemnts for this <em>weird</em> body moving along a line passing throught eh origin … all good. Equinoctial elements are non-singular …. up to a certain extent!</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="custom-udplas-an-example-in-the-cr3bp">
-<h1>Custom UDPLAs: an example in the CR3BP<a class="headerlink" href="#custom-udplas-an-example-in-the-cr3bp" title="Permalink to this heading">#</a></h1>
+<h1>Custom UDPLAs: an example in the CR3BP<a class="headerlink" href="#custom-udplas-an-example-in-the-cr3bp" title="Link to this heading">#</a></h1>
 <p>Lets say we want to define a <a class="reference internal" href="../planet.html#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> in the CR3BP. For example we may have an object <em>station</em> moving along a periodic orbit around L1.
 We need to define an udpla able to compute <span class="math notranslate nohighlight">\(r,v\)</span> and possibly <span class="math notranslate nohighlight">\(a\)</span> at some given epoch. We assume non dimensional units for the <em>state</em>.</p>
 <div class="cell docutils container">

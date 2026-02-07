@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pontryagin_equinoctial_time';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -463,7 +467,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="low-thrust-transfers-via-indirect-methods-iv-time-mean-equinoctial-elements">
-<h1>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-iv-time-mean-equinoctial-elements" title="Permalink to this heading">#</a></h1>
+<h1>Low-thrust transfers via indirect methods IV (time, mean equinoctial elements)<a class="headerlink" href="#low-thrust-transfers-via-indirect-methods-iv-time-mean-equinoctial-elements" title="Link to this heading">#</a></h1>
 <p>In this notebook we show how to solve the <strong>minimum time</strong> Optimal Control Problem (OCP) for a low-thrust interplanetary transfer employing an indirect method and using</p>
 <p>Indirect methods follow rather mechanic developments: starting from the dynamics a TPBVP (Two-Point-Boundary-Value-Problem) is built applying Pontryagin maximum (minimum, in our case) principle (PMP). The TPBVP is defined on an augmented ODE system and solved by means of single or multiple shooting methods.</p>
 <p>In this notebook we guide, step-by-step, the reader in the application of such a method in a widely encountered case in space flight mechanics. Eventually use <code class="docutils literal notranslate"><span class="pre">pykep</span></code> native tools to quickly skip the tedious parts.</p>
@@ -482,7 +486,7 @@ document.write(`
 </div>
 </div>
 <section id="manual-construction-of-the-tpbvp">
-<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Permalink to this heading">#</a></h2>
+<h2>Manual construction of the TPBVP<a class="headerlink" href="#manual-construction-of-the-tpbvp" title="Link to this heading">#</a></h2>
 <p>We consider the motion of a spacecraft of mass <span class="math notranslate nohighlight">\(m\)</span> with a position <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> and velocity <span class="math notranslate nohighlight">\(\mathbf{v}\)</span> subject only to the Sun’s gravitational attraction in some inertial reference frame. The spacecraft also has an ion thruster with a specific impulse <span class="math notranslate nohighlight">\(I_{sp}\)</span> and a maximum thrust <span class="math notranslate nohighlight">\(T_{max} = c_1\)</span> independent from solar distance.
 We describe the spacecraft state via its mass <span class="math notranslate nohighlight">\(m\)</span> and the (prograde) modified equinoctial elements <span class="math notranslate nohighlight">\(\mathbf{x}=\left[p,f,g,h,k,L\right]^T\)</span> (See the <a class="reference internal" href="../elements.html"><span class="std std-doc">Elements page</span></a> for their exact definition within <code class="docutils literal notranslate"><span class="pre">pykep</span></code>).</p>
 <div class="math notranslate nohighlight">
@@ -697,7 +701,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 </div>
 </section>
 <section id="constructing-the-tpbvp-using-pykep">
-<h2>Constructing the TPBVP using pykep<a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Permalink to this heading">#</a></h2>
+<h2>Constructing the TPBVP using pykep<a class="headerlink" href="#constructing-the-tpbvp-using-pykep" title="Link to this heading">#</a></h2>
 <p>For the specific case outlined above pykep offers a convenient series of pre-assembled functions and objects which basically construct the same objects as above.</p>
 <p>These can turn out to be useful or analysis of specific cases, but in general they are used internally by various UDP provided in <code class="docutils literal notranslate"><span class="pre">pykep</span></code> hence the user in most cases does not need to care.</p>
 <div class="cell docutils container">
@@ -722,7 +726,7 @@ We also introduce as many auxiliary functions <span class="math notranslate nohi
 </div>
 </section>
 <section id="solving-in-single-shooting">
-<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Permalink to this heading">#</a></h2>
+<h2>Solving in single shooting<a class="headerlink" href="#solving-in-single-shooting" title="Link to this heading">#</a></h2>
 <p>All the code above was merely showed for tutorial purposes.</p>
 <p>Now we scratch all of that and use dedicated <code class="docutils literal notranslate"><span class="pre">pykep</span></code> clsses to construct, based on the TPVP described in detail above, a shoting problem.</p>
 <p>We use, as a test case, the very same simple transfer used in a previous <a class="reference internal" href="pontryagin_equinoctial_mass.html"><span class="std std-doc">notebook on the mass optimal</span></a>. The transfer is simple enough to allow fast convergence.</p>
@@ -874,16 +878,10 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 ******************************************************************************
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
@@ -892,19 +890,25 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-Final mass is: 1049.433861185714
-Total time to success: 21.260 seconds
-Number of successes: 3 over 10 trials (30.0 %)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+Final mass is: 1049.4338611857286
+Total time to success: 15.091 seconds
+Number of successes: 6 over 10 trials (60.0 %)
 </pre></div>
 </div>
 </div>
@@ -928,25 +932,22 @@ Number of successes: 3 over 10 trials (30.0 %)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>x
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
-Final mass is: 1049.4338611847372
-Total time to success: 3.946 seconds
-Number of successes: 6 over 10 trials (60.0 %)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.
+Final mass is: 1049.4338612720621
+Total time to success: 2.906 seconds
+Number of successes: 10 over 10 trials (100.0 %)
 </pre></div>
 </div>
 </div>
@@ -970,7 +971,7 @@ Number of successes: 6 over 10 trials (60.0 %)
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5328b25d18dfbab450ab8470931304ca00f53169dcceb05e3c398e98d493209b.png" src="../_images/5328b25d18dfbab450ab8470931304ca00f53169dcceb05e3c398e98d493209b.png" />
+<img alt="../_images/2b58a835ef815471e2357d40ff518dd13e5a7452512eefc78129ed8de1f866ac.png" src="../_images/2b58a835ef815471e2357d40ff518dd13e5a7452512eefc78129ed8de1f866ac.png" />
 </div>
 </div>
 </section>

@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Multiple Gravity Assist with one DSM (MGA-1DSM) &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,10 +37,10 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_mga_1dsm';</script>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -462,7 +466,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="multiple-gravity-assist-with-one-dsm-mga-1dsm">
-<h1>Multiple Gravity Assist with one DSM (MGA-1DSM)<a class="headerlink" href="#multiple-gravity-assist-with-one-dsm-mga-1dsm" title="Permalink to this heading">#</a></h1>
+<h1>Multiple Gravity Assist with one DSM (MGA-1DSM)<a class="headerlink" href="#multiple-gravity-assist-with-one-dsm-mga-1dsm" title="Link to this heading">#</a></h1>
 <p>In this tutorial, we use the <a class="reference internal" href="../trajopt.html#pykep.trajopt.mga_1dsm" title="pykep.trajopt.mga_1dsm"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.mga_1dsm</span></code></a> to design an interplanetary trajectory. The MGA-1DSM encoding of an interplanetary trajectory models multiple (pre-defined) planetary encounters, and enables for propulsion manovures in the form of one instantaneous <span class="math notranslate nohighlight">\(\Delta V\)</span> at any time along each leg.</p>
 <p>The specific encoding used, described in the book Chapter <span id="id1">[<a class="reference internal" href="../bibliography.html#id13" title="Dario Izzo. Global optimization and space pruning for spacecraft trajectory design. Spacecraft Trajectory Optimization, 1:178–200, 2010.">Izz10</a>]</span> by Izzo D., is useful as a preliminar mission design tool automating the search for good planetary geometries giving the possibility to design trajectories through a process mimicking natural evolution.</p>
 <p>This encoding has also been used in the past to define instances of real-world optimization problems to be used in benchmarking optimization tools suitable for interplanetary mission design.</p>
@@ -558,7 +562,7 @@ document.write(`
 The MGA-1DSM model is less evolvable than the MGA model, hence the higher cost computed using the identical evolutionary pipeline.
 In reality, the model offers more flexibility and reduced <span class="math notranslate nohighlight">\(\Delta V\)</span> costs can be obtained using more refined evolutionary schemes, but this is not the <em>topic</em> of this notebook.</p>
 <section id="plotting-the-trajectory">
-<h2>Plotting the trajectory<a class="headerlink" href="#plotting-the-trajectory" title="Permalink to this heading">#</a></h2>
+<h2>Plotting the trajectory<a class="headerlink" href="#plotting-the-trajectory" title="Link to this heading">#</a></h2>
 <p>There are several ways one can plot the solution, depending on what we want to ‘see’. Lets start with one “at-a-glance” plot:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -631,7 +635,7 @@ In reality, the model offers more flexibility and reduced <span class="math notr
 </div>
 </section>
 <section id="analyzing-the-trajectory">
-<h2>Analyzing the trajectory<a class="headerlink" href="#analyzing-the-trajectory" title="Permalink to this heading">#</a></h2>
+<h2>Analyzing the trajectory<a class="headerlink" href="#analyzing-the-trajectory" title="Link to this heading">#</a></h2>
 <p>For a quick analysis of the trajectory we may use the pretty method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

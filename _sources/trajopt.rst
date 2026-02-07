@@ -85,7 +85,7 @@ amenable to evolutionary techniques.
     :members: pretty, plot, to_planet
 
 .. autoclass:: mga_1dsm
-    :members: pretty, plot, to_planet
+    :members: pretty, plot
 
 .. autoclass:: pl2pl_N_impulses
     :members: pretty, plot, plot_primer_vector

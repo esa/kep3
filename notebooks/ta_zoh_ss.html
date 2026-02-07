@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Inspecting the Zero Hold simple sail dynamics &#8212; pykep 3.0.0 documentation</title>
   
@@ -29,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,15 +37,17 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/documentation_options.js?v=6a41c08d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ta_zoh_ss';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inspecting the CR3BP and BCP" href="ta_cr3bp_bcp.html" />
+    <link rel="prev" title="Lagrange Propagation" href="propagate_lagrangian.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,8 +109,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -184,8 +183,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_basic.html">Basic</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">The various anomalies in pykep</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epochs.html">Epochs and Julian Dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planet.html">Planets and User Defined Planets (UDPLAs)</a></li>
@@ -194,6 +193,11 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Inspecting the Zero Hold simple sail dynamics</a></li>
+
+
+
+
 <li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
@@ -466,7 +470,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="inspecting-the-zero-hold-simple-sail-dynamics">
-<h1>Inspecting the Zero Hold simple sail dynamics<a class="headerlink" href="#inspecting-the-zero-hold-simple-sail-dynamics" title="Permalink to this heading">#</a></h1>
+<h1>Inspecting the Zero Hold simple sail dynamics<a class="headerlink" href="#inspecting-the-zero-hold-simple-sail-dynamics" title="Link to this heading">#</a></h1>
 <p>In this notebook we birefly instantiate and plot some trajectories for the dynamics of a simple solar sail, provided in <code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.ta.zoh_ss</span></code>.</p>
 <p>As detailed in the documentation, the dynamics (non dimensional) is:</p>
 <div class="math notranslate nohighlight">
@@ -507,7 +511,7 @@ T = c (1. / r^2) \cos^2\alpha
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="system-definition">
-<h1>System definition<a class="headerlink" href="#system-definition" title="Permalink to this heading">#</a></h1>
+<h1>System definition<a class="headerlink" href="#system-definition" title="Link to this heading">#</a></h1>
 <p>Let us start by importing the orbital propagators for the simple solar sail dynamics:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -554,10 +558,10 @@ T = c (1. / r^2) \cos^2\alpha
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<h1><a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="simulating-with-no-sail-acceleration">
-<h1>Simulating with no sail acceleration<a class="headerlink" href="#simulating-with-no-sail-acceleration" title="Permalink to this heading">#</a></h1>
+<h1>Simulating with no sail acceleration<a class="headerlink" href="#simulating-with-no-sail-acceleration" title="Link to this heading">#</a></h1>
 <p>When the cone angle <span class="math notranslate nohighlight">\(\alpha\)</span> is <span class="math notranslate nohighlight">\(\pm \frac{\pi}2\)</span> the sail acceleration is null an one recovers a ballistic trajectory.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -588,7 +592,7 @@ T = c (1. / r^2) \cos^2\alpha
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="simulating-some-sail-action">
-<h1>Simulating some sail action<a class="headerlink" href="#simulating-some-sail-action" title="Permalink to this heading">#</a></h1>
+<h1>Simulating some sail action<a class="headerlink" href="#simulating-some-sail-action" title="Link to this heading">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setting the sail orientation to maximally increase semimajor axis</span>
@@ -626,7 +630,7 @@ T = c (1. / r^2) \cos^2\alpha
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f1d6e036cf0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb5340aae40&gt;
 </pre></div>
 </div>
 <img alt="../_images/e6039014b04e35e1b7983f67b5b4f83c99c4ca05560c8b76bda4a854fde6dbd7.png" src="../_images/e6039014b04e35e1b7983f67b5b4f83c99c4ca05560c8b76bda4a854fde6dbd7.png" />
@@ -645,6 +649,24 @@ T = c (1. / r^2) \cos^2\alpha
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="propagate_lagrangian.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lagrange Propagation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ta_cr3bp_bcp.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Inspecting the CR3BP and BCP</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
