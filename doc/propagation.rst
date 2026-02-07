@@ -104,7 +104,7 @@ Zero Hold CR3BP Propagator in Cartesian coordinates
 
 .. autofunction:: get_zoh_cr3bp
 
-.. autofunction:: get_zoh_cr3bp
+.. autofunction:: get_zoh_cr3bp_var
 
 .. autofunction:: zoh_cr3bp_dyn 
 
@@ -113,7 +113,7 @@ Zero Hold Solar Sail Propagator in Cartesian coordinates
 
 .. autofunction:: get_zoh_ss
 
-.. autofunction:: get_zoh_ss
+.. autofunction:: get_zoh_ss_var
 
 .. autofunction:: zoh_ss_dyn 
 
