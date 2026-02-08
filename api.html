@@ -159,6 +159,8 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+
+
 <li class="toctree-l2"><a class="reference internal" href="constants.html">Global constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elements.html">Orbital Elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="epoch.html">Epoch class</a></li>
@@ -427,9 +429,39 @@ document.write(`
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="anomalies.html#normal">Normal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anomalies.html#vectorized">Vectorized</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomalies.html">Anomalies Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomalies.html#normal">Normal</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.m2e"><code class="docutils literal notranslate"><span class="pre">m2e()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.e2m"><code class="docutils literal notranslate"><span class="pre">e2m()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.m2f"><code class="docutils literal notranslate"><span class="pre">m2f()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2m"><code class="docutils literal notranslate"><span class="pre">f2m()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.e2f"><code class="docutils literal notranslate"><span class="pre">e2f()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2e"><code class="docutils literal notranslate"><span class="pre">f2e()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.n2h"><code class="docutils literal notranslate"><span class="pre">n2h()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.h2n"><code class="docutils literal notranslate"><span class="pre">h2n()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.n2f"><code class="docutils literal notranslate"><span class="pre">n2f()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2n"><code class="docutils literal notranslate"><span class="pre">f2n()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.h2f"><code class="docutils literal notranslate"><span class="pre">h2f()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2h"><code class="docutils literal notranslate"><span class="pre">f2h()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.zeta2f"><code class="docutils literal notranslate"><span class="pre">zeta2f()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2zeta"><code class="docutils literal notranslate"><span class="pre">f2zeta()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="anomalies.html#vectorized">Vectorized</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.m2e_v"><code class="docutils literal notranslate"><span class="pre">m2e_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.e2m_v"><code class="docutils literal notranslate"><span class="pre">e2m_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.m2f_v"><code class="docutils literal notranslate"><span class="pre">m2f_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2m_v"><code class="docutils literal notranslate"><span class="pre">f2m_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.e2f_v"><code class="docutils literal notranslate"><span class="pre">e2f_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2e_v"><code class="docutils literal notranslate"><span class="pre">f2e_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.n2h_v"><code class="docutils literal notranslate"><span class="pre">n2h_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.h2n_v"><code class="docutils literal notranslate"><span class="pre">h2n_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.n2f_v"><code class="docutils literal notranslate"><span class="pre">n2f_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2n_v"><code class="docutils literal notranslate"><span class="pre">f2n_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.h2f_v"><code class="docutils literal notranslate"><span class="pre">h2f_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2h_v"><code class="docutils literal notranslate"><span class="pre">f2h_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.zeta2f_v"><code class="docutils literal notranslate"><span class="pre">zeta2f_v()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalies.html#pykep.f2zeta_v"><code class="docutils literal notranslate"><span class="pre">f2zeta_v()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="constants.html">Global constants</a></li>
