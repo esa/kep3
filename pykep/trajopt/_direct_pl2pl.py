@@ -1,6 +1,6 @@
 ## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani
-## (bluescarni@gmail.com)## 
-## This file is part of the kep3 library.## 
+## (bluescarni@gmail.com)##
+## This file is part of the kep3 library.##
 ## This Source Code Form is subject to the terms of the Mozilla
 ## Public License v. 2.0. If a copy of the MPL was not distributed
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -32,7 +32,7 @@ class direct_pl2pl:
         ms=1500,
         mu=pk.MU_SUN,
         max_thrust=0.12,
-        veff=3000*pk.G0,
+        veff=3000 * pk.G0,
         t0_bounds=[6700.0, 6800.0],
         tof_bounds=[200.0, 300.0],
         mf_bounds=[1300.0, 1500.0],
@@ -44,7 +44,6 @@ class direct_pl2pl:
         r_scaling=pk.AU,
         v_scaling=pk.EARTH_VELOCITY,
         with_gradient=True,
-        high_fidelity=False,
     ):
         """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
 
@@ -83,15 +82,10 @@ class direct_pl2pl:
 
             *with_gradient* (:class:`bool`): Indicates if gradient information should be used. Defaults True.
 
-            *high_fidelity* (:class:`bool`): Indicates if sims flanagan leg uses DV impulses, or zero-order hold continous thrust (note unclear how reliable graidents are). Defaults False.
-
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
-        if high_fidelity:
-            self.leg = pk.leg.sims_flanagan_hf()
-        else:
-            self.leg = pk.leg.sims_flanagan()
-            
+        self.leg = pk.leg.sims_flanagan()
+
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
         self.leg.veff = veff
@@ -157,7 +151,7 @@ class direct_pl2pl:
         # 3 - We add the departure vinfs constraint (quadratic)
         cineq = cineq + [
             (x[2] ** 2 + x[3] ** 2 + x[4] ** 2 - self.vinfs**2) / (self.v_scaling**2)
-        ] 
+        ]
         # We add the departure vinff constraint (quadratic)
         cineq = cineq + [
             (x[5] ** 2 + x[6] ** 2 + x[7] ** 2 - self.vinff**2) / (self.v_scaling**2)
@@ -338,7 +332,7 @@ class direct_pl2pl:
         # Making the axis
         if ax is None:
             ax = pk.plot.make_3Daxis(figsize=(7, 7))
-            
+
         rs, _ = sf.rvs
         rf, _ = sf.rvf
         ax.scatter(rs[0] / pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
@@ -351,27 +345,15 @@ class direct_pl2pl:
         ax = pk.plot.add_planet_orbit(ax, self.plf, c="gray", alpha=0.5)
 
         # Plotting the trajctory leg
-        if self.high_fidelity:
-            ax = pk.plot.add_sf_hf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
-        else:
-            ax = pk.plot.add_sf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                show_midpoints=show_midpoints,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
+        ax = pk.plot.add_sf_leg(
+            ax,
+            sf,
+            units=units,
+            show_throttles=show_throttles,
+            length=length,
+            show_gridpoints=show_gridpoints,
+            show_midpoints=show_midpoints,
+            arrow_length_ratio=arrow_length_ratio,
+            **kwargs,
+        )
         return ax

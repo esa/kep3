@@ -43,9 +43,8 @@ class direct_pl2pl_alpha:
         cut=0.6,
         mass_scaling=1500,
         r_scaling=pk.AU,
-        v_scaling=pk.EARTH_VELOCITY,
-        high_fidelity=False,
-    ):
+        v_scaling=pk.EARTH_VELOCITY
+        ):
         """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, high_fidelity=False)
 
         Args:
@@ -81,14 +80,9 @@ class direct_pl2pl_alpha:
 
             *v_scaling* (:class:`float`): Scaling factor for velocity (used to scale constraints). Defaults the Earth's velocity (:class:`~pykep.EARTH_VELOCITY`).
 
-            *high_fidelity* (:class:`bool`): Indicates if sims flanagan leg uses DV impulses, or zero-order hold continous thrust (note unclear how reliable graidents are). Defaults False.
-
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
-        if high_fidelity:
-            self.leg = pk.leg.sims_flanagan_hf_alpha()
-        else:
-            self.leg = pk.leg.sims_flanagan_alpha()
+        self.leg = pk.leg.sims_flanagan_alpha()
             
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
@@ -108,7 +102,6 @@ class direct_pl2pl_alpha:
         self.mass_scaling = mass_scaling
         self.r_scaling = r_scaling
         self.v_scaling = v_scaling
-        self.high_fidelity = high_fidelity
 
     # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, talphas, throttles, tof]
     def get_bounds(self):
@@ -285,29 +278,16 @@ class direct_pl2pl_alpha:
         ax = pk.plot.add_planet_orbit(ax, self.plf, c="gray", alpha=0.5)
 
         # Plotting the trajctory leg
-        if self.high_fidelity:
-            ax = pk.plot.add_sf_hf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                arrow_length_ratio=arrow_length_ratio,
-                use_alpha = True,
-                **kwargs,
-            )
-        else:
-            ax = pk.plot.add_sf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                show_midpoints=show_midpoints,
-                use_alpha = True,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
+        ax = pk.plot.add_sf_leg(
+            ax,
+            sf,
+            units=units,
+            show_throttles=show_throttles,
+            length=length,
+            show_gridpoints=show_gridpoints,
+            show_midpoints=show_midpoints,
+            use_alpha = True,
+            arrow_length_ratio=arrow_length_ratio,
+            **kwargs,
+        )
         return ax

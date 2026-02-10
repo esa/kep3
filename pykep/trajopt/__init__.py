@@ -12,9 +12,7 @@ User defined problems (compatible to pagmo) that represent interplanetary optimi
 # Direct methods for low-thrust problems
 from ._direct_point2point import direct_point2point
 from ._direct_pl2pl import direct_pl2pl
-from ._direct_cr3bp import direct_cr3bp
 from ._direct_pl2pl_alpha import direct_pl2pl_alpha
-from ._direct_cr3bp_alpha import direct_cr3bp_alpha
 
 # Evolutionary encodings for high energy transfers (chemical propulsion)
 from ._mga import mga

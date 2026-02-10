@@ -31,7 +31,5 @@ ADD_kep3_BENCHMARK(propagate_lagrangian_benchmark)
 ADD_kep3_BENCHMARK(lambert_problem_benchmark)
 ADD_kep3_BENCHMARK(stm_benchmark)
 ADD_kep3_BENCHMARK(leg_sims_flanagan_benchmark)
-ADD_kep3_BENCHMARK(leg_sims_flanagan_hf_benchmark)
 ADD_kep3_BENCHMARK(leg_sf_benchmark_simple)
-
 
