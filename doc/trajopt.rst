@@ -26,17 +26,17 @@ to then solve it using numerical solvers available for the task.
 
 -------------------------------------------------------
 
-.. autoclass:: direct_point2point
+.. autoclass:: sf_point2point
     :members: pretty, plot
 
 -------------------------------------------------------
 
-.. autoclass:: direct_pl2pl
+.. autoclass:: sf_pl2pl
     :members: pretty, plot
 
 -------------------------------------------------------
 
-.. autoclass:: direct_pl2pl_alpha
+.. autoclass:: sf_pl2pl_alpha
     :members: pretty, plot
 
 -------------------------------------------------------

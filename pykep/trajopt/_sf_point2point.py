@@ -9,8 +9,8 @@ import numpy as _np
 import pykep as pk
 
 
-class direct_point2point:
-    """Represents the optimal low-thrust transfer between two fixed points using a direct method.
+class sf_point2point:
+    """Represents the optimal low-thrust transfer between two fixed points using the Sims-Flanagan (direct) method.
 
     This problem works internally using the :class:`~pykep.leg.sims_flanagan` and manipulates its transfer time T, final mass mf and the controls as to
     link two fixed points in space with a low-thrust trajectory.
@@ -49,7 +49,7 @@ class direct_point2point:
         with_gradient=True,
     ):
         """
-        Initializes the direct_point2point instance with given parameters.
+        Initializes the sf_point2point instance with given parameters.
 
         Args:
             *rvs* (:class:`list`): Initial position and velocity vectors. Defaults to two vectors scaled by :class:`~pykep.AU` and Earth's velocity.
