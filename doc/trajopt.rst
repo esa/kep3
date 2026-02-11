@@ -39,26 +39,12 @@ to then solve it using numerical solvers available for the task.
 .. autoclass:: sf_pl2pl_alpha
     :members: pretty, plot
 
--------------------------------------------------------
-
-.. autoclass:: direct_cr3bp
-    :members: pretty, plot
-
--------------------------------------------------------
-
-.. autoclass:: direct_cr3bp_alpha
-    :members: pretty, plot
-
--------------------------------------------------------
-
 Indirect
 ******************
 Indirect methods are based on the Pontryagin Maximum Principle (PMP), which provides necessary conditions
 for optimality. These methods involve deriving the optimal control laws and
 the corresponding state trajectories by solving a two point boundary value problem
 (TPBVP) derived from the PMP.
-
--------------------------------------------------------
 
 .. autoclass:: pontryagin_cartesian_mass
     :members: plot, plot_misc
