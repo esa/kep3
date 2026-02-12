@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Planet to planet low-thrust (with Alpha encoding)" href="udp_pl2pl_alpha.html" />
-    <link rel="prev" title="Point to point low-thrust" href="udp_point2point.html" />
+    <link rel="prev" title="Point to point Sims-FLanagan" href="udp_sf_point2point.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -212,7 +212,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -470,7 +470,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="planet-to-planet-low-thrust">
 <h1>Planet to planet low-thrust<a class="headerlink" href="#planet-to-planet-low-thrust" title="Link to this heading">#</a></h1>
-<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.direct_pl2pl" title="pykep.trajopt.direct_pl2pl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_pl2pl</span></code></a> to find a low-thrust trajectory connecting two moving planets.</p>
+<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.sf_pl2pl" title="pykep.trajopt.sf_pl2pl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.sf_pl2pl</span></code></a> to find a low-thrust trajectory connecting two moving planets.</p>
 <p>The decision vector for this class, compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -531,7 +531,7 @@ document.write(`
 <p>For the purpose of this simple notebook we choose a relatively simple Earth to Mars transfer with an initial <span class="math notranslate nohighlight">\(V_{\infty}\)</span> of 3 km/s.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">sf_pl2pl</span><span class="p">(</span>
         <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
         <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
@@ -551,7 +551,7 @@ document.write(`
         <span class="n">with_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_pl2pl</span><span class="p">(</span>
+<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">sf_pl2pl</span><span class="p">(</span>
         <span class="n">pls</span><span class="o">=</span><span class="n">earth</span><span class="p">,</span>
         <span class="n">plf</span><span class="o">=</span><span class="n">mars</span><span class="p">,</span>
         <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span>
@@ -843,12 +843,12 @@ No Gradient (n.fails): 46
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="udp_point2point.html"
+       href="udp_sf_point2point.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Point to point low-thrust</p>
+        <p class="prev-next-title">Point to point Sims-FLanagan</p>
       </div>
     </a>
     <a class="right-next"

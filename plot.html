@@ -210,7 +210,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -435,7 +435,6 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_hf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_hf_leg()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -650,32 +649,6 @@ The resulting trajectory is plotted on the given Axes object using the provided 
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pykep.plot.add_sf_hf_leg">
-<span class="sig-prename descclassname"><span class="pre">pykep.plot.</span></span><span class="sig-name descname"><span class="pre">add_sf_hf_leg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_sims_flanagan_hf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">149597870700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_gridpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_throttles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_throttles_tips</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrow_length_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_M</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.plot.add_sf_hf_leg" title="Link to this definition">#</a></dt>
-<dd><p>Add a trajectory leg of Sims-Flanagan problem to a 3D matplotlib Axes.</p>
-<dl>
-<dt>Args:</dt><dd><p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>): The 3D Axes object to which the trajectory leg will be added.</p>
-<p><em>sf</em> (<a class="reference internal" href="leg.html#pykep.leg.sims_flanagan" title="pykep.leg.sims_flanagan"><code class="xref py py-class docutils literal notranslate"><span class="pre">sims_flanagan</span></code></a>): The Sims-Flanagan object containing relevant information.</p>
-<p><em>units</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The unit conversion factor for plotting. Default is pk.AU.</p>
-<p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional): The number of points to generate along each segment of the trajectory. Default is 10. This translates to the grid_points_per_segment argument for retrieving the state history.</p>
-<p><em>show_gridpoints</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): If True, gridpoints of the trajectory are shown. Default is False.</p>
-<p><em>show_throttles</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): If True, thrust vectors at midpoints are shown. Default is False.</p>
-<p><em>show_throttles_tips</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional): If True, and show_throttles is True, thrust vectors at midpoints are shown with an endline. Default is False.</p>
-<p><em>length</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The length of the thrust vectors when show_throttles is True. Default is 0.1.</p>
-<p><em>arrow_length_ratio</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional): The ratio of arrow length to the total length when show_throttles is True. Default is 0.05.</p>
-<p><em>**kwargs</em>: Additional keyword arguments to pass to the Axes3D.plot function.</p>
-</dd>
-<dt>Notes:</dt><dd><ul class="simple">
-<li><p>This function visualizes a Sims-Flanagan trajectory leg on the provided 3D Axes object.</p></li>
-<li><p>Midpoints, gridpoints, and thrust vectors can be optionally shown based on the provided parameters.</p></li>
-</ul>
-</dd>
-<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The modified Axes object with the Sims-Flanagan leg added.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </section>
 </section>
@@ -739,7 +712,6 @@ The resulting trajectory is plotted on the given Axes object using the provided 
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_lambert"><code class="docutils literal notranslate"><span class="pre">add_lambert()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_ballistic_arc"><code class="docutils literal notranslate"><span class="pre">add_ballistic_arc()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_leg()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.plot.add_sf_hf_leg"><code class="docutils literal notranslate"><span class="pre">add_sf_hf_leg()</span></code></a></li>
 </ul>
 </li>
 </ul>

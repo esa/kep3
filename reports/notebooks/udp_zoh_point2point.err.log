@@ -28,68 +28,16 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-print('--------------------------')
-print(f'Testing Nseg {nseg}')
-total_time = 0.0
-
-ntotal = 10
-errs = []
-obj = []
-xs = []
-successes = []
-average_time = []
-
-for i in range(ntotal):
-    time_start = time.time()
-
-    pop_g = pg.population(prob_g, 1)
-    
-    pop_g = algo.evolve(pop_g)
-    
-    time_end = time.time()
-    average_time.append(time_end - time_start)
-    total_time += time_end - time_start
-    
-    # print('err', np.linalg.norm(pop_g.champion_f[1:]), np.linalg.norm(pop_g.champion_f[1:4]), np.linalg.norm(pop_g.champion_f[4:7]))
-    if(prob_g.feasibility_f(pop_g.champion_f)):
-        print(".", end="")
-        obj.append(pop_g.champion_x[1])
-        xs.append(pop_g.champion_x)
-        successes.append(1)
-        # break
-    else:
-        print("x", end ="")
-
-if len(obj)>0:
-    print("\nBest mass is: ", np.max(obj))
-    print(f"Total time to success: {total_time:.3f} seconds")
-    print(f"mean time {np.mean(np.array(average_time)):.4g} s")
-    print(f"median time {np.median(np.array(average_time)):.4g} s")
-    print(f"std time {np.std(np.array(average_time)):.4g} s")
-    best_idx = np.argmax(obj)
-else:
-    xs = [pop_g.champion_x]
-    best_idx = 0
-    successes.append(0)
-    obj.append(np.nan)
-    print("\nNo solution found")
-
-best_x = xs[best_idx]
+pop = algo.evolve(pop)
+print(prob.feasibility_f(pop.champion_f))
 ------------------
 
------ stdout -----
---------------------------
-Testing Nseg 10
-------------------
 
 [31m---------------------------------------------------------------------------[39m
 [31mValueError[39m                                Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[12][39m[32m, line 17[39m
-[32m     13[39m time_start = time.time()
-[32m     15[39m pop_g = pg.population(prob_g, [32m1[39m)
-[32m---> [39m[32m17[39m pop_g = [43malgo[49m[43m.[49m[43mevolve[49m[43m([49m[43mpop_g[49m[43m)[49m
-[32m     19[39m time_end = time.time()
-[32m     20[39m average_time.append(time_end - time_start)
+[36mCell[39m[36m [39m[32mIn[9][39m[32m, line 1[39m
+[32m----> [39m[32m1[39m pop = [43malgo[49m[43m.[49m[43mevolve[49m[43m([49m[43mpop[49m[43m)[49m
+[32m      2[39m [38;5;28mprint[39m(prob.feasibility_f(pop.champion_f))
 
 [31mValueError[39m: 
 function: evolve_version

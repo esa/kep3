@@ -212,7 +212,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -597,7 +597,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.8748486775221156e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.4895746528919974e-07
 </pre></div>
 </div>
 </div>
@@ -612,7 +612,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.8278500664981137e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.7278510711548941e-08
 </pre></div>
 </div>
 </div>
@@ -627,7 +627,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.4655494497554477e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.6994554255344093e-07
 </pre></div>
 </div>
 </div>
@@ -641,7 +641,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.6954852865970931e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.7945384981281773e-08
 </pre></div>
 </div>
 </div>
@@ -655,7 +655,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.8960260262702173e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.4969020668741115e-08
 </pre></div>
 </div>
 </div>
@@ -680,7 +680,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8515defc9b16170fe4098f1c2d0c30ac3efca036bcd59120c4f7c1b6c0cf4fef.png" src="../_images/8515defc9b16170fe4098f1c2d0c30ac3efca036bcd59120c4f7c1b6c0cf4fef.png" />
+<img alt="../_images/8e823827a50118c137ddc7801cfe5c2587bdac807b1bbcab06c77f30ff06c846.png" src="../_images/8e823827a50118c137ddc7801cfe5c2587bdac807b1bbcab06c77f30ff06c846.png" />
 </div>
 </div>
 </section>
@@ -841,7 +841,7 @@ be readily used.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The mismatch constraints are:  [-3.963829264819196e-12, 2.653433028854124e-14, -9.984601882930403e-42, -6.326883461582611e-12, -2.2528645615693677e-12, -1.8790011108131472e-41, 0.0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The mismatch constraints are:  [1.8846035843012032e-12, -5.53335155473178e-13, 6.072351732843554e-42, -1.1001644040220526e-11, 9.140244117133989e-12, -2.4364026074599513e-41, 0.0]
 </pre></div>
 </div>
 </div>
@@ -867,7 +867,7 @@ be readily used.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/078246efde26be17a3e5f8d8d7ee61eca4578a1809a4cc4aa066cfdb144e38cf.png" src="../_images/078246efde26be17a3e5f8d8d7ee61eca4578a1809a4cc4aa066cfdb144e38cf.png" />
+<img alt="../_images/a18ea166c7b276c13eb8534f290fbf161de62849073d73e93d9ed61e6271e98f.png" src="../_images/a18ea166c7b276c13eb8534f290fbf161de62849073d73e93d9ed61e6271e98f.png" />
 </div>
 </div>
 <p>YAY! … feels like we have achieved something ….
@@ -883,7 +883,7 @@ Let see what happens if we add some non-zero controls …</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The mismatch constraints are:  [-0.057642820439136544, 0.013981259257695888, -1.4910469109918769e-31, 0.10266666857050455, 0.010046869208341747, -3.0657402556119953e-32, -0.6128064977096859]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The mismatch constraints are:  [0.1349475265157477, 0.07490855959138443, 5.182269980589624e-31, 0.16425455108870468, 0.16483945455469362, 5.099105283298049e-31, -0.3875316738555272]
 </pre></div>
 </div>
 </div>
@@ -908,7 +908,7 @@ Let see what happens if we add some non-zero controls …</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ce8073f8f11a120d028109d22342b3d6e4d0ce690f286ebe942604f9d0ebc3aa.png" src="../_images/ce8073f8f11a120d028109d22342b3d6e4d0ce690f286ebe942604f9d0ebc3aa.png" />
+<img alt="../_images/bedf997bd6be0101976886640e4e1ad440d3ab4ba9b5368e683f34f9a1ba5161.png" src="../_images/bedf997bd6be0101976886640e4e1ad440d3ab4ba9b5368e683f34f9a1ba5161.png" />
 </div>
 </div>
 <p>Makes sense ….</p>

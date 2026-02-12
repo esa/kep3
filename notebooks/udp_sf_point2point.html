@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Point to point low-thrust &#8212; pykep 3.0.0 documentation</title>
+    <title>Point to point Sims-FLanagan &#8212; pykep 3.0.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_point2point';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_sf_point2point';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Planet to planet low-thrust" href="udp_pl2pl.html" />
@@ -212,7 +212,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Point to point low-thrust</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Point to point Sims-FLanagan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -282,7 +282,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_point2point.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_sf_point2point.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -330,7 +330,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_point2point.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_sf_point2point.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -360,7 +360,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/udp_point2point.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/udp_sf_point2point.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -442,7 +442,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Point to point low-thrust</h1>
+    <h1>Point to point Sims-FLanagan</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -456,9 +456,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="point-to-point-low-thrust">
-<h1>Point to point low-thrust<a class="headerlink" href="#point-to-point-low-thrust" title="Link to this heading">#</a></h1>
-<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.direct_point2point" title="pykep.trajopt.direct_point2point"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.direct_point2point</span></code></a> to find a low-thrust trajectory connecting two fixed points in space.
+  <section class="tex2jax_ignore mathjax_ignore" id="point-to-point-sims-flanagan">
+<h1>Point to point Sims-FLanagan<a class="headerlink" href="#point-to-point-sims-flanagan" title="Link to this heading">#</a></h1>
+<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.sf_point2point" title="pykep.trajopt.sf_point2point"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.sf_point2point</span></code></a> to find a low-thrust trajectory connecting two fixed points in space.
 Since the points are considered fixed this effort has mainly an academic value, but it is infomrative in the study of the numerical properties of an optimization pipeline.
 The decision vector in this class compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems) is:</p>
 <div class="math notranslate nohighlight">
@@ -488,16 +488,15 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Problem data</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span>
-<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.12</span>
+<span class="n">max_thrust</span> <span class="o">=</span> <span class="mf">0.22</span>
 <span class="n">isp</span> <span class="o">=</span> <span class="mi">3000</span>
 
 <span class="c1"># Initial state</span>
-<span class="n">ms</span> <span class="o">=</span> <span class="mf">1500.0</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="mf">1000.0</span>
 <span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
 <span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
 
 <span class="c1"># Final state</span>
-<span class="n">mf</span> <span class="o">=</span> <span class="mf">1300.0</span>
 <span class="n">rf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">AU</span>
 <span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">pk</span><span class="o">.</span><span class="n">EARTH_VELOCITY</span>
 
@@ -506,9 +505,10 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 <span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">tof</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
 
-<span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_point2point</span><span class="p">(</span>
+<span class="n">udp_nog</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">sf_point2point</span><span class="p">(</span>
     <span class="n">rvs</span><span class="o">=</span><span class="p">[</span><span class="n">rs</span><span class="p">,</span> <span class="n">vs</span><span class="p">],</span>
     <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
     <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
     <span class="n">veff</span><span class="o">=</span><span class="mi">3000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">G0</span><span class="p">,</span>
@@ -519,9 +519,10 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
     <span class="n">with_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">direct_point2point</span><span class="p">(</span>
+<span class="n">udp_g</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">trajopt</span><span class="o">.</span><span class="n">sf_point2point</span><span class="p">(</span>
     <span class="n">rvs</span><span class="o">=</span><span class="p">[</span><span class="n">rs</span><span class="p">,</span> <span class="n">vs</span><span class="p">],</span>
     <span class="n">rvf</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">,</span> <span class="n">vf</span><span class="p">],</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="n">mu</span><span class="o">=</span><span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">,</span>
     <span class="n">max_thrust</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span>
     <span class="n">veff</span><span class="o">=</span><span class="mi">3000</span><span class="o">*</span><span class="n">pk</span><span class="o">.</span><span class="n">G0</span><span class="p">,</span>
@@ -563,7 +564,32 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">prob_g</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">pop_g</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob_g</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="ne">----&gt; </span><span class="mi">6</span> <span class="n">pop_g</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop_g</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="nb">print</span><span class="p">(</span><span class="n">prob_g</span><span class="o">.</span><span class="n">feasibility_f</span><span class="p">(</span><span class="n">pop_g</span><span class="o">.</span><span class="n">champion_f</span><span class="p">))</span>
+
+<span class="ne">ValueError</span>: 
+<span class="ne">function</span>: evolve_version
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
+<span class="ne">what</span>: 
+<span class="n">An</span> <span class="n">error</span> <span class="n">occurred</span> <span class="k">while</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span> <span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">typically</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span>
+<span class="ne">reasons</span>:
+
+<span class="o">-</span> <span class="n">The</span> <span class="n">file</span> <span class="n">declared</span> <span class="n">to</span> <span class="n">be</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">dario</span><span class="o">.</span><span class="n">izzo</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">libsnopt7_c</span><span class="o">.</span><span class="n">dylib</span><span class="p">,</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">library</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">necessary</span> <span class="n">C</span> <span class="n">interface</span> <span class="n">symbols</span> <span class="p">(</span><span class="ow">is</span> <span class="n">the</span> <span class="n">file</span> <span class="n">path</span> <span class="n">really</span> <span class="n">pointing</span> <span class="n">to</span>
+<span class="n">a</span> <span class="n">valid</span> <span class="n">shared</span> <span class="n">library</span><span class="err">?</span><span class="p">)</span>
+ <span class="o">-</span> <span class="n">The</span> <span class="n">library</span> <span class="ow">is</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">it</span> <span class="n">does</span> <span class="n">contain</span> <span class="n">the</span> <span class="n">C</span> <span class="n">interface</span> <span class="n">symbols</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">needs</span> <span class="n">linking</span> <span class="n">to</span> <span class="n">some</span> <span class="n">additional</span> <span class="n">libraries</span> <span class="n">that</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">found</span>
+<span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span>
+
+<span class="n">We</span> <span class="n">report</span> <span class="n">the</span> <span class="n">exact</span> <span class="n">text</span> <span class="n">of</span> <span class="n">the</span> <span class="n">original</span> <span class="n">exception</span> <span class="n">thrown</span><span class="p">:</span>
+
+ 
+<span class="ne">function</span>: evolve_version
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
+<span class="ne">what</span>: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
 </pre></div>
 </div>
 </div>
@@ -576,7 +602,7 @@ The decision vector in this class compatible with pygmo <span id="id1">[<a class
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/46b78407d36040b186515a31a5205df207484c8ac4e4cb7f1ebb15053824a23c.png" src="../_images/46b78407d36040b186515a31a5205df207484c8ac4e4cb7f1ebb15053824a23c.png" />
+<img alt="../_images/c56ec2a2006079df9ef399ee081d3676998ddaba6a353a6cf29e49e1a0f85368.png" src="../_images/c56ec2a2006079df9ef399ee081d3676998ddaba6a353a6cf29e49e1a0f85368.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -652,34 +678,6 @@ No Gradient (n.fails): 189
 </pre></div>
 </div>
 <img alt="../_images/7243bfe4087b822870d5a18726e2015d293585820184dceef5d55a768a49f971.png" src="../_images/7243bfe4087b822870d5a18726e2015d293585820184dceef5d55a768a49f971.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">udp_g</span><span class="o">.</span><span class="n">leg</span><span class="o">.</span><span class="n">tof</span><span class="o">=</span><span class="mf">1232.</span>
-<span class="n">udp_g</span><span class="o">.</span><span class="n">leg</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of segments: 2
-Number of fwd segments: 1
-Number of bck segments: 1
-Maximum thrust: 0.22
-Central body gravitational parameter: 1.32712440018e+20
-Specific impulse: 3000
-
-Time of flight: 1232
-Initial mass: 1000
-Final mass: 1
-State at departure: [[179517444840, 0, -1495978707], [297.8469183169681, 29784.691831696804, -297.8469183169681]]
-State at arrival: [[149597870700, 0, -0], [297.8469183169681, 32763.161014866488, -0]]
-Throttles values: [0, 0, 0, 0, 0, 0]
-
-Mismatch constraints: [29919941431.26764, 38529477.27626525, -1496162174.1910896, -6.189427009557562, -2978.469066381742, -297.82577960576987, 999]
-Throttle constraints: [-1, -1]
-</pre></div>
-</div>
 </div>
 </div>
 </section>

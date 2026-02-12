@@ -209,7 +209,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_point2point.html">Point to point low-thrust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -430,8 +430,6 @@ document.write(`
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="plot.html#pykep.plot.add_sf_hf_leg">add_sf_hf_leg() (in module pykep.plot)</a>
-</li>
       <li><a href="plot.html#pykep.plot.add_sf_leg">add_sf_leg() (in module pykep.plot)</a>
 </li>
       <li><a href="plot.html#pykep.plot.add_solar_system">add_solar_system() (in module pykep.plot)</a>
@@ -514,21 +512,11 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="udpla.html#pykep.udpla.de440s">de440s (class in pykep.udpla)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#pykep.direct2alpha">direct2alpha() (in module pykep)</a>
 </li>
       <li><a href="utils.html#pykep.direct2eta">direct2eta() (in module pykep)</a>
-</li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp">direct_cr3bp (class in pykep.trajopt)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp_alpha">direct_cr3bp_alpha (class in pykep.trajopt)</a>
-</li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl">direct_pl2pl (class in pykep.trajopt)</a>
-</li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl_alpha">direct_pl2pl_alpha (class in pykep.trajopt)</a>
-</li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_point2point">direct_point2point (class in pykep.trajopt)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -908,19 +896,9 @@ document.write(`
 </li>
       <li><a href="utils.html#pykep.utils.planet_to_keplerian">planet_to_keplerian() (in module pykep.utils)</a>
 </li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp.plot">plot() (pykep.trajopt.direct_cr3bp method)</a>
+      <li><a href="trajopt.html#pykep.trajopt.mga.plot">plot() (pykep.trajopt.mga method)</a>
 
       <ul>
-        <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp_alpha.plot">(pykep.trajopt.direct_cr3bp_alpha method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl.plot">(pykep.trajopt.direct_pl2pl method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl_alpha.plot">(pykep.trajopt.direct_pl2pl_alpha method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_point2point.plot">(pykep.trajopt.direct_point2point method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.mga.plot">(pykep.trajopt.mga method)</a>
-</li>
         <li><a href="trajopt.html#pykep.trajopt.mga_1dsm.plot">(pykep.trajopt.mga_1dsm method)</a>
 </li>
         <li><a href="trajopt.html#pykep.trajopt.pl2pl_N_impulses.plot">(pykep.trajopt.pl2pl_N_impulses method)</a>
@@ -928,6 +906,12 @@ document.write(`
         <li><a href="trajopt.html#pykep.trajopt.pontryagin_cartesian_mass.plot">(pykep.trajopt.pontryagin_cartesian_mass method)</a>
 </li>
         <li><a href="trajopt.html#pykep.trajopt.pontryagin_cartesian_time.plot">(pykep.trajopt.pontryagin_cartesian_time method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl.plot">(pykep.trajopt.sf_pl2pl method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl_alpha.plot">(pykep.trajopt.sf_pl2pl_alpha method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_point2point.plot">(pykep.trajopt.sf_point2point method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -944,20 +928,16 @@ document.write(`
 </li>
       <li><a href="trajopt.html#pykep.trajopt.pontryagin_cartesian_time">pontryagin_cartesian_time (class in pykep.trajopt)</a>
 </li>
-      <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp.pretty">pretty() (pykep.trajopt.direct_cr3bp method)</a>
+      <li><a href="trajopt.html#pykep.trajopt.mga.pretty">pretty() (pykep.trajopt.mga method)</a>
 
       <ul>
-        <li><a href="trajopt.html#pykep.trajopt.direct_cr3bp_alpha.pretty">(pykep.trajopt.direct_cr3bp_alpha method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl.pretty">(pykep.trajopt.direct_pl2pl method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_pl2pl_alpha.pretty">(pykep.trajopt.direct_pl2pl_alpha method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.direct_point2point.pretty">(pykep.trajopt.direct_point2point method)</a>
-</li>
-        <li><a href="trajopt.html#pykep.trajopt.mga.pretty">(pykep.trajopt.mga method)</a>
-</li>
         <li><a href="trajopt.html#pykep.trajopt.mga_1dsm.pretty">(pykep.trajopt.mga_1dsm method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl.pretty">(pykep.trajopt.sf_pl2pl method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl_alpha.pretty">(pykep.trajopt.sf_pl2pl_alpha method)</a>
+</li>
+        <li><a href="trajopt.html#pykep.trajopt.sf_point2point.pretty">(pykep.trajopt.sf_point2point method)</a>
 </li>
       </ul></li>
       <li><a href="trajopt.html#pykep.trajopt.primer_vector">primer_vector() (in module pykep.trajopt)</a>
@@ -1008,8 +988,14 @@ document.write(`
       </ul></li>
       <li><a href="udpla.html#pykep.udpla.jpl_lp.set_safe_radius">set_safe_radius() (pykep.udpla.jpl_lp method)</a>
 </li>
+      <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl">sf_pl2pl (class in pykep.trajopt)</a>
+</li>
+      <li><a href="trajopt.html#pykep.trajopt.sf_pl2pl_alpha">sf_pl2pl_alpha (class in pykep.trajopt)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="trajopt.html#pykep.trajopt.sf_point2point">sf_point2point (class in pykep.trajopt)</a>
+</li>
       <li><a href="leg.html#pykep.leg.sims_flanagan">sims_flanagan (class in pykep.leg)</a>
 </li>
       <li><a href="trajopt.html#pykep.trajopt._launchers.soyuzf">soyuzf() (pykep.trajopt._launchers method)</a>
