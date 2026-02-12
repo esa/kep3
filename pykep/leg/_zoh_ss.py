@@ -86,6 +86,7 @@ class zoh_ss:
         self.state1 = state1
         self.tgrid = tgrid
         self.cut = cut
+        
         # Store the tas
         self.ta = tas[0]
         self.ta_var = tas[1]

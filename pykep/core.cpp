@@ -24,8 +24,6 @@
 #include <kep3/lambert_problem.hpp>
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
-#include <kep3/leg/sims_flanagan_hf.hpp>
-#include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/ta/bcp.hpp>
 #include <kep3/ta/cr3bp.hpp>
@@ -34,9 +32,9 @@
 #include <kep3/ta/pontryagin_equinoctial.hpp>
 #include <kep3/ta/zero_hold_cr3bp.hpp>
 #include <kep3/ta/zero_hold_kep.hpp>
+#include <kep3/udpla/jpl_lp.hpp>
 #include <kep3/udpla/keplerian.hpp>
 #include <kep3/zero_hold_kep_problem.hpp>
-#include <kep3/udpla/jpl_lp.hpp>
 
 #include <pybind11/chrono.h>
 #include <pybind11/detail/common.h>
@@ -227,7 +225,6 @@ PYBIND11_MODULE(core, m) // NOLINT
              [](kep3::epoch ep, double dt) { return ep - std::chrono::duration<double, std::ratio<86400>>(dt); })
         .def("__sub__", [](kep3::epoch ep, std::chrono::duration<double, std::ratio<1>> dt) { return ep - dt; });
 
-   
     // Class planet (type erasure machinery here)
     py::class_<kep3::planet> planet_class(m, "planet", py::dynamic_attr{}, pykep::planet_docstring().c_str());
     // Expose extract.
@@ -283,7 +280,7 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("when"), pykep::planet_eph_v_docstring().c_str());
 
-planet_class.def(
+    planet_class.def(
         "acc_v",
         [](const kep3::planet &pl, const std::vector<double> &mjd2000s) {
             std::vector<double> res = pl.acc_v(mjd2000s);
@@ -874,7 +871,7 @@ planet_class.def(
         [](kep3::leg::sims_flanagan_alpha &sf, const std::vector<double> &talphas) { return sf.set_talphas(talphas); },
         pykep::leg_sf_talphas_docstring().c_str());
 
-#define PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(name)                                                                          \
+#define PYKEP3_EXPOSE_LEG_SF_ALPHA_ATTRIBUTES(name)                                                                    \
     sims_flanagan_alpha.def_property(#name, &kep3::leg::sims_flanagan_alpha::get_##name,                               \
                                      &kep3::leg::sims_flanagan_alpha::set_##name,                                      \
                                      pykep::leg_sf_##name##_docstring().c_str());
@@ -904,225 +901,4 @@ planet_class.def(
                                               pykep::leg_sf_nseg_fwd_docstring().c_str());
     sims_flanagan_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_alpha::get_nseg_bck,
                                               pykep::leg_sf_nseg_bck_docstring().c_str());
-
-    // Exposing the sims_flanagan_hf leg
-    py::class_<kep3::leg::sims_flanagan_hf> sims_flanagan_hf(m, "_sims_flanagan_hf",
-                                                             pykep::leg_sf_hf_docstring().c_str());
-    // Main constructor (rvms/rvmf variant) with optional tas
-    sims_flanagan_hf.def(
-        py::init<const std::array<double, 7> &, const std::vector<double> &, const std::array<double, 7> &, double,
-                 double, double, double, double, double, std::optional<tas_type>>(),
-        py::arg("state_s") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
-        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-        py::arg("state_f") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.}, py::arg("tof") = kep3::pi / 2,
-        py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5,
-        py::arg("tol") = 1e-16, py::arg("tas") = py::none());
-    // Second constructor from posvel, m
-    sims_flanagan_hf.def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
-                                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
-                                  double, double, std::optional<tas_type>>(),
-                         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}},
-                         py::arg("ms") = 1., py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
-                         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}},
-                         py::arg("mf") = 1., py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1.,
-                         py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5, py::arg("tol") = 1e-16,
-                         py::arg("tas") = py::none());
-    // repr().
-    sims_flanagan_hf.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf>);
-    // Copy and deepcopy.
-    sims_flanagan_hf.def("__copy__", &pykep::generic_copy_wrapper<kep3::leg::sims_flanagan_hf>);
-    sims_flanagan_hf.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan_hf>);
-    // Pickle support.
-    sims_flanagan_hf.def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan_hf>,
-                                    &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_hf>));
-    // The rest
-    sims_flanagan_hf.def_property(
-        "throttles", &kep3::leg::sims_flanagan_hf::get_throttles,
-        [](kep3::leg::sims_flanagan_hf &sf, const std::vector<double> &throttles) {
-            return sf.set_throttles(throttles);
-        },
-        pykep::leg_sf_hf_throttles_docstring().c_str());
-
-    sims_flanagan_hf.def("compute_mismatch_constraints", &kep3::leg::sims_flanagan_hf::compute_mismatch_constraints,
-                         pykep::leg_sf_hf_mc_docstring().c_str());
-    sims_flanagan_hf.def("compute_throttle_constraints", &kep3::leg::sims_flanagan_hf::compute_throttle_constraints,
-                         pykep::leg_sf_hf_tc_docstring().c_str());
-    sims_flanagan_hf.def(
-        "compute_mc_grad",
-        [](const kep3::leg::sims_flanagan_hf &leg) {
-            auto tc_cpp = leg.compute_mc_grad();
-            // Lets transfer ownership to python of the three
-            std::array<double, 49> &rs_addr = std::get<0>(tc_cpp);
-            std::array<double, 49> &rf_addr = std::get<1>(tc_cpp);
-            std::vector<double> &th_addr = std::get<2>(tc_cpp);
-
-            // We create three separate capsules for the py::array_t to manage ownership change.
-            auto vec_ptr_rs = std::make_unique<std::array<double, 49>>(rs_addr);
-            py::capsule vec_caps_rs(vec_ptr_rs.get(), [](void *ptr) {
-                std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
-            });
-            auto vec_ptr_rf = std::make_unique<std::array<double, 49>>(rf_addr);
-            py::capsule vec_caps_rf(vec_ptr_rf.get(), [](void *ptr) {
-                std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
-            });
-            auto vec_ptr_th = std::make_unique<std::vector<double>>(th_addr);
-            py::capsule vec_caps_th(vec_ptr_th.get(), [](void *ptr) {
-                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
-            });
-            // NOTE: at this point, the capsules have been created successfully (including
-            // the registration of the destructor). We can thus release ownership from vec_ptr_xx,
-            // as now the capsules are responsible for destroying its contents.
-            auto *ptr_rs = vec_ptr_rs.release();
-            auto *ptr_rf = vec_ptr_rf.release();
-            auto *ptr_th = vec_ptr_th.release();
-            auto rs_python = py::array_t<double>(
-                py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
-                ptr_rs->data(), std::move(vec_caps_rs));
-            auto rf_python = py::array_t<double>(
-                py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
-                ptr_rf->data(), std::move(vec_caps_rf));
-            auto th_python = py::array_t<double>(
-                py::array::ShapeContainer{static_cast<py::ssize_t>(7),
-                                          static_cast<py::ssize_t>(leg.get_nseg() * 3 + 1u)}, // shape
-                ptr_th->data(), std::move(vec_caps_th));
-            return py::make_tuple(rs_python, rf_python, th_python);
-        },
-        pykep::leg_sf_hf_mc_grad_docstring().c_str());
-    sims_flanagan_hf.def(
-        "compute_tc_grad",
-        [](const kep3::leg::sims_flanagan_hf &leg) {
-            std::vector<double> tc_cpp = leg.compute_tc_grad();
-            // Lets transfer ownership to python
-            std::vector<double> &tc_cpp_addr = tc_cpp;
-            // We create a capsule for the py::array_t to manage ownership change.
-            auto vec_ptr = std::make_unique<std::vector<double>>(tc_cpp_addr);
-            py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
-            });
-            // NOTE: at this point, the capsule has been created successfully (including
-            // the registration of the destructor). We can thus release ownership from vec_ptr,
-            // as now the capsule is responsible for destroying its contents. If the capsule constructor
-            // throws, the destructor function is not registered/invoked, and the destructor
-            // of vec_ptr will take care of cleaning up.
-            auto *ptr = vec_ptr.release();
-
-            auto tc_python
-                = py::array_t<double>(py::array::ShapeContainer{static_cast<py::ssize_t>(leg.get_nseg()),
-                                                                static_cast<py::ssize_t>(leg.get_nseg() * 3)}, // shape
-                                      ptr->data(), std::move(vec_caps));
-            return tc_python;
-        },
-        pykep::leg_sf_hf_tc_grad_docstring().c_str());
-    sims_flanagan_hf.def("get_state_history", &kep3::leg::sims_flanagan_hf::get_state_history,
-                         pykep::leg_sf_hf_get_state_history_docstring().c_str());
-    sims_flanagan_hf.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf::get_nseg,
-                                           pykep::leg_sf_hf_nseg_docstring().c_str());
-    sims_flanagan_hf.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf::get_nseg_fwd,
-                                           pykep::leg_sf_hf_nseg_fwd_docstring().c_str());
-    sims_flanagan_hf.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf::get_nseg_bck,
-                                           pykep::leg_sf_hf_nseg_bck_docstring().c_str());
-
-#define PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(name)                                                                       \
-    sims_flanagan_hf.def_property(#name, &kep3::leg::sims_flanagan_hf::get_##name,                                     \
-                                  &kep3::leg::sims_flanagan_hf::set_##name,                                            \
-                                  pykep::leg_sf_hf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(rvmf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(veff);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(cut);
-    PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tol);
-
-#undef PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES
-
-    // Exposing the sims_flanagan_hf_alpha leg
-    py::class_<kep3::leg::sims_flanagan_hf_alpha> sims_flanagan_hf_alpha(m, "_sims_flanagan_hf_alpha",
-                                                                         pykep::leg_sf_hf_alpha_docstring().c_str());
-    // Main constructor (rvms/rvmf variant) with optional tas
-    sims_flanagan_hf_alpha.def(
-        py::init<const std::array<double, 7> &, const std::vector<double>, const std::vector<double>,
-            const std::array<double, 7> &, double, double, double, double, double, double, std::optional<tas_type>>(),
-        py::arg("state_s") = std::array<double, 7>{1., 0, 0., 0., 1., 0., 1.},
-        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, 
-        py::arg("talphas") = std::vector<double>{0, 0},
-        py::arg("state_f") = std::array<double, 7>{0., 1., 0., -1., 0., 0., 1.},
-        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
-        py::arg("cut") = 0.5, py::arg("tol") = 1e-16, py::arg("tas") = py::none());
-    // Second constructor from posvel, m
-    sims_flanagan_hf_alpha.def(py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>, const std::vector<double>,
-                                  const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
-                                  double, double, std::optional<tas_type>>(),
-                         py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}},
-                         py::arg("ms") = 1., py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0}, py::arg("talphas") = std::vector<double>{0, 0},
-                         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}},
-                         py::arg("mf") = 1., py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1.,
-                         py::arg("veff") = 1., py::arg("mu") = 1., py::arg("cut") = 0.5, py::arg("tol") = 1e-16,
-                         py::arg("tas") = py::none());
-    // repr().
-    sims_flanagan_hf_alpha.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf_alpha>);
-    // Copy and deepcopy.
-    sims_flanagan_hf_alpha.def("__copy__", &pykep::generic_copy_wrapper<kep3::leg::sims_flanagan_hf_alpha>);
-    sims_flanagan_hf_alpha.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan_hf_alpha>);
-    // Pickle support.
-    sims_flanagan_hf_alpha.def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan_hf_alpha>,
-                                          &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_hf_alpha>));
-    // The rest
-    sims_flanagan_hf_alpha.def_property(
-        "throttles", &kep3::leg::sims_flanagan_hf_alpha::get_throttles,
-        [](kep3::leg::sims_flanagan_hf_alpha &sf, const std::vector<double> &throttles) {
-            return sf.set_throttles(throttles);
-        },
-        pykep::leg_sf_hf_throttles_docstring().c_str());
-
-    // Add talphas
-    sims_flanagan_hf_alpha.def_property(
-        "talphas", &kep3::leg::sims_flanagan_hf_alpha::get_talphas, // Getter function
-        [](kep3::leg::sims_flanagan_hf_alpha &sf, const std::vector<double> &talphas) {
-            return sf.set_talphas(talphas); // Setter function
-        },
-        pykep::leg_sf_hf_talphas_docstring().c_str());
-
-#define PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(name)                                                                       \
-    sims_flanagan_hf_alpha.def_property(#name, &kep3::leg::sims_flanagan_hf_alpha::get_##name,                         \
-                                        &kep3::leg::sims_flanagan_hf_alpha::set_##name,                                \
-                                        pykep::leg_sf_hf_##name##_docstring().c_str());
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvs);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(ms);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(rvmf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mf);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(tof);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(max_thrust);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(veff);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas);
-    // PYKEP3_EXPOSE_LEG_SF_HF_ATTRIBUTES(tas_var);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(mu);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(cut);
-    PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES(tol);
-
-#undef PYKEP3_EXPOSE_LEG_SF_HF_ALPHA_ATTRIBUTES
-
-    sims_flanagan_hf_alpha.def("compute_mismatch_constraints",
-                               &kep3::leg::sims_flanagan_hf_alpha::compute_mismatch_constraints,
-                               pykep::leg_sf_hf_mc_docstring().c_str());
-    sims_flanagan_hf_alpha.def("compute_throttle_constraints",
-                               &kep3::leg::sims_flanagan_hf_alpha::compute_throttle_constraints,
-                               pykep::leg_sf_hf_tc_docstring().c_str());
-    sims_flanagan_hf_alpha.def("get_state_history", &kep3::leg::sims_flanagan_hf_alpha::get_state_history,
-                               pykep::leg_sf_hf_get_state_history_docstring().c_str());
-    sims_flanagan_hf_alpha.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf_alpha::get_nseg,
-                                                 pykep::leg_sf_hf_nseg_docstring().c_str());
-    sims_flanagan_hf_alpha.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_fwd,
-                                                 pykep::leg_sf_hf_nseg_fwd_docstring().c_str());
-    sims_flanagan_hf_alpha.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf_alpha::get_nseg_bck,
-                                                 pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 }

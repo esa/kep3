@@ -71,7 +71,7 @@ class spice:
     
     def eph_v(self, mjd2000s):
         ets = -43135.816087188054 + mjd2000s * pk.DAY2SEC # magic number is str2et("2000-01-01 00:00:00 UTC")
-        rvs, _ = pyspice.spkez(self.naifid, ets, self.ref_frame, "NONE", self.obs_naifid)
+        rvs = [pyspice.spkez(self.naifid, et, self.ref_frame, "NONE", self.obs_naifid)[0] for et in ets]
         return np.array(rvs) * 1000
 
     def get_name(self):

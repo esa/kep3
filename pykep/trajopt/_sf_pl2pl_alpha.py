@@ -7,10 +7,11 @@
 
 import numpy as _np
 import pykep as pk
+import pygmo as _pg
 
 
-class direct_pl2pl:
-    """Represents the optimal low-thrust transfer between two :class:`~pykep.planet` using a direct method.
+class sf_pl2pl_alpha:
+    """Represents the optimal low-thrust transfer between two :class:`~pykep.planet` using the Sims-Flanagan (direct) method.
 
     This problem works internally using the :class:`~pykep.leg.sims_flanagan` and manipulates its initial and final states, as well as its transfer time T, final mass mf
     and the controls as to link the two planets with a low-thrust trajectory.
@@ -19,7 +20,7 @@ class direct_pl2pl:
 
     The decision vector is::
 
-        z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof] - all in S.I. units except t0 and tof in days
+        z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, alphas, throttles, tof] - all in S.I. units except t0 and tof in days
 
     where throttles is a vector of throttles structured as [u0x, u0y,u0z, ...]. By throttles we intend non dimensiona thrust levels in [0,1].
 
@@ -42,11 +43,9 @@ class direct_pl2pl:
         cut=0.6,
         mass_scaling=1500,
         r_scaling=pk.AU,
-        v_scaling=pk.EARTH_VELOCITY,
-        with_gradient=True,
-        high_fidelity=False,
-    ):
-        """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
+        v_scaling=pk.EARTH_VELOCITY
+        ):
+        """sf_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, high_fidelity=False)
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
@@ -81,16 +80,9 @@ class direct_pl2pl:
 
             *v_scaling* (:class:`float`): Scaling factor for velocity (used to scale constraints). Defaults the Earth's velocity (:class:`~pykep.EARTH_VELOCITY`).
 
-            *with_gradient* (:class:`bool`): Indicates if gradient information should be used. Defaults True.
-
-            *high_fidelity* (:class:`bool`): Indicates if sims flanagan leg uses DV impulses, or zero-order hold continous thrust (note unclear how reliable graidents are). Defaults False.
-
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
-        if high_fidelity:
-            self.leg = pk.leg.sims_flanagan_hf()
-        else:
-            self.leg = pk.leg.sims_flanagan()
+        self.leg = pk.leg.sims_flanagan_alpha()
             
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
@@ -110,15 +102,20 @@ class direct_pl2pl:
         self.mass_scaling = mass_scaling
         self.r_scaling = r_scaling
         self.v_scaling = v_scaling
-        self.with_gradient = with_gradient
-        self.high_fidelity = high_fidelity
 
-    # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof]
+    # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, talphas, throttles, tof]
     def get_bounds(self):
+        
+        # Determine range on alphas
+        factor = 0.5
+        alpha_low = pk.direct2alpha([1/(self.nseg*factor)] * int(self.nseg*factor))[0][0]
+        alpha_high = pk.direct2alpha([1/(self.nseg/factor)] * int(self.nseg/factor))[0][0]
+
         lb = (
             [self.t0_bounds[0], self.mf_bounds[0]]
             + [-self.vinfs] * 3  # in m/s.
             + [-self.vinff] * 3  # in m/s.
+            + [alpha_low] * self.nseg
             + [-1, -1, -1] * self.nseg
             + [self.tof_bounds[0]]
         )
@@ -126,6 +123,7 @@ class direct_pl2pl:
             [self.t0_bounds[1], self.mf_bounds[1]]
             + [self.vinfs] * 3  # in m/s.
             + [self.vinff] * 3  # in m/s.
+            + [min(alpha_high,1-1e-3)] * self.nseg
             + [1, 1, 1] * self.nseg
             + [self.tof_bounds[1]]
         )
@@ -139,7 +137,18 @@ class direct_pl2pl:
         self.leg.rvf = [rf, [a + b for a, b in zip(vf, x[5:8])]]  # we add vinff
         self.leg.tof = x[-1] * pk.DAY2SEC
         self.leg.mf = x[1]
-        self.leg.throttles = x[8:-1]
+
+        # Split alphas and throttles
+        data = x[8:-1]
+        alphas = data[:self.nseg]
+        throttles = data[self.nseg:]
+
+        # Decode alphas to direct
+        T = pk.alpha2direct(alphas, x[-1]*pk.DAY2SEC)
+
+        # Now save the modified back to self.leg.talphas and self.leg.throttles
+        self.leg.talphas = T
+        self.leg.throttles = throttles
 
         # We return the eph as to avoid having to recompute them later on if needed.
         return rs, vs, rf, vf
@@ -151,13 +160,14 @@ class direct_pl2pl:
 
         # 2 - We compute the constraints violations (mismatch+throttle)
         self._set_leg_from_x(x)  # set the leg
+
         ceq = self.leg.compute_mismatch_constraints()
         cineq = self.leg.compute_throttle_constraints()
 
         # 3 - We add the departure vinfs constraint (quadratic)
         cineq = cineq + [
             (x[2] ** 2 + x[3] ** 2 + x[4] ** 2 - self.vinfs**2) / (self.v_scaling**2)
-        ] 
+        ]
         # We add the departure vinff constraint (quadratic)
         cineq = cineq + [
             (x[5] ** 2 + x[6] ** 2 + x[7] ** 2 - self.vinff**2) / (self.v_scaling**2)
@@ -174,99 +184,17 @@ class direct_pl2pl:
 
         return retval
 
-    def has_gradient(self):
-        return self.with_gradient
-
-    def gradient(self, x):
-        rs, vs, rf, vf = self._set_leg_from_x(x)
-        mcg_xs, mcg_xf, mcg_th_tof = self.leg.compute_mc_grad()
-        tcg_th = self.leg.compute_tc_grad()
-
-        # 1 - The gradient of the objective function (obj = -mf)
-        retval = [-1.0 / self.mass_scaling]
-
-        # 2 - The gradient of the mismatch contraints (mcg). We divide them in pos,vel and mass as
-        # they have a different sparsity structure
-        # pos-vel - mismatch constraints gradients
-        for i in range(6):
-            if i < 3:
-                scaling = self.r_scaling
-            else:
-                scaling = self.v_scaling
-            # First w.r.t. t0 (it is in days in the decision vector, so we will need to convert)
-            tmp = (
-                +_np.dot(mcg_xs[i, :3], vs)
-                - _np.dot(mcg_xs[i, 3:6], rs) * self.leg.mu / (_np.linalg.norm(rs) ** 3)
-                + _np.dot(mcg_xf[i, :3], vf)
-                - _np.dot(mcg_xf[i, 3:6], rf) * self.leg.mu / (_np.linalg.norm(rf) ** 3)
-            )  # here we assumed that the planet is keplerian (with mu), else there will be a small error in this gradient computation as the acceleration will not exactly be central and mu/r^2.
-            retval.append(tmp / scaling / pk.SEC2DAY)
-            # Then w.r.t. mf
-            retval.append(mcg_xf[i, -1] / scaling)
-            # Then w.r.t vinfs
-            retval.extend(mcg_xs[i, 3:6] / scaling)
-            # Then w.r.t vinff
-            retval.extend(mcg_xf[i, 3:6] / scaling)
-            # Then the [throttles, tof]
-            retval.extend(mcg_th_tof[i, :] / scaling)
-            retval[-1] += (
-                _np.dot(mcg_xf[i, :3], vf)
-                - _np.dot(mcg_xf[i, 3:6], rf) * self.leg.mu / (_np.linalg.norm(rf) ** 3)
-            ) / scaling
-            retval[-1] *= pk.DAY2SEC
-        ## mass - mismatch constraint, here there is no dependency
-        ## from t0 nor vinfs, vinff (see sparsity structure) so the code is slightly different
-        for i in range(6, 7):
-            # First w.r.t. mf
-            retval.append(mcg_xf[i, -1] / self.mass_scaling)
-            # Then the [throttles, tof]
-            retval.extend(mcg_th_tof[i, :] / self.mass_scaling)
-            retval[-1] += (
-                _np.dot(mcg_xf[i, :3], vf)
-                - _np.dot(mcg_xf[i, 3:6], rf) * self.leg.mu / (_np.linalg.norm(rf) ** 3)
-            ) / self.mass_scaling
-            retval[-1] *= pk.DAY2SEC
-
-        ## 3 -  The gradient of the throttle constraints
-        for i in range(self.leg.nseg):
-            retval.extend(tcg_th[i, 3 * i : 3 * i + 3])
-
-        ## 4 - The gradient of the vinfs, vinf constraints
-        retval.extend([2 * x[2], 2 * x[3], 2 * x[4], 2 * x[5], 2 * x[6], 2 * x[7]])
-        retval[-6:] = [a / self.v_scaling**2 for a in retval[-6:]]
-
-        return retval
-
-    def gradient_sparsity(self):
-        dim = 9 + 3 * self.nseg
-        # The objective function only depends on the final mass, which is in the chromosome.
-        retval = [[0, 1]]
-        # The mismatch constraints on x,y,z,vx,vy,vz depend on all variables.
-        for i in range(1, 7):
-            for j in range(dim):
-                retval.append([i, j])
-        # The mismatch constraints on m depend on all variables except the vinfs, vinff, t0
-        retval.append([7, 1])
-        for j in range(8, dim):
-            retval.append([7, j])
-        # The throttle constraints only depend on the specific throttles (3).
-        for i in range(self.nseg):
-            retval.append([8 + i, 3 * i + 8])
-            retval.append([8 + i, 3 * i + 9])
-            retval.append([8 + i, 3 * i + 10])
-        # The constraints on vinfs, vinff only depend on the vinfs, vinff
-        for j in range(2, 5):
-            retval.append([8 + self.nseg, j])
-        for j in range(5, 8):
-            retval.append([9 + self.nseg, j])
-        # We return the sparsity pattern
-        return retval
-
     def get_nec(self):
         return 7
 
     def get_nic(self):
         return self.nseg + 2
+    
+    # def has_gradient(self):
+    #     return self.with_gradient
+    
+    # def gradient(self, x):
+    #     return _pg.estimate_gradient(callable = self.fitness,x=x, dx=1e-8)
 
     def pretty(self, x):
         """
@@ -338,7 +266,6 @@ class direct_pl2pl:
         # Making the axis
         if ax is None:
             ax = pk.plot.make_3Daxis(figsize=(7, 7))
-            
         rs, _ = sf.rvs
         rf, _ = sf.rvf
         ax.scatter(rs[0] / pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
@@ -351,27 +278,16 @@ class direct_pl2pl:
         ax = pk.plot.add_planet_orbit(ax, self.plf, c="gray", alpha=0.5)
 
         # Plotting the trajctory leg
-        if self.high_fidelity:
-            ax = pk.plot.add_sf_hf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
-        else:
-            ax = pk.plot.add_sf_leg(
-                ax,
-                sf,
-                units=units,
-                show_throttles=show_throttles,
-                length=length,
-                show_gridpoints=show_gridpoints,
-                show_midpoints=show_midpoints,
-                arrow_length_ratio=arrow_length_ratio,
-                **kwargs,
-            )
+        ax = pk.plot.add_sf_leg(
+            ax,
+            sf,
+            units=units,
+            show_throttles=show_throttles,
+            length=length,
+            show_gridpoints=show_gridpoints,
+            show_midpoints=show_midpoints,
+            use_alpha = True,
+            arrow_length_ratio=arrow_length_ratio,
+            **kwargs,
+        )
         return ax

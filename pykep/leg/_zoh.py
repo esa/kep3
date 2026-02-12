@@ -1,7 +1,6 @@
 import numpy as _np
 import heyoka as _hy
 
-
 class zoh:
     """
     This class implements an interplanetary low-thrust transfer between a starting and final state
@@ -87,6 +86,7 @@ class zoh:
         self.state1 = state1
         self.tgrid = tgrid
         self.cut = cut
+        
         # Store the tas
         self.ta = tas[0]
         self.ta_var = tas[1]
