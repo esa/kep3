@@ -463,7 +463,7 @@ Since the points are considered fixed this effort has mainly an academic value, 
 <p>The decision vector in this class compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems) is:</p>
 <div class="math notranslate nohighlight">
 \[
-\mathbf x = [m_f, u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, ..., T_{tof}]
+\mathbf x = [m_f] + [T_0, i_{x0}, i_{y0}, i_{z0}] + [T_1, i_{x1}, i_{y1}, i_{z1}] + ... + [tof]
 \]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -473,7 +473,8 @@ Since the points are considered fixed this effort has mainly an academic value, 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Copyright 2023, 2024 Dario Izzo (dario.izzo@gmail.com), Francesco Biscani</span>
-<span class="c1">## (bluescarni@gmail.com)##</span>
+<span class="c1">## (bluescarni@gmail.com)</span>
+<span class="c1">##</span>
 <span class="c1">## This file is part of the kep3 library.##</span>
 <span class="c1">## This Source Code Form is subject to the terms of the Mozilla</span>
 <span class="c1">## Public License v. 2.0. If a copy of the MPL was not distributed</span>
@@ -696,7 +697,7 @@ Since the points are considered fixed this effort has mainly an academic value, 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Throttles and tof</span>
-<span class="n">nseg</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">nseg</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">throttles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">nseg</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">tof</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">AU</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="n">pk</span><span class="o">.</span><span class="n">MU_SUN</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
 
@@ -718,7 +719,7 @@ Since the points are considered fixed this effort has mainly an academic value, 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
-<span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Iterations limit&quot;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_numeric_option</span><span class="p">(</span><span class="s2">&quot;Major optimality tolerance&quot;</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)</span>
@@ -751,7 +752,7 @@ Since the points are considered fixed this effort has mainly an academic value, 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ab3341a4ba00b50e0c27e4b476f037320f4179e13e23594cdfc5ed120624599b.png" src="../_images/ab3341a4ba00b50e0c27e4b476f037320f4179e13e23594cdfc5ed120624599b.png" />
+<img alt="../_images/8c9c57e520ec7bcdf38361cc6f5156af4e92d1965efcc3b276e65c28485e5d91.png" src="../_images/8c9c57e520ec7bcdf38361cc6f5156af4e92d1965efcc3b276e65c28485e5d91.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -802,25 +803,17 @@ Since the points are considered fixed this effort has mainly an academic value, 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/03d56bac4e946d9907407f4e144434c7a1596e302bf820c250d033a6c0fcd31b.png" src="../_images/03d56bac4e946d9907407f4e144434c7a1596e302bf820c250d033a6c0fcd31b.png" />
+<img alt="../_images/fe37b894ea39398a0c0234bce3fa5dffa37107c6180d0a8bf191887b27860e42.png" src="../_images/fe37b894ea39398a0c0234bce3fa5dffa37107c6180d0a8bf191887b27860e42.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">champion_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">MASS</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1.        ,  1.        ,  1.        ,  1.        ,  1.        ,
-        1.        ,  1.        ,  1.        ,  1.        ,  1.        ,
-        0.83681484,  0.        ,  0.        ,  0.        ,  0.        ,
-        0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
-        0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
-        0.        ,  0.        ,  0.        ,  1.        ,  1.        ,
-        1.        ,  1.        ,  1.        ,  0.44122218,  0.        ,
-        0.        ,  0.        ,  0.        ,  0.02585559,  1.        ,
-        1.        ,  1.        ,  1.        ,  1.        ,  1.        ])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>838.5110241021016
 </pre></div>
 </div>
 </div>
