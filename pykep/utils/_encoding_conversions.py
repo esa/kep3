@@ -1,5 +1,8 @@
+import numpy as _np
+
 from copy import deepcopy as _deepcopy
 from math import log, exp, cos, acos, sin, pi, sqrt, atan2, asin
+from scipy.special import logsumexp
 
 def alpha2direct_py(alphas, T):
     """alpha2direct_py(x)
@@ -108,3 +111,19 @@ def cartesian2uvV(V):
     theta = atan2(V[1], V[0])
     sin_phi = V[2] / v_norm
     return [theta / 2 / pi, (-sin_phi + 1) / 2, v_norm]
+
+def compute_softmax_and_jacobian( 
+                                  w):
+    """
+    Compute positive normalized weights and Jacobian using a softmax formulation.
+    """
+    w = _np.array(w, dtype=float)
+    logw = w - logsumexp(w)
+    weights = _np.exp(logw)
+    # Jacobian of softmax: J_ij = weights_i * (δ_ij - weights_j)
+    n = len(w)
+    J = _np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            J[i, j] = weights[i] * ((1.0 if i == j else 0.0) - weights[j])
+    return weights, J
