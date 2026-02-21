@@ -299,14 +299,14 @@ class zoh_pl2pl:
         af_nd = af_si / self.ACC
 
         # Partials of mismatch constraints w.r.t. t0
-        # dx0/dt0 = [drs/dt0, dvs/dt0, 0] = [vs, as, 0] * DAY2SEC (convert days to seconds)
-        # Then convert to non-dimensional: / L for position, / V for velocity
-        dx0_dt0_nd = _np.concatenate([vs_nd * _pk.DAY2SEC, as_nd * _pk.DAY2SEC, [0.0]])
+        # d(rs_nd)/dt0 = d(rs/L)/dt0_days = vs * DAY2SEC / L = vs_nd * (V/L) * DAY2SEC
+        # d(vs_nd)/dt0 = (1/V) * as * DAY2SEC = (as_nd * V/TIME) / V * DAY2SEC = as_nd * DAY2SEC / TIME
+        dx0_dt0_nd = _np.concatenate([vs_nd * (self.V / self.L) * _pk.DAY2SEC, as_nd * (_pk.DAY2SEC / self.TIME), [0.0]])
         gradient[1:8, 0] = dmc_dx0 @ dx0_dt0_nd
         
         # Also account for final state change through t0 (since tf = t0 + tof * TIME / DAY2SEC)
-        # dtf/dt0 = 1, so dx1/dt0 = [vf, af, 0] * DAY2SEC (in non-dimensional)
-        dx1_dt0_nd = _np.concatenate([vf_nd * _pk.DAY2SEC, af_nd * _pk.DAY2SEC, [0.0]])
+        # dtf/dt0 = 1, so d(rf_nd)/dt0 = vf_nd * (V/L) * DAY2SEC, d(vf_nd)/dt0 = af_nd * DAY2SEC/TIME
+        dx1_dt0_nd = _np.concatenate([vf_nd * (self.V / self.L) * _pk.DAY2SEC, af_nd * (_pk.DAY2SEC / self.TIME), [0.0]])
         gradient[1:8, 0] += dmc_dx1 @ dx1_dt0_nd
 
         # Partials w.r.t. final mass
@@ -336,9 +336,9 @@ class zoh_pl2pl:
             gradient[1:8, -1] = dmcdtgrid @ dtgrid_dtof
             
             # Add contribution from final state change w.r.t tof (non-dimensional)
-            # dtf/dtof_nd = TIME / DAY2SEC (convert nd tof to days)
-            # dx1/dtof_nd = [vf, af, 0] * TIME / DAY2SEC (in nd units)
-            dx1_dtof_nd = _np.concatenate([vf_nd, af_nd, [0.0]]) * self.TIME / _pk.DAY2SEC
+            # d(rf_nd)/d(tof_nd) = vf_nd * (V/L) * TIME  [simplifies to vf_nd for V = L/TIME]
+            # d(vf_nd)/d(tof_nd) = af_nd
+            dx1_dtof_nd = _np.concatenate([vf_nd * (self.V / self.L) * self.TIME, af_nd, [0.0]])
             gradient[1:8, -1] += dmc_dx1 @ dx1_dtof_nd
 
         elif self.time_encoding == 'softmax':
@@ -351,7 +351,7 @@ class zoh_pl2pl:
             gradient[1:8, 10 + 4 * self.nseg] = dmcdtgrid @ dtgrid_dtof
             
             # Add contribution from final state change
-            dx1_dtof_nd = _np.concatenate([vf_nd, af_nd, [0.0]]) * self.TIME / _pk.DAY2SEC
+            dx1_dtof_nd = _np.concatenate([vf_nd * (self.V / self.L) * self.TIME, af_nd, [0.0]])
             gradient[1:8, 10 + 4 * self.nseg] += dmc_dx1 @ dx1_dtof_nd
 
             # Gradient w.r.t. softmax weights
