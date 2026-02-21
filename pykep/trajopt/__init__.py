@@ -14,6 +14,7 @@ from ._sf_point2point import sf_point2point
 from ._sf_pl2pl import sf_pl2pl
 from ._sf_pl2pl_alpha import sf_pl2pl_alpha
 from ._zoh_point2point import zoh_point2point
+from ._zoh_pl2pl import zoh_pl2pl
 
 # Evolutionary encodings for high energy transfers (chemical propulsion)
 from ._mga import mga

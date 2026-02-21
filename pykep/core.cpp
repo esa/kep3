@@ -561,36 +561,46 @@ PYBIND11_MODULE(core, m) // NOLINT
     // Exposing propagators
     m.def(
         "propagate_lagrangian",
-        [](const std::array<std::array<double, 3>, 2> &pos_vel, double dt, double mu, bool request_stm) {
+        [](const std::array<std::array<double, 3>, 2> &pos_vel,
+        double dt, double mu, bool request_stm) -> py::tuple
+        {
+            // Call the C++ function
             auto pl_retval = kep3::propagate_lagrangian(pos_vel, dt, mu, request_stm);
+
+            // Always prepare an STM object (None if not requested)
+            py::object stm_obj = py::none();
+
             if (pl_retval.second) {
-                // The stm was requested lets transfer ownership to python
                 const std::array<double, 36> &stm = pl_retval.second.value();
 
-                // We create a capsule for the py::array_t to manage ownership change.
+                // Transfer ownership to Python
                 auto vec_ptr = std::make_unique<std::array<double, 36>>(stm);
 
                 py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
-                    const std::unique_ptr<std::array<double, 36>> vptr(static_cast<std::array<double, 36> *>(ptr));
+                    delete static_cast<std::array<double, 36> *>(ptr);
                 });
 
-                // NOTE: at this point, the capsule has been created successfully (including
-                // the registration of the destructor). We can thus release ownership from vec_ptr,
-                // as now the capsule is responsible for destroying its contents. If the capsule constructor
-                // throws, the destructor function is not registered/invoked, and the destructor
-                // of vec_ptr will take care of cleaning up.
                 auto *ptr = vec_ptr.release();
 
-                auto computed_stm = py::array_t<double>(
-                    py::array::ShapeContainer{static_cast<py::ssize_t>(6), static_cast<py::ssize_t>(6)}, // shape
-                    ptr->data(), std::move(vec_caps));
-                return py::make_tuple(py::make_tuple(pl_retval.first[0], pl_retval.first[1]), computed_stm);
-            } else {
-                return py::make_tuple(pl_retval.first[0], pl_retval.first[1]);
+                stm_obj = py::array_t<double>(
+                    {6, 6},
+                    ptr->data(),
+                    std::move(vec_caps));
             }
+
+            return py::make_tuple(
+                py::make_tuple(pl_retval.first[0], pl_retval.first[1]),
+                stm_obj);
         },
-        py::arg("rv") = std::array<std::array<double, 3>, 2>{{{1, 0, 0}, {0, 1, 0}}}, py::arg("tof") = kep3::pi / 2,
-        py::arg("mu") = 1, py::arg("stm") = false, pykep::propagate_lagrangian_docstring().c_str());
+        py::arg("rv") =
+            std::array<std::array<double, 3>, 2>{{
+                {1., 0., 0.},
+                {0., 1., 0.}
+            }},
+        py::arg("tof") = kep3::pi / 2,
+        py::arg("mu") = 1,
+        py::arg("stm") = false,
+        pykep::propagate_lagrangian_docstring().c_str());
 
     m.def("propagate_lagrangian_grid", [](const std::array<std::array<double, 3>, 2> &pos_vel, const std::vector<double> &time_grid, double mu,
         bool request_stm){
