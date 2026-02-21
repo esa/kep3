@@ -44,6 +44,11 @@ to then solve it using numerical solvers available for the task.
 .. autoclass:: sf_pl2pl_alpha
     :members: pretty, plot
 
+-------------------------------------------------------
+
+.. autoclass:: zoh_pl2pl
+    :members: pretty, plot
+
 Indirect
 ******************
 Indirect methods are based on the Pontryagin Maximum Principle (PMP), which provides necessary conditions

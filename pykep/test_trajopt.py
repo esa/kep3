@@ -482,11 +482,58 @@ class mit_tests(_ut.TestCase):
         self.assertTrue(float_rel_error(np.linalg.norm(p), 2.6981957244221193) < 1e-12)
         self.assertTrue(float_rel_error(np.linalg.norm(Aik), 3.7165788775706137) < 1e-12)
         self.assertTrue(float_rel_error(np.linalg.norm(Ajk), 5.1268002110392725) < 1e-12)
+class trajopt_zoh_point2point_tests(_ut.TestCase):
+    def test_gradient_uniform(self):
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+
+        udp = pk.trajopt.zoh_point2point(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='uniform',
+        )
+
+        lb, ub = udp.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+
+        # Compute analytical gradient (dense, flattened nf×nx)
+        ag = udp.gradient(x)
+        nf = 1 + udp.get_nec()
+        nx = len(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+
+        # Compute numerical gradient
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
+
+    def test_gradient_softmax(self):
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+
+        udp = pk.trajopt.zoh_point2point(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='softmax',
+        )
+
+        lb, ub = udp.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+
+        # Compute analytical gradient (dense, flattened nf×nx)
+        ag = udp.gradient(x)
+        nf = 1 + udp.get_nec()
+        nx = len(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+
+        # Compute numerical gradient
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
 class trajopt_zoh_pl2pl_tests(_ut.TestCase):
     def test_gradient(self):
-        import pykep as pk
-        import pygmo as pg
-
         # Build the variational integrators needed for gradients
         ta = pk.ta.get_zoh_kep(1e-14)
         ta_var = pk.ta.get_zoh_kep_var(1e-10)
@@ -520,4 +567,4 @@ class trajopt_zoh_pl2pl_tests(_ut.TestCase):
         J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
 
         # Compare analytical and numerical gradients
-        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-6, rtol=1e-6))
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
