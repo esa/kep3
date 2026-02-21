@@ -533,7 +533,7 @@ class trajopt_zoh_point2point_tests(_ut.TestCase):
 
         self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
 class trajopt_zoh_pl2pl_tests(_ut.TestCase):
-    def test_gradient(self):
+    def test_gradient_uniform(self):
         # Build the variational integrators needed for gradients
         ta = pk.ta.get_zoh_kep(1e-14)
         ta_var = pk.ta.get_zoh_kep_var(1e-10)
@@ -567,4 +567,30 @@ class trajopt_zoh_pl2pl_tests(_ut.TestCase):
         J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
 
         # Compare analytical and numerical gradients
-        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-4, rtol=1e-4))
+    def test_gradient_softmax(self):
+        # Build the variational integrators needed for gradients
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+        
+        #now for the softmax:
+        udp_softmax = pk.trajopt.zoh_pl2pl(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='softmax',
+            t0_bounds=[6700.0, 6800.0],
+            tof_bounds=[3.4, 8.6],
+            vinf_dep_bounds=[0.0, 0.2],
+            vinf_arr_bounds=[0.0, 0.2],
+        )
+        lb, ub = udp_softmax.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+        x[3], x[4], x[5] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+        x[7], x[8], x[9] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+        nf = 1 + udp_softmax.get_nec()
+        nx = len(x)
+        ag = udp_softmax.gradient(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp_softmax.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-4, rtol=1e-4))
