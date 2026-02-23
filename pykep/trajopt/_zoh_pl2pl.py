@@ -250,7 +250,11 @@ class zoh_pl2pl:
         """
         if not self.with_gradient:
             raise RuntimeError("Gradient computation requires variational integrator (tas[1] must not be None)")
-
+        
+        #if .acc method of eph not implemented, we cannot compute gradients
+        if not hasattr(self.pls, 'acc') or not hasattr(self.plf, 'acc'):
+            raise NotImplementedError("Gradient computation requires .acc method in planet ephemerides for computing accelerations")
+        
         # Set the leg from the decision vector
         rs, vs, rf, vf, rs_nd, vs_nd, rf_nd, vf_nd = self._set_leg_from_x(x)
 
@@ -278,21 +282,8 @@ class zoh_pl2pl:
         tof = x[10 + 4 * self.nseg]
         
         # Compute planet accelerations in SI units
-        rs_norm = _np.linalg.norm(rs)
-        rf_norm = _np.linalg.norm(rf)
-        as_si = -self.MU * _np.array(rs) / (rs_norm ** 3)
-        af_si = -self.MU * _np.array(rf) / (rf_norm ** 3)
-        
-        # Try to get accelerations from planet if available
-        try:
-            as_si = _np.array(self.pls.acc(t0))
-        except:
-            pass
-        
-        try:
-            af_si = _np.array(self.plf.acc(t0 + self.TIME * tof / _pk.DAY2SEC))
-        except:
-            pass
+        as_si = _np.array(self.pls.acc(t0))
+        af_si = _np.array(self.plf.acc(t0 + self.TIME * tof / _pk.DAY2SEC))
         
         # Convert accelerations to non-dimensional
         as_nd = as_si / self.ACC
