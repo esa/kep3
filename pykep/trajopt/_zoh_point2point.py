@@ -76,7 +76,7 @@ class zoh_point2point:
         self.time_encoding = time_encoding
         self.w_bounds_softmax = w_bounds_softmax
 
-        supported_time_encodings = ['uniform','softmax','variable'] #we will add variable length here in the future
+        supported_time_encodings = ['uniform','softmax'] #we will add variable length here in the future
         if self.time_encoding not in supported_time_encodings:
             raise NotImplementedError(f"Only {supported_time_encodings} time encodings are currently implemented")
 

@@ -30,6 +30,8 @@ class zoh_pl2pl:
     - idep, iarr are unit direction vectors
     - controls = [T, i_x, i_y, i_z] × nseg (T non-dimensional, directions unit vectors)
     - tof is non-dimensional (scaled by TIME = sqrt(L³/MU))
+
+    .. note: the API is slightly different than the point2point problem, and the units for the non-dimensionalization must be passed here.
     """
 
     def __init__(
@@ -50,7 +52,6 @@ class zoh_pl2pl:
         w_bounds_softmax=[-1., 1.],
         L=_pk.AU,
         V=_pk.EARTH_VELOCITY,
-        MASS=1000.0
     ):
         """
         Initializes the zoh_pl2pl_free_v instance with given parameters.
@@ -74,7 +75,6 @@ class zoh_pl2pl:
             *w_bounds_softmax* (:class:`list`): Bounds for softmax weights. Defaults to [-1., 1.].
             *L* (:class:`float`): Length scale for non-dimensionalization. Defaults to AU.
             *V* (:class:`float`): Velocity scale for non-dimensionalization. Defaults to EARTH_VELOCITY.
-            *MASS* (:class:`float`): Mass scale for non-dimensionalization. Defaults to 1000.0 kg.
         """
         # We define some additional datamembers useful later-on
         self.pls = pls
@@ -94,13 +94,11 @@ class zoh_pl2pl:
         # Scaling factors for non-dimensionalization
         self.L = L
         self.V = V
-        self.MASS = MASS
         self.MU = _pk.MU_SUN  # Store for gradient computation
         self.TIME = _np.sqrt(L**3 / self.MU)
         self.ACC = V / self.TIME
-        self.F = MASS * self.ACC
 
-        supported_time_encodings = ['uniform', 'softmax', 'variable']
+        supported_time_encodings = ['uniform', 'softmax']
         if self.time_encoding not in supported_time_encodings:
             raise NotImplementedError(f"Only {supported_time_encodings} time encodings are currently implemented")
 
@@ -407,8 +405,8 @@ class zoh_pl2pl:
         print(f"  Vector (nd): [{dv_arr_nd[0]:.6f}, {dv_arr_nd[1]:.6f}, {dv_arr_nd[2]:.6f}]")
         print(f"  Vector (km/s): [{dv_arr_si[0]/1000:.6f}, {dv_arr_si[1]/1000:.6f}, {dv_arr_si[2]/1000:.6f}]")
         print(f"  Direction: [{iarr[0]:.6f}, {iarr[1]:.6f}, {iarr[2]:.6f}], norm: {_np.linalg.norm(iarr):.6f}")
-        print(f"\nFinal mass: {x[1]:.6f} (nd), {x[1]*self.MASS:.2f} kg")
-        print(f"\nScaling factors: L={self.L/1e9:.3f} Gm, V={self.V/1000:.3f} km/s, MASS={self.MASS:.1f} kg, TIME={self.TIME/86400:.3f} days")
+        print(f"\nFinal mass: {x[1]:.6f} (nd)")
+        print(f"\nScaling factors: L={self.L/1e9:.3f} Gm, V={self.V/1000:.3f} km/s, TIME={self.TIME/86400:.3f} days")
         print(f"\nDetails on the ZOH leg:")
         print(self.leg)
 
