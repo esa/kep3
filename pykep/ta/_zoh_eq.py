@@ -91,7 +91,7 @@ def zoh_eq_dyn():
         ]
     ) * _hy.sqrt(p)
     D = _np.array([0.0, 0.0, 0.0, 0.0, 0.0, _hy.sqrt(1.0 / p / p / p) * w * w])
-    T_vector = _np.array([i_r, i_t, i_n] * T)
+    T_vector = _np.array([i_r, i_t, i_n]) * T
 
     # Dynamics
     fx = _np.dot(B, T_vector) / m + D

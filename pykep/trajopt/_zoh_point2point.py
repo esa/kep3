@@ -9,6 +9,7 @@
 import numpy as _np
 import pykep as _pk
 
+
 class zoh_point2point:
     """Represents the optimal low-thrust transfer between two fixed points using `pykep`'s Zero Order Hold (direct) method.
 
@@ -27,18 +28,18 @@ class zoh_point2point:
     """
 
     def __init__(
-        self, 
-        states=[1.2, 0.0, -0.01, 0.01, 1.0, -0.01], 
+        self,
+        states=[1.2, 0.0, -0.01, 0.01, 1.0, -0.01],
         statef=[1.0, 0.0, -0.0, 0.01, 1.1, -0.0],
-        ms=1., 
-        max_thrust=0.22, 
-        tof_bounds=[3.4, 8.6], 
-        mf_bounds=[0.2, 1], 
-        nseg=10, 
-        cut=0.6, 
-        tas=(_pk.ta.get_zoh_kep(1e-10),None),
-        time_encoding='uniform',
-        w_bounds_softmax=[-1.,1.]
+        ms=1.0,
+        max_thrust=0.22,
+        tof_bounds=[3.4, 8.6],
+        mf_bounds=[0.2, 1],
+        nseg=10,
+        cut=0.6,
+        tas=(_pk.ta.get_zoh_kep(1e-10), None),
+        time_encoding="uniform",
+        w_bounds_softmax=[-1.0, 1.0],
     ):
         """
         Initializes the zoh_point2point instance with given parameters.
@@ -76,9 +77,14 @@ class zoh_point2point:
         self.time_encoding = time_encoding
         self.w_bounds_softmax = w_bounds_softmax
 
-        supported_time_encodings = ['uniform','softmax'] #we will add variable length here in the future
+        supported_time_encodings = [
+            "uniform",
+            "softmax",
+        ]  # we will add variable length here in the future
         if self.time_encoding not in supported_time_encodings:
-            raise NotImplementedError(f"Only {supported_time_encodings} time encodings are currently implemented")
+            raise NotImplementedError(
+                f"Only {supported_time_encodings} time encodings are currently implemented"
+            )
 
         # We build and store a ZOH leg as data member.
         # We will change controls, tgrid and mf as those are encoded in the decision vector,
@@ -91,7 +97,9 @@ class zoh_point2point:
         tgrid = _np.linspace(
             0, (self.tof_bounds[0] + self.tof_bounds[1]) / 2, self.nseg + 1
         )
-        self.leg = _pk.leg.zoh(states + [ms], list(controls), statef + [ms], tgrid, cut, tas)
+        self.leg = _pk.leg.zoh(
+            states + [ms], list(controls), statef + [ms], tgrid, cut, tas
+        )
 
     def _set_leg_from_x(self, x):
         # Here is where the decision vector gets decoded into the leg tgrid, mf and controls
@@ -102,19 +110,19 @@ class zoh_point2point:
         self.leg.controls = list(self.leg.controls)
         tof = x[1 + 4 * self.nseg]
         # Since we only have tof in the decision vector we assume a uniform epoch grid
-        if self.time_encoding == 'uniform':
+        if self.time_encoding == "uniform":
             self.leg.tgrid = _np.linspace(0, tof, self.nseg + 1)
-        elif self.time_encoding == 'softmax':
+        elif self.time_encoding == "softmax":
             w = x[2 + 4 * self.nseg : 2 + 4 * self.nseg + self.nseg]
             softmax_weights, _ = _pk.compute_softmax_and_jacobian(w)
-            segment_duration = tof*softmax_weights
-            #now we need to transform the segment durations into a time grid increasing monotically from 0 to tof
+            segment_duration = tof * softmax_weights
+            # now we need to transform the segment durations into a time grid increasing monotically from 0 to tof
             tgrid = _np.zeros(self.nseg + 1)
             tgrid[1:] = _np.cumsum(segment_duration)
             self.leg.tgrid = tgrid
 
     def get_bounds(self):
-        if self.time_encoding == 'uniform':
+        if self.time_encoding == "uniform":
             lb = (
                 [self.mf_bounds[0]]
                 + [0, -1.0, -1.0, -1.0] * self.nseg
@@ -125,7 +133,7 @@ class zoh_point2point:
                 + [1.0, 1.0, 1.0, 1.0] * self.nseg
                 + [self.tof_bounds[1]]
             )
-        elif self.time_encoding == 'softmax':
+        elif self.time_encoding == "softmax":
             lb = (
                 [self.mf_bounds[0]]
                 + [0, -1.0, -1.0, -1.0] * self.nseg
@@ -152,101 +160,119 @@ class zoh_point2point:
         ceq += self.leg.compute_throttle_constraints()
         retval = _np.array([obj] + ceq)
         return retval
-    
+
     def gradient(self, x):
         """
         Computes the gradient of the fitness function with respect to the decision vector.
-        
+
         The fitness function is:
             f(x) = [obj] + mismatch_constraints + throttle_constraints
-        
+
         where:
             - obj = -mf (maximize final mass)
             - mismatch_constraints: 7 equality constraints (position, velocity, mass mismatch)
             - throttle_constraints: nseg equality constraints (|u|^2 - 1 = 0 for each segment)
-        
+
         The decision vector is:
             x = [mf] + controls + tof  (+ weights for softmax)
-        
+
         where controls = [T_1, ix_1, iy_1, iz_1, ..., T_nseg, ix_nseg, iy_nseg, iz_nseg]
         and weights = [w_1, w_2, ..., w_nseg] (only if time_encoding is 'softmax')
-        
+
         Returns:
             gradient: numpy array of shape (nf, nx) where:
                 nf = 1 + 7 + nseg (total fitness dimension)
                 nx = 1 + 4*nseg + 1 (+ nseg for softmax) (decision vector dimension)
-        """  
+        """
         if not self.with_gradient:
-            raise RuntimeError("Gradient computation requires variational integrator (tas[1] must not be None)")
-        #let's start by setting the leg from the decision vector
+            raise RuntimeError(
+                "Gradient computation requires variational integrator (tas[1] must not be None)"
+            )
+        # let's start by setting the leg from the decision vector
         self._set_leg_from_x(x)
-        #now we initialize the gradient matrix:
-        nf = 1 + 7 + self.nseg #total number of fitness components
-        nx = 1 + 4*self.nseg + 1 #total number of decision variables
-        if self.time_encoding == 'softmax':
-            nx += self.nseg #account for the additional decision variables for the softmax weights
+        # now we initialize the gradient matrix:
+        nf = 1 + 7 + self.nseg  # total number of fitness components
+        nx = 1 + 4 * self.nseg + 1  # total number of decision variables
+        if self.time_encoding == "softmax":
+            nx += (
+                self.nseg
+            )  # account for the additional decision variables for the softmax weights
         gradient = _np.zeros((nf, nx))
 
         # ============================================
-        #Gradient of objective w.r.t decision vector:
+        # Gradient of objective w.r.t decision vector:
         # ============================================
-        gradient[0, 0] = -1.0 # d(-mf)/dmf = -1 .. all the rest is zeros
+        gradient[0, 0] = -1.0  # d(-mf)/dmf = -1 .. all the rest is zeros
 
         # ============================================
-        #Gradient of mismatch constraints w.r.t decision vector, made of three contributions:
+        # Gradient of mismatch constraints w.r.t decision vector, made of three contributions:
         # ============================================
         ## First contribution -> partials of mismatch constraints w.r.t. final mass
         dmc_dx0, dmc_dx1, dmc_dcontrols, dmcdtgrid = self.leg.compute_mc_grad()
-        gradient[1:8,0]=dmc_dx1[:,6] #mismatch constraints w.r.t mf
+        gradient[1:8, 0] = dmc_dx1[:, 6]  # mismatch constraints w.r.t mf
         ## Second contribution -> partials of mismatch constraints w.r.t. controls
         for i in range(self.nseg):
-            gradient[1:8, 1 + 4*i : 1 + 4*i + 4] = dmc_dcontrols[:, 4*i : 4*i + 4]
-            gradient[1:8, 1 + 4*i] *= self.max_thrust #account for the multiplication by max_thrust for the T component of the controls
+            gradient[1:8, 1 + 4 * i : 1 + 4 * i + 4] = dmc_dcontrols[
+                :, 4 * i : 4 * i + 4
+            ]
+            gradient[
+                1:8, 1 + 4 * i
+            ] *= (
+                self.max_thrust
+            )  # account for the multiplication by max_thrust for the T component of the controls
         ## Third contribution -> partials of mismatch constraints w.r.t. time grid
-        if self.time_encoding == 'uniform':
-            #note here that what we are after is:
-            #dmc/dtof = dmc/dtgrid * dtgrid/dtof
-            #and since for the uniform case tgrid = linspace(0,tof,nseg+1) = [0, tof/nseg, 2*tof/nseg, ..., tof], we have that dtgrid/dtof = [0, 1/nseg, 2/nseg, ..., 1]
-            gradient[1:8, -1] = dmcdtgrid @ _np.linspace(0, 1, self.nseg + 1) #dmc/dtof = dmc/dtgrid * dtgrid/dtof
-        elif self.time_encoding == 'softmax':
-            #let's start by extracting the softmax weights from the decision vector:
+        if self.time_encoding == "uniform":
+            # note here that what we are after is:
+            # dmc/dtof = dmc/dtgrid * dtgrid/dtof
+            # and since for the uniform case tgrid = linspace(0,tof,nseg+1) = [0, tof/nseg, 2*tof/nseg, ..., tof], we have that dtgrid/dtof = [0, 1/nseg, 2/nseg, ..., 1]
+            gradient[1:8, -1] = dmcdtgrid @ _np.linspace(
+                0, 1, self.nseg + 1
+            )  # dmc/dtof = dmc/dtgrid * dtgrid/dtof
+        elif self.time_encoding == "softmax":
+            # let's start by extracting the softmax weights from the decision vector:
             w = x[2 + 4 * self.nseg : 2 + 4 * self.nseg + self.nseg]
             softmax_weights, J_softmax = _pk.compute_softmax_and_jacobian(w)
             tof = x[1 + 4 * self.nseg]
 
-            #gradient w.r.t. tof:
-            #tgrid = cumsum(tof*softmax_weights) => dtgrid/dtof = cumsum(softmax_weights)
-            #note that also tgrid[0]=0 so dtgrid[0]/dtof = 0
-            dtgrid_dtof=_np.zeros(self.nseg+1)
-            dtgrid_dtof[1:]=_np.cumsum(softmax_weights)
-            gradient[1:8,1+4*self.nseg] = dmcdtgrid @ dtgrid_dtof
+            # gradient w.r.t. tof:
+            # tgrid = cumsum(tof*softmax_weights) => dtgrid/dtof = cumsum(softmax_weights)
+            # note that also tgrid[0]=0 so dtgrid[0]/dtof = 0
+            dtgrid_dtof = _np.zeros(self.nseg + 1)
+            dtgrid_dtof[1:] = _np.cumsum(softmax_weights)
+            gradient[1:8, 1 + 4 * self.nseg] = dmcdtgrid @ dtgrid_dtof
 
-            #now the gradient w.r.t. softmax weights:
-            #tgrid[i]=sum_{j=0}^{i-1}(tof*softmax_weights[j]) => 
-            #dtgrid[i]/dw[k] = sum_{j=0}^{i-1} tof*dsoftmax_weights[j]/dw[k] =
+            # now the gradient w.r.t. softmax weights:
+            # tgrid[i]=sum_{j=0}^{i-1}(tof*softmax_weights[j]) =>
+            # dtgrid[i]/dw[k] = sum_{j=0}^{i-1} tof*dsoftmax_weights[j]/dw[k] =
             #                = tof*sum_{j=0}^{i-1} J_softmax[j,k]
-            #now if we assume that: tril_matrix[i,j]=1 if j<i, else 0
-            #then dtgrid/dw = tof*(tril_matrix @ J_softmax)
+            # now if we assume that: tril_matrix[i,j]=1 if j<i, else 0
+            # then dtgrid/dw = tof*(tril_matrix @ J_softmax)
             tril_matrix = _np.zeros((self.nseg + 1, self.nseg))
             for i in range(1, self.nseg + 1):
                 tril_matrix[i, :i] = 1.0
             dtgrid_dw = tof * (tril_matrix @ J_softmax)
-            gradient[1:8, 2 + 4 * self.nseg : 2 + 4 * self.nseg + self.nseg] = dmcdtgrid @ dtgrid_dw
+            gradient[1:8, 2 + 4 * self.nseg : 2 + 4 * self.nseg + self.nseg] = (
+                dmcdtgrid @ dtgrid_dw
+            )
         else:
-            raise NotImplementedError(f"Gradient w.r.t. tof not implemented for {self.time_encoding} time encoding")
+            raise NotImplementedError(
+                f"Gradient w.r.t. tof not implemented for {self.time_encoding} time encoding"
+            )
         # ============================================
         # Gradient of throttle constraints w.r.t. decision vector, made of two contributions:
         # ============================================
         ## First contribution -> partials of throttle constraints w.r.t. final mass
-        gradient[8:8+self.nseg, 0] = 0.0 #these are zeros
+        gradient[8 : 8 + self.nseg, 0] = 0.0  # these are zeros
         ## Second contribution -> partials of throttle constraints w.r.t. controls
         dtc_dcontrols = self.leg.compute_tc_grad()
-        gradient[8:8+self.nseg, 1:1+4*self.nseg] = dtc_dcontrols #the partials of the throttle constraints w.r.t. the controls of all segments
+        gradient[8 : 8 + self.nseg, 1 : 1 + 4 * self.nseg] = (
+            dtc_dcontrols  # the partials of the throttle constraints w.r.t. the controls of all segments
+        )
         ## Third contribution -> partials of throttle constraints w.r.t. controls
-        #the throttle constrain does not have dependence on the time grid, so these are zeros, nothing to do here
+        # the throttle constrain does not have dependence on the time grid, so these are zeros, nothing to do here
         ## Fourth contribution (softmax only) -> partials of throttle constraints w.r.t. softmax weights: they are zero so nothing to do here
         return gradient.flatten()
-    
+
     # If the variational integator is also passed in construction (i.e. its not None)
     # gradient should be provided (pagmo UDP interface used this method to know)
     def has_gradient(self):
@@ -255,7 +281,7 @@ class zoh_point2point:
     # Only equality contraints. Mismatches and the |i_u| = 1.
     def get_nec(self):
         return 7 + self.nseg
-    
+
     def pretty(self, x):
         """
         Prints a detailed representation of the zero order hold point to point problem.
@@ -266,45 +292,61 @@ class zoh_point2point:
         self._set_leg_from_x(x)
         print(self.leg)
 
-    def plot(self, 
-             x, 
-             ax=None, 
-             N=10):
+    def plot(self, x, ax=None, N=10, to_cartesian=lambda x: x):
         """
         Plots the trajectory of the zero order hold point to point problem.
-        
+
         Args:
             *x* (:class:`list`): The decision vector containins: final mass, thrust direction, time of flight and (if time encoding is softmax) the weights for the softmax time grid.
             *ax* (:class:`matplotlib.axes.Axes`): The matplotlib axes to plot on. If None, a new figure and axes will be created.
             *N* (:class:`int`): The number of points to plot along the trajectory.
+            *to_cartesian* (:class:`~collections.abc.Callable`): A function that converts whatever state is used in the internal Taylor integrator to Cartesian (r,v).
 
         Returns:
             The matplotlib axes with the trajectory plotted.
         """
-        #to be replaced with a plot method akin the sims-flanagan point2point one
+        # to be replaced with a plot method akin the sims-flanagan point2point one
         self._set_leg_from_x(x)
         fwd, bck = self.leg.get_state_info(N=N)
         # compute the color scheme
-        throttles = x[1:1 + 4 * self.nseg:4]
+        throttles = x[1 : 1 + 4 * self.nseg : 4]
         if ax is None:
-            ax=_pk.plot.make_3Daxis()
+            ax = _pk.plot.make_3Daxis()
         # plot
         for i, segment in enumerate(fwd):
-            ax.scatter(segment[0,0], segment[0,1], segment[0,2], c = 'k') 
+            ax.scatter(segment[0, 0], segment[0, 1], segment[0, 2], c="k")
             color = (
-                0.25 + (0.80 - 0.25) * min(1.0, throttles[i]),
-                0.41 + (0.36 - 0.41) * min(1.0, throttles[i]),
-                0.88 + (0.36 - 0.88) * min(1.0, throttles[i]),
+                0.25 + (0.80 - 0.25) * throttles[i],
+                0.41 + (0.36 - 0.41) * throttles[i],
+                0.88 + (0.36 - 0.88) * throttles[i],
             )
-            ax.plot(segment[:,0], segment[:,1], segment[:,2], c = color) 
-        ax.scatter(segment[-1,0], segment[-1,1], segment[-1,2], c = 'k', marker="^") 
+            # We obtain the state in Cartesian
+            segment_cart = to_cartesian(segment)
+            ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
+        ax.scatter(
+            segment_cart[-1, 0],
+            segment_cart[-1, 1],
+            segment_cart[-1, 2],
+            c="k",
+            marker="^",
+        )
         for i, segment in enumerate(bck):
             color = (
-                0.25 + (0.80 - 0.25) * min(1.0, throttles[-1 - i]),
-                0.41 + (0.36 - 0.41) * min(1.0, throttles[-1 - i]),
-                0.88 + (0.36 - 0.88) * min(1.0, throttles[-1 - i]),
+                0.25 + (0.80 - 0.25) * throttles[-1 - i],
+                0.41 + (0.36 - 0.41) * throttles[-1 - i],
+                0.88 + (0.36 - 0.88) * throttles[-1 - i],
             )
-            ax.scatter(segment[0,0], segment[0,1], segment[0,2], c = 'k') 
-            ax.plot(segment[:,0], segment[:,1], segment[:,2], c = color)
-        ax.scatter(segment[-1,0], segment[-1,1], segment[-1,2], c = 'k', marker="^") 
+            # We obtain the state in Cartesian
+            segment_cart = to_cartesian(segment)
+            ax.scatter(
+                segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k"
+            )
+            ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
+        ax.scatter(
+            segment_cart[-1, 0],
+            segment_cart[-1, 1],
+            segment_cart[-1, 2],
+            c="k",
+            marker="^",
+        )
         return ax
