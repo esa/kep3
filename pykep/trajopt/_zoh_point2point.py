@@ -292,7 +292,7 @@ class zoh_point2point:
         self._set_leg_from_x(x)
         print(self.leg)
 
-    def plot(self, x, ax=None, N=10, to_cartesian=lambda x: x):
+    def plot(self, x, ax=None, N=30, to_cartesian=lambda state: state):
         """
         Plots the trajectory of the zero order hold point to point problem.
 
@@ -314,14 +314,14 @@ class zoh_point2point:
             ax = _pk.plot.make_3Daxis()
         # plot
         for i, segment in enumerate(fwd):
-            ax.scatter(segment[0, 0], segment[0, 1], segment[0, 2], c="k")
             color = (
                 0.25 + (0.80 - 0.25) * throttles[i],
                 0.41 + (0.36 - 0.41) * throttles[i],
                 0.88 + (0.36 - 0.88) * throttles[i],
             )
             # We obtain the state in Cartesian
-            segment_cart = to_cartesian(segment)
+            segment_cart = _np.array([to_cartesian(it) for it in segment])
+            ax.scatter(segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k")
             ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
         ax.scatter(
             segment_cart[-1, 0],
@@ -337,7 +337,7 @@ class zoh_point2point:
                 0.88 + (0.36 - 0.88) * throttles[-1 - i],
             )
             # We obtain the state in Cartesian
-            segment_cart = to_cartesian(segment)
+            segment_cart = _np.array([to_cartesian(it) for it in segment])
             ax.scatter(
                 segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k"
             )
