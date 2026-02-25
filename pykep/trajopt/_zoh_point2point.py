@@ -21,7 +21,7 @@ class zoh_point2point:
 
     The decision vector is::
 
-        x = [mf] + controls + tof
+        x = [mf] + controls + tof (+ weights for softmax)
 
     where controls is a vector of control parameters :math:`[T, i_x, i_y, i_z] \\times n_\\text{seg}` representing magnitude and direction
     of the thrust applied in each segment.
@@ -147,7 +147,7 @@ class zoh_point2point:
                 + [self.w_bounds_softmax[1]] * self.nseg
             )
         return (lb, ub)
-
+    
     def fitness(self, x):
         # We set the leg using data in the decision vector
         self._set_leg_from_x(x)
@@ -292,7 +292,7 @@ class zoh_point2point:
         self._set_leg_from_x(x)
         print(self.leg)
 
-    def plot(self, x, ax=None, N=30, to_cartesian=lambda state: state):
+    def plot(self, x, ax=None, N=30, to_cartesian=lambda state: state, mark_segments = True, mark_mismatch=True):
         """
         Plots the trajectory of the zero order hold point to point problem.
 
@@ -301,6 +301,7 @@ class zoh_point2point:
             *ax* (:class:`matplotlib.axes.Axes`): The matplotlib axes to plot on. If None, a new figure and axes will be created.
             *N* (:class:`int`): The number of points to plot along the trajectory.
             *to_cartesian* (:class:`~collections.abc.Callable`): A function that converts whatever state is used in the internal Taylor integrator to Cartesian (r,v).
+            *mark_segments* (:class:`bool`): adds markers ath each segment edge
 
         Returns:
             The matplotlib axes with the trajectory plotted.
@@ -321,15 +322,17 @@ class zoh_point2point:
             )
             # We obtain the state in Cartesian
             segment_cart = _np.array([to_cartesian(it) for it in segment])
-            ax.scatter(segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k")
+            if mark_segments:
+                ax.scatter(segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k")
             ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
-        ax.scatter(
-            segment_cart[-1, 0],
-            segment_cart[-1, 1],
-            segment_cart[-1, 2],
-            c="k",
-            marker="^",
-        )
+        if mark_mismatch:
+            ax.scatter(
+                segment_cart[-1, 0],
+                segment_cart[-1, 1],
+                segment_cart[-1, 2],
+                c="k",
+                marker="^",
+            )
         for i, segment in enumerate(bck):
             color = (
                 0.25 + (0.80 - 0.25) * throttles[-1 - i],
@@ -338,15 +341,17 @@ class zoh_point2point:
             )
             # We obtain the state in Cartesian
             segment_cart = _np.array([to_cartesian(it) for it in segment])
-            ax.scatter(
-                segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k"
-            )
+            if mark_segments:
+                ax.scatter(
+                    segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k"
+                )
             ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
-        ax.scatter(
-            segment_cart[-1, 0],
-            segment_cart[-1, 1],
-            segment_cart[-1, 2],
-            c="k",
-            marker="^",
-        )
+        if mark_mismatch:
+            ax.scatter(
+                segment_cart[-1, 0],
+                segment_cart[-1, 1],
+                segment_cart[-1, 2],
+                c="k",
+                marker="^",
+            )
         return ax
