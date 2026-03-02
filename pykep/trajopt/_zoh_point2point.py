@@ -8,6 +8,7 @@
 
 import numpy as _np
 import pykep as _pk
+from matplotlib import pyplot as _plt
 
 
 class zoh_point2point:
@@ -147,7 +148,7 @@ class zoh_point2point:
                 + [self.w_bounds_softmax[1]] * self.nseg
             )
         return (lb, ub)
-    
+
     def fitness(self, x):
         # We set the leg using data in the decision vector
         self._set_leg_from_x(x)
@@ -292,7 +293,16 @@ class zoh_point2point:
         self._set_leg_from_x(x)
         print(self.leg)
 
-    def plot(self, x, ax=None, N=30, to_cartesian=lambda state: state, mark_segments = True, mark_mismatch=True):
+    def plot(
+        self,
+        x,
+        ax=None,
+        N=30,
+        to_cartesian=lambda state: state,
+        mark_segments=True,
+        mark_mismatch=True,
+        **kwargs,
+    ):
         """
         Plots the trajectory of the zero order hold point to point problem.
 
@@ -306,11 +316,12 @@ class zoh_point2point:
         Returns:
             The matplotlib axes with the trajectory plotted.
         """
+        x_arr = _np.asarray(x)
         # to be replaced with a plot method akin the sims-flanagan point2point one
-        self._set_leg_from_x(x)
+        self._set_leg_from_x(x_arr)
         fwd, bck = self.leg.get_state_info(N=N)
         # compute the color scheme
-        throttles = x[1 : 1 + 4 * self.nseg : 4]
+        throttles = x_arr[1 : 1 + 4 * self.nseg : 4]
         if ax is None:
             ax = _pk.plot.make_3Daxis()
         # plot
@@ -323,15 +334,20 @@ class zoh_point2point:
             # We obtain the state in Cartesian
             segment_cart = _np.array([to_cartesian(it) for it in segment])
             if mark_segments:
-                ax.scatter(segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k")
+                ax.scatter(
+                    segment_cart[0, 0],
+                    segment_cart[0, 1],
+                    segment_cart[0, 2],
+                    **kwargs,
+                )
             ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
         if mark_mismatch:
             ax.scatter(
                 segment_cart[-1, 0],
                 segment_cart[-1, 1],
                 segment_cart[-1, 2],
-                c="k",
                 marker="^",
+                **kwargs,
             )
         for i, segment in enumerate(bck):
             color = (
@@ -343,7 +359,10 @@ class zoh_point2point:
             segment_cart = _np.array([to_cartesian(it) for it in segment])
             if mark_segments:
                 ax.scatter(
-                    segment_cart[0, 0], segment_cart[0, 1], segment_cart[0, 2], c="k"
+                    segment_cart[0, 0],
+                    segment_cart[0, 1],
+                    segment_cart[0, 2],
+                    **kwargs,
                 )
             ax.plot(segment_cart[:, 0], segment_cart[:, 1], segment_cart[:, 2], c=color)
         if mark_mismatch:
@@ -351,7 +370,40 @@ class zoh_point2point:
                 segment_cart[-1, 0],
                 segment_cart[-1, 1],
                 segment_cart[-1, 2],
-                c="k",
                 marker="^",
+                **kwargs
             )
         return ax
+    
+    def plot_throttle(self, x, ax=None, **kwargs):
+        """
+        Plots the throttle profile of the zero order hold point to point problem.
+
+        The throttle values are assumed to be defined per segment (length ``nseg``)
+        and are plotted as piecewise-constant values over the corresponding time
+        intervals defined by ``self.leg.tgrid`` (length ``nseg+1``).
+
+        Args:
+            *x* (:class:`list`): The decision vector containing the segment throttles.
+                The throttle values are read from ``x[1:4*self.nseg:4]``.
+            *ax* (:class:`matplotlib.axes.Axes`): The matplotlib axes to plot on.
+                If None, a new figure and axes will be created.
+
+        Returns:
+            The matplotlib axes with the throttle profile plotted.
+        """
+        if ax is None:
+            _, ax = _plt.subplots()
+
+        self._set_leg_from_x(x)
+        tgrid = _np.asarray(self.leg.tgrid)              # length nseg+1
+        throttles = _np.asarray(x[1 : 4 * self.nseg : 4])  # length nseg
+
+        # Repeat the last throttle so that the last tgrid point is included in the step plot
+        u_plot = _np.r_[throttles, throttles[-1]]
+        ax.step(tgrid, u_plot, where="post", **kwargs)
+
+        ax.set_xlabel("time grid")
+        ax.set_ylabel("throttle value (nd)")
+        return ax
+
