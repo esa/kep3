@@ -213,6 +213,10 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_point2point.html">Point-to-Point Zero Order Hold</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_pl2pl.html">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -576,7 +580,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.1858885891933877e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.7739340485129327e-07
 </pre></div>
 </div>
 </div>
@@ -591,7 +595,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.9620895959153335e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2840887362041808e-07
 </pre></div>
 </div>
 </div>
@@ -606,7 +610,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.8702156293192665e-07
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0699002200122423e-07
 </pre></div>
 </div>
 </div>
@@ -620,7 +624,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.1218644565934244e-08
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.1981212255768944e-07
 </pre></div>
 </div>
 </div>
@@ -643,7 +647,7 @@ and in the process we learn how to instantiate and use the class.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b79ac1a1097b14518cb13bbb6a12e1ca2b1165ff1caec8c8cc87aaeddd58e484.png" src="../_images/b79ac1a1097b14518cb13bbb6a12e1ca2b1165ff1caec8c8cc87aaeddd58e484.png" />
+<img alt="../_images/4c8389c9ec90485a37aae0ac9138843a78afe1fb70b7eab4e0b5870172a2bc88.png" src="../_images/4c8389c9ec90485a37aae0ac9138843a78afe1fb70b7eab4e0b5870172a2bc88.png" />
 </div>
 </div>
 <p>Also in <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a> we can use our custom dynamics (for example equinoctial elements, or change the sail characterization), passing the corresponding integrators via the <em>tas</em> argument in the constructor.</p>

@@ -213,6 +213,10 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_zoh_point2point.html">Point-to-Point Zero Order Hold</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_zoh_pl2pl.html">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -1286,7 +1290,7 @@ in circular relative motion (circular restricted three-body problem, CR3BP).</p>
 <li><p><span class="math notranslate nohighlight">\(c = \frac{1}{v_{eff}}\)</span></p></li>
 </ul>
 <p>The state is: <span class="math notranslate nohighlight">\([x, y, z, v_x, v_y, v_z, m]\)</span></p>
-<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c]\)</span></p>
+<p>The system parameters are (in this order): <span class="math notranslate nohighlight">\([T, i_x, i_y, i_z] + [c, mu]\)</span></p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p>list[tuple[hy.expression, hy.expression]]: The dynamics in form <cite>[(x, dx), …]</cite></p>
 </dd>

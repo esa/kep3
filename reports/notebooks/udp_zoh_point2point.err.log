@@ -28,16 +28,21 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
+pop = pg.population(prob, 1)
 pop = algo.evolve(pop)
 print(prob.feasibility_f(pop.champion_f))
+print("Final mass:", pop.champion_x[0] * MASS)
+print("Final tof:", pop.champion_x[4*nseg+1] * TIME * pk.SEC2DAY)
 ------------------
 
 
 [31m---------------------------------------------------------------------------[39m
 [31mValueError[39m                                Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[9][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m pop = [43malgo[49m[43m.[49m[43mevolve[49m[43m([49m[43mpop[49m[43m)[49m
-[32m      2[39m [38;5;28mprint[39m(prob.feasibility_f(pop.champion_f))
+[36mCell[39m[36m [39m[32mIn[8][39m[32m, line 2[39m
+[32m      1[39m pop = pg.population(prob, [32m1[39m)
+[32m----> [39m[32m2[39m pop = [43malgo[49m[43m.[49m[43mevolve[49m[43m([49m[43mpop[49m[43m)[49m
+[32m      3[39m [38;5;28mprint[39m(prob.feasibility_f(pop.champion_f))
+[32m      4[39m [38;5;28mprint[39m([33m"[39m[33mFinal mass:[39m[33m"[39m, pop.champion_x[[32m0[39m] * MASS)
 
 [31mValueError[39m: 
 function: evolve_version

@@ -211,6 +211,10 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tut_trajopt.html">Trajectory Optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_zoh_point2point.html">Point-to-Point Zero Order Hold</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="notebooks/udp_zoh_pl2pl.html">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl.html">Planet to planet low-thrust</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
@@ -442,6 +446,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.direct2eta"><code class="docutils literal notranslate"><span class="pre">direct2eta()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.uvV2cartesian"><code class="docutils literal notranslate"><span class="pre">uvV2cartesian()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.cartesian2uvV"><code class="docutils literal notranslate"><span class="pre">cartesian2uvV()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.compute_softmax_and_jacobian"><code class="docutils literal notranslate"><span class="pre">compute_softmax_and_jacobian()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#miscellanea">Miscellanea</a><ul class="visible nav section-nav flex-column">
@@ -675,6 +680,30 @@ is loaded to enable correct ET↔UTC conversion.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pykep.utils.compute_softmax_and_jacobian">
+<span class="sig-prename descclassname"><span class="pre">pykep.utils.</span></span><span class="sig-name descname"><span class="pre">compute_softmax_and_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.utils.compute_softmax_and_jacobian" title="Link to this definition">#</a></dt>
+<dd><p>This function computes softmax and its Jacobian
+using a numerically stable formulation. The softmax transforms
+an unconstrained real-valued vector into a probability simplex (all
+weights positive and summing to one).</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><em>logits</em> (<code class="docutils literal notranslate"><span class="pre">array-like</span></code>): a sequence of floats representing the unnormalized</dt><dd><p>log-weights (logits) to be transformed via softmax.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">tuple</span></code>: A pair <code class="docutils literal notranslate"><span class="pre">(weights,</span> <span class="pre">J)</span></code> where:</p>
+<ul class="simple">
+<li><p><em>weights</em> (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): the softmax-normalized weights,
+each in (0, 1) and summing to 1.</p></li>
+<li><p><em>J</em> (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): the <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">n)</span></code> Jacobian matrix of the
+softmax map, where <code class="docutils literal notranslate"><span class="pre">J[i,</span> <span class="pre">j]</span> <span class="pre">=</span> <span class="pre">weights[i]</span> <span class="pre">*</span> <span class="pre">(delta_ij</span> <span class="pre">-</span> <span class="pre">weights[j])</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="miscellanea">
 <h1>Miscellanea<a class="headerlink" href="#miscellanea" title="Link to this heading">#</a></h1>
@@ -764,6 +793,7 @@ at any epoch, but will only be matching the original ones at <em>t0</em>.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.direct2eta"><code class="docutils literal notranslate"><span class="pre">direct2eta()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.uvV2cartesian"><code class="docutils literal notranslate"><span class="pre">uvV2cartesian()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.cartesian2uvV"><code class="docutils literal notranslate"><span class="pre">cartesian2uvV()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pykep.utils.compute_softmax_and_jacobian"><code class="docutils literal notranslate"><span class="pre">compute_softmax_and_jacobian()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#miscellanea">Miscellanea</a><ul class="visible nav section-nav flex-column">
