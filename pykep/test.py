@@ -489,6 +489,8 @@ def run_test_suite():
     suite.addTest(tl.loadTestsFromTestCase(encoding_tests))
     suite.addTest(tl.loadTestsFromTestCase(mit_tests))
     suite.addTest(tl.loadTestsFromTestCase(propagators_test))
-
+    suite.addTest(tl.loadTestsFromTestCase(trajopt_zoh_point2point_tests))
+    suite.addTest(tl.loadTestsFromTestCase(trajopt_zoh_pl2pl_tests))
+    
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
     return test_result

@@ -27,7 +27,7 @@ def zoh_cr3bp_dyn():
     
     The state is: :math:`[x, y, z, v_x, v_y, v_z, m]`
     
-    The system parameters are (in this order): :math:`[T, i_x, i_y, i_z] + [c]`
+    The system parameters are (in this order): :math:`[T, i_x, i_y, i_z] + [c, mu]`
 
     Returns:
         list[tuple[hy.expression, hy.expression]]: The dynamics in form `[(x, dx), ...]`

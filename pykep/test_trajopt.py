@@ -482,4 +482,115 @@ class mit_tests(_ut.TestCase):
         self.assertTrue(float_rel_error(np.linalg.norm(p), 2.6981957244221193) < 1e-12)
         self.assertTrue(float_rel_error(np.linalg.norm(Aik), 3.7165788775706137) < 1e-12)
         self.assertTrue(float_rel_error(np.linalg.norm(Ajk), 5.1268002110392725) < 1e-12)
+class trajopt_zoh_point2point_tests(_ut.TestCase):
+    def test_gradient_uniform(self):
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
 
+        udp = pk.trajopt.zoh_point2point(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='uniform',
+        )
+
+        lb, ub = udp.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+
+        # Compute analytical gradient (dense, flattened nf×nx)
+        ag = udp.gradient(x)
+        nf = 1 + udp.get_nec()
+        nx = len(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+
+        # Compute numerical gradient
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
+
+    def test_gradient_softmax(self):
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+
+        udp = pk.trajopt.zoh_point2point(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='softmax',
+        )
+
+        lb, ub = udp.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+
+        # Compute analytical gradient (dense, flattened nf×nx)
+        ag = udp.gradient(x)
+        nf = 1 + udp.get_nec()
+        nx = len(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+
+        # Compute numerical gradient
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-5, rtol=1e-5))
+class trajopt_zoh_pl2pl_tests(_ut.TestCase):
+    def test_gradient_uniform(self):
+        # Build the variational integrators needed for gradients
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+
+        # Create a small instance for testing
+        udp = pk.trajopt.zoh_pl2pl(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='uniform',
+            t0_bounds=[6700.0, 6800.0],
+            tof_bounds=[3.4, 8.6],
+            vinf_dep_bounds=[0.0, 0.2],
+            vinf_arr_bounds=[0.0, 0.2],
+        )
+
+        lb, ub = udp.get_bounds()
+        # Use midpoint of bounds as test point; set direction vectors to non-zero
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+        # Ensure departure and arrival direction vectors are non-zero (they default to midpoint of [-1, 1] = 0)
+        x[3], x[4], x[5] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+        x[7], x[8], x[9] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+
+        # Compute analytical gradient (returned as dense, flattened nf×nx matrix)
+        ag = udp.gradient(x)
+        nf = 1 + udp.get_nec()
+        nx = len(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+
+        # Compute numerical gradient using central differences
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+
+        # Compare analytical and numerical gradients
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-4, rtol=1e-4))
+    def test_gradient_softmax(self):
+        # Build the variational integrators needed for gradients
+        ta = pk.ta.get_zoh_kep(1e-14)
+        ta_var = pk.ta.get_zoh_kep_var(1e-10)
+        
+        #now for the softmax:
+        udp_softmax = pk.trajopt.zoh_pl2pl(
+            nseg=5,
+            tas=(ta, ta_var),
+            time_encoding='softmax',
+            t0_bounds=[6700.0, 6800.0],
+            tof_bounds=[3.4, 8.6],
+            vinf_dep_bounds=[0.0, 0.2],
+            vinf_arr_bounds=[0.0, 0.2],
+        )
+        lb, ub = udp_softmax.get_bounds()
+        x = np.array([(l + u) / 2.0 for l, u in zip(lb, ub)])
+        x[3], x[4], x[5] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+        x[7], x[8], x[9] = 1.0 / np.sqrt(3), 1.0 / np.sqrt(3), 1.0 / np.sqrt(3)
+        nf = 1 + udp_softmax.get_nec()
+        nx = len(x)
+        ag = udp_softmax.gradient(x)
+        J_analytical = np.array(ag).reshape((nf, nx), order="C")
+        J_numerical_flat = pg.estimate_gradient_h(callable=udp_softmax.fitness, x=x, dx=1e-6)
+        J_numerical = np.array(J_numerical_flat).reshape((nf, nx), order="C")
+        self.assertTrue(np.allclose(J_analytical, J_numerical, atol=1e-4, rtol=1e-4))

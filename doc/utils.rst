@@ -47,6 +47,8 @@ Encoding Utils
 
 .. autofunction:: cartesian2uvV
 
+.. autofunction:: compute_softmax_and_jacobian
+
 Miscellanea
 ###############################################################################
 

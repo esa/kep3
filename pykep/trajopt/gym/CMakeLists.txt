@@ -6,6 +6,7 @@ set(PYKEP_GYM_PYTHON_FILES
     _eve_mga_1dsm.py 
     _juice_mga_1dsm.py 
     _messenger.py
-    _rosetta_mga_1dsm.py)
+    _rosetta_mga_1dsm.py
+    )
     
 install(FILES ${PYKEP_GYM_PYTHON_FILES} DESTINATION ${_PYKEP_INSTALL_DIR}/trajopt/gym)

@@ -31,12 +31,22 @@ to then solve it using numerical solvers available for the task.
 
 -------------------------------------------------------
 
+.. autoclass:: zoh_point2point
+    :members: pretty, plot
+
+-------------------------------------------------------
+
 .. autoclass:: sf_pl2pl
     :members: pretty, plot
 
 -------------------------------------------------------
 
 .. autoclass:: sf_pl2pl_alpha
+    :members: pretty, plot
+
+-------------------------------------------------------
+
+.. autoclass:: zoh_pl2pl
     :members: pretty, plot
 
 Indirect
