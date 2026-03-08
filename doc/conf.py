@@ -72,8 +72,7 @@ html_theme_options = {
 nb_execution_mode = "force"
 
 nb_execution_excludepatterns = [
-    "udp_sf_point2point*",
-    "udp_sf_pl2pl*",
+    "udp_sf_*",
     "udp_mga*",
     "pontryagin_cartesian*",
     "approximations*",
