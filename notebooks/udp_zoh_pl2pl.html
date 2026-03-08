@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Zero-Order Hold Planet-to-Planet Low-Thrust Transfer &#8212; pykep 3.0.0 documentation</title>
+    <title>Zero Order Hold: planet to planet low thrust transfer &#8212; pykep 3.0.0 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -46,8 +46,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_zoh_pl2pl';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Planet to planet low-thrust" href="udp_pl2pl.html" />
-    <link rel="prev" title="Point-to-Point Zero Order Hold" href="udp_zoh_point2point.html" />
+    <link rel="next" title="Multiple Gravity Assist (MGA)" href="udp_mga.html" />
+    <link rel="prev" title="Zero Order Hold: point to point low thrust transfer" href="udp_zoh_point2point.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -195,12 +195,12 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">The Zero Hold simple sail dynamics</a></li>
 
 
 
 
-<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">The CR3BP and BCP dynamics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
@@ -212,16 +212,16 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_zoh_point2point.html">Point-to-Point Zero Order Hold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Sims-Flanagan: point to point low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_pl2pl.html">Sims-Flanagan: planet to plane low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_pl2pl_alpha.html">Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_point2point.html">Zero Order Hold: point to point low thrust transfer</a></li>
 
 
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Zero Order Hold: planet to planet low thrust transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses: planet to planet transfer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
@@ -448,7 +448,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</h1>
+    <h1>Zero Order Hold: planet to planet low thrust transfer</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -490,7 +490,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="zero-order-hold-planet-to-planet-low-thrust-transfer">
-<h1>Zero-Order Hold Planet-to-Planet Low-Thrust Transfer<a class="headerlink" href="#zero-order-hold-planet-to-planet-low-thrust-transfer" title="Link to this heading">#</a></h1>
+<h1>Zero Order Hold: planet to planet low thrust transfer<a class="headerlink" href="#zero-order-hold-planet-to-planet-low-thrust-transfer" title="Link to this heading">#</a></h1>
 <p>In this tutorial we demonstrate the use of the <code class="docutils literal notranslate"><span class="pre">zoh_pl2pl</span></code> class to find a low-thrust trajectory connecting two moving planets using the <strong>Zero-Order Hold (ZOH)</strong> direct method with free departure and arrival velocities.</p>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
@@ -701,12 +701,12 @@ Fitness dimension: 40
 Analytical gradient (from variational equations + chain rule):
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.13 ms ± 1.96 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.1 ms ± 4.34 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 
 Numerical gradient (simple finite difference):
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>41.6 ms ± 74 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40.2 ms ± 99 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 ✓ The analytical gradient is significantly faster!
 </pre></div>
@@ -790,7 +790,7 @@ Numerical gradient (simple finite difference):
 
 <span class="ne">ValueError</span>: 
 <span class="ne">function</span>: evolve_version
-<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 603
 <span class="ne">what</span>: 
 <span class="n">An</span> <span class="n">error</span> <span class="n">occurred</span> <span class="k">while</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span> <span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">typically</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span>
 <span class="ne">reasons</span>:
@@ -804,7 +804,7 @@ Numerical gradient (simple finite difference):
 
  
 <span class="ne">function</span>: evolve_version
-<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 553
 <span class="ne">what</span>: The snopt7_c library path was constructed to be: /Users/giacomo.acciarini1/opt/libsnopt7_c.dylib and it does not appear to be a file
 </pre></div>
 </div>
@@ -1029,15 +1029,15 @@ Details on the ZOH leg:
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Point-to-Point Zero Order Hold</p>
+        <p class="prev-next-title">Zero Order Hold: point to point low thrust transfer</p>
       </div>
     </a>
     <a class="right-next"
-       href="udp_pl2pl.html"
+       href="udp_mga.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Planet to planet low-thrust</p>
+        <p class="prev-next-title">Multiple Gravity Assist (MGA)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

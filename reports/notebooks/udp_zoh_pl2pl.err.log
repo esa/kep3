@@ -66,7 +66,7 @@ best_idx = np.argmax(masses)
 
 [31mValueError[39m: 
 function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 603
 what: 
 An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
 reasons:
@@ -80,7 +80,7 @@ We report the exact text of the original exception thrown:
 
  
 function: evolve_version
-where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
+where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 553
 what: The snopt7_c library path was constructed to be: /Users/giacomo.acciarini1/opt/libsnopt7_c.dylib and it does not appear to be a file
 
 

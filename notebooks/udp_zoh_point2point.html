@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Point-to-Point Zero Order Hold &#8212; pykep 3.0.0 documentation</title>
+    <title>Zero Order Hold: point to point low thrust transfer &#8212; pykep 3.0.0 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -46,8 +46,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_zoh_point2point';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Zero-Order Hold Planet-to-Planet Low-Thrust Transfer" href="udp_zoh_pl2pl.html" />
-    <link rel="prev" title="Point to point Sims-FLanagan" href="udp_sf_point2point.html" />
+    <link rel="next" title="Zero Order Hold: planet to planet low thrust transfer" href="udp_zoh_pl2pl.html" />
+    <link rel="prev" title="Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)" href="udp_sf_pl2pl_alpha.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -195,12 +195,12 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">The Zero Hold simple sail dynamics</a></li>
 
 
 
 
-<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">The CR3BP and BCP dynamics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
@@ -212,16 +212,16 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Point-to-Point Zero Order Hold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Sims-Flanagan: point to point low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_pl2pl.html">Sims-Flanagan: planet to plane low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_pl2pl_alpha.html">Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Zero Order Hold: point to point low thrust transfer</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="udp_zoh_pl2pl.html">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl.html">Planet to planet low-thrust</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_pl2pl.html">Zero Order Hold: planet to planet low thrust transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses: planet to planet transfer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
@@ -448,7 +448,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Point-to-Point Zero Order Hold</h1>
+    <h1>Zero Order Hold: point to point low thrust transfer</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -458,7 +458,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Point-to-Point Zero Order Hold</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Zero Order Hold: point to point low thrust transfer</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-time-grid-transcription">Fixed Time Grid Transcription</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-length-segment-transcription-softmax-encoding">Variable-Length Segment Transcription (Softmax Encoding)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-between-weights-and-segment-duration">Relationship Between Weights and Segment Duration</a></li>
@@ -483,8 +483,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="point-to-point-zero-order-hold">
-<h1>Point-to-Point Zero Order Hold<a class="headerlink" href="#point-to-point-zero-order-hold" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="zero-order-hold-point-to-point-low-thrust-transfer">
+<h1>Zero Order Hold: point to point low thrust transfer<a class="headerlink" href="#zero-order-hold-point-to-point-low-thrust-transfer" title="Link to this heading">#</a></h1>
 <p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.zoh_point2point" title="pykep.trajopt.zoh_point2point"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.zoh_point2point</span></code></a> to find a low-thrust trajectory connecting two fixed points in space.<br />
 These optimization problems are based on a Zero-Order Hold (ZOH) direct transcription.</p>
 <p>In particular, we demonstrate two different time encodings of the same optimal control problem.</p>
@@ -705,7 +705,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-5.7769599798307425e-09, 5.427287397274938e-09)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-5.3952445844274166e-09, 8.0921022105329143e-09)
 </pre></div>
 </div>
 </div>
@@ -721,7 +721,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ac49ab4707dc31b6ff3e9ffb369081c345605655282138602365efcef47de601.png" src="../_images/ac49ab4707dc31b6ff3e9ffb369081c345605655282138602365efcef47de601.png" />
+<img alt="../_images/7120a1d85a01334cddfbce4afe6f5896501d761177da23ace8bb017218d1d5c3.png" src="../_images/7120a1d85a01334cddfbce4afe6f5896501d761177da23ace8bb017218d1d5c3.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -745,7 +745,7 @@ tof \cdot
 
 <span class="ne">ValueError</span>: 
 <span class="ne">function</span>: evolve_version
-<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 603
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 603
 <span class="ne">what</span>: 
 <span class="n">An</span> <span class="n">error</span> <span class="n">occurred</span> <span class="k">while</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">snopt7_c</span> <span class="n">library</span> <span class="n">at</span> <span class="n">run</span><span class="o">-</span><span class="n">time</span><span class="o">.</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">typically</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span>
 <span class="ne">reasons</span>:
@@ -759,7 +759,7 @@ tof \cdot
 
  
 <span class="ne">function</span>: evolve_version
-<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1761586710010/work/src/snopt7.cpp, 553
+<span class="ne">where</span>: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 553
 <span class="ne">what</span>: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
 </pre></div>
 </div>
@@ -1123,12 +1123,12 @@ Final tof (nd): 5.0
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="udp_sf_point2point.html"
+       href="udp_sf_pl2pl_alpha.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Point to point Sims-FLanagan</p>
+        <p class="prev-next-title">Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)</p>
       </div>
     </a>
     <a class="right-next"
@@ -1136,7 +1136,7 @@ Final tof (nd): 5.0
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</p>
+        <p class="prev-next-title">Zero Order Hold: planet to planet low thrust transfer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1156,7 +1156,7 @@ Final tof (nd): 5.0
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Point-to-Point Zero Order Hold</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Zero Order Hold: point to point low thrust transfer</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-time-grid-transcription">Fixed Time Grid Transcription</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-length-segment-transcription-softmax-encoding">Variable-Length Segment Transcription (Softmax Encoding)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-between-weights-and-segment-duration">Relationship Between Weights and Segment Duration</a></li>

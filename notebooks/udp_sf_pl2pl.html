@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Planet to planet low-thrust &#8212; pykep 3.0.0 documentation</title>
+    <title>Sims-Flanagan: planet to plane low-thrust transfer &#8212; pykep 3.0.0 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -43,11 +43,11 @@
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_pl2pl';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/udp_sf_pl2pl';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Planet to planet low-thrust (with Alpha encoding)" href="udp_pl2pl_alpha.html" />
-    <link rel="prev" title="Zero-Order Hold Planet-to-Planet Low-Thrust Transfer" href="udp_zoh_pl2pl.html" />
+    <link rel="next" title="Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)" href="udp_sf_pl2pl_alpha.html" />
+    <link rel="prev" title="Sims-Flanagan: point to point low-thrust transfer" href="udp_sf_point2point.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -195,12 +195,12 @@
 
 <li class="toctree-l2"><a class="reference internal" href="interface_to_spice.html">Interfacing to SPICE and JPL DE ephs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="propagate_lagrangian.html">Lagrange Propagation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">Inspecting the Zero Hold simple sail dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_zoh_ss.html">The Zero Hold simple sail dynamics</a></li>
 
 
 
 
-<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ta_cr3bp_bcp.html">The CR3BP and BCP dynamics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_sims_flanagan.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leg_zoh.html">The Zero Order Hold trajectory leg</a></li>
@@ -212,16 +212,16 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tut_trajopt.html">Trajectory Optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Point to point Sims-FLanagan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_zoh_point2point.html">Point-to-Point Zero Order Hold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_point2point.html">Sims-Flanagan: point to point low-thrust transfer</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Sims-Flanagan: planet to plane low-thrust transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_sf_pl2pl_alpha.html">Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_point2point.html">Zero Order Hold: point to point low thrust transfer</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="udp_zoh_pl2pl.html">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Planet to planet low-thrust</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_alpha.html">Planet to planet low-thrust (with Alpha encoding)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_zoh_pl2pl.html">Zero Order Hold: planet to planet low thrust transfer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga.html">Multiple Gravity Assist (MGA)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="udp_mga_1dsm.html">Multiple Gravity Assist with one DSM (MGA-1DSM)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udp_pl2pl_N_impulses.html">Multiple impulses: planet to planet transfer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_mass.html">Low-thrust transfers via indirect methods I (mass, fixed time)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pontryagin_cartesian_time.html">Low-thrust transfers via indirect methods II (time)</a></li>
@@ -286,7 +286,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_pl2pl.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/esa/kep3/main?urlpath=lab/tree/doc/notebooks/udp_sf_pl2pl.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch on Binder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -334,7 +334,7 @@
       
       
       
-      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_pl2pl.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/esa/kep3/issues/new?title=Issue%20on%20page%20%2Fnotebooks/udp_sf_pl2pl.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -364,7 +364,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/udp_pl2pl.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/udp_sf_pl2pl.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -448,7 +448,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Planet to planet low-thrust</h1>
+    <h1>Sims-Flanagan: planet to plane low-thrust transfer</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -472,10 +472,11 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="planet-to-planet-low-thrust">
-<h1>Planet to planet low-thrust<a class="headerlink" href="#planet-to-planet-low-thrust" title="Link to this heading">#</a></h1>
-<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.sf_pl2pl" title="pykep.trajopt.sf_pl2pl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.sf_pl2pl</span></code></a> to find a low-thrust trajectory connecting two moving planets.</p>
-<p>The decision vector for this class, compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="sims-flanagan-planet-to-plane-low-thrust-transfer">
+<h1>Sims-Flanagan: planet to plane low-thrust transfer<a class="headerlink" href="#sims-flanagan-planet-to-plane-low-thrust-transfer" title="Link to this heading">#</a></h1>
+<p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.sf_pl2pl" title="pykep.trajopt.sf_pl2pl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.sf_pl2pl</span></code></a> to find a low-thrust trajectory connecting two moving planets.
+This naturally follows the previous notebook on the <a class="reference internal" href="udp_sf_point2point.html"><span class="std std-doc">point to point</span></a> version of the same problem.</p>
+<p>The decision vector for this problem, compatible with pygmo <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Francesco Biscani and Dario Izzo. A parallel global multiobjective framework for optimization: pagmo. Journal of Open Source Software, 5(53):2338, 2020.">BI20</a>]</span> UDPs (User Defined Problems), is:</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf x = [t_0, m_f, V_{sx}^\infty, V^\infty_{sy}, V^\infty_{sz}, V^\infty_{fx}, V^\infty_{fy}, V^\infty_{fz}, u_{x0}, u_{y0}, u_{z0}, u_{x1}, u_{y1}, u_{z1}, ..., T_{tof}]
@@ -599,7 +600,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>388 μs ± 10.3 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>630 μs ± 11.1 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </pre></div>
 </div>
 </div>
@@ -613,7 +614,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.84 ms ± 50.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.73 ms ± 20.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -627,12 +628,12 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14.4 ms ± 48.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20.2 ms ± 144 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre></div>
 </div>
 </div>
 </div>
-<p>The analytical gradient its exact and faster, seems like a no brainer to use it.</p>
+<p>The analytical gradient is, in this case, exact and faster, seems like a no brainer to decide wether one has to use it.</p>
 <p>In reality, the effects on the optimization technique used are not straightforward, making the option to use numerical gradients still interesting in some, albeit rare, cases.</p>
 </section>
 <section id="solving-the-low-thrust-transfer">
@@ -653,7 +654,7 @@ document.write(`
 <p>… and we define an optimization algorithm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/Users/dario.izzo/opt/libsnopt7_c.dylib&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">snopt72</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span>
 <span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="n">snopt72</span><span class="p">,</span> <span class="n">minor_version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">screen_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Major iterations limit&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="n">uda</span><span class="o">.</span><span class="n">set_integer_option</span><span class="p">(</span><span class="s2">&quot;Iterations limit&quot;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
@@ -687,9 +688,9 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.x...x.x..
-Best mass is:  1234.15683652
-Worst mass is:  1000.00240866
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.........x
+Best mass is:  1234.15677161
+Worst mass is:  1055.94065222
 </pre></div>
 </div>
 </div>
@@ -706,13 +707,13 @@ Worst mass is:  1000.00240866
 Departure: earth(jpl_lp)(K)
 Arrival: mars(jpl_lp)(K)
 
-Launch epoch: 7451.99905 MJD2000, a.k.a. 2020-05-26T23:58:37.777239
-Arrival epoch: 7801.99905 MJD2000, a.k.a. 2021-05-11T23:58:37.777239
+Launch epoch: 7451.99290 MJD2000, a.k.a. 2020-05-26T23:49:46.639162
+Arrival epoch: 7801.99290 MJD2000, a.k.a. 2021-05-11T23:49:46.639162
 Time of flight (days): 350.00000 
 
 Launch DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
 Arrival DV (km/s) 0.00000000 - [-0.0,-0.0,-0.0]
-Final mass (kg): 1234.1568365174858
+Final mass (kg): 1234.156771610159
 
 Details on the low-thrust leg: 
 Number of segments: 30
@@ -724,13 +725,13 @@ Specific impulse: 29419.949999999997
 
 Time of flight: 30240000
 Initial mass: 1500
-Final mass: 1234.1568365174858
-State at departure: [[-61940343629.2697, -138342786962.2452, 4315832.209158619], [26703.174217445237, -12284.734893133622, 0.38324263734277736]]
-State at arrival: [[-154574671931.75818, 191750935543.9109, 7812362370.575885], [-17947.983008640604, -13143.524741070263, 165.21826805857714]]
-Throttles values: [0.9149919539929579, -0.2725359209100713, -0.29751285015299656, 0.962467223571917, -0.10214778572097537, -0.25144119278969174, 0.9776102300781263, 0.0761024016853803, -0.19618017885672326, 0.9577082586238517, 0.25533303803466817, -0.13266475948495784, 0.9020227810244762, 0.4270404077693045, -0.06317747015340268, 0.8124941812081083, 0.5828797608824411, 0.010217150887220914, 0.6258910897305112, 0.6441274653944074, 0.07604724328788541, 8.643112090963488e-06, 1.2971573089761085e-05, 2.02573959082645e-06, 1.9402676195389745e-06, 4.116571390270388e-06, 1.0918826610204628e-06, 1.7531486204076886e-06, 6.6492515764816175e-06, 2.0439159913518445e-06, 6.497048168817056e-06, 6.254154897918531e-05, 2.222633512201523e-05, -3.907433113104457e-05, 0.0005705546606046523, 0.00023585797399559014, -0.1980851209765093, 0.8898566605361083, 0.40849620097319755, -0.3261733750073858, 0.8402697810771312, 0.4330792360402391, -0.44216210010572304, 0.7765577216795246, 0.4488326890553638, -0.16827487274493602, 0.21634099070250623, 0.14069169750160235, -0.00028083636215234757, 0.00027196352431085234, 0.00020171101827332145, -6.755298505147713e-07, 4.901379402024183e-07, 4.368915123034922e-07, -3.224169200091259e-06, 1.5455028409302713e-06, 1.7622592268945932e-06, -5.128303061091521e-06, 1.8289984300969872e-06, 2.5613455275741694e-06, -1.201177884483597e-06, 2.4358299399221113e-07, 6.745275326332689e-07, -7.32175825082655e-07, 1.1147397752068074e-07, 4.2811046712246406e-07, -1.4768666477965314e-06, -3.741517913801966e-08, 5.316783969739916e-07, -2.822836736482606e-06, -6.205060557090042e-07, 7.994338305580654e-07, -8.907902552019307e-06, -1.6478656337137234e-06, 2.1705592125269153e-06, -7.391982864209063e-06, -2.372687553706626e-06, 1.530148390821635e-06, -8.090054508720513e-07, -2.8958416763596854e-07, 7.234658896056569e-08, -0.6702759079241221, -0.3770492971452008, 0.0754920979561721, -0.8177587262868643, -0.5735537329417719, 0.0480289692781687, -0.7588285984053121, -0.6512901333686354, -0.0005674653604181771]
+Final mass: 1234.156771610159
+State at departure: [[-61954526368.884995, -138336261328.15906, 4315628.631202786], [26701.920353639984, -12287.534991671208, 0.38332999105107457]]
+State at arrival: [[-154565138881.2139, 191757916330.46805, 7812274607.089294], [-17948.711153788554, -13142.621427747503, 165.25507018889533]]
+Throttles values: [0.9150544648347976, -0.2727543389414908, -0.29712018218766784, 0.9624610630773269, -0.10203797729041932, -0.25150935164371235, 0.9776014444167017, 0.07614377352808915, -0.19620790610918598, 0.957702324318249, 0.2552571227935213, -0.13285352754629626, 0.9020195250406122, 0.4270367782902017, -0.06324845384866676, 0.8125740078618441, 0.582769461576093, 0.010160722844625271, 0.6250556058421802, 0.643431656576734, 0.07588141128543445, 7.598343716549538e-06, 1.1185880791432576e-05, 2.2453332061872086e-06, 1.4408745246271949e-05, 3.1565395204124255e-05, 8.088752742965002e-06, 4.167876473489592e-06, 1.5868867168138716e-05, 4.815375942141084e-06, 8.545615563570315e-06, 8.944395789605744e-05, 3.19946851569267e-05, -8.669356237676905e-05, 0.0013694500186129483, 0.0005403961740439303, -0.19815756048776179, 0.8908099690924527, 0.408890181917974, -0.32595401927831397, 0.8403740439172253, 0.433042081594063, -0.4419725332619276, 0.7766744775427021, 0.4488173756337557, -0.16721227800602773, 0.21506256326908357, 0.13984526500303546, -0.0008577982888386832, 0.0008253804748373212, 0.000611955943109358, -1.9689873107124022e-05, 1.4484973841899776e-05, 1.2436117595143888e-05, -2.8620412636608553e-06, 1.4743737492308882e-06, 1.3706037810142675e-06, -2.402979236322631e-06, 1.1913160319104661e-06, 1.2756146936779317e-06, -4.244191704846397e-07, 1.0828530514628123e-07, 1.8453337167945703e-07, -9.37373180281157e-07, 8.370732519658679e-08, 4.5982001574680147e-07, -5.02625458610645e-06, 7.7773055659164e-08, 1.7093668556714202e-06, -6.066420090578855e-07, -9.776882662778539e-08, 1.693196783758444e-07, -2.4279305758096285e-06, -5.020957271186525e-07, 5.687923131273488e-07, -1.763015410795579e-06, -5.570191621396674e-07, 3.671370129445859e-07, -6.662472253806185e-07, -3.989017097670747e-07, 1.796905964689047e-07, -0.6703382738852394, -0.37712488780496517, 0.07550759065615623, -0.8176963270878755, -0.5736343129475407, 0.04812890714381351, -0.7587432384564023, -0.6513895542677574, -0.0005888145804974916]
 
-Mismatch constraints: [0.94464111328125, 6.167388916015625, 3.928389072418213, 2.843007678166032e-07, 2.4610253603896126e-06, 9.204180742017343e-07, -3.0061348752496997e-06]
-Throttle constraints: [6.431122301364667e-11, 9.435785486289205e-12, 7.194600470938894e-11, 7.3575454617724745e-09, 8.988809696575117e-11, 3.156583883168196e-10, -0.1875769689088429, -0.9999999997529313, -0.999999999978097, -0.9999999999485363, -0.9999999955523331, -0.999999617311592, -0.002048262337711937, 2.4431590084361687e-10, 6.346663194989333e-10, -0.9050859891986514, -0.9999998064794442, -0.9999999999991126, -0.9999999999841106, -0.9999999999637947, -0.9999999999980429, -0.9999999999992683, -0.9999999999975347, -0.9999999999910074, -0.9999999999132225, -0.9999999999373876, -0.9999999999992564, -0.40286497792497955, 8.796792183574098e-10, 1.5980405887461302e-09]
+Mismatch constraints: [-43.6181640625, 15.74029541015625, 10.302734851837158, -5.042853445047513e-06, 5.885649443371221e-07, 1.9215204929423635e-06, -5.930804263698519e-06]
+Throttle constraints: [5.6887403676597614e-09, 7.136988777745046e-10, 7.924696454608693e-10, 5.228979471638695e-10, 4.812135134812934e-10, 3.887074884190156e-09, -0.18954320434151561, -0.9999999998120997, -0.999999998730586, -0.99999999970762, -0.999999990903091, -0.9999978250628478, 6.818712261491555e-10, 8.047968957924923e-10, 8.949667673618933e-10, -0.9062314498203972, -0.9999982084390912, -0.9999999992478374, -0.9999999999877563, -0.9999999999911793, -0.9999999999997741, -0.9999999999989029, -0.9999999999718088, -0.9999999999995938, -0.9999999999935295, -0.9999999999964467, -0.9999999999993647, -0.4027220213159526, 2.665689891045986e-11, 1.5066836667188e-11]
 </pre></div>
 </div>
 </div>
@@ -743,7 +744,7 @@ Throttle constraints: [6.431122301364667e-11, 9.435785486289205e-12, 7.194600470
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fe565bb1cc4c850bfe36300ba1ea8509a2a27e1fb69a8d593af768f235f2d3b9.png" src="../_images/fe565bb1cc4c850bfe36300ba1ea8509a2a27e1fb69a8d593af768f235f2d3b9.png" />
+<img alt="../_images/b054ac32211605ef8f1bdcbdaa80bd16b6737050ba6a624a01016c87c0240cbc.png" src="../_images/b054ac32211605ef8f1bdcbdaa80bd16b6737050ba6a624a01016c87c0240cbc.png" />
 </div>
 </div>
 </section>
@@ -796,14 +797,17 @@ To do so we solve the same problem starting from 100 different initial guesses u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [05:15&lt;00:00,  3.16s/it]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/100 [00:00&lt;?, ?it/s]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 1.0034e+00s
-No Gradient: 1.9059e+00s
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [07:40&lt;00:00,  4.60s/it]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Gradient: 1.4176e+00s
+No Gradient: 3.0340e+00s
 
-Gradient (n.fails): 13
-No Gradient (n.fails): 46
+Gradient (n.fails): 14
+No Gradient (n.fails): 37
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -829,7 +833,7 @@ No Gradient (n.fails): 46
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;N. occurrences&#39;)
 </pre></div>
 </div>
-<img alt="../_images/d6a5fd0fd2b8eed09653c28721d367b80a2dd6e1107976e681548a01a7725635.png" src="../_images/d6a5fd0fd2b8eed09653c28721d367b80a2dd6e1107976e681548a01a7725635.png" />
+<img alt="../_images/7a157e578fc077ff54d270ef53434aa8dba1d4ac1a1dd10a70dc0e135684161a.png" src="../_images/7a157e578fc077ff54d270ef53434aa8dba1d4ac1a1dd10a70dc0e135684161a.png" />
 </div>
 </div>
 </section>
@@ -847,20 +851,20 @@ No Gradient (n.fails): 46
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="udp_zoh_pl2pl.html"
+       href="udp_sf_point2point.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Zero-Order Hold Planet-to-Planet Low-Thrust Transfer</p>
+        <p class="prev-next-title">Sims-Flanagan: point to point low-thrust transfer</p>
       </div>
     </a>
     <a class="right-next"
-       href="udp_pl2pl_alpha.html"
+       href="udp_sf_pl2pl_alpha.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Planet to planet low-thrust (with Alpha encoding)</p>
+        <p class="prev-next-title">Sims-Flanagan: planet to plane low-thrust transfer (with Alpha encoding)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

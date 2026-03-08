@@ -27,10 +27,10 @@ Trajectory Optimization
   :maxdepth: 1
 
   notebooks/udp_sf_point2point
+  notebooks/udp_sf_pl2pl
+  notebooks/udp_sf_pl2pl_alpha
   notebooks/udp_zoh_point2point
   notebooks/udp_zoh_pl2pl
-  notebooks/udp_pl2pl
-  notebooks/udp_pl2pl_alpha
   notebooks/udp_mga
   notebooks/udp_mga_1dsm
   notebooks/udp_pl2pl_N_impulses
