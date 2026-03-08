@@ -51,7 +51,7 @@ class zoh_pl2pl:
         time_encoding='uniform',
         w_bounds_softmax=[-1., 1.],
         L=_pk.AU,
-        V=_pk.EARTH_VELOCITY,
+        V=_pk.EARTH_VELOCITY, 
     ):
         """
         Initializes the zoh_pl2pl_free_v instance with given parameters.
