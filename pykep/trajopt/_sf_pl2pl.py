@@ -105,7 +105,6 @@ class sf_pl2pl:
         self.r_scaling = r_scaling
         self.v_scaling = v_scaling
         self.with_gradient = with_gradient
-        self.high_fidelity = high_fidelity
 
     # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof]
     def get_bounds(self):

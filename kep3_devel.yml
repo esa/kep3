@@ -21,3 +21,4 @@ dependencies:
   - matplotlib
   - pygmo_plugins_nonfree
   - scipy
+  - nlopt < 2.10.1
