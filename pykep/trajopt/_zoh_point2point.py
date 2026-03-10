@@ -308,13 +308,17 @@ class zoh_point2point:
 
         Args:
             *x* (:class:`list`): The decision vector containins: final mass, thrust direction, time of flight and (if time encoding is softmax) the weights for the softmax time grid.
+            
             *ax* (:class:`matplotlib.axes.Axes`): The matplotlib axes to plot on. If None, a new figure and axes will be created.
+            
             *N* (:class:`int`): The number of points to plot along the trajectory.
+            
             *to_cartesian* (:class:`~collections.abc.Callable`): A function that converts whatever state is used in the internal Taylor integrator to Cartesian (r,v).
+            
             *mark_segments* (:class:`bool`): adds markers ath each segment edge
 
         Returns:
-            The matplotlib axes with the trajectory plotted.
+            :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Lambert's problem trajectory added.
         """
         x_arr = _np.asarray(x)
         # to be replaced with a plot method akin the sims-flanagan point2point one

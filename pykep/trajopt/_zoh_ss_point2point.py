@@ -261,7 +261,7 @@ class zoh_ss_point2point:
         mark_segments=True,
         mark_mismatch=True,
         plot_sail=True,
-        sail_size=0.05,  # size of the sail square in AU (tune to your scale)
+        sail_size=0.05,  # size of the sail square (tune to your scale)
         **kwargs,
     ):
         """
@@ -270,18 +270,26 @@ class zoh_ss_point2point:
         Args:
             *x* (:class:`list`): The decision vector containing: final mass, thrust direction,
                 time of flight and (if time encoding is softmax) the weights for the softmax time grid.
+                
             *ax* (:class:`matplotlib.axes.Axes`): The matplotlib axes to plot on.
                 If None, a new figure and axes will be created.
+                
             *N* (:class:`int`): The number of points to plot along the trajectory.
+            
             *to_cartesian* (:class:`~collections.abc.Callable`): A function that converts whatever
                 state is used in the internal Taylor integrator to Cartesian (r,v).
+                
             *mark_segments* (:class:`bool`): Adds markers at each segment edge.
+            
             *mark_mismatch* (:class:`bool`): Marks the terminal mismatch point.
+            
+            *plot_sail* (:class:`bool`): Adds a visualizatio of a rectangular sail.
+            
             *sail_size* (:class:`float`): Half-side length of the rendered sail square,
                 in the same units as the trajectory positions.
 
         Returns:
-            The matplotlib axes with the trajectory plotted.
+            :class:`mpl_toolkits.mplot3d.axes3d.Axes3D`: The modified Axes object with the Lambert's problem trajectory added.
         """
         from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
@@ -373,29 +381,30 @@ class zoh_ss_point2point:
             if plot_sail:
                 if i < nseg:
                     alpha, beta = sail_angles[i]
-                    mid_idx = len(segment) // 2
-                    state_mid = to_cartesian(segment[mid_idx])
-                    center = _np.array(state_mid[:3], dtype=float)
-                    R_hat, T_hat, N_hat = _rtn_basis(state_mid)
-                    n_cart = _sail_normal_cartesian(alpha, beta, R_hat, T_hat, N_hat)
-                    corners = _sail_patch_vertices(center, n_cart, sail_size)
-                    poly = Poly3DCollection(
-                        [corners],
-                        alpha=0.45,
-                        facecolor='silver',
-                        edgecolor='dimgray',
-                        linewidth=0.8,
-                        zorder=5,
-                    )
-                    ax.add_collection3d(poly)
-                    # Optionally draw the normal vector (thrust direction)
-                    ax.quiver(
-                        center[0], center[1], center[2],
-                        n_cart[0] * sail_size * 2,
-                        n_cart[1] * sail_size * 2,
-                        n_cart[2] * sail_size * 2,
-                        color='tab:blue', linewidth=1.2, arrow_length_ratio=0.3,
-                    )
+                    if _np.abs((_np.abs(alpha)-_np.pi/2)) > 1e-3:
+                        mid_idx = len(segment) // 2
+                        state_mid = to_cartesian(segment[mid_idx])
+                        center = _np.array(state_mid[:3], dtype=float)
+                        R_hat, T_hat, N_hat = _rtn_basis(state_mid)
+                        n_cart = _sail_normal_cartesian(alpha, beta, R_hat, T_hat, N_hat)
+                        corners = _sail_patch_vertices(center, n_cart, sail_size)
+                        poly = Poly3DCollection(
+                            [corners],
+                            alpha=0.45,
+                            facecolor='silver',
+                            edgecolor='dimgray',
+                            linewidth=0.8,
+                            zorder=5,
+                        )
+                        ax.add_collection3d(poly)
+                        # Optionally draw the normal vector (thrust direction)
+                        ax.quiver(
+                            center[0], center[1], center[2],
+                            n_cart[0] * sail_size * 2,
+                            n_cart[1] * sail_size * 2,
+                            n_cart[2] * sail_size * 2,
+                            color='tab:blue', linewidth=1.2, arrow_length_ratio=0.3,
+                        )
 
         if mark_mismatch:
             ax.scatter(
@@ -422,29 +431,30 @@ class zoh_ss_point2point:
             if plot_sail:
                 seg_idx = nseg - 1 - i
                 if 0 <= seg_idx < nseg:
-                    alpha, beta = sail_angles[seg_idx]
-                    mid_idx = len(segment) // 2
-                    state_mid = to_cartesian(segment[mid_idx])
-                    center = _np.array(state_mid[:3], dtype=float)
-                    R_hat, T_hat, N_hat = _rtn_basis(state_mid)
-                    n_cart = _sail_normal_cartesian(alpha, beta, R_hat, T_hat, N_hat)
-                    corners = _sail_patch_vertices(center, n_cart, sail_size)
-                    poly = Poly3DCollection(
-                        [corners],
-                        alpha=0.45,
-                        facecolor='silver',
-                        edgecolor='dimgray',
-                        linewidth=0.8,
-                        zorder=5,
-                    )
-                    ax.add_collection3d(poly)
-                    ax.quiver(
-                        center[0], center[1], center[2],
-                        n_cart[0] * sail_size * 2,
-                        n_cart[1] * sail_size * 2,
-                        n_cart[2] * sail_size * 2,
-                        color='tab:blue', linewidth=1.2, arrow_length_ratio=0.3,
-                    )
+                    if _np.abs((_np.abs(alpha)-_np.pi/2)) > 1e-3:
+                        alpha, beta = sail_angles[seg_idx]
+                        mid_idx = len(segment) // 2
+                        state_mid = to_cartesian(segment[mid_idx])
+                        center = _np.array(state_mid[:3], dtype=float)
+                        R_hat, T_hat, N_hat = _rtn_basis(state_mid)
+                        n_cart = _sail_normal_cartesian(alpha, beta, R_hat, T_hat, N_hat)
+                        corners = _sail_patch_vertices(center, n_cart, sail_size)
+                        poly = Poly3DCollection(
+                            [corners],
+                            alpha=0.45,
+                            facecolor='silver',
+                            edgecolor='dimgray',
+                            linewidth=0.8,
+                            zorder=5,
+                        )
+                        ax.add_collection3d(poly)
+                        ax.quiver(
+                            center[0], center[1], center[2],
+                            n_cart[0] * sail_size * 2,
+                            n_cart[1] * sail_size * 2,
+                            n_cart[2] * sail_size * 2,
+                            color='tab:blue', linewidth=1.2, arrow_length_ratio=0.3,
+                        )
 
         if mark_mismatch:
             ax.scatter(
