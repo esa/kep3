@@ -4,6 +4,7 @@ set(PYKEP_TRAJOPT_PYTHON_FILES
     _sf_pl2pl.py 
     _sf_pl2pl_alpha.py 
     _zoh_point2point.py
+    _zoh_ss_point2point.py
     _zoh_pl2pl.py
     _mga.py _mga_1dsm.py
     _min_Bu_bu.py 

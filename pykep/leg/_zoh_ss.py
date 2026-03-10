@@ -13,7 +13,7 @@ class zoh_ss:
     it allows since it represents a solar sail trajectory (i.e. no mass equation and two controls only)
     
     .. note::
-       The requirements on the `tas` passed are: a) the first two *heyoka* parameters
+       The requirements on the `tas` passed in construction are: a) the first two *heyoka* parameters
        must be :math:`\\alpha, \\beta`, b) the system dimension must be 6.
     
     The time intervals defining these segments are also provided in `tgrid`.

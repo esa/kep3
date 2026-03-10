@@ -5,7 +5,7 @@ Trajectory Optimization
 
 In `pykep` both direct and indirect optimization transcriptions as well as evolutionary encodings
 are provided to perform spacecraft trajectory optimization. Most direct techniques provided are
-based on the "Sims" transcription :cite:p:`sims`, while indirect techniques are based on some
+variations to the "Sims" transcription :cite:p:`sims`, while indirect techniques are based on some
 version of Pontryagin Maximum Principle. The evolutionary encoding are mostly based on the work
 performed at `ESA' Advanced Concepts Team <https://www.esa.int/gsp/ACT/>`_ (:cite:p:`izzo2010global`, :cite:p:`izzo2013search`).
 
@@ -24,14 +24,15 @@ These are based on the idea of discretizing the problem introducing some time gr
 and thus transforming the OCP into a NLP (Non Linear Programming) problem
 to then solve it using numerical solvers available for the task.
 
+Sims-Flanagan
+^^^^^^^^^^^^^^^^^^^^^^^
+One of pykep's historical favourite transcription methods is the Sims
+:cite:p:`sims` transcription which is called Sims-Flanagan as per the authorship
+of the first brief conferecne paper introducing it (anecdotically the work was, though, entirely done by Sims).
+
 -------------------------------------------------------
 
 .. autoclass:: sf_point2point
-    :members: pretty, plot
-
--------------------------------------------------------
-
-.. autoclass:: zoh_point2point
     :members: pretty, plot
 
 -------------------------------------------------------
@@ -44,10 +45,28 @@ to then solve it using numerical solvers available for the task.
 .. autoclass:: sf_pl2pl_alpha
     :members: pretty, plot
 
+Zero-Order-Hold
+^^^^^^^^^^^^^^^^^^^^^^^
+The `pykep` original extension to the original Sims-Flanagan model is called the Zero-Order_hold
+transcription mehtod as it substitutes impulses with constant control segments. It has been
+developed and constantly refined throughout years starting from the early appearence in 2010 
+in the work from Yam et al. :cite:p:`yam2010towards` who reported it as a high-fidelity version
+of the original transcription. 
+
+.. autoclass:: zoh_point2point
+    :members: pretty, plot
+
+-------------------------------------------------------
+
+.. autoclass:: zoh_ss_point2point
+    :members: pretty, plot
+
 -------------------------------------------------------
 
 .. autoclass:: zoh_pl2pl
     :members: pretty, plot
+
+
 
 Indirect
 ******************
