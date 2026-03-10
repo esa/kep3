@@ -769,14 +769,14 @@ of the thrust applied in each segment.</p>
 <dt class="sig sig-object py" id="pykep.trajopt.zoh_point2point.plot">
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N=30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_cartesian=&lt;function</span> <span class="pre">zoh_point2point.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_segments=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_mismatch=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.trajopt.zoh_point2point.plot" title="Link to this definition">#</a></dt>
 <dd><p>Plots the trajectory of the zero order hold point to point problem.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector containins: final mass, thrust direction, time of flight and (if time encoding is softmax) the weights for the softmax time grid.
-<em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>): The matplotlib axes to plot on. If None, a new figure and axes will be created.
-<em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The number of points to plot along the trajectory.
-<em>to_cartesian</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>): A function that converts whatever state is used in the internal Taylor integrator to Cartesian (r,v).
-<em>mark_segments</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): adds markers ath each segment edge</p>
+<dl>
+<dt>Args:</dt><dd><p><em>x</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>): The decision vector containins: final mass, thrust direction, time of flight and (if time encoding is softmax) the weights for the softmax time grid.</p>
+<p><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>): The matplotlib axes to plot on. If None, a new figure and axes will be created.</p>
+<p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The number of points to plot along the trajectory.</p>
+<p><em>to_cartesian</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>): A function that converts whatever state is used in the internal Taylor integrator to Cartesian (r,v).</p>
+<p><em>mark_segments</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): adds markers ath each segment edge</p>
 </dd>
-<dt>Returns:</dt><dd><p>The matplotlib axes with the trajectory plotted.</p>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The modified Axes object with the Lambert’s problem trajectory added.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -835,19 +835,20 @@ fixed in the RTN frame along each segment.</p>
 <dt><em>ax</em> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>): The matplotlib axes to plot on.</dt><dd><p>If None, a new figure and axes will be created.</p>
 </dd>
 </dl>
-<p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The number of points to plot along the trajectory.
-<em>to_cartesian</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>): A function that converts whatever</p>
-<blockquote>
-<div><p>state is used in the internal Taylor integrator to Cartesian (r,v).</p>
-</div></blockquote>
-<p><em>mark_segments</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Adds markers at each segment edge.
-<em>mark_mismatch</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Marks the terminal mismatch point.
-<em>sail_size</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): Half-side length of the rendered sail square,</p>
-<blockquote>
-<div><p>in the same units as the trajectory positions.</p>
-</div></blockquote>
+<p><em>N</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): The number of points to plot along the trajectory.</p>
+<dl class="simple">
+<dt><em>to_cartesian</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>): A function that converts whatever</dt><dd><p>state is used in the internal Taylor integrator to Cartesian (r,v).</p>
 </dd>
-<dt>Returns:</dt><dd><p>The matplotlib axes with the trajectory plotted.</p>
+</dl>
+<p><em>mark_segments</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Adds markers at each segment edge.</p>
+<p><em>mark_mismatch</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Marks the terminal mismatch point.</p>
+<p><em>plot_sail</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Adds a visualizatio of a rectangular sail.</p>
+<dl class="simple">
+<dt><em>sail_size</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): Half-side length of the rendered sail square,</dt><dd><p>in the same units as the trajectory positions.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p><a class="reference external" href="https://matplotlib.org/stable/api/toolkits/mplot3d/axes3d.html#mpl_toolkits.mplot3d.axes3d.Axes3D" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mpl_toolkits.mplot3d.axes3d.Axes3D</span></code></a>: The modified Axes object with the Lambert’s problem trajectory added.</p>
 </dd>
 </dl>
 </dd></dl>
