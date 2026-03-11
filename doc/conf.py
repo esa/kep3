@@ -89,6 +89,9 @@ myst_enable_extensions = [
     "html_image",
 ]
 
+# Makes signatures more 'sane'
+autodoc_preserve_defaults = True
+
 
 # Make the linkcheck (and other HTTP requests) look like a real browser
 linkcheck_user_agent = (
