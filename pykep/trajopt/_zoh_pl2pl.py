@@ -58,22 +58,39 @@ class zoh_pl2pl:
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
+            
             *plf* (:class:`~pykep.planet`): Final planet. Defaults to jpl_lp Mars.
+            
             *ms* (:class:`float`): Initial spacecraft mass (non-dimensional). Defaults to 1.0.
+            
             *max_thrust* (:class:`float`): Maximum thrust (non-dimensional). Defaults to 0.22.
+            
             *t0_bounds* (:class:`list`): Bounds for departure epoch in MJD2000. Defaults to [6700.0, 6800.0].
+            
             *tof_bounds* (:class:`list`): Bounds for time of flight (non-dimensional). Defaults to [3.4, 8.6].
+            
             *mf_bounds* (:class:`list`): Bounds for final mass (non-dimensional). Defaults to [0.2, 1.0].
+            
             *vinf_dep_bounds* (:class:`list`): Bounds for departure excess velocity magnitude (non-dimensional). Defaults to [0.0, 0.2].
+            
             *vinf_arr_bounds* (:class:`list`): Bounds for arrival excess velocity magnitude (non-dimensional). Defaults to [0.0, 0.2].
+            
             *nseg* (:class:`int`): Number of segments for the trajectory. Defaults to 10.
+            
             *cut* (:class:`float`): Cut parameter for the :class:`~pykep.leg.zoh`. Defaults to 0.6.
+            
             *tas* (:class:`tuple`): `(ta, ta_var)` Taylor-adaptive integrators
+            
                 - `ta`: Nominal dynamics (state dim 7, pars ≥ 4)
+                
                 - `ta_var`: Variational dynamics (state dim 84, same pars). When None, no gradients will be used.
+                
             *time_encoding* (:class:`str`): Time encoding scheme. Defaults to 'uniform'. Options: 'uniform', 'softmax'.
+            
             *w_bounds_softmax* (:class:`list`): Bounds for softmax weights. Defaults to [-1., 1.].
+            
             *L* (:class:`float`): Length scale for non-dimensionalization. Defaults to AU.
+            
             *V* (:class:`float`): Velocity scale for non-dimensionalization. Defaults to EARTH_VELOCITY.
         """
         # We define some additional datamembers useful later-on
