@@ -470,12 +470,6 @@ to observations, simulations or historical data and encapsulated into <a class="
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/local/lib/python3.14/site-packages/sympy/external/gmpy.py:139: UserWarning: gmpy2 version is too old to use (2.0.0 or newer required)
-  gmpy = import_module(&#39;gmpy2&#39;, min_module_version=_GMPY2_MIN_VERSION,
-</pre></div>
-</div>
-</div>
 </div>
 <p>Let us compute the position of the barycenter of the Jupiter system with respect to the Solar system barycenter. We do this using the JPL DE440 ephemerides which, released in 2022, are considered to be the most accurate ones.</p>
 <p>First we must download the binary <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> file that contains the corresponding data. In the case of the DE440 ephemerides <code class="docutils literal notranslate"><span class="pre">pykep</span></code> actually includes such a file in its distribution (for convenience). We may thus, for this case, skip this step and get the file path directly:</p>

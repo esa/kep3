@@ -475,7 +475,7 @@
 <h1>Zero Order Hold: point to point low thrust transfer<a class="headerlink" href="#zero-order-hold-point-to-point-low-thrust-transfer" title="Link to this heading">#</a></h1>
 <p>In this tutorial we show the use of the <a class="reference internal" href="../trajopt.html#pykep.trajopt.zoh_point2point" title="pykep.trajopt.zoh_point2point"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.trajopt.zoh_point2point</span></code></a> to find a low-thrust trajectory connecting two fixed points in space.<br />
 The underlying transcription, that is the process to transform an Optimal Control Problem (OCP) into a Non Linear Programming Problem (NLP), is based
-on <code class="docutils literal notranslate"><span class="pre">pykep</span></code>’s Zero Order Hold leg (<a class="reference internal" href="../leg.html#pykep.leg.zoh" title="pykep.leg.zoh"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh</span></code></a>), and was originally conceived as a generalization to the Sims-Flanagan transcription.</p>
+on <code class="docutils literal notranslate"><span class="pre">pykep</span></code>’s Zero Order Hold legs (<a class="reference internal" href="../leg.html#pykep.leg.zoh" title="pykep.leg.zoh"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh</span></code></a>, <a class="reference internal" href="../leg.html#pykep.leg.zoh_ss" title="pykep.leg.zoh_ss"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykep.leg.zoh_ss</span></code></a>), and was originally conceived as a generalization to the Sims-Flanagan transcription.</p>
 <p>According to the encoding of the various segments, the decision vector for this problem will vary.</p>
 <section id="fixed-time-grid-transcription">
 <h2>Fixed Time Grid Transcription<a class="headerlink" href="#fixed-time-grid-transcription" title="Link to this heading">#</a></h2>
@@ -577,12 +577,6 @@ tof \cdot
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pygmo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pygmo_plugins_nonfree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppnf</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/local/lib/python3.14/site-packages/sympy/external/gmpy.py:139: UserWarning: gmpy2 version is too old to use (2.0.0 or newer required)
-  gmpy = import_module(&#39;gmpy2&#39;, min_module_version=_GMPY2_MIN_VERSION,
 </pre></div>
 </div>
 </div>
@@ -702,7 +696,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-6.1839906528859956e-09, 5.0088033720641079e-09)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-4.2466566929633132e-09, 3.4717979047194092e-09)
 </pre></div>
 </div>
 </div>
@@ -718,7 +712,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2a2232b31a3c7c491060558c7f0779a6e7011650097a38c896f4c2c1f21d9782.png" src="../_images/2a2232b31a3c7c491060558c7f0779a6e7011650097a38c896f4c2c1f21d9782.png" />
+<img alt="../_images/518202bae32237c840e8322541b9d26e5f5f4b8d36131aebc30c11847b887b3c.png" src="../_images/518202bae32237c840e8322541b9d26e5f5f4b8d36131aebc30c11847b887b3c.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -773,7 +767,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3155084bae3a2049cf1315855374c9516589d68b2548691bb2c64a507b2c17ae.png" src="../_images/3155084bae3a2049cf1315855374c9516589d68b2548691bb2c64a507b2c17ae.png" />
+<img alt="../_images/6ebf2b27dc2dfb212e74e1d6662abecdd36ad143037c9c0af86eff639abb7ed7.png" src="../_images/6ebf2b27dc2dfb212e74e1d6662abecdd36ad143037c9c0af86eff639abb7ed7.png" />
 </div>
 </div>
 </section>
@@ -810,7 +804,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-8.7672116233505903e-08, 1.3138334153950382e-07)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-4.8853863454656477e-09, 6.8031940324286833e-09)
 </pre></div>
 </div>
 </div>
@@ -826,7 +820,7 @@ tof \cdot
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b9cb9c58500ba3c4d53eb31475065a9ffe2b512eef9ac6cf0997d7c5e5a5d4da.png" src="../_images/b9cb9c58500ba3c4d53eb31475065a9ffe2b512eef9ac6cf0997d7c5e5a5d4da.png" />
+<img alt="../_images/78527bcf73d97a9e8337a41ad37adbe2057ec68f96ff269e2e91e439e594576a.png" src="../_images/78527bcf73d97a9e8337a41ad37adbe2057ec68f96ff269e2e91e439e594576a.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -840,8 +834,8 @@ tof \cdot
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
-Final mass: 928.818877581
-Final tof: 623.147166827
+Final mass: 928.818877582
+Final tof: 623.147255258
 </pre></div>
 </div>
 </div>
@@ -857,7 +851,7 @@ Final tof: 623.147166827
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f9d7a673596dfc9a02ff4af24392f9df2118f666e60f47f382e686252f4b0ef1.png" src="../_images/f9d7a673596dfc9a02ff4af24392f9df2118f666e60f47f382e686252f4b0ef1.png" />
+<img alt="../_images/51b8fef4df09e2dac9884b1d680a383b67136ac29d76a62db50c86bc2f62ed30.png" src="../_images/51b8fef4df09e2dac9884b1d680a383b67136ac29d76a62db50c86bc2f62ed30.png" />
 </div>
 </div>
 </section>
@@ -916,7 +910,7 @@ This is a rather powerful setup as it allows to use the very same ZOH transcript
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-3.1565136199285249e-09, 2.3097581625108887e-09)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-4.8828083312746351e-09, 4.8903709241876481e-09)
 </pre></div>
 </div>
 </div>
@@ -932,7 +926,7 @@ This is a rather powerful setup as it allows to use the very same ZOH transcript
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7c210cf2e146624a085524402d73390d029f430a2f40ae1bb043898058f9d4ae.png" src="../_images/7c210cf2e146624a085524402d73390d029f430a2f40ae1bb043898058f9d4ae.png" />
+<img alt="../_images/13120eb43586def6b59021b26861c03114ed65b0705e49a1a1c5effe2d9ae0ae.png" src="../_images/13120eb43586def6b59021b26861c03114ed65b0705e49a1a1c5effe2d9ae0ae.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -946,8 +940,8 @@ This is a rather powerful setup as it allows to use the very same ZOH transcript
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
-Final mass: 929.534879156
-Final tof: 621.348101155
+Final mass: 929.422255631
+Final tof: 622.584988339
 </pre></div>
 </div>
 </div>
@@ -963,7 +957,7 @@ Final tof: 621.348101155
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/accc6419345a262a530c34907ec33fb2d782e32f341b62aa274b904f817a0e9b.png" src="../_images/accc6419345a262a530c34907ec33fb2d782e32f341b62aa274b904f817a0e9b.png" />
+<img alt="../_images/e7b60d167fe7ea208fc2d96cf21d4f98cfe1784648c38ecb0c529cdf9a10fa75.png" src="../_images/e7b60d167fe7ea208fc2d96cf21d4f98cfe1784648c38ecb0c529cdf9a10fa75.png" />
 </div>
 </div>
 </section>
@@ -1027,7 +1021,7 @@ Final tof: 621.348101155
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-7.5100176022413478e-08, 6.0472906890374212e-08)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-2.3391790620053143e-06, 1.5331602894741447e-06)
 </pre></div>
 </div>
 </div>
@@ -1047,7 +1041,7 @@ Final tof: 621.348101155
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-1.0, 2.0)
 </pre></div>
 </div>
-<img alt="../_images/6bfc7c4a71ee020f048d8df4182327c6937abb285b28dfd15eedbcbe6f6eefff.png" src="../_images/6bfc7c4a71ee020f048d8df4182327c6937abb285b28dfd15eedbcbe6f6eefff.png" />
+<img alt="../_images/5349002b7f9cff975032d42efb4bca6bbbecc3e21a7f32166cc500f323fc5a03.png" src="../_images/5349002b7f9cff975032d42efb4bca6bbbecc3e21a7f32166cc500f323fc5a03.png" />
 </div>
 </div>
 <p>Optimize.</p>
@@ -1063,14 +1057,9 @@ Final tof: 621.348101155
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">pop</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> <span class="c1"># to refine a few final steps its sometime useful</span>
-
-<span class="ne">NameError</span>: name &#39;prob&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+Final mass (nd): 0.928212868042
+Final tof (nd): 5.0
 </pre></div>
 </div>
 </div>
@@ -1089,7 +1078,7 @@ Final tof: 621.348101155
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-0.5, 0.5)
 </pre></div>
 </div>
-<img alt="../_images/b0aab74a588250fb138e1a173cca9fb19cb88cbe47db2b289615588c24362443.png" src="../_images/b0aab74a588250fb138e1a173cca9fb19cb88cbe47db2b289615588c24362443.png" />
+<img alt="../_images/3f5a999c1695c0fc52702f2bcab5e41da93d22348299c267faaf870a113859dd.png" src="../_images/3f5a999c1695c0fc52702f2bcab5e41da93d22348299c267faaf870a113859dd.png" />
 </div>
 </div>
 </section>
@@ -1151,7 +1140,7 @@ Final tof: 621.348101155
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-7.8318671686838925e-10, 7.7181173171320117e-10)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-8.1309493582537584e-09, 3.6341662734695745e-09)
 </pre></div>
 </div>
 </div>
@@ -1164,7 +1153,7 @@ Final tof: 621.348101155
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b668fc22e1905c52e7bac126b929b1407959e338225173803d5c4c367fcd203e.png" src="../_images/b668fc22e1905c52e7bac126b929b1407959e338225173803d5c4c367fcd203e.png" />
+<img alt="../_images/a1a0e016ac088c4a0d2825256021a3d7c575056da52aa9ab3c5a8445ff818c07.png" src="../_images/a1a0e016ac088c4a0d2825256021a3d7c575056da52aa9ab3c5a8445ff818c07.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1179,7 +1168,7 @@ Final tof: 621.348101155
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
-Final tof (nd): 6.50801700435
+Final tof (nd): 6.50664557209
 </pre></div>
 </div>
 </div>
@@ -1191,7 +1180,7 @@ Final tof (nd): 6.50801700435
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4af797b2af68fefbddaf7d7427245795d0676d1f637b3e81e44940182cd261fc.png" src="../_images/4af797b2af68fefbddaf7d7427245795d0676d1f637b3e81e44940182cd261fc.png" />
+<img alt="../_images/7c9cdc69b0c41ace4f591f15a520beea648a54fa6189a95af9a0a6c0df9896de.png" src="../_images/7c9cdc69b0c41ace4f591f15a520beea648a54fa6189a95af9a0a6c0df9896de.png" />
 </div>
 </div>
 </section>
