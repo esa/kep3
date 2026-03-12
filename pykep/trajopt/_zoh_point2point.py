@@ -401,7 +401,7 @@ class zoh_point2point:
 
         self._set_leg_from_x(x)
         tgrid = _np.asarray(self.leg.tgrid)              # length nseg+1
-        throttles = _np.asarray(x[1 : 4 * self.nseg : 4])  # length nseg
+        throttles = _np.asarray(x[1 : 1 + 4 * self.nseg : 4])  # length nseg
 
         # Repeat the last throttle so that the last tgrid point is included in the step plot
         u_plot = _np.r_[throttles, throttles[-1]]
