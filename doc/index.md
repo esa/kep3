@@ -16,7 +16,7 @@ the M-ARGO interplanetary cubesat concept, the phase 0 study for the the Titan a
 and for preliminary mission analysis of the HERA mission.
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :caption: Main
 
 api
@@ -24,7 +24,7 @@ bibliography
 ```
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :caption: Tutorials
 
 tut_basic

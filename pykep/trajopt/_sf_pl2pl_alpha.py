@@ -23,7 +23,6 @@ class sf_pl2pl_alpha:
         z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, alphas, throttles, tof] - all in S.I. units except t0 and tof in days
 
     where throttles is a vector of throttles structured as [u0x, u0y,u0z, ...]. By throttles we intend non dimensiona thrust levels in [0,1].
-
     """
 
     def __init__(
@@ -45,7 +44,7 @@ class sf_pl2pl_alpha:
         r_scaling=pk.AU,
         v_scaling=pk.EARTH_VELOCITY
         ):
-        """sf_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, high_fidelity=False)
+        """
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
