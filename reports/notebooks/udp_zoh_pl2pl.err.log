@@ -71,7 +71,7 @@ what:
 An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
 reasons:
 
-- The file declared to be the snopt7_c library, i.e. /Users/giacomo.acciarini1/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+- The file declared to be the snopt7_c library, i.e. /Users/dario.izzo/opt/libsnopt7_c.dylib, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
 a valid shared library?)
  - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
 at run-time.
@@ -81,7 +81,7 @@ We report the exact text of the original exception thrown:
  
 function: evolve_version
 where: /home/conda/feedstock_root/build_artifacts/pygmo_plugins_nonfree_1772975327396/work/src/snopt7.cpp, 553
-what: The snopt7_c library path was constructed to be: /Users/giacomo.acciarini1/opt/libsnopt7_c.dylib and it does not appear to be a file
+what: The snopt7_c library path was constructed to be: /Users/dario.izzo/opt/libsnopt7_c.dylib and it does not appear to be a file
 
 
 
