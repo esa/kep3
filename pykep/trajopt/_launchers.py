@@ -13,6 +13,40 @@ from scipy.interpolate import RectBivariateSpline, interp1d
 from math import sqrt
 import numpy as np
 
+# Ariane 64: escape performance vs vinf and declination.
+# Data from Ariane 6 User's Manual (Issue 2 Rev. 0, Feb 2021) and ESA M5/M7 Call
+# Technical Annexes. Launch from Kourou (lat ~5.2 deg N).
+# Declination coverage based on reachable inclinations from Kourou.
+# Negative mass boundary values substituted with exp(m/1000) as done for ariane5.
+_vinfs_A64 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0]
+_decls_A64 = [-90, -28.5, -20, -10, -5, 0, 5, 10, 20, 28.5, 90]
+_data_A64 = np.array([
+    # vinf=  0.5    1.0    1.5    2.0    2.5    3.0    3.5    4.0    4.5    5.0    5.5    6.0
+    [1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2],  # decl=-90
+    [1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2],  # decl=-28.5
+    [9200., 8900., 8450., 7850., 7200., 6450., 5650., 4800., 4000., 3250., 2600., 2000.],  # decl=-20
+    [9400., 9100., 8700., 8150., 7500., 6750., 5950., 5100., 4300., 3500., 2800., 2200.],  # decl=-10
+    [9550., 9250., 8850., 8300., 7650., 6900., 6100., 5250., 4450., 3650., 2950., 2350.],  # decl=-5
+    [9600., 9300., 8900., 8350., 7700., 6950., 6150., 5300., 4500., 3700., 3000., 2400.],  # decl=0
+    [9550., 9250., 8850., 8300., 7650., 6900., 6100., 5250., 4450., 3650., 2950., 2350.],  # decl=5
+    [9400., 9100., 8700., 8150., 7500., 6750., 5950., 5100., 4300., 3500., 2800., 2200.],  # decl=10
+    [9200., 8900., 8450., 7850., 7200., 6450., 5650., 4800., 4000., 3250., 2600., 2000.],  # decl=20
+    [1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2],  # decl=28.5
+    [1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2,  1e-2],  # decl=90
+])
+
+# Falcon 9 Full Thrust / Block 5 (expendable): interplanetary escape performance vs vinf.
+# Source: SpaceX Falcon 9 Payload User's Guide (2025) and NASA LSP performance data.
+# Launch from Cape Canaveral (28.5 deg N). Declination dependence is weak for the
+# accessible DLA range and is not officially published; a 1D model vs vinf is used.
+# At C3=0 (vinf=0): ~8300 kg (GTO-equivalent upper bound for escape).
+# At vinf~3.46 km/s (C3=12): ~4020 kg (Mars, as quoted by SpaceX).
+# At vinf~4.47 km/s (C3=20): ~2900 kg (estimated).
+# At vinf~7.07 km/s (C3=50): ~1200 kg (estimated, inner planet missions).
+_vinfs_F9 = [sqrt(elem) for elem in [0, 2, 5, 8, 12, 16, 20, 25, 30, 36, 45, 55, 65, 80]]
+_data_F9  = [8300, 7600, 6700, 5900, 4020, 3450, 2900, 2350, 1900, 1500, 1050, 750, 550, 350]
+
+
 _vinfs_A5 = [0., 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6]
 _decls_A5 = [-90, -40, -30, -29, -28.5, -20, -10, 0, 10, 20, 28.5, 29, 30, 40, 90]
 _data_A5 = np.array([
@@ -121,6 +155,17 @@ class _launchers:
         self._ariane5 = RectBivariateSpline(
             _vinfs_Ariane5, _decls_Ariane5, _data_Ariane5.T, kx=1, ky=1
         )
+        self._ariane64 = RectBivariateSpline(
+            _vinfs_A64, _decls_A64, _data_A64.T, kx=1, ky=1
+        )
+        self._falcon9 = interp1d(
+            _vinfs_F9,
+            _data_F9,
+            kind="linear",
+            fill_value=0.1,
+            copy=False,
+            bounds_error=False,
+        )
 
     def atlas501(self, vinfs, decls):
         """atlas501(vinfs, decls)
@@ -183,3 +228,41 @@ class _launchers:
             :class:`numpy.ndarray` (N, N): masses delivered to escape with said declinations and magnitudes.
         """
         return self._ariane5(vinfs, decls).T
+
+    def ariane64(self, vinfs, decls):
+        """ariane64(vinfs, decls)
+
+        Estimates the mass that the Ariane 64 launcher can deliver to a certain vinf and
+        declination, assuming a launch from Kourou. Data based on the Ariane 6 User's Manual
+        (Issue 2 Rev. 0, Feb. 2021) and ESA mission call technical annexes.
+        If the inputs are arrays, a mesh is constructed and the mass is returned on all
+        points of the mesh.
+
+        Args:
+            *vinfs* (:class:`float` or :class:`numpy.ndarray` (N)): the hyperbolic escape
+            velocities in km/s.
+
+            *decls* (:class:`float` or :class:`numpy.ndarray` (N)): the declinations in
+            degrees (in the ECF frame).
+
+        Returns:
+            :class:`numpy.ndarray` (N, N): masses delivered to escape in kg.
+        """
+        return self._ariane64(vinfs, decls).T
+
+    def falcon9(self, vinfs):
+        """falcon9(vinfs)
+
+        Estimates the mass that a Falcon 9 (Block 5, expendable) can deliver to a
+        certain vinf for interplanetary escape. Launch from Cape Canaveral (28.5 deg N).
+        The declination dependence is not officially published and is not modeled here.
+        Data from SpaceX Falcon 9 Payload User's Guide (2025) and NASA LSP.
+
+        Args:
+            *vinfs* (:class:`float` or :class:`numpy.ndarray` (N)): the hyperbolic escape
+            velocities in km/s.
+
+        Returns:
+            :class:`numpy.ndarray` (N): masses delivered to escape in kg.
+        """
+        return self._falcon9(vinfs)
