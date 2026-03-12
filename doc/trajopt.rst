@@ -58,14 +58,13 @@ of the original transcription.
 
 -------------------------------------------------------
 
-.. autoclass:: zoh_ss_point2point
+.. autoclass:: zoh_pl2pl
     :members: pretty, plot
 
 -------------------------------------------------------
 
-.. autoclass:: zoh_pl2pl
+.. autoclass:: zoh_ss_point2point
     :members: pretty, plot
-
 
 
 Indirect

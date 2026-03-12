@@ -45,7 +45,7 @@ class sf_pl2pl:
         v_scaling=pk.EARTH_VELOCITY,
         with_gradient=True,
     ):
-        """sf_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
+        """
 
         Args:
             *pls* (:class:`~pykep.planet`): Initial planet. Defaults to jpl_lp Earth.
