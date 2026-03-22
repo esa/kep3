@@ -41,18 +41,18 @@ the various `pykep` objects and functionalities.
      - 29784.691831696804
    * - Earth's radius
      - pykep.EARTH_RADIUS
-     - :math:`\frac{m}{sec}` 
+     - :math:`m` 
      - 6378137.0
    * - Earth's :math:`J_2`
      - pykep.EARTH_J2
      - --
      - 0.00108262668
    * - CR3BP: Moon-Earth parameter
-     - pykep.CR3BP_EARTH_MOON
+     - pykep.CR3BP_MU_EARTH_MOON
      - --
      - 0.01215058439470971
    * - BCP: Moon-Earth parameter (same as for the CR3BP)
-     - pykep.BCP_EARTH_MOON
+     - pykep.BCP_MU_EARTH_MOON
      - --
      - 0.01215058439470971
    * - BCP :cite:p:`simo1995bicircular`: Scaled mass of the Sun
@@ -60,11 +60,11 @@ the various `pykep` objects and functionalities.
      - --
      - 328900.55970856483
    * - BCP :cite:p:`simo1995bicircular`: Scaled Sun–(Earth + Moon) distance
-     - pykep.CR3BP_RHO_S
+     - pykep.BCP_RHO_S
      - --
      - 3.88811143E2
    * - BCP :cite:p:`simo1995bicircular`: Scaled angular velocity of the Sun
-     - pykep.CR3BP_OMEGA_S
+     - pykep.BCP_OMEGA_S
      - --
      - -9.25195985E-01
    * - Seconds in one day

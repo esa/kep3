@@ -5,8 +5,8 @@
 ## Public License v. 2.0. If a copy of the MPL was not distributed
 ## with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-"""Pykep is a coolbox for interplanetary trajectory design developed by ESA's Advanced Concepts Team. Its main
- purpose is fast prototyping of reseacrh ideas, and is not intended for operational usage.
+"""Pykep is a toolbox for interplanetary trajectory design developed by ESA's Advanced Concepts Team. Its main
+ purpose is fast prototyping of research ideas, and is not intended for operational usage.
 
  Some important conventions followed:
  1 - All units expected are S.I. (m,sec,kg,N) unless explicitly stated.

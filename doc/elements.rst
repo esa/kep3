@@ -24,7 +24,7 @@ These are avoid of singularities, except at :math:`i = \pi`, in which case
 the retrogade version of the elements is to be used.
 
 .. note::
-    In `pykep`` the convention :math:`a<0` for hyperbolas is enforced. The user will thus not be able to instantiate
+    In `pykep` the convention :math:`a<0` for hyperbolas is enforced. The user will thus not be able to instantiate
     orbital elements where :math:`a(1-e) < 0`
 
 A number of functions are provided to convert to and from the various orbital parameters.
