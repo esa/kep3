@@ -53,7 +53,7 @@ of each trajectory leg, and does not account for the launch :math:`\Delta V` whi
 .. autoattribute:: pykep.trajopt.gym.rosetta
 
 This is an MGA-1DSM problem inspired to the Rosetta spacecraft interplanetary transfer to comet 67P/Churyumov-Gerasimenko.
-The objective of this mission is to randevouz with the comet matching its heliocentric position and velocity exactly.
+The objective of this mission is to rendezvous with the comet matching its heliocentric position and velocity exactly.
 The planetary fly-by sequence considered is E-EMEE-comet (as the one used by Rosetta spacecraft). 
 As objective function we use the total :math:`\Delta V` computed as the sum of all the :math:`\Delta V` needed to perform the various
 maneuvers and fly-bys. The launch :math:`\Delta V` is not accounted for, as it is bounded to a maximum value.
@@ -61,7 +61,7 @@ maneuvers and fly-bys. The launch :math:`\Delta V` is not accounted for, as it i
 .. autoattribute:: pykep.trajopt.gym.eve_mga1dsm
 
 This is an MGA-1DSM problem useful to test the performance of evolutionary algorithms on a simpe trajectory problem.
-The planetary encounter sequence is E-V-E, and the objective is to randevouz with the Earth matching its heliocentric
+The planetary encounter sequence is E-V-E, and the objective is to rendezvous with the Earth matching its heliocentric
 position and velocity exactly. As objective function we use the total :math:`\Delta V` computed as the sum of all the :math:`\Delta V` needed to perform the various
 maneuvers and fly-bys. The launch :math:`\Delta V` is not accounted for, as it is bounded to a maximum value.
 
@@ -93,14 +93,14 @@ Jupiter system as an archetype for gas giants across the Universe.
 
 This is the same MGA-1DSM problem as :class:`~pykep.trajopt.gym.juice`, but with using
 the alpha encoding for the time of flight variables (see :class:`~pykep.trajopt.gym.cassini1_a`).
-The problem is also muulti-objective, with the total time of flight as a second objective, leveragng the 
+The problem is also multi-objective, with the total time of flight as a second objective, leveraging the 
 alpha encoding to control the total time of flight (at the cost of evolvability).
 
 .. autoattribute:: pykep.trajopt.gym.messenger
 
 This an MGA-1DSM problem inspired by the messenger mission that orbited the planet Mercury between 2011 and 2015, studying Mercury's chemical composition,
 geology, and magnetic field. The name is a backronym for Mercury Surface, Space Environment, Geochemistry, and Ranging, and a reference to the messenger
-god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are concident to the actual Messenger mission.
+god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are coincident to the actual Messenger mission.
 We have only omitted the first Earth fly-by that was used to correct for launcher performances, since we here do not make use of a launcher model.
 As far as chemical propelled interplanetary trajectories go, this particular one is particularly complex and difficult to design. 
 The time of flights among successive Mercury fly-bys allow for multiple rvolutions and resonances, making optimization techniques struggle to find the correct combination.

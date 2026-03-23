@@ -35,7 +35,7 @@ using `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`bis
 Some of the Taylor integrators are "zero hold" versions of a given dynamics, meaning that they
 consider a constant thrust vector in some frame and include the mass variation due to said thrust.
 These are intended to be used to build "zero hold" trajectory legs and direct methods to optimally
-control the spacecarft.
+control the spacecraft.
 
 Some of the Taylor adaptive integrators are associated to OCPs (Optimal Control Problems) of
 relevance to interplanetary flight. In particular they are born when applying Pontryagin 

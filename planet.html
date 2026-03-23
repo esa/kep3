@@ -615,7 +615,7 @@ in his UDPLA by coding a method having the signature:</p>
 <dt class="sig sig-object py" id="pykep.planet.extra_info">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extra_info</span></span><a class="headerlink" href="#pykep.planet.extra_info" title="Link to this definition">#</a></dt>
 <dd><p>get_extra_info()</p>
-<p>PLanet’s extra info.</p>
+<p>Planet’s extra info.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_extra_info()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_extra_info()</span></code>
 method. Otherwise, an empty string will be returned.</p>
 <p>The string representation of a <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> contains the output of a call to this method.</p>
@@ -678,7 +678,7 @@ UDPLA will be returned (this allows to extract a Python UDPLA without knowing it
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.get_extra_info">
 <span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.get_extra_info" title="Link to this definition">#</a></dt>
-<dd><p>PLanet’s extra info.</p>
+<dd><p>Planet’s extra info.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_extra_info()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_extra_info()</span></code>
 method. Otherwise, an empty string will be returned.</p>
 <p>The string representation of a <a class="reference internal" href="#pykep.planet" title="pykep.planet"><code class="xref py py-class docutils literal notranslate"><span class="pre">planet</span></code></a> contains the output of a call to this method.</p>
@@ -730,7 +730,7 @@ Otherwise, an implementation-defined name based on the type of the UDPLA will be
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.get_radius">
 <span class="sig-name descname"><span class="pre">get_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.get_radius" title="Link to this definition">#</a></dt>
-<dd><p>An average radius in SI units (m^3/sec^2) of the planet.</p>
+<dd><p>An average radius in SI units (m) of the planet.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
@@ -742,7 +742,7 @@ Otherwise, -1 will be returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pykep.planet.get_safe_radius">
 <span class="sig-name descname"><span class="pre">get_safe_radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.planet.get_safe_radius" title="Link to this definition">#</a></dt>
-<dd><p>The safe radius in SI units (m^3/sec^2) of the planet. This is mainly for use in planetary fly-manouvres as to avoid
+<dd><p>The safe radius in SI units (m) of the planet. This is mainly for use in planetary fly-by manoeuvres as to avoid
 the planet atmosphere or circumvent its radiation environment.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>
@@ -830,7 +830,7 @@ equation:</p>
 <dt class="sig sig-object py" id="pykep.planet.radius">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#pykep.planet.radius" title="Link to this definition">#</a></dt>
 <dd><p>get_radius()</p>
-<p>An average radius in SI units (m^3/sec^2) of the planet.</p>
+<p>An average radius in SI units (m) of the planet.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>
 <dl class="simple">
@@ -843,7 +843,7 @@ Otherwise, -1 will be returned.</p>
 <dt class="sig sig-object py" id="pykep.planet.safe_radius">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">safe_radius</span></span><a class="headerlink" href="#pykep.planet.safe_radius" title="Link to this definition">#</a></dt>
 <dd><p>get_safe_radius()</p>
-<p>The safe radius in SI units (m^3/sec^2) of the planet. This is mainly for use in planetary fly-manouvres as to avoid
+<p>The safe radius in SI units (m) of the planet. This is mainly for use in planetary fly-by manoeuvres as to avoid
 the planet atmosphere or circumvent its radiation environment.</p>
 <p>If the UDPLA provides a <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method, then this method will return the output of its <code class="docutils literal notranslate"><span class="pre">get_safe_radius()</span></code> method.
 Otherwise, -1 will be returned.</p>

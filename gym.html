@@ -507,7 +507,7 @@ of each trajectory leg, and does not account for the launch <span class="math no
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem inspired to the Rosetta spacecraft interplanetary transfer to comet 67P/Churyumov-Gerasimenko.
-The objective of this mission is to randevouz with the comet matching its heliocentric position and velocity exactly.
+The objective of this mission is to rendezvous with the comet matching its heliocentric position and velocity exactly.
 The planetary fly-by sequence considered is E-EMEE-comet (as the one used by Rosetta spacecraft).
 As objective function we use the total <span class="math notranslate nohighlight">\(\Delta V\)</span> computed as the sum of all the <span class="math notranslate nohighlight">\(\Delta V\)</span> needed to perform the various
 maneuvers and fly-bys. The launch <span class="math notranslate nohighlight">\(\Delta V\)</span> is not accounted for, as it is bounded to a maximum value.</p>
@@ -517,7 +517,7 @@ maneuvers and fly-bys. The launch <span class="math notranslate nohighlight">\(\
 <dd></dd></dl>
 
 <p>This is an MGA-1DSM problem useful to test the performance of evolutionary algorithms on a simpe trajectory problem.
-The planetary encounter sequence is E-V-E, and the objective is to randevouz with the Earth matching its heliocentric
+The planetary encounter sequence is E-V-E, and the objective is to rendezvous with the Earth matching its heliocentric
 position and velocity exactly. As objective function we use the total <span class="math notranslate nohighlight">\(\Delta V\)</span> computed as the sum of all the <span class="math notranslate nohighlight">\(\Delta V\)</span> needed to perform the various
 maneuvers and fly-bys. The launch <span class="math notranslate nohighlight">\(\Delta V\)</span> is not accounted for, as it is bounded to a maximum value.</p>
 <dl class="py attribute">
@@ -557,7 +557,7 @@ Jupiter system as an archetype for gas giants across the Universe.</p>
 
 <p>This is the same MGA-1DSM problem as <a class="reference internal" href="#pykep.trajopt.gym.juice" title="pykep.trajopt.gym.juice"><code class="xref py py-class docutils literal notranslate"><span class="pre">juice</span></code></a>, but with using
 the alpha encoding for the time of flight variables (see <a class="reference internal" href="#pykep.trajopt.gym.cassini1_a" title="pykep.trajopt.gym.cassini1_a"><code class="xref py py-class docutils literal notranslate"><span class="pre">cassini1_a</span></code></a>).
-The problem is also muulti-objective, with the total time of flight as a second objective, leveragng the
+The problem is also multi-objective, with the total time of flight as a second objective, leveraging the
 alpha encoding to control the total time of flight (at the cost of evolvability).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pykep.trajopt.gym.messenger">
@@ -566,7 +566,7 @@ alpha encoding to control the total time of flight (at the cost of evolvability)
 
 <p>This an MGA-1DSM problem inspired by the messenger mission that orbited the planet Mercury between 2011 and 2015, studying Mercury’s chemical composition,
 geology, and magnetic field. The name is a backronym for Mercury Surface, Space Environment, Geochemistry, and Ranging, and a reference to the messenger
-god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are concident to the actual Messenger mission.
+god Mercury from Roman mythology. The selected fly-by sequence, E-VVMeMeMe-Me, and other parameters are coincident to the actual Messenger mission.
 We have only omitted the first Earth fly-by that was used to correct for launcher performances, since we here do not make use of a launcher model.
 As far as chemical propelled interplanetary trajectories go, this particular one is particularly complex and difficult to design.
 The time of flights among successive Mercury fly-bys allow for multiple rvolutions and resonances, making optimization techniques struggle to find the correct combination.

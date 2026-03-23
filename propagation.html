@@ -516,7 +516,7 @@ seamlessly via variational equations.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span><span class="p">],</span> <span class="n">stm</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">rv</span><span class="o">=</span><span class="p">[</span><span class="n">r0</span><span class="p">,</span><span class="n">v0</span><span class="p">],</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r1</span><span class="p">,</span><span class="n">v1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian</span><span class="p">(</span><span class="n">rv</span><span class="o">=</span><span class="p">[</span><span class="n">r0</span><span class="p">,</span><span class="n">v0</span><span class="p">],</span> <span class="n">tof</span> <span class="o">=</span> <span class="n">tof</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
@@ -533,10 +533,12 @@ seamlessly via variational equations.</p>
 The main advantage is in the API which is convenient and reminiscent of the <code class="xref py py-func docutils literal notranslate"><span class="pre">heyoka.propagate_grid()</span></code> interface.</p>
 <p>Note that this function is not necessarily more efficient than calling
 <a class="reference internal" href="#pykep.propagate_lagrangian" title="pykep.propagate_lagrangian"><code class="xref py py-func docutils literal notranslate"><span class="pre">pykep.propagate_lagrangian()</span></code></a> in a loop, since there is no parallelization nor SIMD magic implemented atm. 
-Nevertheless we offer this interface for cenvenience as it may allow more compact code.</p>
+Nevertheless we offer this interface for convenience as it may allow more compact code.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>rv</em> (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].</p>
-<p><em>tof</em> (1D array-like): time of flight. Defaults to [<span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>].</p>
+<blockquote>
+<div><p><em>tofs</em> (1D array-like): time of flight. Defaults to [<span class="math notranslate nohighlight">\(\frac{\pi}{2}\)</span>].</p>
+</div></blockquote>
 <p><em>mu</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): gravitational parameter. Defaults to 1.</p>
 <p><em>stm</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): requests the computations of the State Transition Matrix</p>
 </dd>
@@ -547,7 +549,7 @@ and velocity after the propagation and the flattened stm (if requested).</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tofs</span> <span class="o">=</span> <span class="p">[</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="n">pi</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tofs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">propagate_lagrangian_grid</span><span class="p">(</span><span class="n">rv</span> <span class="o">=</span> <span class="p">[</span><span class="n">r0</span><span class="p">,</span> <span class="n">v0</span><span class="p">],</span> <span class="n">tofs</span> <span class="o">=</span> <span class="n">tofs</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">stm</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="p">[</span><span class="n">it</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
@@ -572,7 +574,7 @@ using <a class="reference external" href="https://bluescarni.github.io/heyoka.py
 <p>Some of the Taylor integrators are “zero hold” versions of a given dynamics, meaning that they
 consider a constant thrust vector in some frame and include the mass variation due to said thrust.
 These are intended to be used to build “zero hold” trajectory legs and direct methods to optimally
-control the spacecarft.</p>
+control the spacecraft.</p>
 <p>Some of the Taylor adaptive integrators are associated to OCPs (Optimal Control Problems) of
 relevance to interplanetary flight. In particular they are born when applying Pontryagin
 principle to dynamics of interests and result in two point boundary value problems (TPBVP).
@@ -584,7 +586,7 @@ the control, the Hamiltonian, the switching function, etc., are also provided.</
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_kep">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_kep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_kep" title="Link to this definition">#</a></dt>
-<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy.</p>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retrieving one from a global cache and making a copy.</p>
 <p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.</p>
 <p>In <cite>pykep</cite>, the simple keplerian dynamics is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
@@ -611,9 +613,13 @@ return the one from a global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_kep_var">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_kep_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_kep_var" title="Link to this definition">#</a></dt>
-<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy.</p>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retrieving one from a global cache and making a copy.</p>
 <p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions.</p>
+</div>
 <p>In <cite>pykep</cite>, the simple Keplerian dynamics is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
 <p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.kep_dyn" title="pykep.ta.kep_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">kep_dyn()</span></code></a>.</p>
 <dl>
@@ -660,7 +666,7 @@ return the one from a global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_cr3bp">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_cr3bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_cr3bp" title="Link to this definition">#</a></dt>
-<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy.</p>
+<dd><p>Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retrieving one from a global cache and making a copy.</p>
 <p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.</p>
 <p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
@@ -687,9 +693,13 @@ return the one from a global cache, thus avoiding jitting.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.get_cr3bp_var">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">get_cr3bp_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.get_cr3bp_var" title="Link to this definition">#</a></dt>
-<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy.</p>
+<dd><p>Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retrieving one from a global cache and making a copy.</p>
 <p>If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are only considered with respect to initial conditions.</p>
+</div>
 <p>In <cite>pykep</cite>, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form).</p>
 <p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.cr3bp_dyn" title="pykep.ta.cr3bp_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">cr3bp_dyn()</span></code></a>.</p>
 <dl>
@@ -788,7 +798,7 @@ with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at 
 <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
               <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
 <span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
 <span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
 <span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
@@ -820,7 +830,7 @@ with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at 
 <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
               <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
 <span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
 <span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
 <span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
@@ -860,7 +870,7 @@ with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at 
 <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
                <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
 <span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
 <span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
 <span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
@@ -896,7 +906,7 @@ with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at 
 <span class="n">ta</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="n">ta</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.01238082345234</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0423523523454</span><span class="p">,</span> <span class="mf">0.22634376321</span><span class="p">,</span> 
                <span class="o">-</span><span class="mf">0.1232623614</span><span class="p">,</span> <span class="mf">0.123462698209365</span><span class="p">,</span> <span class="mf">0.123667064622</span><span class="p">]</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">CR3BP_MU_EARTH_MOON</span>
 <span class="n">mu_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_MU_S</span>
 <span class="n">rho_s</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
 <span class="n">rho_p</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">BCP_RHO_S</span>
@@ -915,8 +925,7 @@ with Sun on the <span class="math notranslate nohighlight">\(x\)</span> axis at 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykep.ta.bcp_dyn">
 <span class="sig-prename descclassname"><span class="pre">pykep.ta.</span></span><span class="sig-name descname"><span class="pre">bcp_dyn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.ta.bcp_dyn" title="Link to this definition">#</a></dt>
-<dd><p>cbp_dyn()</p>
-<p>The dynamics of the Bicircular Problem (BCP).</p>
+<dd><p>The dynamics of the Bicircular Problem (BCP).</p>
 <p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
 is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
 <p>The equations are non-dimensional with units <span class="math notranslate nohighlight">\(L = r_{12}\)</span> (distance between the primaries), <span class="math notranslate nohighlight">\(M = m_1 + m_2\)</span> (total system mass) and
@@ -933,14 +942,14 @@ secondary body (i.e. placed on the positive x axis).</p>
     \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} - \frac{\mu_s}{r_s^3} (y - \rho \sin(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \sin(\omega_s t)\\
     \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} - \mu_s \frac{z}{r_s^3} 
 \end{array}\right.\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu, \mu_s, \rho_s\)</span> and $omega_s$ are the system parameters. The spacecarft distance from the primaries
+<p>where <span class="math notranslate nohighlight">\(\mu, \mu_s, \rho_s\)</span> and $omega_s$ are the system parameters. The spacecraft distance from the primaries
 is <span class="math notranslate nohighlight">\(r_1, r_2\)</span> and its distance from the Sun is <span class="math notranslate nohighlight">\(r_s\)</span>. The Sun orbits at a distance <span class="math notranslate nohighlight">\(\rho\)</span> with
 angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [ <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">hy::expression</span></code> )]: The dynamics in the form [(x, dx), …]</p>
 </dd>
 </dl>
-<p>cbp_dyn()</p>
+<p>bcp_dyn()</p>
 <p>The dynamics of the Bicircular Problem (BCP).</p>
 <p>In <cite>pykep</cite>, the BCP is defined in Cartesian coordinates (it is not symplectic nor in a Hamiltonian form). It is time-dependent and assumes the Sun
 is on the <span class="math notranslate nohighlight">\(x\)</span> axis at time zero.</p>
@@ -958,7 +967,7 @@ secondary body (i.e. placed on the positive x axis).</p>
     \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} - \frac{\mu_s}{r_s^3} (y - \rho \sin(\omega_s t)) - \frac{\mu_s}{\rho_s^2} \sin(\omega_s t)\\
     \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} - \mu_s \frac{z}{r_s^3} 
 \end{array}\right.\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu, \mu_s, \rho_s\)</span> and $omega_s$ are the system parameters. The spacecarft distance from the primaries
+<p>where <span class="math notranslate nohighlight">\(\mu, \mu_s, \rho_s\)</span> and $omega_s$ are the system parameters. The spacecraft distance from the primaries
 is <span class="math notranslate nohighlight">\(r_1, r_2\)</span> and its distance from the Sun is <span class="math notranslate nohighlight">\(r_s\)</span>. The Sun orbits at a distance <span class="math notranslate nohighlight">\(\rho\)</span> with
 angular velocity <span class="math notranslate nohighlight">\(\omega_s\)</span>:.</p>
 <dl class="simple">
@@ -1438,6 +1447,12 @@ from the application of Pontryagin Maximum Principle (PMP) to the low-thrust pro
 (constant maximal thrust) in Cartesian coordinates. If the requested propagator was never created, 
 a call to this function will trigger its compilation. Otherwise, it will return the one from
 a global cache, thus avoiding jitting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are considered with respect to the initial conditions on the costates and to the
+parameters <span class="math notranslate nohighlight">\(\epsilon\)</span> and <span class="math notranslate nohighlight">\(\lambda_0\)</span>. In the time optimal case <span class="math notranslate nohighlight">\(\epsilon\)</span>
+is still considered a parameter (for consistency) but it is not used.</p>
+</div>
 <p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.pc_dyn" title="pykep.ta.pc_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
@@ -1556,6 +1571,12 @@ from the application of Pontryagin Maximum Principle (PMP) to the low-thrust pro
 (constant maximal thrust) in Modified Equinoctial Elements. If the requested propagator was never created, 
 a call to this function will trigger its compilation. Otherwise, it will return the one from
 a global cache, thus avoiding jitting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variations are considered with respect to the initial conditions on the costates and to the
+parameters <span class="math notranslate nohighlight">\(\epsilon\)</span> and <span class="math notranslate nohighlight">\(\lambda_0\)</span>. In the time optimal case <span class="math notranslate nohighlight">\(\epsilon\)</span>
+is still considered a parameter (for consistency) but it is not used.</p>
+</div>
 <p>The specific dynamics used is that returned by <a class="reference internal" href="#pykep.ta.pc_dyn" title="pykep.ta.pc_dyn"><code class="xref py py-func docutils literal notranslate"><span class="pre">pc_dyn()</span></code></a>.</p>
 <dl>
 <dt>Args:</dt><dd><p><em>tol</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>): the tolerance of the Taylor adaptive propagator.</p>
