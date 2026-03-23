@@ -28,7 +28,7 @@ Sims-Flanagan
 ^^^^^^^^^^^^^^^^^^^^^^^
 One of pykep's historical favourite transcription methods is the Sims
 :cite:p:`sims` transcription which is called Sims-Flanagan as per the authorship
-of the first brief conferecne paper introducing it (anecdotically the work was, though, entirely done by Sims).
+of the first brief conference paper introducing it (anecdotically the work was, though, entirely done by Sims).
 
 -------------------------------------------------------
 
@@ -47,8 +47,8 @@ of the first brief conferecne paper introducing it (anecdotically the work was, 
 
 Zero-Order-Hold
 ^^^^^^^^^^^^^^^^^^^^^^^
-The `pykep` original extension to the original Sims-Flanagan model is called the Zero-Order_hold
-transcription mehtod as it substitutes impulses with constant control segments. It has been
+The `pykep` original extension to the original Sims-Flanagan model is called the Zero-Order-Hold
+transcription method as it substitutes impulses with constant control segments. It has been
 developed and constantly refined throughout years starting from the early appearence in 2010 
 in the work from Yam et al. :cite:p:`yam2010towards` who reported it as a high-fidelity version
 of the original transcription. 
@@ -78,6 +78,14 @@ the corresponding state trajectories by solving a two point boundary value probl
     :members: plot, plot_misc
 
 .. autoclass:: pontryagin_cartesian_time
+    :members: plot, plot_misc
+
+-------------------------------------------------------
+
+.. autoclass:: pontryagin_equinoctial_mass
+    :members: plot, plot_misc
+
+.. autoclass:: pontryagin_equinoctial_time
     :members: plot, plot_misc
 
 -------------------------------------------------------
@@ -115,4 +123,4 @@ In order to facilitate the use of the classes in this module, some utilities are
 .. autofunction:: primer_vector_surrogate
 
 .. autoclass:: _launchers
-    :members: atlas501, atlas551, soyuzf, ariane5
+    :members: atlas501, atlas551, soyuzf, ariane5, ariane64, falcon9
