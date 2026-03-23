@@ -1046,7 +1046,7 @@ std::string mima_from_hop_doc()
 {
     return R"(mima_from_hop(pl_s, pl_t, when_s, when_t, Tmax, veff, mu)
 
-    The Maximum Initial Mass Approximation from a hop transfer. A hop transfer is fixed time randevouz between two planets.
+    The Maximum Initial Mass Approximation from a hop transfer. A hop transfer is fixed time rendezvous between two planets.
 
     Izzo, D., Hennes, D., Simões, L. F., & Märtens, M. (2016). Designing complex interplanetary trajectories
     for the global trajectory optimization competitions. Space Engineering: Modeling and Optimization with Case Studies, 151-176.
@@ -1267,7 +1267,7 @@ std::string epoch_from_string_doc()
     Args:
       *when* (:class:`str`): a date
 
-      *string_format* (:class`~pykep.epoch.string_format`): string format.
+      *string_format* (:class:`~pykep.epoch.string_format`): string format.
 
     Examples:
       >>> import pykep as pk
@@ -1353,7 +1353,7 @@ std::string planet_get_extra_info_docstring()
 {
     return R"(get_extra_info()
 
-PLanet's extra info.
+Planet's extra info.
 
 If the UDPLA provides a ``get_extra_info()`` method, then this method will return the output of its ``get_extra_info()``
 method. Otherwise, an empty string will be returned. 
@@ -1422,7 +1422,7 @@ std::string planet_get_radius_docstring()
 {
     return R"(get_radius()
 
-An average radius in SI units (m^3/sec^2) of the planet.
+An average radius in SI units (m) of the planet.
 
 If the UDPLA provides a ``get_radius()`` method, then this method will return the output of its ``get_radius()`` method.
 Otherwise, -1 will be returned.
@@ -1438,7 +1438,7 @@ std::string planet_get_safe_radius_docstring()
 {
     return R"(get_safe_radius()
 
-The safe radius in SI units (m^3/sec^2) of the planet. This is mainly for use in planetary fly-manouvres as to avoid
+The safe radius in SI units (m) of the planet. This is mainly for use in planetary fly-by manoeuvres as to avoid
 the planet atmosphere or circumvent its radiation environment.
 
 If the UDPLA provides a ``get_safe_radius()`` method, then this method will return the output of its ``get_safe_radius()`` method.
@@ -1609,7 +1609,7 @@ Returns:
 std::string udpla_keplerian_from_posvel_docstring()
 {
     return R"(**Alternative Constructor:**
-    __init__(ep, posvel, mu_central_body, name = "unkown", added_params = [-1,-1,-1])
+    __init__(ep, posvel, mu_central_body, name = "unknown", added_params = [-1,-1,-1])
 
 Constructs a Keplerian udpla from its position and velocity at epoch.
 
@@ -1622,7 +1622,7 @@ Args:
 
     *name* (:class:`str`): the name of the orbiting body.
 
-    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unknown)
 
 Examples:
     >>> import pykep as pk
@@ -1636,7 +1636,7 @@ Examples:
 
 std::string udpla_keplerian_from_elem_docstring()
 {
-    return R"(__init__(when, elem, mu_central_body, name = "unkown", added_params = [-1,-1,-1], elem_type = KEP_F)
+    return R"(__init__(when, elem, mu_central_body, name = "unknown", added_params = [-1,-1,-1], elem_type = KEP_F)
 
 Constructs a Keplerian udpla from its orbital elements at epoch.
 
@@ -1649,7 +1649,7 @@ Args:
 
     *name* (:class:`str`): the name of the orbiting body.
 
-    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unkown)
+    *added_params* (:class:`list`): the body gravitational parameter, its radius and its safe radius. (if -1 they are assumed unknown)
 
     *el_type* (:class:`~pykep.el_type`): the elements type. Defaults to osculating Keplerian (a ,e ,i, W, w, f) with true anomaly.
 
@@ -1752,7 +1752,7 @@ described by the equations:
 .. note::
 
   Similar and connected functionality is provided by the functions :func:`~pykep.ta.zero_hold_kep`,
-  :func:`~pykep.ta.zero_hold_kep_var`: and :func:`~pykep.ta.zero_hold_kep_dyn`:.
+  :func:`~pykep.ta.zero_hold_kep_var` and :func:`~pykep.ta.zero_hold_kep_dyn`..
 
 Args:
     *mu* (:class:`float`): central body gravitational parameter. Defaults to 1.
@@ -1807,7 +1807,7 @@ Examples:
   >>> veff = 3000. * pk.G0
   >>> tol = 1e-14
   >>> sp = pk.zero_hold_kep_problem(mu, veff, tol)
-  >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+  >>> sp.propagate(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
   [0.5089647068650076, 0.8607873878989034, 0.0, -0.8607873878989032, 0.5089647068650074, 0.0, 1.0]
 )";
 }
@@ -1855,7 +1855,7 @@ Examples:
   >>> veff = 3000. * pk.G0
   >>> tol = 1e-14
   >>> sp = pk.zero_hold_kep_problem(mu, veff, tol)
-  >>> sp.propagate(state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], 7.32)
+  >>> sp.propagate_var(rvm_state = [1., 0., 0., 0., 1., 0., 1], thrust = [0., 0., 1e-8], tof = 7.32)
 )";
 }
 
@@ -1863,7 +1863,7 @@ std::string get_zero_hold_kep_docstring()
 {
     return R"(ta.get_zero_hold_kep(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics retreiving
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics retrieving
 one from a global cache and making a copy. 
 
 In `pykep`, using a term well established in electrodynamics, 
@@ -1899,17 +1899,17 @@ std::string get_zero_hold_kep_var_docstring()
     return R"(ta.get_zero_hold_kep_var(tol)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_kep dynamics
-retreiving one from a global cache and making a copy. 
+retrieving one from a global cache and making a copy. 
 
 In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a constant inertial thrust mass-varying spacecraft orbiting a main body.
 
-.. note:
-   Variations are only considered with repsect to initial conditions and the constant thurst :math:`T`.
+.. note::
+   Variations are only considered with respect to initial conditions and the constant thrust :math:`T`.
    The variations with respect to the constant thrust differ from those with respect to
    the often introduced throttles :math:`\mathbf T = T_{max} \mathbf u` by a factor :math:`T_{max}`.
 
-The dynamics is that returned by :func:`~pykep.ta.zero_hold_kep_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_kep`
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_kep_dyn` and also used in :func:`~pykep.ta.get_zero_hold_kep`
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1956,7 +1956,7 @@ std::string get_zero_hold_cr3bp_docstring()
 {
     return R"(ta.get_zero_hold_cr3bp(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp dynamics retreiving
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp dynamics retrieving
 one from a global cache and making a copy. 
 
 In `pykep`, using a term well established in electrodynamics, 
@@ -1994,19 +1994,19 @@ std::string get_zero_hold_cr3bp_var_docstring()
     return R"(ta.get_zero_hold_cr3bp_var(tol)
 
 Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold_cr3bp
-dynamics retreiving one from a global cache and making a copy. 
+dynamics retrieving one from a global cache and making a copy. 
 
 In `pykep`, using a term well established in electrodynamics, 
 this is the initial value problem of a constant thrust mass-varying spacecraft orbiting two main bodies
 in circular relative motion (the circular restricted three body problem, CR3BP). Thrust direction is
 fixed in the rotating frame.
 
-.. note:
-   Variations are only considered with repsect to initial conditions and the constant thurst :math:`T`.
+.. note::
+   Variations are only considered with respect to initial conditions and the constant thrust :math:`T`.
    The variations with respect to the constant thrust differ from those with respect to
    the often introduced throttles :math:`\mathbf T = T_{max} \mathbf u` by a factor :math:`T_{max}`.
 
-The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_cr3bp`
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn` and also used in :func:`~pykep.ta.get_zero_hold_cr3bp`
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -2056,7 +2056,7 @@ std::string get_kep_docstring()
 {
     return R"(ta.get_kep(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy. 
+Returns a Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retrieving one from a global cache and making a copy. 
 
 If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.
@@ -2087,12 +2087,12 @@ std::string get_kep_var_docstring()
 {
     return R"(ta.get_kep_var(tol)
 
-Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retreiving one from a global cache and making a copy. 
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the simple Keplerian dynamics retrieving one from a global cache and making a copy. 
 
 If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.
 
-.. note:
+.. note::
    Variations are only considered with respect to initial conditions.
 
 In `pykep`, the simple Keplerian dynamics is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
@@ -2169,7 +2169,7 @@ Examples:
         ta.time = 0.
         ta.state[:] = [1.01238082345234, -0.0423523523454, 0.22634376321, 
                       -0.1232623614, 0.123462698209365, 0.123667064622]
-        mu = pk.CR3BP_MU
+        mu = pk.CR3BP_MU_EARTH_MOON
         mu_s = pk.BCP_MU_S
         rho_s = pk.BCP_RHO_S
         rho_p = pk.BCP_RHO_S
@@ -2213,7 +2213,7 @@ Examples:
         ta.time = 0.
         ta.state[:6] = [1.01238082345234, -0.0423523523454, 0.22634376321, 
                        -0.1232623614, 0.123462698209365, 0.123667064622]
-        mu = pk.CR3BP_MU
+        mu = pk.CR3BP_MU_EARTH_MOON
         mu_s = pk.BCP_MU_S
         rho_s = pk.BCP_RHO_S
         rho_p = pk.BCP_RHO_S
@@ -2229,7 +2229,7 @@ Examples:
 
 std::string bcp_dyn_docstring()
 {
-    return R"(cbp_dyn()
+    return R"(bcp_dyn()
 
 The dynamics of the Bicircular Problem (BCP).
 
@@ -2253,7 +2253,7 @@ The equations of motion are:
        \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} - \mu_s \frac{z}{r_s^3} 
    \end{array}\right.
 
-where :math:`\mu, \mu_s, \rho_s` and $\omega_s$ are the system parameters. The spacecarft distance from the primaries
+where :math:`\mu, \mu_s, \rho_s` and $\omega_s$ are the system parameters. The spacecraft distance from the primaries
 is :math:`r_1, r_2` and its distance from the Sun is :math:`r_s`. The Sun orbits at a distance :math:`\rho` with
 angular velocity :math:`\omega_s`:.
 
@@ -2266,7 +2266,7 @@ std::string get_cr3bp_docstring()
 {
     return R"(ta.get_cr3bp(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
+Returns a Taylor adaptive propagator (Heyoka) for the CR3BP problem retrieving one from a global cache and making a copy. 
 
 If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.
@@ -2297,12 +2297,12 @@ std::string get_cr3bp_var_docstring()
 {
     return R"(ta.get_cr3bp_var(tol)
 
-Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retreiving one from a global cache and making a copy. 
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the CR3BP problem retrieving one from a global cache and making a copy. 
 
 If the requested propagator was never created, a call to this function will trigger its creation, else it will
 return the one from a global cache, thus avoiding jitting.
 
-.. note:
+.. note::
    Variations are only considered with respect to initial conditions.
 
 In `pykep`, the CR3BP is defined in Cartesian coordinates (thus it is not symplectic as not in a Hamiltonian form). 
@@ -2434,7 +2434,7 @@ from the application of Pontryagin Maximum Principle (PMP) to the low-thrust pro
 a call to this function will trigger its compilation. Otherwise, it will return the one from
 a global cache, thus avoiding jitting.
 
-.. note:
+.. note::
    Variations are considered with respect to the initial conditions on the costates and to the
    parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
    is still considered a parameter (for consistency) but it is not used.
@@ -2640,7 +2640,7 @@ from the application of Pontryagin Maximum Principle (PMP) to the low-thrust pro
 a call to this function will trigger its compilation. Otherwise, it will return the one from
 a global cache, thus avoiding jitting.
 
-.. note:
+.. note::
    Variations are considered with respect to the initial conditions on the costates and to the
    parameters :math:`\epsilon` and :math:`\lambda_0`. In the time optimal case :math:`\epsilon`
    is still considered a parameter (for consistency) but it is not used.
@@ -2806,7 +2806,7 @@ std::string propagate_lagrangian_docstring()
         >>> import numpy as np
         >>> r0 = [1,0,0]
         >>> v0 = [0,1,0]
-        >>> tof = pi/2
+        >>> tof = np.pi/2
         >>> mu = 1
         >>> [r1,v1], stm = pk.propagate_lagrangian(rv=[r0,v0], tof = tof, mu = mu, stm = True)
         >>> [r1,v1] = pk.propagate_lagrangian(rv=[r0,v0], tof = tof, mu = mu, stm = False)
@@ -2823,12 +2823,12 @@ std::string propagate_lagrangian_grid_docstring()
 
     Note that this function is not necessarily more efficient than calling
     :func:`pykep.propagate_lagrangian` in a loop, since there is no parallelization nor SIMD magic implemented atm. 
-    Nevertheless we offer this interface for cenvenience as it may allow more compact code. 
+    Nevertheless we offer this interface for convenience as it may allow more compact code. 
 
     Args:
           *rv* (2D array-like): Cartesian components of the initial position vector and velocity [[x0, y0, z0], [v0, vy0, vz0]]. Defaults to [[1,0,0], [0,1,0]].
 
-          *tof* (1D array-like): time of flight. Defaults to [:math:`\frac{\pi}{2}`].
+                    *tofs* (1D array-like): time of flight. Defaults to [:math:`\frac{\pi}{2}`].
 
           *mu* (:class:`float`): gravitational parameter. Defaults to 1.
 
@@ -2843,7 +2843,7 @@ std::string propagate_lagrangian_grid_docstring()
         >>> import numpy as np
         >>> r0 = [1,0,0]
         >>> v0 = [0,1,0]
-        >>> tofs = [pi/2, pi, 3/4pi]
+        >>> tofs = [np.pi/2, np.pi, 3*np.pi/4]
         >>> mu = 1
         >>> res = pk.propagate_lagrangian_grid(rv = [r0, v0], tofs = tofs, mu = mu, stm = True)
         >>> rs = [it[0][0] for it in res]
@@ -3188,7 +3188,7 @@ relative velocity (normalized), :math:`\hat{\mathbf b}_1 \times \mathbf v_{pla}`
 
 .. note::
   This function is often used in the multiple gravity assist with DSM (MGA-DSM) encoding of an interplanetary trajectory where multiple
-  impulsive manouvres are allowed betwwen planetary fly-bys.
+  impulsive manoeuvres are allowed between planetary fly-bys.
 
 Args:
   *v_in* (:class:`list` (3,)): Cartesian components of the incoming velocity 

@@ -26,7 +26,7 @@ Spice Utils
 
 .. autofunction:: rotation_matrix
 
-.. Autofunction:: naifid2name
+.. autofunction:: naifid2name
 
 .. currentmodule:: pykep
 
