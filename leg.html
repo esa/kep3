@@ -661,7 +661,7 @@ has to be met.</p>
 <hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="pykep.leg.zoh">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.leg.</span></span><span class="sig-name descname"><span class="pre">zoh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.zoh" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykep.leg.</span></span><span class="sig-name descname"><span class="pre">zoh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.zoh" title="Link to this definition">#</a></dt>
 <dd><p>This class implements an interplanetary low-thrust transfer between a starting and final state
 in the augmented state-space <span class="math notranslate nohighlight">\([\mathbf{r}, \mathbf{v}, m]\)</span>. The transfer is modelled
 as a sequence of non-uniform segments along which a continuous and constant (zero-order hold)
@@ -701,6 +701,7 @@ that must ensure the suitability of the integrators.</p>
 <li><p><cite>ta_var</cite>: Variational dynamics (state dim 84, same pars)</p></li>
 </ul>
 </div></blockquote>
+<p><em>max_steps</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): Maximum number of steps for the integrator. If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is passed to the integrator before each propagation call.</p>
 </dd>
 <dt>Raises:</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>: If state/parameter dimensions mismatch or input lengths are incompatible.</p>
 </dd>
@@ -725,7 +726,7 @@ that must ensure the suitability of the integrators.</p>
 <span class="sig-name descname"><span class="pre">compute_mc_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pykep.leg.zoh.compute_mc_grad" title="Link to this definition">#</a></dt>
 <dd><p>Computes the gradients of the mismatch constraints. Indicating the initial augmented state with <span class="math notranslate nohighlight">\(\mathbf x_s = [\mathbf r_s, \mathbf v_s, m_s]\)</span>, the
 final augmented state with <span class="math notranslate nohighlight">\(\mathbf x_f = [\mathbf r_f, \mathbf v_f, m_f]\)</span>, the time grid as <span class="math notranslate nohighlight">\(T_{grid}\)</span> and the introducing the control vector
-<span class="math notranslate nohighlight">\(\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}]\)</span> (note the time of flight at the end), this method computes the following gradients:</p>
+<span class="math notranslate nohighlight">\(\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}, \ldots]\)</span>, this method computes the following gradients:</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial \mathbf {mc}}{\partial \mathbf x_s}  \rightarrow (7\times7)\]</div>
 <div class="math notranslate nohighlight">
