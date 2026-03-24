@@ -35,6 +35,7 @@ class zoh:
         tgrid,
         cut,
         tas,
+        max_steps = None
     ):
         """
         .. note::
@@ -58,6 +59,8 @@ class zoh:
                 - `ta`: Nominal dynamics (state dim 7, pars ≥ 4)
                 
                 - `ta_var`: Variational dynamics (state dim 84, same pars)
+                
+            *max_steps* (:class:`int`): Maximum number of steps for the integrator. If not ``None``, it is passed to the integrator before each propagation call.
 
         Raises:
             :class:`ValueError`: If state/parameter dimensions mismatch or input lengths are incompatible.
@@ -86,6 +89,7 @@ class zoh:
         self.state1 = state1
         self.tgrid = tgrid
         self.cut = cut
+        self.max_steps = max_steps
         
         # Store the tas
         self.ta = tas[0]
@@ -109,7 +113,7 @@ class zoh:
             raise ValueError(
                 f"Attempting to construct a zoh_leg with a Taylor Adaptive integrator parameters dimension of {len(self.ta.pars)}, while >=4 is required"
             )
-        if self.ta_var: # we skip these lines if tno variational integrator is provided
+        if self.ta_var: # we skip these lines if no variational integrator is provided
             if len(self.ta_var.state) != 7 + 7 * 7 + 7 * 4:
                 raise ValueError(
                     f"Attempting to construct a zoh_leg with a variational Taylor Adaptive integrator state dimension of {len(self.ta_var.state)}, while 84 is required"
@@ -138,6 +142,12 @@ class zoh:
         self.dyn_cfunc = _hy.cfunc_dbl(dyn, vars, compact_mode=True)
 
     def compute_mismatch_constraints(self):
+        """Propagates forward from *state0* and backward from *state1* and returns
+        the 7-component state mismatch at the midpoint.
+
+        Returns:
+            :class:`list`: Mismatch vector of length 7. All entries are zero for a feasible transfer.
+        """
         # Forward segments
         self.ta.time = self.tgrid[0]
         self.ta.state[:] = self.state0
@@ -145,7 +155,10 @@ class zoh:
             # setting T, ix, iy, iz
             self.ta.pars[0:4] = self.controls[4 * i : 4 * i + 4]
             # propagating
-            self.ta.propagate_until(self.tgrid[i + 1])
+            if self.max_steps is not None:
+                self.ta.propagate_until(self.tgrid[i + 1], max_steps = self.max_steps)
+            else:
+                self.ta.propagate_until(self.tgrid[i + 1])
         state_fwd = self.ta.state.copy()
 
         # Backward segments
@@ -158,11 +171,20 @@ class zoh:
             self.ta.pars[2] = self.controls[-4 * i - 2]
             self.ta.pars[3] = self.controls[-4 * i - 1]
             # propagating
-            self.ta.propagate_until(self.tgrid[-2 - i])
+            if self.max_steps is not None:
+                self.ta.propagate_until(self.tgrid[-2 - i], max_steps = self.max_steps)
+            else:   
+                self.ta.propagate_until(self.tgrid[-2 - i])
         state_bck = self.ta.state
         return (state_fwd - state_bck).tolist()
 
     def compute_throttle_constraints(self):
+        """Computes the throttle unit-norm constraints :math:`i_x^2 + i_y^2 + i_z^2 - 1` for every segment.
+
+        Returns:
+            :class:`list`: Constraint values of length nseg. All entries are zero when the direction
+            vector is unit-norm on every segment.
+        """
         retval = [0] * self.nseg
         for i in range(self.nseg):
             retval[i] = (
@@ -195,7 +217,7 @@ class zoh:
         """
         Computes the gradients of the mismatch constraints. Indicating the initial augmented state with :math:`\\mathbf x_s = [\\mathbf r_s, \\mathbf v_s, m_s]`, the
         final augmented state with :math:`\\mathbf x_f = [\\mathbf r_f, \\mathbf v_f, m_f]`, the time grid as :math:`T_{grid}` and the introducing the control vector
-        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}]` (note the time of flight at the end), this method computes the following gradients:
+        :math:`\\mathbf u = [T_0, i_{x0}, i_{y0}, i_{z0}, T_1, i_{x1}, i_{y1}, i_{z1}, \\ldots]`, this method computes the following gradients:
 
         .. math::
         
@@ -230,7 +252,10 @@ class zoh:
             # setting T, ix, iy, iz
             self.ta_var.pars[0:4] = self.controls[4 * i : 4 * i + 4]
             # propagating
-            self.ta_var.propagate_until(self.tgrid[i + 1])
+            if self.max_steps is not None:
+                self.ta_var.propagate_until(self.tgrid[i + 1], max_steps=self.max_steps)
+            else:
+                self.ta_var.propagate_until(self.tgrid[i + 1])
             # extracting the segment STMs
             M_seg_fwd.append(self.ta_var.state[7:].reshape(7, 11)[:, :7].copy())  # 7x7
             # extracting the control sensitivities in across the single segment
@@ -239,7 +264,7 @@ class zoh:
             dyn_fwd.append(
                 self.dyn_cfunc(
                     self.ta_var.state[:7],
-                    pars=self.controls[4 * i : 4 * i + 4] + self.pars_no_control,
+                    pars=[*self.controls[4 * i : 4 * i + 4], *self.pars_no_control],
                 )
             )
         # We compute the STMs - Mf0, Mf1, Mf2, ...
@@ -262,7 +287,7 @@ class zoh:
         dmcdtgrid = _np.zeros((7, self.nseg + 1))
         if self.nseg_fwd > 0:
             dmcdtgrid[:, 0] = -M_fwd[1] @ dyn_fwd[0]
-            dmcdtgrid[:, i] = M_fwd[-1] @ dyn_fwd[-1]
+            dmcdtgrid[:, self.nseg_fwd] = M_fwd[-1] @ dyn_fwd[-1]
 
             for i in range(1, self.nseg_fwd):
                 dmcdtgrid[:, i] = M_fwd[i + 1] @ (
@@ -285,7 +310,10 @@ class zoh:
             self.ta_var.pars[2] = self.controls[-4 * i - 2]
             self.ta_var.pars[3] = self.controls[-4 * i - 1]
             # propagating
-            self.ta_var.propagate_until(self.tgrid[-2 - i])
+            if self.max_steps is not None:
+                self.ta_var.propagate_until(self.tgrid[-2 - i], max_steps=self.max_steps)
+            else:
+                self.ta_var.propagate_until(self.tgrid[-2 - i])
             # extracting the segment STMs
             M_seg_bck.append(self.ta_var.state[7:].reshape(7, 11)[:, :7].copy())
             # extracting the control sensitivities in across the single segment
@@ -294,8 +322,8 @@ class zoh:
             dyn_bck.append(
                 self.dyn_cfunc(
                     self.ta_var.state[:7],
-                    pars=self.controls[-4 * i - 4 : -4 * i - 1]
-                    + [self.controls[-4 * i - 1]]
+                    pars=[self.controls[-4 * i - 4], self.controls[-4 * i - 3],
+                          self.controls[-4 * i - 2], self.controls[-4 * i - 1]]
                     + self.pars_no_control,
                 )
             )
@@ -391,7 +419,10 @@ class zoh:
             self.ta.pars[0:4] = self.controls[4 * i : 4 * i + 4]
             # propagating
             plot_grid_fwd = _np.linspace(self.tgrid[i], self.tgrid[i + 1], N)
-            sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
+            if self.max_steps is not None:
+                sol_fwd = self.ta.propagate_grid(plot_grid_fwd, max_steps=self.max_steps)[-1]
+            else:
+                sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
             state_fwd.append(sol_fwd)
         
         # Backward segments
@@ -406,7 +437,9 @@ class zoh:
             self.ta.pars[3] = self.controls[-4 * i - 1]
             # propagating
             plot_grid_bck = _np.linspace(self.tgrid[-1 - i], self.tgrid[-2 - i], N)
-            sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]
+            if self.max_steps is not None:
+                sol_bck = self.ta.propagate_grid(plot_grid_bck, max_steps=self.max_steps)[-1]
+            else:
+                sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]
             state_bck.append(sol_bck)
-        
         return state_fwd,state_bck
