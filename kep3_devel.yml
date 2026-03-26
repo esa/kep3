@@ -13,7 +13,7 @@ dependencies:
   - heyoka.py >=7
   - spdlog >=1.12
   - xtensor >=0.26 # else kep3 will not compile (the project performed a header restructuring as of 0.26)
-  - xtensor-blas >=0.24
+  - xtensor-blas
   - pagmo-devel
   - pybind11 >=2.11
   - sgp4
