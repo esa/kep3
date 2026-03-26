@@ -1,5 +1,5 @@
-# Find the xtensor bits.
-find_package(Boost COMPONENTS program_options REQUIRED)
+# Find Boost bits.
+find_package(Boost CONFIG REQUIRED COMPONENTS program_options)
 
 # And pagmo
 find_package(Pagmo REQUIRED)
@@ -17,12 +17,12 @@ function(ADD_kep3_BENCHMARK arg1)
 
   # Adding this to shut down xtensor warnings (as of v0.26 still there)
   if (YACMA_COMPILER_IS_GNUCXX)
-      target_compile_options(kep3 PRIVATE -Wno-array-bounds)
-      target_compile_options(kep3 PRIVATE -Wno-stringop-overflow)
+      target_compile_options(${arg1} PRIVATE -Wno-array-bounds)
+      target_compile_options(${arg1} PRIVATE -Wno-stringop-overflow)
   endif()
   
   # Setup the C++ standard.
-  target_compile_features(${arg1} PRIVATE cxx_std_20)
+    target_compile_features(${arg1} PRIVATE cxx_std_23)
   set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
 endfunction()
 

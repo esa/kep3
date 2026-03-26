@@ -50,10 +50,10 @@ set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
 
 # Installation setup.
 if(PYKEP_INSTALL_PATH STREQUAL "")
-    message(STATUS "pykep will be installed in the default location: ${Python3_SITEARCH}")
+    message(VERBOSE "pykep install location (default): ${Python3_SITEARCH}")
     set(_PYKEP_INSTALL_DIR "${Python3_SITEARCH}/pykep")
 else()
-    message(STATUS "pykep will be installed in the custom location: ${PYKEP_INSTALL_PATH}")
+    message(VERBOSE "pykep install location (custom): ${PYKEP_INSTALL_PATH}")
     set(_PYKEP_INSTALL_DIR "${PYKEP_INSTALL_PATH}/pykep")
 endif()
 
