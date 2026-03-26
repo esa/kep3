@@ -47,6 +47,6 @@ jobs:
           conda install numpy matplotlib pybind11 sgp4 spiceypy -y
           mkdir build
           cd build
-          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\kep3_devel\Library -Dkep3_BUILD_PYTHON_BINDINGS=yes -DBoost_NO_BOOST_CMAKE=ON
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\kep3_devel\Library -Dkep3_BUILD_PYTHON_BINDINGS=yes
           cmake --build . -j4 --config Release --target install
           python -c "import pykep; pykep.test.run_test_suite()"

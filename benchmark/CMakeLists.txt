@@ -1,5 +1,5 @@
-# Find the xtensor bits.
-find_package(Boost COMPONENTS program_options REQUIRED)
+# Find Boost bits.
+find_package(Boost CONFIG REQUIRED COMPONENTS program_options)
 
 # And pagmo
 find_package(Pagmo REQUIRED)

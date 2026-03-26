@@ -25,7 +25,7 @@ export CXXFLAGS="$CXXFLAGS --coverage"
 mkdir build
 cd build
 
-cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -Dkep3_BUILD_TESTS=yes -DBoost_NO_BOOST_CMAKE=ON
+cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -Dkep3_BUILD_TESTS=yes
 
 cmake --build . -- -v
 
