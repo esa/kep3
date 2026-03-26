@@ -31,15 +31,15 @@ endif()
 # https://blog.kitware.com/upcoming-in-cmake-2-8-12-osx-rpath-support/
 # http://stackoverflow.com/questions/31561309/cmake-warnings-under-os-x-macosx-rpath-is-not-specified-for-the-following-targe
 if(APPLE)
-    message(STATUS "OSX detected, setting the 'CMAKE_MACOSX_RPATH' option to TRUE.")
+    message(VERBOSE "OSX detected, setting the 'CMAKE_MACOSX_RPATH' option to TRUE.")
     set(CMAKE_MACOSX_RPATH TRUE)
 endif()
 
 # Helper function to print out the autodetected flags.
 function(_YACMA_REPORT_FLAGS)
-    message(STATUS "The C++ compiler ID is: ${CMAKE_CXX_COMPILER_ID}")
-    message(STATUS "YACMA autodetected C++ flags: ${YACMA_CXX_FLAGS}")
-    message(STATUS "YACMA autodetected C++ debug flags: ${YACMA_CXX_FLAGS_DEBUG}")
+    message(VERBOSE "The C++ compiler ID is: ${CMAKE_CXX_COMPILER_ID}")
+    message(VERBOSE "YACMA autodetected C++ flags: ${YACMA_CXX_FLAGS}")
+    message(VERBOSE "YACMA autodetected C++ debug flags: ${YACMA_CXX_FLAGS_DEBUG}")
 endfunction()
 
 # Enable conditionally a CXX flag, if supported by the compiler.
@@ -47,28 +47,42 @@ endfunction()
 # NOTE: we use macros because it's apparently impossible to append to an internal
 # CACHEd list.
 macro(_YACMA_CHECK_ENABLE_CXX_FLAG flag)
+    if(KEP3_VERBOSE_CONFIGURE)
+        message(CHECK_START "Checking compiler flag '${flag}'")
+    endif()
     set(CMAKE_REQUIRED_QUIET TRUE)
     check_cxx_compiler_flag("${flag}" YACMA_CHECK_CXX_FLAG::${flag})
     unset(CMAKE_REQUIRED_QUIET)
     if(YACMA_CHECK_CXX_FLAG::${flag})
-        message(STATUS "'${flag}': flag is supported by the compiler, enabling.")
+        if(KEP3_VERBOSE_CONFIGURE)
+            message(CHECK_PASS "supported, enabling")
+        endif()
         list(APPEND _YACMA_CXX_FLAGS "${flag}")
     else()
-        message(STATUS "'${flag}': flag is not supported by the compiler.")
+        if(KEP3_VERBOSE_CONFIGURE)
+            message(CHECK_FAIL "not supported")
+        endif()
     endif()
 endmacro()
 
 # Enable conditionally a debug CXX flag, is supported by the compiler.
 # This is for flags intended to be enabled in debug mode.
 macro(_YACMA_CHECK_ENABLE_DEBUG_CXX_FLAG flag)
+    if(KEP3_VERBOSE_CONFIGURE)
+        message(CHECK_START "Checking debug compiler flag '${flag}'")
+    endif()
     set(CMAKE_REQUIRED_QUIET TRUE)
     check_cxx_compiler_flag("${flag}" YACMA_CHECK_DEBUG_CXX_FLAG::${flag})
     unset(CMAKE_REQUIRED_QUIET)
     if(YACMA_CHECK_DEBUG_CXX_FLAG::${flag})
-        message(STATUS "'${flag}': debug flag is supported by the compiler, enabling.")
+        if(KEP3_VERBOSE_CONFIGURE)
+            message(CHECK_PASS "supported, enabling")
+        endif()
         list(APPEND _YACMA_CXX_FLAGS_DEBUG "${flag}")
     else()
-        message(STATUS "'${flag}': debug flag is not supported by the compiler.")
+        if(KEP3_VERBOSE_CONFIGURE)
+            message(CHECK_FAIL "not supported")
+        endif()
     endif()
 endmacro()
 
@@ -175,13 +189,13 @@ if(NOT _YACMACompilerLinkerSettingsRun)
             # in some situations:
             # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80947
             # Let's just disable the warning for now.
-            message(STATUS "Activating the '-Wno-attributes' workaround for GCC >= 6.")
+            message(VERBOSE "Activating the '-Wno-attributes' workaround for GCC >= 6.")
             _YACMA_CHECK_ENABLE_CXX_FLAG(-Wno-attributes)
         endif()
         if(YACMA_COMPILER_IS_GNUCXX)
             # The -Wmaybe-uninitialized flag is enabled by -Wall, but it is known
             # to emit a lot of possibly spurious warnings. Let's just disable it.
-            message(STATUS "Activating the '-Wno-maybe-uninitialized' workaround for GCC.")
+            message(VERBOSE "Activating the '-Wno-maybe-uninitialized' workaround for GCC.")
             _YACMA_CHECK_ENABLE_DEBUG_CXX_FLAG(-Wno-maybe-uninitialized)
         endif()
         # From GCC 10.

@@ -7,7 +7,20 @@ set -x
 set -e
 
 # Install conda+deps.
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh -O miniforge3.sh
+MINIFORGE_VERSION=24.11.3-1
+case "$(uname -m)" in
+	arm64)
+		MINIFORGE_ARCH=arm64
+		;;
+	x86_64)
+		MINIFORGE_ARCH=x86_64
+		;;
+	*)
+		echo "Unsupported macOS architecture: $(uname -m)" >&2
+		exit 1
+		;;
+esac
+wget "https://github.com/conda-forge/miniforge/releases/download/${MINIFORGE_VERSION}/Miniforge3-MacOSX-${MINIFORGE_ARCH}.sh" -O miniforge3.sh
 export deps_dir=$HOME/local
 export PATH="$HOME/miniforge3/bin:$PATH"
 bash miniforge3.sh -b -p $HOME/miniforge3

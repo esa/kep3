@@ -21,6 +21,12 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.6.4 #workaround to be fixed upstream
         with:
           folder: doc/_build/html # The folder the action should deploy.
+  osx_pykep:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: bash tools/gha_osx_pykep.sh
   windows_pykep:
     runs-on: windows-2022
     steps:
@@ -31,7 +37,7 @@ jobs:
         with:
           activate-environment: kep3_devel
           environment-file: kep3_devel.yml
-          auto-update-conda: true
+          auto-update-conda: false
           channels: conda-forge
           channel-priority: strict
           auto-activate-base: false

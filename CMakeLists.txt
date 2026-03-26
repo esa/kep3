@@ -19,11 +19,13 @@ endif()
 
 project(kep3 VERSION 3.0.0 LANGUAGES CXX C)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/yacma")
+option(KEP3_VERBOSE_CONFIGURE "Enable detailed configure-time logging." OFF)
+if(KEP3_VERBOSE_CONFIGURE)
+    # Propagate verbose messages without requiring extra CLI flags.
+    set(CMAKE_MESSAGE_LOG_LEVEL VERBOSE)
+endif()
 
-message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
-message(STATUS "System processor: ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "kep3 version: ${kep3_VERSION}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/yacma")
 
 # Run the YACMA compiler setup.
 include(YACMACompilerLinkerSettings)
@@ -53,7 +55,6 @@ if(NOT kep3_INSTALL_LIBDIR)
         "Library installation directory." FORCE)
 endif()
 mark_as_advanced(kep3_INSTALL_LIBDIR)
-message(STATUS "Library installation directory: ${kep3_INSTALL_LIBDIR}")
 
 # Assemble the flags.
 set(kep3_CXX_FLAGS_DEBUG ${YACMA_CXX_FLAGS} ${YACMA_CXX_FLAGS_DEBUG})
@@ -127,7 +128,7 @@ if(YACMA_COMPILER_IS_MSVC)
   check_cxx_compiler_flag("/permissive-" _kep3_MSVC_SUPPORTS_STRICT_CONFORMANCE)
   unset(CMAKE_REQUIRED_QUIET)
   if(_kep3_MSVC_SUPPORTS_STRICT_CONFORMANCE)
-    message(STATUS "The '/permissive-' flag is supported, enabling it.")
+        message(VERBOSE "MSVC: enabling '/permissive-' strict conformance mode.")
     list(APPEND kep3_CXX_FLAGS_DEBUG "/permissive-")
     list(APPEND kep3_CXX_FLAGS_RELEASE "/permissive-")
   endif()
@@ -198,6 +199,8 @@ target_include_directories(kep3 PUBLIC
 # Boost.
 # NOTE: need 1.69 for safe numerics.
 set(_kep3_MIN_BOOST_VERSION "1.69")
+set(_kep3_MIN_FMT_VERSION "10")
+set(_kep3_MIN_HEYOKA_VERSION "7")
 
 find_package(Boost ${_kep3_MIN_BOOST_VERSION} CONFIG REQUIRED COMPONENTS serialization)
 target_link_libraries(kep3 PUBLIC Boost::boost Boost::serialization)
@@ -205,19 +208,11 @@ target_link_libraries(kep3 PUBLIC Boost::boost Boost::serialization)
 target_compile_definitions(kep3 PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
 
 # fmt.
-find_package(fmt CONFIG REQUIRED)
+find_package(fmt ${_kep3_MIN_FMT_VERSION} CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC fmt::fmt)
 
-# NOTE: we require fmt>=10 because we rely on
-# system time points to be formatted in UTC time,
-# rather than local time.
-message(STATUS "fmt major version: ${fmt_VERSION_MAJOR}")
-if(${fmt_VERSION_MAJOR} LESS 10)
-    message(FATAL_ERROR "At least fmt version 10 is required, but version ${fmt_VERSION_MAJOR} was detected instead")
-endif()
-
 # heyoka.
-find_package(heyoka 7 CONFIG REQUIRED)
+find_package(heyoka ${_kep3_MIN_HEYOKA_VERSION} CONFIG REQUIRED)
 target_link_libraries(kep3 PUBLIC heyoka::heyoka)
 
 # spdlog.
@@ -246,13 +241,19 @@ install(TARGETS kep3
     ARCHIVE DESTINATION "${kep3_INSTALL_LIBDIR}"
     RUNTIME DESTINATION bin
 )
+
+include(CMakePackageConfigHelpers)
+
 # Setup of the CMake config file.
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/kep3-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/kep3-config.cmake" @ONLY)
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/kep3-config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/kep3-config.cmake"
+    INSTALL_DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3"
+)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kep3-config.cmake"
     DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
 install(EXPORT kep3_export NAMESPACE kep3:: DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
 # Take care of versioning.
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/kep3-config-version.cmake" COMPATIBILITY SameMinorVersion)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kep3-config-version.cmake" DESTINATION "${kep3_INSTALL_LIBDIR}/cmake/kep3")
 
@@ -270,9 +271,9 @@ endif()
 if(kep3_BUILD_PYTHON_BINDINGS)
     # Find python
     find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-    message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
-    message(STATUS "Python3 installation directory: ${Python3_SITEARCH}")
-    message(STATUS "Python3 include directories: ${Python3_INCLUDE_DIRS}")
+    message(VERBOSE "Python3 interpreter: ${Python3_EXECUTABLE}")
+    message(VERBOSE "Python3 installation directory: ${Python3_SITEARCH}")
+    message(VERBOSE "Python3 include directories: ${Python3_INCLUDE_DIRS}")
 
     set(PYKEP_INSTALL_PATH "" CACHE STRING "pykep module installation path")
     mark_as_advanced(PYKEP_INSTALL_PATH)
@@ -283,4 +284,8 @@ if(kep3_BUILD_PYTHON_BINDINGS)
     # Build directory
     add_subdirectory("${CMAKE_SOURCE_DIR}/pykep")
 endif()
+
+message(STATUS "Config summary: kep3 ${kep3_VERSION} on ${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR} with ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "Config summary: build type=${CMAKE_BUILD_TYPE}, tests=${kep3_BUILD_TESTS}, benchmarks=${kep3_BUILD_BENCHMARKS}, python=${kep3_BUILD_PYTHON_BINDINGS}, verbose=${KEP3_VERBOSE_CONFIGURE}")
+message(STATUS "Config summary: install libdir=${kep3_INSTALL_LIBDIR}, deps Boost>=${_kep3_MIN_BOOST_VERSION}, fmt>=${_kep3_MIN_FMT_VERSION}, heyoka>=${_kep3_MIN_HEYOKA_VERSION}")
 

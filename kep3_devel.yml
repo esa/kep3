@@ -6,20 +6,20 @@ dependencies:
   - cxx-compiler
   - clang-tools
   - ninja
-  - cmake >=3.18
+  - cmake >=3.28,<3.31
   - libboost >=1.73
-  - fmt
-  - heyoka >= 7*
-  - heyoka.py >= 7*
-  - spdlog
-  - xtensor >= 0.26 # else kep3 will not compile (the project performed a header restructuring as of 0.26)
-  - xtensor-blas 
+  - fmt >=10
+  - heyoka >=7
+  - heyoka.py >=7
+  - spdlog >=1.12
+  - xtensor >=0.26 # else kep3 will not compile (the project performed a header restructuring as of 0.26)
+  - xtensor-blas >=0.24
   - pagmo-devel
-  - pybind11
+  - pybind11 >=2.11
   - sgp4
   - spiceypy
   - matplotlib
   - pygmo_plugins_nonfree
   - scipy
-  - eigen >=3,<5
+  - eigen >=3, <5
   - nlopt < 2.10.1

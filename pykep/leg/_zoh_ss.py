@@ -32,6 +32,7 @@ class zoh_ss:
         tgrid,
         cut,
         tas,
+        max_steps = None,
     ):
         """
         .. note::
@@ -55,6 +56,8 @@ class zoh_ss:
                 - `ta`: Nominal dynamics (state dim 6, pars ≥ 2)
                 
                 - `ta_var`: Variational dynamics (state dim 54, same pars)
+
+            *max_steps* (:class:`int`): Maximum number of steps for the integrator. If not ``None``, it is passed to the integrator before each propagation call.
 
         Raises:
             :class:`ValueError`: If state/parameter dimensions mismatch or input lengths are incompatible.
@@ -86,6 +89,7 @@ class zoh_ss:
         self.state1 = state1
         self.tgrid = tgrid
         self.cut = cut
+        self.max_steps = max_steps
         
         # Store the tas
         self.ta = tas[0]
@@ -145,7 +149,10 @@ class zoh_ss:
             # setting alpha, beta
             self.ta.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
-            self.ta.propagate_until(self.tgrid[i + 1])
+            if self.max_steps is not None:
+                self.ta.propagate_until(self.tgrid[i + 1], max_steps=self.max_steps)
+            else:
+                self.ta.propagate_until(self.tgrid[i + 1])
         state_fwd = self.ta.state.copy()
 
         # Backward segments
@@ -156,7 +163,10 @@ class zoh_ss:
             self.ta.pars[0] = self.controls[-2 * i - 2]
             self.ta.pars[1] = self.controls[-2 * i - 1]
             # propagating
-            self.ta.propagate_until(self.tgrid[-2 - i])
+            if self.max_steps is not None:
+                self.ta.propagate_until(self.tgrid[-2 - i], max_steps=self.max_steps)
+            else:
+                self.ta.propagate_until(self.tgrid[-2 - i])
         state_bck = self.ta.state
         return (state_fwd - state_bck).tolist()
 
@@ -200,7 +210,10 @@ class zoh_ss:
             # setting T, ix, iy, iz
             self.ta_var.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
-            self.ta_var.propagate_until(self.tgrid[i + 1])
+            if self.max_steps is not None:
+                self.ta_var.propagate_until(self.tgrid[i + 1], max_steps=self.max_steps)
+            else:
+                self.ta_var.propagate_until(self.tgrid[i + 1])
             # extracting the segment STMs
             M_seg_fwd.append(self.ta_var.state[6:].reshape(6, 8)[:, :6].copy())  # 6x6
             # extracting the control sensitivities in across the single segment
@@ -253,7 +266,10 @@ class zoh_ss:
             self.ta_var.pars[0] = self.controls[-2 * i - 2]
             self.ta_var.pars[1] = self.controls[-2 * i - 1]
             # propagating
-            self.ta_var.propagate_until(self.tgrid[-2 - i])
+            if self.max_steps is not None:
+                self.ta_var.propagate_until(self.tgrid[-2 - i], max_steps=self.max_steps)
+            else:
+                self.ta_var.propagate_until(self.tgrid[-2 - i])
             # extracting the segment STMs
             M_seg_bck.append(self.ta_var.state[6:].reshape(6, 8)[:, :6].copy())
             # extracting the control sensitivities in across the single segment
@@ -359,7 +375,10 @@ class zoh_ss:
             self.ta.pars[0:2] = self.controls[2 * i : 2 * i + 2]
             # propagating
             plot_grid_fwd = _np.linspace(self.tgrid[i], self.tgrid[i + 1], N)
-            sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
+            if self.max_steps is not None:
+                sol_fwd = self.ta.propagate_grid(plot_grid_fwd, max_steps=self.max_steps)[-1]
+            else:
+                sol_fwd = self.ta.propagate_grid(plot_grid_fwd)[-1]
             state_fwd.append(sol_fwd)
         
         # Backward segments
@@ -372,7 +391,10 @@ class zoh_ss:
             self.ta.pars[1] = self.controls[-2 * i - 1]
             # propagating
             plot_grid_bck = _np.linspace(self.tgrid[-1 - i], self.tgrid[-2 - i], N)
-            sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]
+            if self.max_steps is not None:
+                sol_bck = self.ta.propagate_grid(plot_grid_bck, max_steps=self.max_steps)[-1]
+            else:
+                sol_bck = self.ta.propagate_grid(plot_grid_bck)[-1]
             state_bck.append(sol_bck)
         
         return state_fwd,state_bck
